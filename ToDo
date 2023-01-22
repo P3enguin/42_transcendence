@@ -1,5 +1,4 @@
-                                                      (22-01-2023)              
-                                                    
+                                                      (22-01-2023)                  
                                                     ft_transcendence :
 
 #  db        prisma    :   Naahio
@@ -48,4 +47,4 @@
         -   the user should be able to select a default version of the game without any extra features.
         -   The game must be responsive.
         -   The user should be able to watch a live play between other users.
-        
+       
