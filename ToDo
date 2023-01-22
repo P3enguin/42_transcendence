@@ -11,7 +11,7 @@
         -   Your website backend must be written in **NestJS**.
         -   The frontend must be written with a **TypeScript** framework of your choice.
         -   you must use the latest stable version of every library or framework used in your project.
-        -   You must use a **PostgreSQL** database.
+>`-   You must use a **PostgreSQL** database.`
         -   Your website must be a **single-page application**.
         -   Everything has to be launch by a single call to: ****{ docker-compose up --build }****.
     
