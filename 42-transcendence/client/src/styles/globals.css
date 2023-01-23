@@ -1,19 +1,28 @@
 nav {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   gap : 16px;
   color :white;
+  padding: 25px 50px 10px 50px;
+  font-family: 'Baloo';
 }
 
 #logo-game {
   width: 50px;
   height: 50px;
+
 }
 
 .navbar{
-  background-color: rgba(22,33,91,80%);
   background: linear-gradient(to left, rgba(22, 33, 91,.8), rgba(22, 33, 91,1));
+  border-bottom : 5px solid;
+  border-image:linear-gradient(to right, rgb(40, 50, 137), rgb(101, 206, 250)) 1;
+}
 
+body {
+    background: url("/wallpaperHome.jpg") no-repeat center center fixed;
+    background-size: cover;
+    margin : 0;
 }
 
 .navigation-links {
