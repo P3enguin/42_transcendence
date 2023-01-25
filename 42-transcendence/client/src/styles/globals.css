@@ -1,10 +1,13 @@
+* {
+  font-family: 'Baloo';
+}
+
 nav {
   display: flex;
   justify-content: space-between;
   gap : 16px;
   color :white;
   padding: 25px 50px 10px 50px;
-  font-family: 'Baloo';
 }
 
 #logo-game {
@@ -19,7 +22,7 @@ nav {
   border-image:linear-gradient(to right, rgb(40, 50, 137), rgb(101, 206, 250)) 1;
 }
 
-body {
+body { /* to change with the home div */
     background: url("/wallpaperHome.jpg") no-repeat center center fixed;
     background-size: cover;
     margin : 0;
@@ -31,3 +34,48 @@ body {
   align-self:center;
 }
 
+.home-login-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+
+}
+
+.login-description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-description-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(224, 234, 248, 0.5);
+  margin-top: 290px;
+  border-radius: 85px;
+  padding: 30px;
+  max-width: 691px;
+}
+
+.welcome-description,#intra-login-button{
+  font-weight: 400;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.welcome-description{
+  max-width: 511px;
+  height: 407px;
+  left: 1264px;
+  top: 391px;
+  line-height: 38px;
+  text-align: center;
+}
+
+#intra-login-button{
+  background: #E0EAF8;
+  border-radius: 33px;
+  margin-top: 10%;
+}

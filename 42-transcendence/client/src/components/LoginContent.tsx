@@ -5,7 +5,9 @@ function LoginContent() {
         </div>
         <div className = "login-description">
             <div className = "login-description-container">
-                <p>Welcome to our website! 
+                <img src="/logo.png" alt="logo" id="logo-game"></img>
+                <p className="welcome-description">
+                    Welcome to our website! 
                     We are glad you are here and hope you enjoy
                     playing Pong and chatting with other users.
                     Our features include the ability to create or 
@@ -17,7 +19,10 @@ function LoginContent() {
                     Have a great time!
                     </p>
             </div>
-            <button>continue With Intra</button>
+            <button id="intra-login-button">
+                <img src="/42_Logo 1.png" alt="42-logo" id="logo-42"></img>
+                continue With Intra
+            </button>
         </div>
     </div>);
 }
