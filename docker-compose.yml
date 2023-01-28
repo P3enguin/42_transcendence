@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: hh
+      POSTGRES_DB: mydb
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
