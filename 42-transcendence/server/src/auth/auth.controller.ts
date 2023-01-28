@@ -7,6 +7,6 @@ export class AuthController {
 
     @Post('login')
     login() {
-
+        return this.authService.login()
     }
 }
