@@ -8,13 +8,17 @@ export class AuthController {
     constructor(private readonly AuthService: AuthService ) {}
 
     @Get ('login')
-    @UseGuards(AuthGuard('passport-42'))
-    async login(@Req() req) {}
+    @UseGuards(AuthGuard('42'))
+    async login(@Req() req) {
 
-    @Get ('redirect')
-    @UseGuards(AuthGuard('passport-42'))
+    }
+
+    @Get ('callback')
+    @UseGuards(AuthGuard('42'))
     loginRedirect(@Req() req){
-
+        // console.log(req.user);
+        // console.log(res);
+        return this.AuthService.login(req)
     }
 
 }
