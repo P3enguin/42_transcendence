@@ -10,15 +10,13 @@ export class AuthController {
     @Get ('login')
     @UseGuards(AuthGuard('42'))
     async login(@Req() req) {
-
+        // console.log(req);
     }
 
     @Get ('callback')
     @UseGuards(AuthGuard('42'))
-    loginRedirect(@Req() req){
-        // console.log(req.user);
-        // console.log(res);
+    loginRedirect(@Req() req) {
+        console.log(req.user);
         return this.AuthService.login(req)
     }
-
 }

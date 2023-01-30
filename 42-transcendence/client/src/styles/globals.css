@@ -1,5 +1,7 @@
 * {
   font-family: 'Baloo';
+  --bg-image: url("/wallpaperHome.jpg") no-repeat center center fixed;
+  
 }
 
 nav {
@@ -23,7 +25,7 @@ nav {
 }
 
 body { /* to change with the home div */
-    background: url("/wallpaperHome.jpg") no-repeat center center fixed;
+    background:var(--bg-image);
     background-size: cover;
     margin : 0;
 }
