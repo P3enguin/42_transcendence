@@ -1,0 +1,26 @@
+.profile-info-container {
+    padding : 10px;
+    height: 831px;
+    width: 557px;
+    border-radius: 81px;
+    background-color:  #787CA980 ;
+
+    display: grid;
+    grid-template-columns:1fr 1fr ;
+    grid-template-rows:repeat(auto-fit, minmax(200px, 1fr)) ;
+
+}
+
+
+.profile-label {
+    height: 52px;
+    width: 187px;
+    left: 391px;
+    top: 268px;
+    border-radius: 15px;
+
+    background: #D9D9D9;
+    text-align: center;
+    font-size: large;
+
+}

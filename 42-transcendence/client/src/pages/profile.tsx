@@ -1,10 +1,13 @@
-
 import React from "react";
 import  { useEffect } from 'react';
+import ProfileInfo from "@/components/ProfileInfo";
+
 
 function playerProfile() {
+
     /* changing the background, This one should be a 
     variable and get updated aftet the user logs in  */
+
     useEffect(() => {
         document.body.style.background = 'url("/wallpaperflare1.jpg")'
         document.body.style.backgroundRepeat = 'no-repeat';
@@ -14,11 +17,8 @@ function playerProfile() {
        
       });
 
-    return ( <div className="home-page">
-
-        <div className="profile settings">
-
-        </div>
+    return ( <div className="profile-page" >
+            <ProfileInfo/>
     </div>);
 }
 
