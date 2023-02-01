@@ -92,19 +92,34 @@ body { /* to change with the home div */
 
 /* profile css */
 
-.profile-info-container {
+.profile-page {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(500px,1fr));
+  grid-template-rows: repeat(auto-fit,minmax(500px,1fr));
+  align-items: center ;
+}
+
+.profile-container {
     padding : 10px;
-    height: 800px;
-    width: 557px;
     border-radius: 81px;
     background-color:  #787CA980 ;
-
     display: grid;
     grid-template-columns:1fr 1fr ;
     grid-template-rows:repeat(5,  1fr);
     justify-items: center;
     align-items: center;
+}
 
+.profile-info {
+    height: 800px;
+    width: 557px;
+    justify-self: center;
+  }
+
+.profile-friend {
+  Width :1000px;
+  Height : 831px;
+  justify-self: center;
 }
 
 .profile-label {

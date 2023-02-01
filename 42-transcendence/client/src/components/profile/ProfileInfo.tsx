@@ -5,9 +5,8 @@ import InputLabels from "./InputLabels";
 
 function ProfileInfo() {
 
-
     return (
-    <div className="profile-info-container">
+    <div className="profile-info profile-container">
         <img className="profile-pic" src="" alt="profile Picture"></img>
         <InputLabels _className="username profile-label" disabled={true} value="ybensell"/>
         <InputLabels _className="first-name profile-label"  disabled={true} value="Yasser"/>

@@ -1,6 +1,7 @@
 import React from "react";
 import  { useEffect } from 'react';
-import ProfileInfo from "@/components/ProfileInfo";
+import ProfileInfo from "@/components/profile/ProfileInfo";
+import ProfileFriend from "@/components/profile/ProfileFriends";
 
 
 function playerProfile() {
@@ -19,6 +20,7 @@ function playerProfile() {
 
     return ( <div className="profile-page" >
             <ProfileInfo/>
+            <ProfileFriend/>
     </div>);
 }
 
