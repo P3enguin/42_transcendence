@@ -1,4 +1,25 @@
+import axios from 'axios';
+
 function LoginContent() {
+    const url = 'https:\\'
+    const data = {
+    a: 10,
+    b: 20,
+    };
+    axios
+    .post(url, data, {
+        headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+        },
+    })
+    .then(({data}) => {
+        console.log(data);
+    });
+    function handleClick(){
+        console.log("hh");
+    }
+
     return (<div className = "home-login-content">
         <div className = "login-game">
             <p>here is the game simulation</p>
@@ -19,7 +40,7 @@ function LoginContent() {
                     Have a great time!
                     </p>
             </div>
-            <button id="intra-login-button">
+            <button id="intra-login-button" onClick={handleClick}>
                 <img src="/42_Logo 1.png" alt="42-logo" id="logo-42"></img>
                 continue With Intra
             </button>

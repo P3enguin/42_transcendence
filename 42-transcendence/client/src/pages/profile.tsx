@@ -4,6 +4,7 @@ import ProfileInfo from "@/components/profile/ProfileInfo";
 import ProfileFriend from "@/components/profile/ProfileFriends";
 
 
+
 function playerProfile() {
 
     /* changing the background, This one should be a 

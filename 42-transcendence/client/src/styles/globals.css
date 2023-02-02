@@ -70,7 +70,7 @@ body { /* to change with the home div */
 }
 
 
-.welcome-description,#intra-login-button{
+.welcome-description, #intra-login-button{
   font-weight: 400;
   font-size: 24px;
   display: flex;
@@ -79,7 +79,6 @@ body { /* to change with the home div */
 
 .welcome-description{
   max-width: 511px;
-
   line-height: 38px;
   text-align: center;
 }
@@ -87,8 +86,18 @@ body { /* to change with the home div */
 #intra-login-button{
   background: #E0EAF8;
   border-radius: 33px;
-  margin-top: 10%;
+  border: 0;
+  padding: 12px 50px;
+  cursor: pointer;
+  margin-top: 50px;
 }
+
+a:link { text-decoration: none; }
+
+#intra-login-button:hover{
+  background-color: #65688180;
+}
+
 
 /* profile css */
 
