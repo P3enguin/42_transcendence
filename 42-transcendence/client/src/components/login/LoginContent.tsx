@@ -1,21 +1,9 @@
 import axios from 'axios';
+import nextAuth from 'next-auth';
+
 
 function LoginContent() {
-    const url = 'https:\\'
-    const data = {
-    a: 10,
-    b: 20,
-    };
-    axios
-    .post(url, data, {
-        headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-        },
-    })
-    .then(({data}) => {
-        console.log(data);
-    });
+    
     function handleClick(){
         console.log("hh");
     }
