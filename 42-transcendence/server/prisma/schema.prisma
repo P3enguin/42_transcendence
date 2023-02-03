@@ -8,3 +8,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Player{
+  id    Int @id @default(autoincrement())
+  login String 
+  nickname  String
+  // avatar    
+}
+
+model Fiend{
+  id Int @id @default(autoincrement())
+  player1 Player @relation(fields: [playerId1], references: [id])
+  player2 Player @relation(fields: [playerId2], references: [id])
+  playerId1 Int @unique
+  playerId2 Int @unique
+
+  createdAt DateTime  @default(now())
+}
+
+model Status {
+  
+}
