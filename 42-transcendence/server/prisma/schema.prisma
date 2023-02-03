@@ -9,22 +9,44 @@ datasource db {
 }
 
 model Player{
-  id    Int @id @default(autoincrement())
-  login String 
-  nickname  String
-  // avatar    
-}
-
-model Fiend{
-  id Int @id @default(autoincrement())
-  player1 Player @relation(fields: [playerId1], references: [id])
-  player2 Player @relation(fields: [playerId2], references: [id])
-  playerId1 Int @unique
-  playerId2 Int @unique
-
-  createdAt DateTime  @default(now())
+  id        Int @id @default(autoincrement())
+  login     String  @unique
+  nickname  String  @unique
+  avatar    Unsupported("blob")?
+  joinAt    DateTime  @default(now())
 }
 
 model Status {
-  
+  nickname      String  @id
+  wins          Int?
+  looses        Int?
+  level         Int     @default(0)
+  IsOnline      Boolean @default(false)
+
+  player  Player  @relation(fields: [nickname], references: [nickname])
+
+  achivement Achivement[]
+  title       Titles[]
+  rank        Ranks[]
+}
+
+
+model Achivement{
+  id  Int @id @default(autoincrement())
+}
+
+model Ranks{
+  id  Int @id @default(autoincrement())
+}
+
+model Titles{
+  id  Int @id @default(autoincrement())
+}
+
+model Friend{
+  playerId1 Int
+  playerId2 Int
+
+  createdAt DateTime  @default(now())
+  @@id([playerId1, playerId2])
 }
