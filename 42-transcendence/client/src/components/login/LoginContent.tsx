@@ -1,13 +1,17 @@
 import axios from 'axios';
 import nextAuth from 'next-auth';
-
+import { useSession,signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 function LoginContent() {
     
-    function handleClick(){
-        console.log("hh");
-    }
-
+    // function handleClick(){
+    //     console.log("hh");
+    // }
+    const {data : session} = useSession();
+    const rout = useRouter();
+    // if (session)
+    //     rout.push('/login');
     return (<div className = "home-login-content">
         <div className = "login-game">
             <p>here is the game simulation</p>
@@ -28,7 +32,7 @@ function LoginContent() {
                     Have a great time!
                     </p>
             </div>
-            <button id="intra-login-button" onClick={handleClick}>
+            <button id="intra-login-button" onClick={() => signIn('42',{ callbackUrl: 'http://localhost:3000/login' })}>
                 <img src="/42_Logo 1.png" alt="42-logo" id="logo-42"></img>
                 continue With Intra
             </button>
