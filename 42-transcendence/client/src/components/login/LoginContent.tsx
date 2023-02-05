@@ -8,8 +8,6 @@ function LoginContent() {
     // function handleClick(){
     //     console.log("hh");
     // }
-    const {data : session} = useSession();
-    const rout = useRouter();
     // if (session)
     //     rout.push('/login');
     return (<div className = "home-login-content">
@@ -32,10 +30,12 @@ function LoginContent() {
                     Have a great time!
                     </p>
             </div>
-            <button id="intra-login-button" onClick={() => signIn('42',{ callbackUrl: 'http://localhost:3000/login' })}>
-                <img src="/42_Logo 1.png" alt="42-logo" id="logo-42"></img>
-                continue With Intra
-            </button>
+            <a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-739fa58de78a3bb8946f9ab66fe739dcb0ea5b7fd537367d69df9e5beb1e5e26&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth&response_type=code">
+                <button id="intra-login-button">
+                    <img src="/42_Logo 1.png" alt="42-logo" id="logo-42"></img>
+                    continue With Intra
+                </button>
+            </a>
         </div>
     </div>);
 }

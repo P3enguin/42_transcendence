@@ -5,10 +5,6 @@ import axios from "axios";
 
 function loginPage() {
 
-    const {data :session , status} =  useSession();
-    
-    if (status == "authenticated")
-        console.log(session.user);
     return <div>hh</div>
     // const rout = useRouter();
     // const {data: session,status} = useSession();
