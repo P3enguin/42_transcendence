@@ -9,44 +9,78 @@ datasource db {
 }
 
 model Player{
-  id        Int @id @default(autoincrement())
-  login     String  @unique
-  nickname  String  @unique
-  avatar    Unsupported("blob")?
-  joinAt    DateTime  @default(now())
+  id                Int       @id @default(autoincrement())
+  login             String    @unique
+  nickname          String    @unique
+  avatar            Unsupported("blob")?
+  joinAt            DateTime  @default(now())
+
+  friends           Player[]  @relation("friends") // <- Friend List
+  friendsRelation   Player[]  @relation("friends")
+
+  block             Player[]  @relation("block")  // <- Blocked Friend
+  blockedsRelation  Player[]  @relation("block")
+
+  status            Status    @relation(fields: [statusId], references: [id])
+  statusId          Int       @unique
 }
 
 model Status {
-  nickname      String  @id
-  wins          Int?
-  looses        Int?
-  level         Int     @default(0)
-  IsOnline      Boolean @default(false)
+  id  Int     @id @default(autoincrement())
+  player      Player?
 
-  player  Player  @relation(fields: [nickname], references: [nickname])
+  level       Int     @default(0)
+  IsOnline    Boolean @default(false)
 
-  achivement Achivement[]
+  achivement  Achivement[]
   title       Titles[]
   rank        Ranks[]
+  match       Matchs[]
+
 }
 
-
 model Achivement{
-  id  Int @id @default(autoincrement())
+  id          Int @id @default(autoincrement())
+
+  statusId    Int
+  status      Status @relation(fields: [statusId], references: [id])
+
+  name        String
+  requirement String // <-- ******************************** --> \\
+  description String
+  effect      String
 }
 
 model Ranks{
-  id  Int @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
+
+  statusId  Int
+  status    Status @relation(fields: [statusId], references: [id])
+
+  name      String
+  points    Int
+  avatar    Unsupported("blob")
 }
 
 model Titles{
+  id          Int @id @default(autoincrement())
+
+  statusId    Int
+  status      Status @relation(fields: [statusId], references: [id])
+
+  name        String
+  description String
+  requirement String // <-- ******************************** --> \\
+  effect      String
+} 
+
+model Matchs {
   id  Int @id @default(autoincrement())
+
+  statusId    Int
+  status      Status @relation(fields: [statusId], references: [id])
+
+  
+  
 }
 
-model Friend{
-  playerId1 Int
-  playerId2 Int
-
-  createdAt DateTime  @default(now())
-  @@id([playerId1, playerId2])
-}
