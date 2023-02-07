@@ -1,3 +1,4 @@
+import { profile } from "console";
 import NextAuth from "next-auth";
 import FortyTwoProvider from "next-auth/providers/42-school";
 

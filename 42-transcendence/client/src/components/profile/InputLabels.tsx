@@ -1,10 +1,12 @@
 import * as React from 'react';
 
 function InputLabels(
-    {_className,labelName, value, disabled}:{_className:string,labelName?:string,value?:string,disabled?:boolean}
+    {_id, _labelValue,_value, disabled,_type= "text"}:{_id:string,_labelValue?:string,_value?:string,disabled?:boolean,_type?:string}
     ) {
-    return (
-            <input className={_className} type="text" value={value} disabled={disabled} ></input>
+    return (<>
+                <label htmlFor={_id}>{_labelValue}</label>
+                <input id={_id} type={_type} value={_value} disabled={disabled} ></input>
+             </>
         );
 }
 
