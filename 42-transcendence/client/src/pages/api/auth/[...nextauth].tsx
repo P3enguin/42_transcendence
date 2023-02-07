@@ -6,8 +6,8 @@ export const authOption = {
     providers:[
         FortyTwoProvider({
             id: '42',
-            clientId:process.env.PUBLIC_ID,
-            clientSecret:process.env.SECRET_ID,
+            clientId: process.env.PUBLIC_ID,
+            clientSecret: process.env.SECRET_ID,
         }),
     ],
    
