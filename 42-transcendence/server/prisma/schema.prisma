@@ -10,13 +10,13 @@ datasource db {
 
 model Player{
   id                Int       @id @default(autoincrement())
-  login             String    @unique
+  login             String    @unique 
   nickname          String    @unique
-  avatar            Unsupported("blob")?
+  avatar            String?
   joinAt            DateTime  @default(now())
 
   friends           Player[]  @relation("friends") // <- Friend List
-  friendsRelation   Player[]  @relation("friends")
+  friendsRelation   Player[]  @relation("friends")  
 
   block             Player[]  @relation("block")  // <- Blocked Friend
   blockedsRelation  Player[]  @relation("block")
@@ -59,7 +59,7 @@ model Ranks{
 
   name      String
   points    Int
-  avatar    Unsupported("blob")
+  avatar    String?
 }
 
 model Titles{
