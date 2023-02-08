@@ -80,7 +80,9 @@ model Matchs {
   statusId    Int
   status      Status @relation(fields: [statusId], references: [id])
 
-  
+  winner      Int
+  scoor       String
+  playerAt    DateTime @default(now())
   
 }
 
