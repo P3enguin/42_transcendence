@@ -4,8 +4,10 @@ services:
     image:  postgres:13
     ports:
       - 5434:5432
-    env_file:
-      - .env
+    environment:
+      DB_USER: admin
+      DB_PASSWORD: db_admin
+      DATA_BASE: transcendence
     networks:
       - server
 networks:
