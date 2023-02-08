@@ -5,10 +5,10 @@ services:
     ports:
       - 5434:5432
     environment:
-      DB_USER: admin
-      DB_PASSWORD: db_admin
-      DATA_BASE: transcendence
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: dbadmin
+      POSTGRES_DB: transcendence
     networks:
       - server
 networks:
-  - server:
+  server:
