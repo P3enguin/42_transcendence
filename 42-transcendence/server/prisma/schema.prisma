@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,42 +7,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Player{
-  id                Int       @id @default(autoincrement())
-  login             String    @unique 
-  nickname          String    @unique
-  avatar            String?
-  joinAt            DateTime  @default(now())
+model Player {
+  id       Int      @id @default(autoincrement())
+  login    String   @unique
+  nickname String   @unique
+  avatar   String?
+  joinAt   DateTime @default(now())
 
-  friends           Player[]  @relation("friends") // <- Friend List
-  friendsRelation   Player[]  @relation("friends")  
+  friends         Player[] @relation("friends") // <- Friend List
+  friendsRelation Player[] @relation("friends")
 
-  block             Player[]  @relation("block")  // <- Blocked Friend
-  blockedsRelation  Player[]  @relation("block")
+  block            Player[] @relation("block") // <- Blocked Friend
+  blockedsRelation Player[] @relation("block")
 
-  status            Status    @relation(fields: [statusId], references: [id])
-  statusId          Int       @unique
+  status   Status   @relation(fields: [statusId], references: [id])
+  statusId Int      @unique
+  Matchs   Matchs[]
 }
 
 model Status {
-  id  Int     @id @default(autoincrement())
-  player      Player?
+  id     Int     @id @default(autoincrement())
+  player Player?
 
-  level       Int     @default(0)
-  IsOnline    Boolean @default(false)
+  level    Int     @default(0)
+  IsOnline Boolean @default(false)
 
-  achivement  Achivement[]
-  title       Titles[]
-  rank        Ranks[]
-  match       Matchs[]
-
+  achivement Achivement[]
+  title      Titles[]
+  rank       Ranks[]
 }
 
-model Achivement{
-  id          Int @id @default(autoincrement())
+model Achivement {
+  id Int @id @default(autoincrement())
 
-  statusId    Int
-  status      Status @relation(fields: [statusId], references: [id])
+  statusId Int
+  status   Status @relation(fields: [statusId], references: [id])
 
   name        String
   requirement String // <-- ******************************** --> \\
@@ -51,38 +49,39 @@ model Achivement{
   effect      String
 }
 
-model Ranks{
-  id        Int @id @default(autoincrement())
+model Ranks {
+  id Int @id @default(autoincrement())
 
-  statusId  Int
-  status    Status @relation(fields: [statusId], references: [id])
+  statusId Int
+  status   Status @relation(fields: [statusId], references: [id])
 
-  name      String
-  points    Int
-  avatar    String?
+  name   String
+  points Int
+  avatar String?
 }
 
-model Titles{
-  id          Int @id @default(autoincrement())
+model Titles {
+  id Int @id @default(autoincrement())
 
-  statusId    Int
-  status      Status @relation(fields: [statusId], references: [id])
+  statusId Int
+  status   Status @relation(fields: [statusId], references: [id])
 
   name        String
   description String
   requirement String // <-- ******************************** --> \\
   effect      String
-} 
+}
 
 model Matchs {
-  id  Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  statusId    Int
-  status      Status @relation(fields: [statusId], references: [id])
+  player1 Int
+  player2 Int
 
-  winner      Int
-  scoor       String
-  playerAt    DateTime @default(now())
-  
+  playerId Int
+  player   Player @relation(fields: [playerId], references: [id])
+
+  winner   Int
+  scoor    String
+  playerAt DateTime @default(now())
 }
-
