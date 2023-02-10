@@ -96,7 +96,6 @@ model Room{
   Key         String?
   memberLimit Int @default(2)
   stats       String @default("private")
-
   IsChannel   Boolean @default(false)
 
   adminId     Int

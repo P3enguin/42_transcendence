@@ -25,8 +25,7 @@ model Player {
 
   status   Status   @relation(fields: [statusId], references: [id])
   statusId Int      @unique
-  matchs   Matchs[]
-  rooms     Room[]
+  Mawtchs   Matchs[]
 }
 
 model Status {
@@ -96,20 +95,18 @@ model Room{
   Key         String?
   memberLimit Int @default(2)
   stats       String @default("private")
-
   IsChannel   Boolean @default(false)
 
   adminId     Int
   player      Player @relation(fields: [playerId], references: [id])
   member      Player[]
-  chats       Chat[]  @default(null)  
-  bans        Ban[] @default(null)
-  avatar      String @default("#")
+  chats       Chat[]?
+  bans        Ban[]?
 }
 
 model Chat{
   MsgId   Int @id @default(autoincrement())
-
+  
   sender  Int
   player  Player @relation(fields: [sender], references: [channelId])
 
@@ -123,7 +120,6 @@ model Chat{
 model Ban {
   ChannelId Int
   channel Channel @relation(fields: [channelId], references: [ChannelId])
-
   PlayerId  Int
   player    Player @relation(fields: [playerId], references: [id])
   reason    String  

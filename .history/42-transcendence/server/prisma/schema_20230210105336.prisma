@@ -25,8 +25,7 @@ model Player {
 
   status   Status   @relation(fields: [statusId], references: [id])
   statusId Int      @unique
-  matchs   Matchs[]
-  rooms     Room[]
+  Mawtchs   Matchs[]
 }
 
 model Status {
@@ -96,7 +95,6 @@ model Room{
   Key         String?
   memberLimit Int @default(2)
   stats       String @default("private")
-
   IsChannel   Boolean @default(false)
 
   adminId     Int

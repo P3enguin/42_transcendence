@@ -1,5 +1,4 @@
 import { Status } from "../../../.history/42-transcendence/server/prisma/schema_20230210100044"
-import { Ban } from "../../../.history/42-transcendence/server/prisma/schema_20230210103837"
 
 generator client {
   provider = "prisma-client-js"
@@ -25,8 +24,7 @@ model Player {
 
   status   Status   @relation(fields: [statusId], references: [id])
   statusId Int      @unique
-  matchs   Matchs[]
-  rooms     Room[]
+  Matchs   Matchs[]
 }
 
 model Status {
@@ -79,52 +77,36 @@ model Titles {
 model Matchs {
   id Int @id @default(autoincrement())
 
-  losser   Int
-  lp       Player @relation(fields: [losser], references: [id])
+  player2 Int
+
+  playerId Int
+  player   Player @relation(fields: [playerId], references: [id])
 
   winner   Int
-  wp       Player @relation(fields: [winner], references: [id])
-
   scoor    String
-  playerAt DateTime @default(now()) 
+  playerAt DateTime @default(now())
 }
 
-model Room{
+model Channel{
   channelId   Int @id @default(autoincrement())
-  name        String? // manuel
+  name        String
   Topic       String?
   Key         String?
-  memberLimit Int @default(2)
-  stats       String @default("private")
-
-  IsChannel   Boolean @default(false)
-
+  memberLimit Int @default(100)
+  stats       String @default("public")
+  
   adminId     Int
   player      Player @relation(fields: [playerId], references: [id])
-  member      Player[]
-  chats       Chat[]  @default(null)  
-  bans        Ban[] @default(null)
-  avatar      String @default("#")
 }
 
 model Chat{
-  MsgId   Int @id @default(autoincrement())
-
-  sender  Int
-  player  Player @relation(fields: [sender], references: [channelId])
-
-  message String
-  sendAt DateTime @default(now())
-
-  roomId  Id
-  room    Room @relation(fields: [roomId], references: [id])
+  
 }
 
 model Ban {
   ChannelId Int
   channel Channel @relation(fields: [channelId], references: [ChannelId])
-
   PlayerId  Int
   player    Player @relation(fields: [playerId], references: [id])
-  reason    String  
+  reason    String
 }

@@ -25,8 +25,7 @@ model Player {
 
   status   Status   @relation(fields: [statusId], references: [id])
   statusId Int      @unique
-  matchs   Matchs[]
-  rooms     Room[]
+  Mawtchs   Matchs[]
 }
 
 model Status {
@@ -96,15 +95,14 @@ model Room{
   Key         String?
   memberLimit Int @default(2)
   stats       String @default("private")
-
   IsChannel   Boolean @default(false)
 
   adminId     Int
   player      Player @relation(fields: [playerId], references: [id])
   member      Player[]
-  chats       Chat[]  @default(null)  
+  chats       Chat[]  @default(null)
   bans        Ban[] @default(null)
-  avatar      String @default("#")
+  avatar      String //default (#)
 }
 
 model Chat{
