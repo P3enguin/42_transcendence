@@ -90,21 +90,21 @@ model Matchs {
 }
 
 model Room{
-  channelId   Int @id @default(autoincrement())
+  channelId   Int    @id @default(autoincrement())
   name        String? // manuel
   Topic       String?
   Key         String?
-  memberLimit Int @default(2)
-  stats       String @default("private")
+  memberLimit Int     @default(2)
+  stats       String  @default("private")
 
   IsChannel   Boolean @default(false)
 
   adminId     Int
-  player      Player @relation(fields: [playerId], references: [id])
+  player      Player  @relation(fields: [playerId], references: [id])
   member      Player[]
   chats       Chat[]  @default(null)  
-  bans        Ban[] @default(null)
-  avatar      String @default("#")
+  bans        Ban[]   @default(null)
+  avatar      String  @default("#")
 }
 
 model Chat{
