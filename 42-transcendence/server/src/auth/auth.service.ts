@@ -1,10 +1,19 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "prisma/prisma.service";
+import { PrismaClient } from "prisma/client";
 
 export class AuthService {
-    constructor(private prismaServ: PrismaService){}
 
-    getUser(){
-        return this.prisma
+    prisma = new PrismaClient();
+    // getUser(){
+    //     return this.prisma.player.
+    // }
+    async createUser() {
+        const user = await this.prisma.player.create({
+            data: {
+                nickname:'ypencel',
+                email: 'hh@mok.com',
+            }
+        })
+        return user;
     }
 }
