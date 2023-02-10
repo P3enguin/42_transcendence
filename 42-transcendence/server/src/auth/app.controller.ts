@@ -6,14 +6,12 @@ import { query } from "express";
 
 @Controller('auth')
 export class authController {
-    @Get('data')
-    getAccessToken(@Query() query: {code: string}) {
+    @Get('user')
+    getUser(@Query() query: {code: string}) {
         console.log(query);
-        return  {
-            hh:'hh'
-        }
+        return  this.
     }
-    @Post('data')
+    @Post('user')
     postData(@Body() bod:Object ):object{
         console.log(bod);
         return {hh:"welldone"};
