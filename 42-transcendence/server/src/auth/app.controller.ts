@@ -3,19 +3,21 @@ import { Get,Post } from "@nestjs/common";
 import { Req } from "@nestjs/common";
 import { query } from "express";
 import { AuthService } from "./auth.service";
+import { AuthDto } from "./dto/auth.dto";
 
 @Controller('auth')
 export class AuthController {
     constructor(private authServ:AuthService){}
 
     @Get('user')
-    getUser(@Query() query: {code: string}) {
-        console.log(query);
+    getUser(@Query() query: {email: string}) {
+       return this.authServ.getUser(query.email);
     }
+    
     @Post('user')
-    postData(@Body() bod:Object ):object{
-        console.log(bod);
-        return this.authServ.createUser();
+    postData(@Body() dto: AuthDto ):object{
+        console.log(dto);
+        return this.authServ.createUser(dto);
     }
     
 }
