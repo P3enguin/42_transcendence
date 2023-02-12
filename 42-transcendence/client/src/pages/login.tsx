@@ -1,8 +1,10 @@
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import InputLabels from "@/components/profile/InputLabels";
 import axios from "axios";
 import { useEffect } from "react";
+import { getServerSession } from "next-auth/next"
+import { authOption } from '../pages/api/auth/[...nextauth]'
 
 
 async function handleSubmit(event:any,email:string | null | undefined) {
@@ -55,13 +57,13 @@ function loginPage(props:any) {
     }
 }
 
-export async function getServerSideProps(context:string) {
+export async function getServerSideProps(context:any) {
 
-
-    const email ="ybensell@student.1337.ma";
-    const resp = await fetch("http://localhost:8000/auth/user?"
-            + new URLSearchParams(email));
-    const res = resp.json();
+    const session = await getServerSession(context.req, context.res, authOption)
+    const email =session?.user?.email;
+    const resp = await fetch("http://localhost:8000/auth/user?email="
+            + email);
+    const res = await resp.json();
     console.log(res);
     return {
       props: {  

@@ -4,6 +4,7 @@ import FortyTwoProvider from "next-auth/providers/42-school";
 import { User } from "next-auth";
 
 export const authOption = {
+    secret: process.env.AUTH_SECRET,
     providers:[
         FortyTwoProvider({
             id: '42',
