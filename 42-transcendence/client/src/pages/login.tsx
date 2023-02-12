@@ -7,9 +7,10 @@ import { getServerSession } from "next-auth/next"
 import { authOption } from '../pages/api/auth/[...nextauth]'
 
 
+
 async function handleSubmit(event:any,email:string | null | undefined) {
     event.preventDefault();
-
+    const rout = useRouter();
     const data = {
         nickname: event.target.nickname.value,
         email: email,
@@ -23,17 +24,16 @@ async function handleSubmit(event:any,email:string | null | undefined) {
     }    
     const response = await fetch(url, options);
     const result = await response.json();
-    console.log(result);
+    /* Errors are not handled yey*/
+    if (result.nickname)
+        rout.push('/profile');
 }
 
 function loginPage(props:any) {
     
     const {data: session,status} = useSession();
-    const rout = useRouter();
 
-    if (status === "unauthenticated")
-        rout.push("/");
-    else if (status ==="authenticated")
+    if (status ==="authenticated")
     {
         // const {data: session,status} = useSession();
         // const fetchData = async () => {
@@ -60,11 +60,25 @@ function loginPage(props:any) {
 export async function getServerSideProps(context:any) {
 
     const session = await getServerSession(context.req, context.res, authOption)
+    if (!session) {
+        return {
+          redirect: {
+            destination: '/',
+            permanent: false,
+          },
+        }
+      }
     const email =session?.user?.email;
     const resp = await fetch("http://localhost:8000/auth/user?email="
             + email);
     const res = await resp.json();
-    console.log(res);
+    if (res.nickname)
+    return {
+        redirect : {
+            destination: '/profile',
+            permanent:true,
+        }
+    }
     return {
       props: {  
         emailExists: true
