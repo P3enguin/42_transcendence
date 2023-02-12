@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -24,7 +23,8 @@ model Player {
   status   Status   @relation(fields: [statusId], references: [id])
   statusId Int      @unique
   matchs   Matchs[]
-  rooms     Room[]
+  rooms    Room[]
+  
 }
 
 model Status {
@@ -77,52 +77,45 @@ model Titles {
 model Matchs {
   id Int @id @default(autoincrement())
 
-  losser   Int
-  lp       Player @relation(fields: [losser], references: [id])
-
-  winner   Int
-  wp       Player @relation(fields: [winner], references: [id])
+  player Player[]
 
   scoor    String
-  playerAt DateTime @default(now()) 
+  playerAt DateTime @default(now())
 }
 
-model Room{
-  channelId   Int    @id @default(autoincrement())
+model Room {
+  channelId   Int     @id @default(autoincrement())
   name        String? // manuel
   Topic       String?
   Key         String?
   memberLimit Int     @default(2)
   stats       String  @default("private")
 
-  IsChannel   Boolean @default(false)
+  IsChannel Boolean @default(false)
 
-  adminId     Int
-  player      Player  @relation(fields: [playerId], references: [id])
-  member      Player[]
-  chats       Chat[]  @default(null)  
-  bans        Ban[]   @default(null)
-  avatar      String  @default("#")
+  adminId Int
+
+  member Player[]
+  chats  Chat[]
+  bans   Ban[]
+  avatar String   @default("#")
 }
 
-model Chat{
-  MsgId   Int @id @default(autoincrement())
+model Chat {
+  MsgId Int @id @default(autoincrement())
 
-  sender  Int
-  player  Player @relation(fields: [sender], references: [channelId])
-
+  sender Int
   message String
-  sendAt DateTime @default(now())
+  sendAt  DateTime @default(now())
 
-  roomId  Int
-  room    Room @relation(fields: [roomId], references: [id])
+  roomId Int
+  room   Room @relation(fields: [roomId], references: [channelId])
 }
 
 model Ban {
-  ChannelId Int
-  channel Room @relation(fields: [channelId], references: [ChannelId])
+  channelId Int  @id @default(autoincrement())
+  channel   Room @relation(fields: [channelId], references: [channelId])
 
-  PlayerId  Int
-  player    Player @relation(fields: [playerId], references: [id])
-  reason    String  
+  playerId Int
+  reason   String
 }
