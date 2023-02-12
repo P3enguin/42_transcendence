@@ -1,4 +1,4 @@
--- CreateTable
+                    -- CreateTable
 CREATE TABLE "Player" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
