@@ -2,42 +2,72 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import InputLabels from "@/components/profile/InputLabels";
 import axios from "axios";
+import { useEffect } from "react";
 
 
-async function handleSubmit(event:any) {
+async function handleSubmit(event:any,email:string | null | undefined) {
     event.preventDefault();
 
     const data = {
-        username: event.target.username.value,
+        nickname: event.target.nickname.value,
+        email: email,
         // picture: event.target.picture.value,
     }
-    const url:string = 'http://localhost:8000/auth/data'
+    const url:string = 'http://localhost:8000/auth/user'
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     }    
-    const response = await fetch(url, options)
+    const response = await fetch(url, options);
     const result = await response.json();
     console.log(result);
 }
 
-function loginPage() {
-
-    const rout = useRouter();
+function loginPage(props:any) {
+    
     const {data: session,status} = useSession();
-    console.log(session);
-    if (status ==="authenticated")
-    return (<div className="registration-container">
-                <form onSubmit={handleSubmit}>
-                    <InputLabels _id="username" _labelValue="Enter a Username" disabled={false} />
-                    <InputLabels _id="picture" _labelValue="Enter a picture" disabled={false} _type="file" />
-                    <button type="submit">Submit</button>
-                </form>
-            </div>
-        );
-    else if (status === "unauthenticated")
+    const rout = useRouter();
+
+    if (status === "unauthenticated")
         rout.push("/");
+    else if (status ==="authenticated")
+    {
+        // const {data: session,status} = useSession();
+        // const fetchData = async () => {
+        //     const email : string |null = session.user?.email;
+        //     const url:string = 'http://localhost:8000/auth/user?'
+        // const resp = await fetch(url + new URLSearchParams({
+        //     email: "ybensell@student.1337.ma",
+        // }));
+        // console.log(resp);
+        // const res = await resp.json();
+        // console.log(res);
+        // console.log(`props value ${props.emailExists}`)
+        return (<div className="registration-container">
+                    <form onSubmit={(event)=>handleSubmit(event,session.user?.email)}>
+                        <InputLabels _id="nickname" _labelValue="Enter a nickname" disabled={false} />
+                        <InputLabels _id="picture" _labelValue="Enter a picture" disabled={false} _type="file" />
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            );
+    }
+}
+
+export async function getServerSideProps(context:string) {
+
+
+    const email ="ybensell@student.1337.ma";
+    const resp = await fetch("http://localhost:8000/auth/user?"
+            + new URLSearchParams(email));
+    const res = resp.json();
+    console.log(res);
+    return {
+      props: {  
+        emailExists: true
+      },
+    };
 }
 
 export default loginPage;
