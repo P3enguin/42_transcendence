@@ -13,9 +13,8 @@ nav {
 }
 
 #logo-game {
-  width: 50px;
-  height: 50px;
-
+  max-width: 50px;
+  max-height: 50px;
 }
 
 .navbar{
@@ -38,7 +37,7 @@ body { /* to change with the home div */
 
 .home-login-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(500px,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
   gap: 50px;
 }
 
@@ -63,22 +62,23 @@ body { /* to change with the home div */
   margin-top: 290px;
   border-radius: 85px;
   padding: 30px;
-  max-width: 691px;
-  min-width: 320px;
+  /* max-width: 691px;
+  min-width: 50px; */
+  width: 75%;
+  /* height: 50%; */
   overflow: hidden;
  
 }
 
 
 .welcome-description, #intra-login-button{
-  font-weight: 400;
-  font-size: 24px;
+  /* font-weight: 400px; */
+  font-size: 110%;
   display: flex;
   align-items: center;
 }
 
 .welcome-description{
-  max-width: 511px;
   line-height: 38px;
   text-align: center;
 }
