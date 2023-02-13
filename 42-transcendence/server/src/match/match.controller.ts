@@ -8,12 +8,17 @@ export class MatchController {
 	constructor (private matchservice: MatchService) {}
 
 	@Get('loadGame')
-	loadGame() {
+	loadGames() {
 		return this.matchservice.loadGame();
 	}
+
+	@Get()
+	loadGameById() {
+		return this.matchservice.loadGamebyId();
+	}
+
 	@Post('saveGame')
 	saveGame(@Body() dto : MatchDto) {
-		console.log(dto.players[5]);
 		return this.matchservice.saveGame(dto);
 	}
 }

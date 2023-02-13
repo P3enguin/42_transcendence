@@ -16,4 +16,7 @@ export class MatchService {
 		return 'Loading Games . . .'
 	}
 
+	loadGamebyId() {
+		return 'loading a single Game . . .'
+	}
 }
