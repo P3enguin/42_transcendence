@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { MatchDto } from './dto/match.dto';
 
 @Injectable()
 export class MatchService {
-	constructor(private prisma: PrismaService) {
+	constructor(private prisma: PrismaService) {}
 
+	saveGame(dto: MatchDto) {
+		// Add Game : 
+		return 'saving Game . . '
 	}
+
 	loadGame() {
-		//history : 
-		return 'leading Game . . .'
+		// Matches List
+		return 'Loading Games . . .'
 	}
 
-	saveGame() {
-		// add game :
-		return 'saving Game . . .'
-	}
 }

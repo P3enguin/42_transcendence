@@ -4,7 +4,7 @@ import { MatchController } from './match.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  imports:  [PrismaModule],
+  imports: [PrismaModule],
   providers: [MatchService],
   controllers: [MatchController]
 })

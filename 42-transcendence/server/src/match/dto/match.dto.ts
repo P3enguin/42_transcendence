@@ -1,7 +1,15 @@
-interface MatchDto {
-	player1:	string,
-	player2:	string,
+import { IsNotEmpty, Contains, IsDate } from 'class-validator'
 
+export class MatchDto {
+	// @IsNotEmpty()
 
-	playedAt:	Date,
+	players: string[2][];
+
+	// @IsNotEmpty()
+	// @Contains(" - ")
+	scoor: string;
+	
+	// @IsNotEmpty()
+	// @IsDate()
+	playerAt: Date;
 }
