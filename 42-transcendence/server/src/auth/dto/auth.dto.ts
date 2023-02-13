@@ -1,4 +1,4 @@
-
+/* DTO is important to check if the params of the request are valid or not ! */ 
 import {
     validate,
     validateOrReject,

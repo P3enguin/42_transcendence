@@ -1,5 +1,5 @@
 import { getSession, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import Router from 'next/router';
 import InputLabels from "@/components/profile/InputLabels";
 import axios from "axios";
 import { useEffect } from "react";
@@ -8,9 +8,8 @@ import { authOption } from '../pages/api/auth/[...nextauth]'
 
 
 
-async function handleSubmit(event:any,email:string | null | undefined) {
+async function handleSubmit(event:any,email:string) {
     event.preventDefault();
-    const rout = useRouter();
     const data = {
         nickname: event.target.nickname.value,
         email: email,
@@ -24,9 +23,12 @@ async function handleSubmit(event:any,email:string | null | undefined) {
     }    
     const response = await fetch(url, options);
     const result = await response.json();
-    /* Errors are not handled yey*/
+    console.log(result);
+
+    if (!result.nickname)
+      return;
     if (result.nickname)
-        rout.push('/profile');
+        Router.push('/profile');
 }
 
 function loginPage(props:any) {
@@ -35,19 +37,8 @@ function loginPage(props:any) {
 
     if (status ==="authenticated")
     {
-        // const {data: session,status} = useSession();
-        // const fetchData = async () => {
-        //     const email : string |null = session.user?.email;
-        //     const url:string = 'http://localhost:8000/auth/user?'
-        // const resp = await fetch(url + new URLSearchParams({
-        //     email: "ybensell@student.1337.ma",
-        // }));
-        // console.log(resp);
-        // const res = await resp.json();
-        // console.log(res);
-        // console.log(`props value ${props.emailExists}`)
         return (<div className="registration-container">
-                    <form onSubmit={(event)=>handleSubmit(event,session.user?.email)}>
+                    <form onSubmit={(event)=>handleSubmit(event,session.user?.email!)}>
                         <InputLabels _id="nickname" _labelValue="Enter a nickname" disabled={false} />
                         <InputLabels _id="picture" _labelValue="Enter a picture" disabled={false} _type="file" />
                         <button type="submit">Submit</button>
@@ -72,6 +63,7 @@ export async function getServerSideProps(context:any) {
     const resp = await fetch("http://localhost:8000/auth/user?email="
             + email);
     const res = await resp.json();
+    console.log(res);
     if (res.nickname)
     return {
         redirect : {

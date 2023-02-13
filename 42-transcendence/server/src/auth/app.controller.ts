@@ -11,7 +11,6 @@ export class AuthController {
 
     @Get('user')
     getUser(@Query() query: {email: string}):object {
-        console.log(query.email);
        return this.authServ.getUser(query.email);
     }
     
