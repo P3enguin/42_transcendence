@@ -97,9 +97,98 @@ a:link { text-decoration: none; }
 #intra-login-button:hover{
   background-color: #65688180;
 }
+/******************************* Login css ************************************/
 
 
-/* profile css */
+.login-form{
+  color :white;
+  font-size: 1.2rem;
+  font-weight: 500;
+  height: 400px;
+  max-width: 400px;
+  width:50%;
+  background-color: rgba(255,255,255,0.13);
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 40px rgba(8,7,16,0.6);
+  padding: 50px 35px 5px;
+}
+
+#nickname {
+  display: block;
+  height: 50px;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  border:none;
+  padding: 0 10px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.login-page-element-container {
+  display: flex;
+  flex-direction: column;
+  gap:5px;
+  margin-top: 15px;
+  padding: 10px;
+}
+.login-page-element-container #picture{
+  padding: 10px;
+  border : 1px solid black;
+  border-radius: 10px;
+}
+
+input[type=file]::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #084cdf;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+  background: #0d45a5;
+}
+
+.login-submit-button{
+  padding: 5px;
+  margin-top: 20px;
+  width: 100%;
+  background-color: #ffffff;
+  color: #080710;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#nickname.err.success{
+  border: 3px solid green;
+}
+/* to change latter */
+
+#nickname.err{
+  border:1.5px solid red;
+}
+
+.error {
+  font-size: 0.8em;
+  color : red;
+  font-weight: 100;
+}
+
+/******************************* profile css **********************************/
 
 .profile-page {
   display: grid;
@@ -135,7 +224,6 @@ a:link { text-decoration: none; }
     
     padding: 10px;
     border-radius: 15px;
-
     background: #D9D9D9;
     text-align: center;
     font-size: large;

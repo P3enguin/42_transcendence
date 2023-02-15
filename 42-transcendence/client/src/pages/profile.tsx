@@ -16,7 +16,6 @@ function playerProfile() {
         document.body.style.backgroundPosition = 'center center';
         document.body.style.backgroundAttachment = 'fixed';
         document.body.style.backgroundSize = 'cover';
-       
       });
 
     return ( <div className="profile-page" >

@@ -6,42 +6,79 @@ import { useEffect } from "react";
 import { getServerSession } from "next-auth/next"
 import { authOption } from '../pages/api/auth/[...nextauth]'
 
-
+function isBetween(length:number, min:number, max:number) :boolean {
+    if (length >= min && length <= max)
+      return true;
+    return false
+}
 
 async function handleSubmit(event:any,email:string) {
     event.preventDefault();
-    const data = {
-        nickname: event.target.nickname.value,
-        email: email,
-        // picture: event.target.picture.value,
-    }
-    const url:string = 'http://localhost:8000/auth/user'
-    const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-    }    
-    const response = await fetch(url, options);
-    const result = await response.json();
-    console.log(result);
 
-    if (!result.nickname)
-      return;
-    if (result.nickname)
+    const nickname = event.target.nickname.value;
+    const nicknameInput = document.getElementById("nickname");
+    const err = document.getElementsByClassName("error");
+  
+    err[0].innerHTML="";
+    if (!nickname || nickname.trim() === "")
+    {
+      err[0].innerHTML="Nickname should not be empty!";
+      nicknameInput!.classList.add("err");
+    }
+    else if (!isBetween(nickname.length,6,20))
+    {
+      err[0].innerHTML="Nickname must be 6-25 character long!";
+      nicknameInput!.classList.add("err");
+    }
+    else {
+      const data = {
+          nickname: nickname,
+          email: email,
+          // picture: event.target.picture.value,
+      }
+      const url:string = 'http://localhost:8000/auth/user'
+      const options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+      }    
+      const response = await fetch(url, options);
+      const result = await response.json();
+      console.log(result);
+  
+      if (!result.nickname)
+      {
+        err[0].innerHTML="Nickname already in use";
+        nicknameInput!.classList.add("err");
+        return;
+      }
+      if (result.nickname)
+      {
+        nicknameInput!.classList.add("success");
+        err[0].innerHTML="";
         Router.push('/profile');
+      }
+    }
+
 }
 
-function loginPage(props:any) {
+function loginPage(props:object) {
     
     const {data: session,status} = useSession();
 
     if (status ==="authenticated")
     {
         return (<div className="registration-container">
-                    <form onSubmit={(event)=>handleSubmit(event,session.user?.email!)}>
-                        <InputLabels _id="nickname" _labelValue="Enter a nickname" disabled={false} />
-                        <InputLabels _id="picture" _labelValue="Enter a picture" disabled={false} _type="file" />
-                        <button type="submit">Submit</button>
+                    <form className="login-form"onSubmit={(event)=>handleSubmit(event,session.user?.email!)}>
+                        <div className="login-page-element-container nick" id="nick">
+                          <InputLabels _id="nickname" _labelValue="Enter a nickname" disabled={false} />
+                          <div className="error"></div>
+                        </div>
+                        <div className="login-page-element-container pic">
+                          <InputLabels _id="picture" _labelValue="Enter a picture" disabled={false} _type="file" />
+                          <small></small>
+                        </div>
+                        <button className="login-submit-button" type="submit">Submit</button>
                     </form>
                 </div>
             );
