@@ -1,10 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Player } from '@prisma/client'
+import { JwtGuard } from 'src/auth/guard';
+import { PlayerService } from './player.service';
+import { GetPlayer } from 'src/auth/decorator';
 
-@Controller('player')
+
+@UseGuards(JwtGuard)
+@Controller('players')
 export class PlayerController {
 
+	constructor(private playerService: PlayerService) {}
+
 	@Get('me')
-	getMe() {
-		return 'i am a player';
+	getMe(@GetPlayer() player: Player) {
+		console.log({
+			player,
+		})
+		return player
 	}
 }

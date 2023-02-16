@@ -1,11 +1,10 @@
-                    -- CreateTable
+-- CreateTable
 CREATE TABLE "Player" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "avatar" TEXT,
     "joinAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "statusId" INTEGER NOT NULL,
 
     CONSTRAINT "Player_pkey" PRIMARY KEY ("id")
 );
@@ -57,6 +56,8 @@ CREATE TABLE "Titles" (
 -- CreateTable
 CREATE TABLE "Matchs" (
     "id" SERIAL NOT NULL,
+    "winner" INTEGER NOT NULL,
+    "loser" INTEGER NOT NULL,
     "scoor" TEXT NOT NULL,
     "playerAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -98,65 +99,11 @@ CREATE TABLE "Ban" (
     CONSTRAINT "Ban_pkey" PRIMARY KEY ("channelId")
 );
 
--- CreateTable
-CREATE TABLE "_friends" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_block" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_PlayerToRoom" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_MatchsToPlayer" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "Player_email_key" ON "Player"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Player_nickname_key" ON "Player"("nickname");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Player_statusId_key" ON "Player"("statusId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_friends_B_index" ON "_friends"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_block_AB_unique" ON "_block"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_block_B_index" ON "_block"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_PlayerToRoom_AB_unique" ON "_PlayerToRoom"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_PlayerToRoom_B_index" ON "_PlayerToRoom"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_MatchsToPlayer_AB_unique" ON "_MatchsToPlayer"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_MatchsToPlayer_B_index" ON "_MatchsToPlayer"("B");
-
--- AddForeignKey
-ALTER TABLE "Player" ADD CONSTRAINT "Player_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Achivement" ADD CONSTRAINT "Achivement_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -168,31 +115,13 @@ ALTER TABLE "Ranks" ADD CONSTRAINT "Ranks_statusId_fkey" FOREIGN KEY ("statusId"
 ALTER TABLE "Titles" ADD CONSTRAINT "Titles_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Matchs" ADD CONSTRAINT "Matchs_winner_fkey" FOREIGN KEY ("winner") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Matchs" ADD CONSTRAINT "Matchs_loser_fkey" FOREIGN KEY ("loser") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Chat" ADD CONSTRAINT "Chat_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Ban" ADD CONSTRAINT "Ban_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_friends" ADD CONSTRAINT "_friends_A_fkey" FOREIGN KEY ("A") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_friends" ADD CONSTRAINT "_friends_B_fkey" FOREIGN KEY ("B") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_block" ADD CONSTRAINT "_block_A_fkey" FOREIGN KEY ("A") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_block" ADD CONSTRAINT "_block_B_fkey" FOREIGN KEY ("B") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_A_fkey" FOREIGN KEY ("A") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_B_fkey" FOREIGN KEY ("B") REFERENCES "Room"("channelId") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_MatchsToPlayer" ADD CONSTRAINT "_MatchsToPlayer_A_fkey" FOREIGN KEY ("A") REFERENCES "Matchs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_MatchsToPlayer" ADD CONSTRAINT "_MatchsToPlayer_B_fkey" FOREIGN KEY ("B") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;

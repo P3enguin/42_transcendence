@@ -8,28 +8,30 @@ datasource db {
 }
 
 model Player {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  nickname String   @unique
-  avatar   String?
-  joinAt   DateTime @default(now())
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  nickname          String    @unique
+  avatar            String?
+  joinAt            DateTime  @default(now())
 
-  friends         Player[] @relation("friends") // <- Friend List
-  friendsRelation Player[] @relation("friends")
+  // friends           Player[]  @relation("friends") // <- Friend List
+  // friendsRelation   Player[]  @relation("friends")
 
-  block            Player[] @relation("block") // <- Blocked Friend
-  blockedsRelation Player[] @relation("block")
+  // block             Player[]  @relation("block") // <- Blocked Friend
+  // blockedsRelation  Player[]  @relation("block")
 
-  status   Status   @relation(fields: [statusId], references: [id])
-  statusId Int      @unique
-  matchs   Matchs[]
-  rooms    Room[]
-  
+  // status            Status    @relation(fields: [statusId], references: [id])
+  // statusId          Int       @unique
+
+  wins              Matchs[]  @relation(name: "wins")
+  loss              Matchs[]  @relation(name: "loss")
+
+  // rooms             Room[]
 }
 
 model Status {
   id     Int     @id @default(autoincrement())
-  player Player?
+  // player Player?
 
   level    Int     @default(0)
   IsOnline Boolean @default(false)
@@ -75,12 +77,15 @@ model Titles {
 }
 
 model Matchs {
-  id Int @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
 
-  player Player[]
+  winner    Int
+  winnerId  Player  @relation(fields: [winner], references: [id], name: "wins")
+  loser     Int
+  loserId   Player  @relation(fields: [loser], references: [id], name: "loss") 
 
-  scoor    String
-  playerAt DateTime @default(now())
+  scoor     String
+  playerAt  DateTime @default(now())
 }
 
 model Room {
@@ -95,7 +100,7 @@ model Room {
 
   adminId Int
 
-  member Player[]
+  // member Player[]
   chats  Chat[]
   bans   Ban[]
   avatar String   @default("#")
