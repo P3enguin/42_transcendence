@@ -9,8 +9,6 @@ function LoginContent() {
     //     console.log("hh");
     // }
     const session = useSession().data;
-    if (session)
-        console.log(`hh + {session.user}`);
     return (<div className = "home-login-content">
         <div className = "login-game">
             <p>here is the game simulation</p>
