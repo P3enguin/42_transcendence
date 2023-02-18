@@ -3,17 +3,22 @@ import type { AppProps } from 'next/app'
 import Layout from '@/components/Layout'
 import { SessionProvider } from "next-auth/react"
 import styles from '@/styles/Home.module.css'
+import { AppContext, AppInitialProps, AppLayoutProps } from 'next/app';
+import NextComponentType from "next"
+import { ReactNode } from 'react';
 
-export default function App({ Component, pageProps:{session, ...pageProps} }: AppProps) {
+
+
+const App: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
+  Component,
+  pageProps:{session, ...pageProps}
+}: AppLayoutProps) => {
+  const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
   return (
-    
     <SessionProvider session={session}>
-      {/* <Layout> */}
-      <div className="bg-gradient-to-r from-[#2C3B7C] to-[#0D1743] ">
-        <Component {...pageProps} />
-      </div>
-      {/* </Layout> */}
+      {getLayout(<Component {...pageProps} />)}
     </SessionProvider>
   )
+};
 
-}
+export default App;

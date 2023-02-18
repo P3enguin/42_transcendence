@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { ComponentType,useEffect } from "react";
-import { NextComponentType } from "next";
+import  NextComponentType  from "next";
 
 /* The  HOC technique is being used to protect the pages  */ 
 /* <P extends object> : generic type.

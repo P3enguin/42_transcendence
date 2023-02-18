@@ -5,11 +5,11 @@ interface Props {
     children: ReactNode;
   }
   
-function Layout({ children }: Props) {
+function NavBarLayout({ children }: Props) {
     return (<div className="content">
         <NavBar />
         {children}
     </div> );
 }
 
-export default Layout;
+export default NavBarLayout;
