@@ -4,6 +4,7 @@ import { Inter, Nabla } from '@next/font/google'
 import Layout from '@/components/Layout'
 import LoginContent from '@/components/login/LoginContent'
 import NavBarLayout from '@/components/Layout'
+import { AnimatePresence, motion ,AnimateSharedLayout} from 'framer-motion'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,17 +18,31 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+        
 
       <div className="relative pt-12 bg-blueGray-50">
           <div className="items-center flex flex-col-reverse justify-center xl:flex-row gap-10">
             <div className=" px-4 shrink-0">
-              <Image 
-                src="/game.png"
-                alt='game'
-                width={700}
-                height={600}
-              />
+            <AnimateSharedLayout>
+                <AnimatePresence>
+                  <motion.div 
+                    key="img"
+                    layoutId='test'
+                    initial={{y:300,rotate:90}}
+                    animate={{y:0,rotate:0}}
+                    transition={{ type: "spring", stiffness: 50}}
+                    exit={{opacity:0}}>
+                    <Image 
+                      src="/game.png"
+                      alt='game'
+                      width={700}
+                      height={600}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </AnimateSharedLayout>
+            
+
             </div>
 
             <div className="text-center xl:text-left">

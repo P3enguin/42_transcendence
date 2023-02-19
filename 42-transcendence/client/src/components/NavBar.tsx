@@ -7,9 +7,9 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 
-  function classNames(...classes:any) {
-    return classes.filter(Boolean).join(' ')
-  }
+function classNames(...classes:any) {
+  return classes.filter(Boolean).join(' ')
+}
 
 
 export default function NavBar() {
@@ -65,7 +65,6 @@ export default function NavBar() {
                           router.pathname === item.href ? ' text-[#0097E2]' : 'text-white hover:text-[#656565] ease-in duration-200',
                           'px-3 py-2 rounded-md text-md font-bold'
                         )}
-                        
                       >
                         {item.name}
                       </Link>
