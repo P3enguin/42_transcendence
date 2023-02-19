@@ -7,8 +7,6 @@ import { authOption
  } from "./api/auth/[...nextauth]";
 function playerProfile() {
 
-    /* changing the background, This one should be a 
-    variable and get updated aftet the user logs in  */
 
     useEffect(() => {
         document.body.style.background = 'url("/wallpaperflare1.jpg")'

@@ -14,10 +14,12 @@ const App: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   Component,
   pageProps:{session, ...pageProps}
 }: AppLayoutProps) => {
-  const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
+  // const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
   return (
     <SessionProvider session={session}>
-      {getLayout(<Component {...pageProps} />)}
+      {/* {getLayout( */}
+      <Component {...pageProps} />
+      {/* )} */}
     </SessionProvider>
   )
 };

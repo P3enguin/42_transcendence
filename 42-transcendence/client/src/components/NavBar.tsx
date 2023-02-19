@@ -7,9 +7,9 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 
-function classNames(...classes:any) {
-  return classes.filter(Boolean).join(' ')
-}
+  function classNames(...classes:any) {
+    return classes.filter(Boolean).join(' ')
+  }
 
 
 export default function NavBar() {
