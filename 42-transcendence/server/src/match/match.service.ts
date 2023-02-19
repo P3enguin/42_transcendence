@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { match } from 'assert';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MatchDto } from './dto/match.dto';
 
@@ -8,10 +9,7 @@ export class MatchService {
 	constructor(private prisma: PrismaService) {}
 
 	async saveGame(dto: MatchDto) {
-		console.log({
-			"saving ":
-			dto,
-		})
+
 		try{
 			const match = await this.prisma.matchs.create({
 				data: {
@@ -33,20 +31,24 @@ export class MatchService {
 			}
 			throw error;
 		  }
-		return 'Saved successfully !'
+		  console.log({
+			"=> " :
+			match,
+		  })
+		return match;
 	}
 
-	async loadGame(playerId: number) {
-		console.log({
-			"loading player ": playerId,
-		})
-		const matchs = await this.prisma.matchs.findMany({
-			where: {OR: [{winner: playerId},{loser: playerId}]}
-		});
-		console.log({
-			"match " :
-			matchs,
-		})
-		return matchs;
+	async loadGame(email: string) {
+		const player = await this.prisma.player.findUnique({
+			where: {
+				email
+			},
+			include: {
+				wins: true,
+				loss: true,
+			}
+		   });
+		let matchs = player.loss.concat(player.wins);
+		return matchs.sort((a, b) => a.id - b.id);
 	}
 }

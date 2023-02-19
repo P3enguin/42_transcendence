@@ -1,4 +1,4 @@
-import { IsNotEmpty, Contains, IsDate } from 'class-validator'
+import { IsNotEmpty, Contains, IsDate, IsNumber, IsSemVer, IsString } from 'class-validator'
 
 export class MatchDto {
 
@@ -7,10 +7,9 @@ export class MatchDto {
 	
 	@IsNotEmpty()
 	loser: number;
-
-	// @Contains(" - ")
+	
+	@IsString()
 	@IsNotEmpty()
 	scoor: string;
-	
-	// @IsNotEmpty()
+
 }

@@ -12,9 +12,6 @@ export class PlayerController {
 
 	@Get('me')
 	getMe(@GetPlayer() player: Player) {
-		console.log({
-			player,
-		})
 		return player
 	}
 }
