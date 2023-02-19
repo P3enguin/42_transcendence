@@ -18,56 +18,34 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <div className="flex items-center  flex-wrap justify-center sm:justify-start">
-      <Image 
-            src="/game.png"
-            alt='game'
-            width={800}
-            height={600}
-          />
-      <div className="ml-4 sm:ml-8 text-center sm:text-left">
-        <h2 className="text-2xl font-bold">Pognitor</h2>
-        <p className="text-gray-500 mt-2">Your text description goes here.</p>
-      </div>
-    </div> */}
 
-        <div className="relative pt-12 bg-blueGray-50">
-        <div className="items-center flex flex-wrap justify-center">
-          <div className=" px-4">
-          <Image 
-            src="/game.png"
-            alt='game'
-            width={500}
-            height={600}
-          />
-          </div>
-          <div className="mt-4 sm:ml-8 text-center sm:text-left ">
-              <h3 className="text-2xl font-bold text-white">Ponigator</h3>
-              <p className="mt-4 text-lg leading-relaxed text-white ">
+      <div className="relative pt-12 bg-blueGray-50">
+          <div className="items-center flex flex-col-reverse justify-center xl:flex-row gap-10">
+            <div className=" px-4 shrink-0">
+              <Image 
+                src="/game.png"
+                alt='game'
+                width={700}
+                height={600}
+              />
+            </div>
+
+            <div className="text-center xl:text-left">
+              <h3 className="text-3xl font-bold xl:text-4xl text-white mb-1 md:mb-10">Ponigator</h3>
+              <p className="mt-4 text-xl xl:text-4xl md:text-3xl leading-relaxed mb-1 md:mb-10 break-words text-white ">
                   The Ultimate Exprerience For The Mighty Ping Context!
               </p>
               <div className='pt-5'>
-                <button className=" uppercase mx-auto shadow
-                bg-[#0097E2] hover:bg-indigo-700 focus:shadow-outline 
-                focus:outline-none text-white text-s font-bold py-2 px-12 rounded-full">JOIN NOW</button>
+                <button className=" uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] transform transition duration-300 
+                  hover:text-l hover:scale-110  text-white text-s hover:text-l 
+                  font-bold py-2 px-12 rounded-full">
+                  JOIN NOW
+                </button>
               </div>
-
+            </div>
           </div>
-        </div>
-        </div>
+      </div>
 
-        {/* <div classNameNameName="flex items-center justify-center h-screen flex-wrap">
-          <Image 
-            src="/game.png"
-            alt='game'
-            width={800}
-            height={600}
-          />
-          <div classNameNameName="">
-            <p>Ponigator</p>
-            <p>The Ultimate Exprerience For The Mighty Ping Context!</p>
-          </div>
-        </div> */}
     </>
   ) 
 }

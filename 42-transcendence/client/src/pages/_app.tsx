@@ -6,6 +6,7 @@ import styles from '@/styles/Home.module.css'
 import { AppContext, AppInitialProps, AppLayoutProps } from 'next/app';
 import NextComponentType from "next"
 import { ReactNode } from 'react';
+import { AnimatePresence } from 'framer-motion'
 
 
 
