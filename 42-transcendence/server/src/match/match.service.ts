@@ -37,10 +37,11 @@ export class MatchService {
 	}
 
 	async loadGame(playerId: number) {
+		console.log({
+			"loading player ": playerId,
+		})
 		const matchs = await this.prisma.matchs.findMany({
-			where: {
-
-			},
+			where: {OR: [{winner: playerId},{loser: playerId}]}
 		});
 		console.log({
 			"match " :
