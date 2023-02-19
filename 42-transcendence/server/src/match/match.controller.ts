@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { GetPlayer } from 'src/auth/decorator';
 import { MatchDto } from './dto/match.dto';
 import { MatchService } from './match.service';
 
@@ -7,14 +8,11 @@ import { MatchService } from './match.service';
 export class MatchController {
 	constructor (private matchservice: MatchService) {}
 
-	@Get('loadGame')
-	loadGames() {
-		return this.matchservice.loadGame();
-	}
-
 	@Get()
-	loadGameById() {
-		return this.matchservice.loadGamebyId();
+	loadGames(@GetPlayer() playerId: number) {
+		return this.matchservice.loadGame(
+			playerId,
+		);
 	}
 
 	@Post('saveGame')

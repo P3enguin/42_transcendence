@@ -1,15 +1,16 @@
 import { IsNotEmpty, Contains, IsDate } from 'class-validator'
 
 export class MatchDto {
-	// @IsNotEmpty()
 
-	players: string[2][];
+	@IsNotEmpty()
+	winner: number;
+	
+	@IsNotEmpty()
+	loser: number;
 
-	// @IsNotEmpty()
 	// @Contains(" - ")
+	@IsNotEmpty()
 	scoor: string;
 	
 	// @IsNotEmpty()
-	// @IsDate()
-	playerAt: Date;
 }

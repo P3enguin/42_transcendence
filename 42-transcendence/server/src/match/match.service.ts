@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MatchDto } from './dto/match.dto';
 
@@ -6,17 +7,45 @@ import { MatchDto } from './dto/match.dto';
 export class MatchService {
 	constructor(private prisma: PrismaService) {}
 
-	saveGame(dto: MatchDto) {
-		// Add Game : 
-		return 'saving Game . . '
+	async saveGame(dto: MatchDto) {
+		console.log({
+			"saving ":
+			dto,
+		})
+		try{
+			const match = await this.prisma.matchs.create({
+				data: {
+					winner: dto.winner,
+					loser: dto.loser,
+					scoor: dto.scoor,
+				},
+			});
+		}catch (error) {
+			if (
+			  error instanceof
+			  PrismaClientKnownRequestError
+			) {
+			  if (error.code === 'P2002') {
+				throw new ForbiddenException(
+				  'Credentials taken',
+				);
+			  }
+			}
+			throw error;
+		  }
+		return 'Saved successfully !'
 	}
 
-	loadGame() {
-		// Matches List
-		return 'Loading Games . . .'
-	}
+	async loadGame(playerId: number) {
+		const matchs = await this.prisma.matchs.findMany({
+			where: {
 
-	loadGamebyId() {
-		return 'loading a single Game . . .'
+			},
+		});
+		console.log({
+			"match " :
+			matchs,
+		})
+		return matchs;
 	}
 }

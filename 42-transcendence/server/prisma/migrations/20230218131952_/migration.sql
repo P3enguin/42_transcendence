@@ -12,6 +12,7 @@ CREATE TABLE "Player" (
 -- CreateTable
 CREATE TABLE "Status" (
     "id" SERIAL NOT NULL,
+    "playerId" INTEGER NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 0,
     "IsOnline" BOOLEAN NOT NULL DEFAULT false,
 
@@ -99,11 +100,53 @@ CREATE TABLE "Ban" (
     CONSTRAINT "Ban_pkey" PRIMARY KEY ("channelId")
 );
 
+-- CreateTable
+CREATE TABLE "_friends" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_block" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_PlayerToRoom" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Player_email_key" ON "Player"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Player_nickname_key" ON "Player"("nickname");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Status_playerId_key" ON "Status"("playerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_friends_B_index" ON "_friends"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_block_AB_unique" ON "_block"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_block_B_index" ON "_block"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_PlayerToRoom_AB_unique" ON "_PlayerToRoom"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_PlayerToRoom_B_index" ON "_PlayerToRoom"("B");
+
+-- AddForeignKey
+ALTER TABLE "Status" ADD CONSTRAINT "Status_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Achivement" ADD CONSTRAINT "Achivement_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -125,3 +168,21 @@ ALTER TABLE "Chat" ADD CONSTRAINT "Chat_roomId_fkey" FOREIGN KEY ("roomId") REFE
 
 -- AddForeignKey
 ALTER TABLE "Ban" ADD CONSTRAINT "Ban_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_friends" ADD CONSTRAINT "_friends_A_fkey" FOREIGN KEY ("A") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_friends" ADD CONSTRAINT "_friends_B_fkey" FOREIGN KEY ("B") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_block" ADD CONSTRAINT "_block_A_fkey" FOREIGN KEY ("A") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_block" ADD CONSTRAINT "_block_B_fkey" FOREIGN KEY ("B") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_A_fkey" FOREIGN KEY ("A") REFERENCES "Player"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_B_fkey" FOREIGN KEY ("B") REFERENCES "Room"("channelId") ON DELETE CASCADE ON UPDATE CASCADE;

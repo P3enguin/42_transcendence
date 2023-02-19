@@ -4,7 +4,6 @@ import { JwtGuard } from 'src/auth/guard';
 import { PlayerService } from './player.service';
 import { GetPlayer } from 'src/auth/decorator';
 
-
 @UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
