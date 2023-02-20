@@ -9,6 +9,8 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Router, { useRouter } from 'next/router'
 import { useState } from 'react'
+import HomeTextComponent from '@/components/home/homeTextComp'
+import LoginComponent from '@/components/home/LoginHomeComp'
 const inter = Inter({ subsets: ['latin'] })
 
 
@@ -18,11 +20,6 @@ function classNames(...classes:any) {
 }
 
 
-const variants = {
-  visible: { opacity: 1 },
-  hidden: { opacity: 0 },
-}
-
 export default function Home() {
   const router = useRouter();
 
@@ -30,12 +27,14 @@ export default function Home() {
     { name: 'Home', current: true,animation:{rotate:0}},
     { name: 'About', current: false,animation:{rotate:-90}},
     { name: 'Contact', current: false,animation:{rotate:0}},
-    // { name: 'Join', current: false,animation:{rotate:0}},
   ]);
+
   const [animate,setAnimation] = useState({rotate:0});
+  const [join,setJoin] = useState(false);
 
   function handleClick(e:any,index:number) {
     e.preventDefault();
+    setJoin(false);
     const updatedState = state.map((item,i) =>{
       if (i == index)
       {
@@ -47,6 +46,15 @@ export default function Home() {
       return item;
     })
     setState(updatedState);
+  }
+
+  function handleJoin(e:any){
+    const updatedState = state.map((item,i) =>{
+        item.current=false;
+        return item;
+    })
+    setState(updatedState);
+    setJoin(true);
   }
 
   function getImageStyle() {
@@ -151,11 +159,12 @@ export default function Home() {
       </Disclosure>
 
       <AnimateSharedLayout>
-  
         <div className="relative pt-12">
             <div className={` items-center flex  xl:flex-row gap-12
                     ${state[1].current ? "flex-row" : "flex-col-reverse"}
-                    ${state[2].current ? "justify-end" : "justify-center"}`}>
+                    ${state[2].current ? "justify-end" : "justify-center"} 
+                    ${join ? "flex-row-reverse" : "flex-row" }` }
+                    >
                     <motion.div 
                       key="img"
                       layoutId='test'
@@ -172,33 +181,8 @@ export default function Home() {
                           />
                       </div>
                     </motion.div>
-
-              { state[0].current && 
-         
-                  <div className="text-center xl:text-left w-auto xl:w-1/4 css ">
-                  <motion.div variants={variants}
-                    key="text1"
-                    initial={{opacity:0}}
-                    animate={{opacity:1}}
-                    exit={{opacity:0}} >
-                    
-                      <h3 className="text-3xl xl:text-6xl text-white mb-1 md:mb-10 sh">Ponigator</h3>
-                      <p className="mt-4 text-xl xl:text-4xl md:text-3xl leading-relaxed mb-1 md:mb-10  text-white ">
-                          The Ultimate Exprerience 
-                          For The Mighty Ping Context!
-                      </p>
-                      <div className='pt-5'>
-                        <button className="uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
-                        transform transition duration-300 
-                          hover:text-l hover:scale-110  text-white text-s hover:text-l 
-                          font-bold py-2 px-12 rounded-full">
-                          JOIN NOW
-                        </button>
-                      </div>
-                  </motion.div>
-                  </div>
-                
-                }
+              { state[0].current && <HomeTextComponent handleJoin={handleJoin}/> }
+              { join && <LoginComponent />}
             </div>
           </div>
       </AnimateSharedLayout>
