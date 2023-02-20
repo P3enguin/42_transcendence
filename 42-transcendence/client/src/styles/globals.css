@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,7 +8,20 @@
 html {
   background: rgb(44,59,124);
   background: linear-gradient(90deg, rgba(44,59,124,1) 0%, rgba(13,23,67,1) 100%);
+  font-family: 'Outfit'
+}
+.sh{
+  text-shadow: 2px 2px 2px black;
+
+}
+.css{
+  margin-bottom:300px;
 }
 
+@media screen and (max-width: 1279px){
+  .css{
+    margin-bottom:0;
+  }
+}
 
 /******************************* profile css **********************************/

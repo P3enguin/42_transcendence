@@ -10,34 +10,52 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Router, { useRouter } from 'next/router'
 import { useState } from 'react'
 const inter = Inter({ subsets: ['latin'] })
+
+
+
 function classNames(...classes:any) {
   return classes.filter(Boolean).join(' ')
+}
+
+
+const variants = {
+  visible: { opacity: 1 },
+  hidden: { opacity: 0 },
 }
 
 export default function Home() {
   const router = useRouter();
 
   const [state,setState] = useState([
-    { name: 'Home', current: true},
-    { name: 'About', current: false},
-    { name: 'Contact', current: false},
+    { name: 'Home', current: true,animation:{rotate:0}},
+    { name: 'About', current: false,animation:{rotate:-90}},
+    { name: 'Contact', current: false,animation:{rotate:0}},
+    // { name: 'Join', current: false,animation:{rotate:0}},
   ]);
-  // const navigation = [
-  //   { name: 'Home', current: true},
-  //   { name: 'About', current: false},
-  //   { name: 'Contact', current: false},
-  // ]
+  const [animate,setAnimation] = useState({rotate:0});
 
   function handleClick(e:any,index:number) {
     e.preventDefault();
     const updatedState = state.map((item,i) =>{
       if (i == index)
+      {
         item.current=true;
+        setAnimation(item.animation);
+      }
       else
         item.current=false;
       return item;
     })
     setState(updatedState);
+  }
+
+  function getImageStyle() {
+      if (state[0].current)
+        return ("px-4 shrink-0")
+      else if (state[1].current)
+        return ("w-3/5 md:max-xl:w-4/6 xl:w-full")
+      else
+        return "px-4 shrink-0";
   }
 
   return (
@@ -122,7 +140,6 @@ export default function Home() {
                             item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                             'block px-3 py-2 rounded-md text-base font-medium'
                           )}
-
                       >
                       {item.name}
                     </button>
@@ -131,98 +148,59 @@ export default function Home() {
           </Disclosure.Panel>
         </>
       )}
-    </Disclosure>
-<AnimateSharedLayout>
-       {state[0].current && <div className="relative pt-12 bg-blueGray-50">
-          <div className="items-center flex flex-col-reverse justify-center xl:flex-row gap-10">
-            <div className=" px-4 shrink-0">
-            
-                {/* <AnimatePresence> */}
-                  <motion.div 
-                    key="img"
-                    layoutId='test'
-                    initial={true}
-                    animate={{y:0,rotate:0}}
-                    transition={{ type: "Tween"}}
-                    exit={{opacity:0}}>
-                    <Image 
-                      src="/game.png"
-                      alt='game'
-                      width={700}
-                      height={600}
-                    />
-                  </motion.div>
-                {/* </AnimatePresence> */}
-              
-            </div>
-            <div className="text-center xl:text-left">
-              <h3 className="text-3xl font-bold xl:text-4xl text-white mb-1 md:mb-10">Ponigator</h3>
-              <p className="mt-4 text-xl xl:text-4xl md:text-3xl leading-relaxed mb-1 md:mb-10 break-words text-white ">
-                  The Ultimate Exprerience For The Mighty Ping Context!
-              </p>
-              <div className='pt-5'>
-                <button className=" uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] transform transition duration-300 
-                  hover:text-l hover:scale-110  text-white text-s hover:text-l 
-                  font-bold py-2 px-12 rounded-full">
-                  JOIN NOW
-                </button>
-              </div>
-            </div>
-          </div>
-      </div>}
-        {state[1].current &&  
-              <div className="relative  bg-blueGray-50">
-              <div className="items-center flex flex-row  justify-center  gap-10">
-                
-        
-                        {/* <AnimatePresence> */}
+      </Disclosure>
+
+      <AnimateSharedLayout>
+  
+        <div className="relative pt-12">
+            <div className={` items-center flex  xl:flex-row gap-12
+                    ${state[1].current ? "flex-row" : "flex-col-reverse"}
+                    ${state[2].current ? "justify-end" : "justify-center"}`}>
                     <motion.div 
                       key="img"
                       layoutId='test'
                       initial={true}
-                      animate={{rotate:-90}}
+                      animate={animate}
                       transition={{ type: "Tween"}}
                       exit={{opacity:0}}>
-                      <div className='w-3/5 sm:max-xl:w-4/5 xl:w-full'>
+                      <div className={getImageStyle()}>
                         <Image 
                           src="/game.png"
                           alt='game'
-                          width={800}
-                          height={800}
-                        />
+                          width={700}
+                          height={700}
+                          />
                       </div>
                     </motion.div>
-                  {/* </AnimatePresence> */}
-                  
-          
-               
-                <div className="text-center xl:text-left">
-              
-                </div>
-              </div>
-          </div>
-            // <div className=" flex flex-row">
-                // {/* <AnimatePresence> */}
-                //   <motion.div 
-                //     key="img"
-                //     layoutId='test'
-                //     initial={true}
-                //     animate={{x:300,y:0,rotate:-90}}
-                //     transition={{ type: "spring", stiffness: 50}}
-                //     exit={{opacity:0}}>
-                //     <div className=''>
 
-                //       <Image 
-                //         src="/game.png"
-                //         alt='game'
-                //         width={700}
-                //         height={600}
-                //       />
-                //     </div>
-                //   </motion.div>
-                // {/* </AnimatePresence> */}
-            // </div>
-          }
+              { state[0].current && 
+         
+                  <div className="text-center xl:text-left w-auto xl:w-1/4 css ">
+                  <motion.div variants={variants}
+                    key="text1"
+                    initial={{opacity:0}}
+                    animate={{opacity:1}}
+                    exit={{opacity:0}} >
+                    
+                      <h3 className="text-3xl xl:text-6xl text-white mb-1 md:mb-10 sh">Ponigator</h3>
+                      <p className="mt-4 text-xl xl:text-4xl md:text-3xl leading-relaxed mb-1 md:mb-10  text-white ">
+                          The Ultimate Exprerience 
+                          For The Mighty Ping Context!
+                      </p>
+                      <div className='pt-5'>
+                        <button className="uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
+                        transform transition duration-300 
+                          hover:text-l hover:scale-110  text-white text-s hover:text-l 
+                          font-bold py-2 px-12 rounded-full">
+                          JOIN NOW
+                        </button>
+                      </div>
+                  </motion.div>
+                  </div>
+                
+                }
+            </div>
+          </div>
       </AnimateSharedLayout>
     </>
   ) 
