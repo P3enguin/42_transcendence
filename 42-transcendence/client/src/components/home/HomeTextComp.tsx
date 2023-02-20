@@ -22,7 +22,7 @@ function HomeTextComponent({handleJoin}:any) {
                       </p>
                       <div className='pt-5'>
                         
-                        <motion.div key="buttonSign1" layoutId='button'  initial={false}  transition={{type: "spring", stiffness: 100 }}>
+                        <motion.div key="buttonSign1" layoutId='button'  initial={false}  transition={{type: "Tween"}}>
                             <button onClick={handleJoin} className="uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
                             transform transition duration-300 
                             hover:text-l hover:scale-110  text-white text-s hover:text-l 

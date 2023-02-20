@@ -160,10 +160,10 @@ export default function Home() {
 
       <AnimateSharedLayout>
         <div className="relative pt-12">
-            <div className={` items-center flex  xl:flex-row gap-12
-                    ${state[1].current ? "flex-row" : "flex-col-reverse"}
+            <div className={` items-center flex   gap-12
+                    ${state[1].current ? "xl:flex-row" : "flex-col-reverse"}
                     ${state[2].current ? "justify-end" : "justify-center"} 
-                    ${join ? "flex-row-reverse" : "flex-row" }` }
+                    ${join ? "xl:flex-row-reverse" : "xl:flex-row" }` }
                     >
                     <motion.div 
                       key="img"
