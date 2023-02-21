@@ -9,7 +9,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Router, { useRouter } from 'next/router'
 import { useState } from 'react'
-import HomeTextComponent from '@/components/home/homeTextComp'
+import HomeTextComponent from '@/components/home/HomeTextComp'
 import LoginComponent from '@/components/home/LoginHomeComp'
 const inter = Inter({ subsets: ['latin'] })
 
@@ -162,7 +162,7 @@ export default function Home() {
         <div className="relative pt-12">
             <div className={` items-center flex   gap-12
                     ${state[1].current ? "xl:flex-row" : "flex-col-reverse"}
-                    ${state[2].current ? "justify-end" : "justify-center"} 
+                    ${state[2].current ? "justify-end mr-12" : "justify-center"} 
                     ${join ? "xl:flex-row-reverse" : "xl:flex-row" }` }
                     >
                     <motion.div 
