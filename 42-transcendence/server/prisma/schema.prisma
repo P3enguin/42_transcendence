@@ -20,7 +20,8 @@ model Player {
   block             Player[]  @relation("block") // <- Blocked Friend
   blockedsRelation  Player[]  @relation("block")
 
-  status            Status?
+  statusId          Int       @unique()
+  status            Status    @relation(fields: [statusId], references: [id])
 
   wins              Matchs[]  @relation(name: "wins")
   loss              Matchs[]  @relation(name: "loss")
@@ -31,11 +32,9 @@ model Player {
 model Status {
   id          Int     @id @default(autoincrement())
 
-  playerId    Int @unique()
-  player      Player @relation(fields: [playerId], references: [id])
+  player    Player?  
 
   level       Int     @default(0)
-  IsOnline    Boolean @default(false)
 
   achivement  Achivement[]
   title       Titles[]
@@ -49,7 +48,8 @@ model Achivement {
   status      Status @relation(fields: [statusId], references: [id])
 
   name        String
-  requirement String // <-- ******************************** --> \\
+  icon        String
+  requirement String
   description String
   effect      String
 }

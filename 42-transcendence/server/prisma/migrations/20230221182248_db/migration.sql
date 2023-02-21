@@ -5,6 +5,7 @@ CREATE TABLE "Player" (
     "nickname" TEXT NOT NULL,
     "avatar" TEXT,
     "joinAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "statusId" INTEGER NOT NULL,
 
     CONSTRAINT "Player_pkey" PRIMARY KEY ("id")
 );
@@ -12,9 +13,7 @@ CREATE TABLE "Player" (
 -- CreateTable
 CREATE TABLE "Status" (
     "id" SERIAL NOT NULL,
-    "playerId" INTEGER NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 0,
-    "IsOnline" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Status_pkey" PRIMARY KEY ("id")
 );
@@ -24,6 +23,7 @@ CREATE TABLE "Achivement" (
     "id" SERIAL NOT NULL,
     "statusId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
+    "icon" TEXT NOT NULL,
     "requirement" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "effect" TEXT NOT NULL,
@@ -125,7 +125,7 @@ CREATE UNIQUE INDEX "Player_email_key" ON "Player"("email");
 CREATE UNIQUE INDEX "Player_nickname_key" ON "Player"("nickname");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Status_playerId_key" ON "Status"("playerId");
+CREATE UNIQUE INDEX "Player_statusId_key" ON "Player"("statusId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
@@ -146,7 +146,7 @@ CREATE UNIQUE INDEX "_PlayerToRoom_AB_unique" ON "_PlayerToRoom"("A", "B");
 CREATE INDEX "_PlayerToRoom_B_index" ON "_PlayerToRoom"("B");
 
 -- AddForeignKey
-ALTER TABLE "Status" ADD CONSTRAINT "Status_playerId_fkey" FOREIGN KEY ("playerId") REFERENCES "Player"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Player" ADD CONSTRAINT "Player_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Achivement" ADD CONSTRAINT "Achivement_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

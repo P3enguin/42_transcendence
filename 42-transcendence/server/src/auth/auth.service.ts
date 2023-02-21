@@ -16,12 +16,18 @@ export class AuthService {
     private config: ConfigService,
   ) {}
 
+  
   async signup(dto: AuthDto) {
     try {
       const player = await this.prisma.player.create({
         data: {
           email: dto.email,
           nickname: dto.nickname,
+          status:  {
+            create: {
+              
+            }
+          }
         },
       });
 
@@ -30,16 +36,17 @@ export class AuthService {
       if (
         error instanceof
         PrismaClientKnownRequestError
-      ) {
-        if (error.code === 'P2002') {
-          throw new ForbiddenException(
-            'Credentials taken',
-          );
+        ) {
+          if (error.code === 'P2002') {
+            throw new ForbiddenException(
+              'Credentials taken',
+              );
+            }
+          }
+          throw error;
         }
       }
-      throw error;
-    }
-  }
+
 
   async signin(dto: AuthDto) {
     const player =

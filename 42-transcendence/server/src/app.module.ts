@@ -8,6 +8,7 @@ import { MatchModule } from './match/match.module';
 
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { StatusModule } from './status/status.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AppController } from './app.controller';
     PlayerModule,
     MatchModule,
     PrismaModule,
+    StatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],
