@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
+import {PencilSquareIcon} from  '@heroicons/react/24/outline'
+import { Disclosure } from '@headlessui/react'
 
 function UpdateProfile() {
     return (<div className="border-2 border-gray-300 p-12  rounded-md w-1/2 mg-top"> 
@@ -10,7 +12,9 @@ function UpdateProfile() {
                         <Image src="/pfp1.png" alt="pfp" className="pfp -mt-10 pt-3" width={100} height={100}/>
                     </div>
                 </label>
-                <input id="pfp" type="file" />
+                <button className="bg-black">
+                    <input className="hidden cursor-pointer" id="pfp" type="file" />
+                </button>
             </div>
             <svg style={{visibility: "hidden",position:"absolute"}} width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
             <defs>

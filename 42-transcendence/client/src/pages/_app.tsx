@@ -9,7 +9,6 @@ import { ReactNode } from 'react';
 import { AnimatePresence } from 'framer-motion'
 
 
-
 const App: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   Component,
   pageProps:{session, ...pageProps}
