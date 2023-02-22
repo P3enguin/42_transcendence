@@ -9,11 +9,11 @@ function LoginComponent() {
     const [text,changeText]=useState([{text:"Sign In",status:true},
                                   {text:"gg",status:false}]);
 
-    return (<div className="w-2/3 xl:w-1/3 md:max-xl:w-1/2 flex flex-col text-base md:text-2xl">
+    return (<div className="w-2/3 xl:w-1/3 md:max-xl:w-1/2 flex flex-col text-base md:text-2xl ">
         <motion.div key="login" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} 
             className="">
             <div className="text-white flex flex-col items-center gap-5 ">
-                <p >CONTINUE WITH</p>
+                <p>CONTINUE WITH</p>
                 <div className="flex flex-row gap-5">
                     <motion.button whileHover={{scale: 1.5}} 
                         className={`border border-white rounded-full bg-white p-1 flex flex-row `}
@@ -33,40 +33,38 @@ function LoginComponent() {
                         <Image src="/42_Logo 1.png" alt="42Logo" width={22} height={22}></Image>
                         {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
                     </motion.button>
-                   
                 </div>
-               
                 <div className="w-2/4 py-5 self-center">
                         <div className="border border-white"> </div>
                 </div>
                 <p>OR</p>
             </div>
-            <form className="flex flex-col items-center">
+            <form className="flex flex-col items-center mt-3 gap-3">
                 <div className="relative z-0 w-3/4 mb-6 group">
                     <input type="input" name="username" id="username" 
-                    className="block py-2.5 px-0 w-full text-sm text-white bg-transparent 
-                    border-0 border-b-2 border-gray-300 appearance-none dark:text-white
-                     dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none 
-                     focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    border-2 rounded-full border-gray-300 appearance-none 
+                      focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                      
                      <label htmlFor="username" className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 
-                     scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-                      peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-75 peer-focus:-translate-y-6">Username</label>
+                     text-gray-500 pl-3 duration-300 transform -translate-y-8
+                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
+                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
+                      peer-focus:scale-100 peer-focus:-translate-y-8 ">Username</label>
                 </div>
                 <div className="relative z-0 w-3/4 mb-6 group">
                     <input type="password" name="password" id="password" 
-                    className="block py-2.5 px-0 w-full text-sm text-white bg-transparent 
-                    border-0 border-b-2 border-gray-300 appearance-none dark:text-white
-                     dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none
-                      focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    border-2 rounded-full border-gray-300 appearance-none 
+                      focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                     <label htmlFor="password" className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 dark:text-gray-400 duration-300 transform 
-                     -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0
-                      peer-focus:text-blue-600 peer-focus:dark:text-blue-500
+                     text-gray-500 px-3 duration-300 transform 
+                     -translate-y-8 scale-100 top-3 -z-10 origin-[0] peer-focus:left-0
+                      peer-focus:text-blue-600 
                        peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                       peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                       peer-focus:scale-100 peer-focus:-translate-y-8">Password</label>
                 </div>
+                  
                     <motion.div key="buttonSign" layout={false} layoutId='button'  initial={false} transition={{type: "Tween" }}
                         className="self-center  w-3/4" >
                         <button className="uppercase w-full  shadow bg-[#0097E2] hover:bg-[#2C3B7C] 

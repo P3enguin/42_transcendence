@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import NavBar from './NavBar';
+import NavBar from './home/NavBar';
 import { motion } from 'framer-motion';
 interface Props {
     children: ReactNode;
