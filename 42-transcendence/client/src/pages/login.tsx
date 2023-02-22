@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { getServerSession } from "next-auth/next"
 import { authOption } from '../pages/api/auth/[...nextauth]'
+import UpdateProfile from "@/components/profile/UpdateProfileComp";
 
 // function isBetween(length:number, min:number, max:number) :boolean {
 //     if (length >= min && length <= max)
@@ -63,6 +64,12 @@ import { authOption } from '../pages/api/auth/[...nextauth]'
 
 function loginPage(props:object) {
     
+      return (
+        <div className="grid h-screen place-items-center items-start ">
+            <UpdateProfile/>
+        </div>
+
+      )
     // const {data: session,status} = useSession();
 
     // if (status ==="authenticated")
