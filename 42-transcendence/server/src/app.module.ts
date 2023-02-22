@@ -9,12 +9,14 @@ import { MatchModule } from './match/match.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { StatusModule } from './status/status.module';
+import { AchivementModule } from './achivement/achivement.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    AchivementModule,
     AuthModule,
     PlayerModule,
     MatchModule,

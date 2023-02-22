@@ -16,6 +16,9 @@ export class StatusController {
 
 	@Get('my_status')
 	loadStatus(@GetPlayer() player: Player) {
-		return "player's Status . . ."
+		console.log({
+			player,
+		});
+		return "status  :";
 	}
 }

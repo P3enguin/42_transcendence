@@ -44,21 +44,21 @@ model Status {
 model Achivement {
   id          Int @id @default(autoincrement())
 
-  statusId    Int
-  status      Status @relation(fields: [statusId], references: [id])
+  status      Status[]
 
   name        String
   icon        String
-  requirement String
+  requirement String?
   description String
   effect      String
+  locked      Boolean @default(true)
+  progress    Int @default(0)
 }
 
 model Ranks {
   id        Int @id @default(autoincrement())
 
-  statusId  Int
-  status    Status @relation(fields: [statusId], references: [id])
+  status    Status[]
 
   name      String
   points    Int
@@ -68,13 +68,13 @@ model Ranks {
 model Titles {
   id Int @id @default(autoincrement())
 
-  statusId Int
-  status   Status @relation(fields: [statusId], references: [id])
+  status   Status[]
 
   name        String
   description String
   requirement String // <-- ******************************** --> \\
   effect      String
+  occupied    Boolean @default(false)
 }
 
 model Matchs {
@@ -91,31 +91,32 @@ model Matchs {
 
 model Room {
   channelId   Int     @id @default(autoincrement())
-  name        String? // manuel
+  name        String?
   Topic       String?
   Key         String?
   memberLimit Int     @default(2)
-  stats       String  @default("private")
+  stats       String?
 
-  IsChannel Boolean @default(false)
+  IsChannel Boolean   @default(false)
 
-  adminId Int
+  adminId Int?
 
   member Player[]
   chats  Chat[]
   bans   Ban[]
+
   avatar String   @default("#")
 }
 
 model Chat {
-  MsgId Int @id @default(autoincrement())
+  MsgId Int         @id @default(autoincrement())
 
   sender Int
   message String
-  sendAt  DateTime @default(now())
+  sendAt  DateTime  @default(now())
 
   roomId Int
-  room   Room @relation(fields: [roomId], references: [channelId])
+  room   Room       @relation(fields: [roomId], references: [channelId])
 }
 
 model Ban {

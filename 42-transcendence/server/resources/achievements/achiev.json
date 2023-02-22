@@ -1,60 +1,97 @@
-{
-        "id":"3",
-        "serviceConfigId":"b5dd9daf-0000-0000-0000-000000000000",
-        "name":"Default NameString for Microsoft Achievements Sample Achievement 3",
-        "titleAssociations":
-        [{ "name":"Microsoft Achievements Sample",
-                "id":3051199919,
-                "version":"abc"}],
-        "progressState":"Achieved",
-		//---------------------------------------------------------------------------
-		//---------------------------------------------------------------------------
-        "progression":
-        {
-			"requirements":
-			[{
-				"id":"12345678-1234-1234-1234-123456789012",
-				"current":null,
-				"target":"100"
-				}],
-				"timeUnlocked":"2013-01-17T03:19:00.3087016Z",
-			},
-		//---------------------------------------------------------------------------
-		//---------------------------------------------------------------------------
-        "mediaAssets":
-        [{
-                "name":"Icon Name",
-                "type":"Icon",
-                "url":"http://www.xbox.com"
-        }],
-        "platform":"D",
-        "isSecret":true,
-        "description":"Default DescriptionString for Microsoft Achievements Sample Achievement 3",
-        "lockedDescription":"Default UnachievedString for Microsoft Achievements Sample Achievement 3",
-        "productId":"12345678-1234-1234-1234-123456789012",
-        "achievementType":"Challenge",
-        "participationType":"Individual",
-        "timeWindow":
-        {
-                "startDate":"2013-02-01T00:00:00Z",
-                "endDate":"2100-07-01T00:00:00Z"
-        },
-        "rewards":
-        [{
-                "name":null,
-                "description":null,
-                "value":"10",
-                "type":"Gamerscore",
-                "valueType":"Int"
-        },
-        {
-                "name":"Default Name for InAppReward for Microsoft Achievements Sample Achievement 3",
-                "description":"Default Description for InAppReward for Microsoft Achievements Sample Achievement 3",
-                "value":"1",
-                "type":"InApp",
-                "valueType":"String"
-        }],
-        "estimatedTime":"06:12:14",
-        "deeplink":"aWFtYWRlZXBsaW5r",
-        "isRevoked":false
-    }
+[
+      { 
+           
+        "name"          : "Let the Game begin",
+        "icon"          : "./start",
+        "description"   : "play your first ranked game",
+        "effect"        : "+10 rp"
+      },
+      {
+        "name"          : "kenpachi",
+        "icon"          : "./kenpachi.npg",
+        "description"   : "Win 30 match",
+        "effect"        : "+ 300px"
+      },
+      { 
+        "name"          : "populare",
+        "icon"          : "./popular.png",
+        "description"   : "have 10 friends",
+        "effect"        : "+10 coins"
+      },
+      {
+        "name"          : "Level 50",
+        "icon"          : "./lvl50.png",
+        "description"   : "Reach Level 50",
+        "effect"        : "+ 1000px"
+      },
+      { 
+        "name"          : "loyal",
+        "icon"          : "./loyal.png",
+        "description"   : "play the gmae for a week",
+        "effect"        : "+30 coins"
+      },
+      {
+        "name"          : "Tireless",
+        "icon"          : "./tireless",
+        "description"   : "Arrange 5 friendly games during the day",
+        "effect"        : "+100px",
+        "progress"      : "0%",
+        "locked"        : "true"
+      },
+      { 
+        "name"          : "Game Over",
+        "icon"          : "./g_o.png",
+        "description"   : "Break opponents winning streak of at least 10 matches",
+        "effect"        : "+1000px",
+        "progress"      : "0%",
+        "locked"        : "true"
+      },
+      { 
+        "name"          : "Goal Machine (I,II,III,IV,V)",
+        "icon"          : "./gm.png",
+        "description"   : "score (20, 30, 50, 90, 150), Goal",
+        "effect"        : "+100 coins"
+      },
+      {
+        "name"          : "Unstoppable (I, II, III)",
+        "icon"          : "./unstoppable.png",
+        "description"   : "win 5 ranked game streak",
+        "effect"        : "Title <unstoppable>"
+      },
+      {
+        "name"          : "Loser (I, II, III)",
+        "icon"          : "./loser.png",
+        "description"   : "lose 5 ranked game streak",
+        "effect"        : "Title <Loser>"
+      },
+      {
+        "name"          : "Coins Miner",
+        "icon"          : "./miner.png",
+        "description"   : "collect 300 coins",
+        "effect"        : "+100 coins"
+      },
+      {
+        "name"          : "Rich Player",
+        "icon"          : "./rich_player.png",
+        "description"   : "buy an intem from the shop",
+        "effect"        : "+1000px"
+      },
+      {
+        "name"          : "addicted",
+        "icon"          : "./addicted.png",
+        "description"   : "play more than 30 fgame in a single day",
+        "effect"        : "+ 1000px"
+      },
+      {
+        "name"          : "Heartless",
+        "icon"          : "./heartless",
+        "description"   : "defeat the same enemie more than 30 time",
+        "effect"        : "+10000px"
+      },
+      {
+        "name"          : "Clear and Clean (I,II,III)",
+        "icon"          : "./CC.png",
+        "description"   : "win 5 game (I,II,III) without receiving any goal",
+        "effect"        : "+1000px"
+      }
+ ]

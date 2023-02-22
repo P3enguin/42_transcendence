@@ -25,12 +25,11 @@ export class AuthService {
           nickname: dto.nickname,
           status:  {
             create: {
-              
             }
           }
         },
       });
-
+  
       return this.signToken(player.id, player.email);
     } catch (error) {
       if (
