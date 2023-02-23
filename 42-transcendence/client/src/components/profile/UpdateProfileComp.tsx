@@ -4,17 +4,18 @@ import {PencilSquareIcon} from  '@heroicons/react/24/outline'
 import { Disclosure } from '@headlessui/react'
 
 function UpdateProfile() {
-    return (<div className="border-2 border-gray-300 p-12  rounded-md w-1/2 mg-top"> 
+    return (<div className="border-2 border-gray-300 p-12 max-w-4xl rounded-md w-2/3 mg-top"> 
             <div className="flex flex-col justify-center items-center">
                 <Image src="/wallpaper.png" alt="wallpaper" className="rounded-3xl" width={461} height={205}/>
-                <label htmlFor="pfp">
-                    <div className="pfp-container">
-                        <Image src="/pfp1.png" alt="pfp" className="pfp -mt-10 pt-3" width={100} height={100}/>
-                    </div>
-                </label>
-                <button className="bg-black">
-                    <input className="hidden cursor-pointer" id="pfp" type="file" />
-                </button>
+                <div className="pfp-container">
+                    <Image src="/pfp1.png" alt="pfp" className="pfp -mt-10 pt-3" width={100} height={100}/>
+                    <label htmlFor="pfp" className="cursor-pointer ">
+                        {/* <Image src="/editicon.png" alt="editIcon" width={25} height={25} className="hover:bg-white  absolute -top-6 right-0 " ></Image> */}
+                        <PencilSquareIcon className="bg-[#8BD9FF] bg-opacity-50 hover:bg-[#357550] hover:fill-[#70F89B]  
+                                    rounded-md absolute -top-[13px] right-[2px] w-[17px] fill-[#9CD8FB]" />
+                    </label>
+                </div>
+                <input className="hidden cursor-pointer" id="pfp" type="file" />
             </div>
             <svg style={{visibility: "hidden",position:"absolute"}} width="0" height="0" xmlns="http://www.w3.org/2000/svg" version="1.1">
             <defs>
