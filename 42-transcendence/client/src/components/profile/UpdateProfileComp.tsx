@@ -52,7 +52,7 @@ function UpdateProfile() {
                       peer-focus:scale-100 peer-focus:-translate-y-8 ">First Name</label>
                 </div>
                 <div className="relative z-0 w-3/4 mb-6 group">
-                    <input type="password" name="password" id="password" 
+                    <input type="input" name="password" id="password" 
                     className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
                     border-2 rounded-full border-gray-300 appearance-none 
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
