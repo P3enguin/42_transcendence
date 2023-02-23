@@ -1,7 +1,6 @@
 import React from "react";
 import  { useEffect } from 'react';
-import ProfileInfo from "@/components/profile/ProfileInfo";
-import ProfileFriend from "@/components/profile/ProfileFriends";
+
 import { getServerSession } from "next-auth/next"
 import { authOption
  } from "./api/auth/[...nextauth]";
@@ -16,10 +15,10 @@ function playerProfile() {
         document.body.style.backgroundSize = 'cover';
       });
 
-    return ( <div className="profile-page" >
-            <ProfileInfo/>
-            <ProfileFriend/>
-    </div>);
+    // return ( <div className="profile-page" >
+    //         <ProfileInfo/>
+    //         <ProfileFriend/>
+    // </div>);
 }
 
 

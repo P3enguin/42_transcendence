@@ -9,10 +9,10 @@ function LoginComponent() {
     const [text,changeText]=useState([{text:"Sign In",status:true},
                                   {text:"gg",status:false}]);
 
-    return (<div className="w-2/3 xl:w-1/3 md:max-xl:w-1/2 flex flex-col text-base md:text-2xl ">
+    return (<div className=" w-full md:w-2/3  max-w-lg	 text-base md:text-2xl justify-center">
         <motion.div key="login" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} 
             className="">
-            <div className="text-white flex flex-col items-center gap-5 ">
+            <div className="text-white flex flex-col items-center gap-5 w-full">
                 <p>CONTINUE WITH</p>
                 <div className="flex flex-row gap-5">
                     <motion.button whileHover={{scale: 1.5}} 
@@ -39,7 +39,7 @@ function LoginComponent() {
                 </div>
                 <p>OR</p>
             </div>
-            <form className="flex flex-col items-center mt-3 gap-3">
+            <form className="flex flex-col items-center mt-3 gap-3 w-full">
                 <div className="relative z-0 w-3/4 mb-6 group">
                     <input type="input" name="username" id="username" 
                     className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
