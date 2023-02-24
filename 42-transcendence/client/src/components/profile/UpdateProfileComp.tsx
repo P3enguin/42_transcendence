@@ -20,11 +20,10 @@ function UpdateProfile() {
                     <div className="pfp-container">
                         <img src="/pfp1.png" alt="pfp" id="pfp-holder" className="pfp -mt-10  w-[100px] h-[100px] "/>
                         <label htmlFor="pfp" className="cursor-pointer ">
-                            {/* <Image src="/editicon.png" alt="editIcon" width={25} height={25} 
-                            className="hover:bg-white  absolute -top-6 right-0 " ></Image> */}
-                            <PencilSquareIcon className="bg-[#8BD9FF] bg-opacity-50 hover:bg-[#357550]
-                                        hover:fill-[#70F89B] rounded-md absolute -top-[13px] 
-                                        right-[2px] w-[17px] fill-[#9CD8FB]" />
+                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" className="rounded absolute  bg-opacity-50 h-1/4 w-4 bg-[#8BD9FF] -top-[13px]  hover:bg-[#357550]
+                                   fill-[#9CD8FB] hover:fill-[#70F89B] right-[2px] w-[17px]">
+                                <path d="M22.5818 12.5963L12.7527 22.4743C12.2415 22.9719 11.5697 23.2499 10.8686 23.2499H7.43644C7.24657 23.2499 7.07131 23.1768 6.93987 23.0451C6.80842 22.9134 6.75 22.7377 6.75 22.5475L6.83763 19.0792C6.85224 18.3914 7.12973 17.7475 7.6117 17.2646L14.5783 10.2841C14.6951 10.167 14.8996 10.167 15.0164 10.2841L17.4598 12.7177C17.6205 12.8773 17.8542 12.9812 18.1025 12.9812C18.6429 12.9812 19.0664 12.5421 19.0664 12.0153C19.0664 11.7519 18.9642 11.5177 18.8035 11.3421C18.7597 11.2836 16.4331 8.96701 16.4331 8.96701C16.2871 8.82067 16.2871 8.57189 16.4331 8.42555L17.4117 7.43043C18.3172 6.52311 19.7777 6.52311 20.6832 7.43043L22.5818 9.33287C23.4727 10.2255 23.4727 11.689 22.5818 12.5963Z" />
+                            </svg>
                         </label>
                     </div>
                 <input className="hidden cursor-pointer" id="pfp" type="file" onChange={handleChange} />
