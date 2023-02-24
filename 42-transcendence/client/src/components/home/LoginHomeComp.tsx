@@ -19,7 +19,7 @@ function LoginComponent() {
                         className={`border border-white rounded-full bg-white p-1 flex flex-row `}
                         >
 
-                        <Image src="/google 1.png" alt="google-Logo" width={22} height={22} className=""></Image>
+                        <Image src="/googleLogo.png" alt="google-Logo" width={22} height={22} className=""></Image>
                         {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
 
                     </motion.button>
