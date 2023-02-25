@@ -16,7 +16,6 @@ function UpdateProfile() {
 
                     <Image src="/wallpaper.png" alt="wallpaper" className="rounded-3xl flex-shrink-0 min-w-[200px] min-h-[80px]" 
                                   width={500} height={500}/>
-            
                     <div className="pfp-container">
                         <img src="/pfp1.png" alt="pfp" id="pfp-holder" className="pfp -mt-10  w-[100px] h-[100px] "/>
                         <label htmlFor="pfp" className="cursor-pointer ">
