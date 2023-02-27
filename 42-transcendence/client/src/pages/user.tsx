@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { HomeIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 
 function UserHomePage() {
@@ -9,14 +8,14 @@ function UserHomePage() {
          from-[#28346C] via-[#121C46] to-[#263268]">
 
         </div>
-        <div className="  absolute top-10 z-10 flex flex-col items-center w-16 h-5/6 overflow-hidden
+        <div className=" absolute top-10 z-10 flex flex-col items-center w-16 h-5/6 overflow-hidden
               border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-               to-[#28346C] rounded gap-6">
+               to-[#28346C] gap-6">
             <a className="flex items-center justify-center mt-3" href="#">
                 <Image src="/logo.png" alt="logo" width={39} height={41}  />
             </a>
-            <div className=" border-b  border-t-0 border-r-0  rounded-bl-3xl
-                border-[#0097E2] border w-full h-[20px] absolute top-[43px]">
+            <div className=" border-b  border-t-0 border-r-0 border-l  rounded-bl-3xl
+                border-[#0097E2]  w-16 h-[20px] absolute top-[43px]">
             </div>
             <div className=" ">
                 <a className="flex items-center justify-center w-12 h-12 mt-2 rounded "  href="#">
