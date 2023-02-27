@@ -5,8 +5,27 @@ import { HomeIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/ou
 function UserHomePage() {
     return (<div className="h-screen p-10">
         <div className="  w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] rounded-tr-3xl rounded-bl-3xl
-         from-[#28346C] via-[#121C46] to-[#263268]">
+         from-[#28346C] via-[#121C46] to-[#263268] flex flex-row items-center justify-center">
+            <form className="">
+                <input type="search" id="search-bar" placeholder="search here for player,channels... " 
+                        className="bg-[#2F3C78] rounded-xl border-none " ></input>
+                <label htmlFor="search-bar" >
+                    <button type="submit">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8.59922 17.3065C13.3484 17.3065 17.1984 13.4323 17.1984 8.65324C17.1984 3.87419 13.3484 0 8.59922 0C3.85 0 0 3.87419 0 8.65324C0 13.4323 3.85 17.3065 8.59922 17.3065Z" fill="#8BD9FF"/>
+                        <path opacity="0.4" d="M18.6746 19.9553C18.3406 19.9445 18.0229 19.807 17.7854 19.5705L15.7489 17.1902C15.3123 16.7909 15.2766 16.1123 15.6689 15.6689C15.8525 15.4831 16.1021 15.3787 16.3625 15.3787C16.6229 15.3787 16.8726 15.4831 17.0562 15.6689L19.6172 17.7181C19.9862 18.0957 20.1 18.6563 19.9079 19.1492C19.7158 19.6422 19.2536 19.9754 18.728 20L18.6746 19.9553Z" fill="#8BD9FF"/>
+                    </svg>
+                    </button>
+                </label>
+            </form>
+            <div className=" absolute right-12">
+            <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" 
+                    className= "fill-[#8BD9FF] hover:fill-red-700 ease-in duration-200">
+                <path opacity="0.4" d="M0 5.92933C0 2.66133 2.70698 0 6.03271 0H12.6475C15.9665 0 18.6667 2.65333 18.6667 5.916V20.7373C18.6667 24.0067 15.9597 26.6667 12.6326 26.6667H6.0205C2.7002 26.6667 0 24.0133 0 20.7507V19.4973V5.92933Z" />
+                <path d="M26.3719 12.6064L22.5775 8.72771C22.1853 8.32771 21.5542 8.32771 21.1634 8.73037C20.7738 9.13304 20.7751 9.78237 21.166 10.1824L23.245 12.3064H21.2517H10.0646C9.5127 12.3064 9.0647 12.7664 9.0647 13.333C9.0647 13.901 9.5127 14.3597 10.0646 14.3597H23.245L21.166 16.4837C20.7751 16.8837 20.7738 17.533 21.1634 17.9357C21.3594 18.137 21.6153 18.2384 21.8724 18.2384C22.1269 18.2384 22.3827 18.137 22.5775 17.9384L26.3719 14.061C26.5602 13.8677 26.6667 13.6064 26.6667 13.333C26.6667 13.061 26.5602 12.7997 26.3719 12.6064Z" />
+            </svg>
 
+            </div>
         </div>
         <div className=" absolute top-10 z-10 flex flex-col items-center w-16 h-5/6 overflow-hidden
               border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
@@ -18,7 +37,7 @@ function UserHomePage() {
                 border-[#0097E2]  w-16 h-[20px] absolute top-[43px]">
             </div>
             <div className=" ">
-                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded "  href="#">
+                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded"  href="#">
                     <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
                         className="fill-[#8BD9FF] hover:fill-[#0097E2] ease-in duration-200">
                         <path d="M9.9656 28.1732V23.5729C9.96558 22.4071 10.9135 21.4601 12.0877 21.4527H16.3989C17.5783 21.4527 18.5344 22.4019 18.5344 23.5729V28.1598C18.5344 29.1709 19.356 29.9926 20.3744 30H23.3157C24.6895 30.0035 26.0081 29.4642 26.9808 28.5011C27.9534 27.5379 28.5 26.2301 28.5 24.8663V11.7988C28.5 10.6971 28.0081 9.65207 27.1569 8.94525L17.1645 1.0114C15.4178 -0.376316 12.9231 -0.331488 11.2281 1.11808L1.45052 8.94525C0.559111 9.63123 0.0263284 10.6793 0 11.7988V24.853C0 27.6956 2.32107 30 5.18426 30H8.05844C8.54876 30.0035 9.02023 29.8126 9.36821 29.4696C9.71619 29.1267 9.91189 28.66 9.91187 28.1732H9.9656Z" />
