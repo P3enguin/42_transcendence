@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { StatusModule } from './status/status.module';
 import { AchivementModule } from './achivement/achivement.module';
+import { TitleModule } from './title/title.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AchivementModule } from './achivement/achivement.module';
     MatchModule,
     PrismaModule,
     StatusModule,
+    TitleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

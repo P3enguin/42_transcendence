@@ -27,6 +27,8 @@ model Player {
   loss              Matchs[]  @relation(name: "loss")
 
   rooms             Room[]
+
+  @@map("players")
 }
 
 model Status {
@@ -36,7 +38,7 @@ model Status {
 
   level       Int     @default(0)
 
-  achivement  Achivement[]
+  achivement  Achivement_status[]
   title       Titles[]
   rank        Ranks[]
 }
@@ -44,15 +46,25 @@ model Status {
 model Achivement {
   id          Int @id @default(autoincrement())
 
-  status      Status[]
+  status      Achivement_status[]
 
   name        String
   icon        String
   requirement String?
   description String
   effect      String
-  locked      Boolean @default(true)
-  progress    Int @default(0)
+}
+
+model Achivement_status {
+  status  Status          @relation(fields: [statusId], references: [id])
+  statusId  Int
+  achivement  Achivement  @relation(fields: [achivId], references: [id])
+  achivId   Int
+  
+  locked      Boolean     @default(true)
+  progress    Int         @default(0)
+
+  @@id([statusId, achivId])
 }
 
 model Ranks {
@@ -88,7 +100,7 @@ model Matchs {
   scoor     String
   playerAt  DateTime @default(now())
 }
-
+ 
 model Room {
   channelId   Int     @id @default(autoincrement())
   name        String?

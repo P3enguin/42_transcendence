@@ -7,6 +7,7 @@ import { AuthDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { AchivementService } from 'src/achivement/achivement.service';
 
 @Injectable()
 export class AuthService {
@@ -14,22 +15,25 @@ export class AuthService {
     private prisma: PrismaService,
     private jwt: JwtService,
     private config: ConfigService,
+    private achiv: AchivementService,
   ) {}
 
   
   async signup(dto: AuthDto) {
     try {
+      const achv =   await this.achiv.fillAvhievememt();
       const player = await this.prisma.player.create({
         data: {
           email: dto.email,
           nickname: dto.nickname,
           status:  {
             create: {
-            }
-          }
+              achivement: achv,
+            },
+          },
         },
       });
-  
+
       return this.signToken(player.id, player.email);
     } catch (error) {
       if (
@@ -45,7 +49,6 @@ export class AuthService {
           throw error;
         }
       }
-
 
   async signin(dto: AuthDto) {
     const player =

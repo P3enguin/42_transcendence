@@ -10,7 +10,7 @@
         "name"          : "kenpachi",
         "icon"          : "./kenpachi.npg",
         "description"   : "Win 30 match",
-        "effect"        : "+ 300px"
+        "effect"        : "+ 300 exp"
       },
       { 
         "name"          : "populare",
@@ -22,7 +22,7 @@
         "name"          : "Level 50",
         "icon"          : "./lvl50.png",
         "description"   : "Reach Level 50",
-        "effect"        : "+ 1000px"
+        "effect"        : "+ 1000 exp"
       },
       { 
         "name"          : "loyal",
@@ -34,17 +34,13 @@
         "name"          : "Tireless",
         "icon"          : "./tireless",
         "description"   : "Arrange 5 friendly games during the day",
-        "effect"        : "+100px",
-        "progress"      : "0%",
-        "locked"        : "true"
+        "effect"        : "+100 exp"
       },
       { 
         "name"          : "Game Over",
         "icon"          : "./g_o.png",
         "description"   : "Break opponents winning streak of at least 10 matches",
-        "effect"        : "+1000px",
-        "progress"      : "0%",
-        "locked"        : "true"
+        "effect"        : "+1000 exp"
       },
       { 
         "name"          : "Goal Machine (I,II,III,IV,V)",
@@ -74,24 +70,24 @@
         "name"          : "Rich Player",
         "icon"          : "./rich_player.png",
         "description"   : "buy an intem from the shop",
-        "effect"        : "+1000px"
+        "effect"        : "+1000 exp"
       },
       {
         "name"          : "addicted",
         "icon"          : "./addicted.png",
         "description"   : "play more than 30 fgame in a single day",
-        "effect"        : "+ 1000px"
+        "effect"        : "+ 1000 exp"
       },
       {
         "name"          : "Heartless",
         "icon"          : "./heartless",
         "description"   : "defeat the same enemie more than 30 time",
-        "effect"        : "+10000px"
+        "effect"        : "+10000 exp"
       },
       {
         "name"          : "Clear and Clean (I,II,III)",
         "icon"          : "./CC.png",
         "description"   : "win 5 game (I,II,III) without receiving any goal",
-        "effect"        : "+1000px"
+        "effect"        : "+1000 exp"
       }
  ]

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as fs from 'fs'
+
 @Injectable()
 export class AchivementService {
 	constructor(
@@ -21,10 +22,7 @@ export class AchivementService {
 					effect:			item.effect, 
 				  },
 			});
-			console.log({
-				achiv,
-			})
 		}
-		return "Done";
+		return jsonData;
 	}
 }
