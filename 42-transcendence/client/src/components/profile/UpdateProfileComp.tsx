@@ -91,7 +91,7 @@ function UpdateProfile() {
                                 transform transition duration-300 
                                 hover:text-l hover:scale-110  text-white text-xs  text-center md:text-base hover:text-md
                                  py-2 px-12  rounded-full">
-                                Upadate
+                                Update
                         </button>
                     </motion.div>
             </form>

@@ -1,22 +1,37 @@
 import Image from "next/image";
 import { HomeIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { Disclosure } from "@headlessui/react";
+import { Menu } from '@headlessui/react'
+
 
 function UserHomePage() {
 
-    const [svgIndex,setSvgIndex] = useState(1);
+    const [svgIndex,setSvgIndex] = useState(0);
 
     function handleSvgIndex(index : number) {
         setSvgIndex(index)
     }
 
-    return (<div className="h-screen p-10">
+    return (
+
+    <div className="h-screen sm:p-10">
         {/* navbar */}
         <div className="  w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] rounded-tr-3xl rounded-bl-3xl
-         from-[#28346C] via-[#121C46] to-[#263268] flex flex-row items-center justify-center">
-            <form className="w-1/4 flex flex-row items-center justify-center">
+        from-[#28346C] via-[#121C46] to-[#263268] flex flex-row items-center sm:justify-center justify-between">
+            <div className="flex flex-row gap-10 items-center">
+                <a className="ml-3 mt-1 sm:hidden flex" href="#" >
+                    <Image src="/logo.png" alt="logo" width={39} height={41}  />
+                </a>
+                <button type="button" className="text-[#8BD9FF] rounded-lg sm:hidden hover:bg-[#01FD91] hover:bg-opacity-50
+                    hover:text-[#01FD91] focus:outline-none focus:ring-2 focus:ring-gray-200 focus:text-[#01FD91] dark:text-gray-400 dark:hover:bg-gray-700
+                    dark:focus:ring-gray-600" aria-controls="navbar-search" aria-expanded="false">
+                    <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                </button>
+            </div>
+            <form className="w-none sm:w-1/4 sm:flex flex-row items-center justify-center ">
                 <input type="search" id="search-bar" placeholder="search here for players,channels... " 
-                        className="bg-[#2F3C78] rounded-xl border-none w-full text-sm text-white overflow-hidden truncate" ></input>
+                        className="bg-[#2F3C78] rounded-xl border-none w-full text-sm text-white overflow-hidden truncate hidden sm:flex" ></input>
                 <label htmlFor="search-bar " className="relative right-7 top-1">
                     <button type="submit">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -26,22 +41,21 @@ function UserHomePage() {
                     </button>
                 </label>
             </form>
-            <div className=" absolute right-12">
+            <div className="absolute hidden sm:flex right-12">
             <svg width="27" height="27" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg" 
                     className= "fill-[#8BD9FF] hover:fill-red-700 ease-in duration-200">
                 <path opacity="0.4" d="M0 5.92933C0 2.66133 2.70698 0 6.03271 0H12.6475C15.9665 0 18.6667 2.65333 18.6667 5.916V20.7373C18.6667 24.0067 15.9597 26.6667 12.6326 26.6667H6.0205C2.7002 26.6667 0 24.0133 0 20.7507V19.4973V5.92933Z" />
                 <path d="M26.3719 12.6064L22.5775 8.72771C22.1853 8.32771 21.5542 8.32771 21.1634 8.73037C20.7738 9.13304 20.7751 9.78237 21.166 10.1824L23.245 12.3064H21.2517H10.0646C9.5127 12.3064 9.0647 12.7664 9.0647 13.333C9.0647 13.901 9.5127 14.3597 10.0646 14.3597H23.245L21.166 16.4837C20.7751 16.8837 20.7738 17.533 21.1634 17.9357C21.3594 18.137 21.6153 18.2384 21.8724 18.2384C22.1269 18.2384 22.3827 18.137 22.5775 17.9384L26.3719 14.061C26.5602 13.8677 26.6667 13.6064 26.6667 13.333C26.6667 13.061 26.5602 12.7997 26.3719 12.6064Z" />
             </svg>
-
             </div>
         </div>
 
         {/* SideBar */}
-        <div className=" absolute top-10 z-10 flex flex-col items-center w-16 h-5/6 overflow-hidden
-              border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-               to-[#28346C] gap-6">
+        <div className=" absolute top-0 sm:top-10 z-10  flex-col items-center w-16 h-5/6 overflow-hidden
+            border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+            to-[#28346C] gap-6 sm:flex hidden">
             <a className="flex items-center justify-center mt-3" href="#" >
-                <Image src="/logo.png" alt="logo" width={39} height={41}  />
+                <Image src="/logo.png" alt="logo" width={39} height={41} />
             </a>
             <div className=" border-b  border-t-0 border-r-0 border-l  rounded-bl-3xl
                 border-[#0097E2]  w-16 h-[20px] absolute top-[43px]">
@@ -79,7 +93,7 @@ function UserHomePage() {
                 <a className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#"
                     onClick={() => handleSvgIndex(3)}>
                     <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-                         className={`${svgIndex == 3 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
+                        className={`${svgIndex == 3 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path d="M11.9955 19.7623C5.526 19.7623 0 20.7823 0 24.8623C0 28.9438 5.4915 29.9998 11.9955 29.9998C18.465 29.9998 23.991 28.9813 23.991 24.8998C23.991 20.8183 18.501 19.7623 11.9955 19.7623Z"/>
                         <path opacity="0.4" d="M11.9955 15.876C16.4025 15.876 19.9335 12.3435 19.9335 7.938C19.9335 3.5325 16.4025 0 11.9955 0C7.59 0 4.0575 3.5325 4.0575 7.938C4.0575 12.3435 7.59 15.876 11.9955 15.876Z" />
                     </svg>
@@ -94,7 +108,7 @@ function UserHomePage() {
                     </svg>
                 </a>
             </div>
-	    </div>
+        </div>       
     </div>);
     
 }
