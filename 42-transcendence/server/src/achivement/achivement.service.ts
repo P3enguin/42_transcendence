@@ -35,9 +35,7 @@ export class AchivementService {
 		const achiv = await this.prisma.achivement.findMany({});
 
 		for (let achv of achiv)	{
-			console.log({
-				"achivId": achv.id,
-			})
+
 		await this.prisma.achivement_status.create({
 				data:{
 					achivId: achv.id,

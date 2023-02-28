@@ -29,8 +29,6 @@ model Player {
   rooms             Room[]
 
 
-
-
   @@map("players")
 }
 

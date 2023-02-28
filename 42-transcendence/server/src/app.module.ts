@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
-import { AuthModule } from './auth/auth.module';
 import { PlayerModule } from './player/player.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MatchModule } from './match/match.module';
@@ -11,6 +10,7 @@ import { AppController } from './app.controller';
 import { StatusModule } from './status/status.module';
 import { AchivementModule } from './achivement/achivement.module';
 import { TitleModule } from './title/title.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
