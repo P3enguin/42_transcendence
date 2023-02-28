@@ -5,6 +5,7 @@ import { AchivementController } from './achivement.controller';
 @Global()
 @Module({
   providers: [AchivementService],
-  controllers: [AchivementController]
+  controllers: [AchivementController],
+  exports: [AchivementService],
 })
 export class AchivementModule {}

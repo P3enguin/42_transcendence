@@ -148,6 +148,12 @@ CREATE UNIQUE INDEX "players_nickname_key" ON "players"("nickname");
 CREATE UNIQUE INDEX "players_statusId_key" ON "players"("statusId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Achivement_name_key" ON "Achivement"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Titles_name_key" ON "Titles"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
 
 -- CreateIndex

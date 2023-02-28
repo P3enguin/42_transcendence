@@ -13,17 +13,20 @@ export class TitleService {
 		const jsonData = JSON.parse(fileContent);
 
 		for (const item of jsonData) {
-			const achiv = await this.prisma.titles.create({
-				data: {
-					name:			item.name,
-					requirement:	item.requirement,
-					description:	item.description,
-					effect:			item.effect, 
-				  },
-			});
-			console.log({
-				achiv,
-			})
+			try{
+				const achiv = await this.prisma.titles.create({
+					data: {
+						name:			item.name,
+						requirement:	item.requirement,
+						description:	item.description,
+						effect:			item.effect, 
+					  },
+				});
+
+			}catch(error)
+			{
+				console.log("titles");
+			}
 		}
 		return "Done";
 	}

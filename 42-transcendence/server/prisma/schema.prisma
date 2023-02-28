@@ -11,7 +11,7 @@ model Player {
   id                Int       @id @default(autoincrement())
   email             String    @unique
   nickname          String    @unique
-  avatar            String?
+  avatar            String    @default("#")
   joinAt            DateTime  @default(now())
 
   friends           Player[]  @relation("friends") // <- Friend List
@@ -27,6 +27,9 @@ model Player {
   loss              Matchs[]  @relation(name: "loss")
 
   rooms             Room[]
+
+
+
 
   @@map("players")
 }
@@ -48,7 +51,7 @@ model Achivement {
 
   status      Achivement_status[]
 
-  name        String
+  name        String @unique()
   icon        String
   requirement String?
   description String
@@ -82,7 +85,7 @@ model Titles {
 
   status   Status[]
 
-  name        String
+  name        String @unique()
   description String
   requirement String // <-- ******************************** --> \\
   effect      String

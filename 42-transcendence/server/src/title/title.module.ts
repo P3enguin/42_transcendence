@@ -4,6 +4,7 @@ import { TitleController } from './title.controller';
 
 @Module({
   providers: [TitleService],
-  controllers: [TitleController]
+  controllers: [TitleController],
+  exports: [TitleService],
 })
 export class TitleModule {}

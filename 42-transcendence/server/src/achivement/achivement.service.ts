@@ -14,15 +14,38 @@ export class AchivementService {
 		const jsonData = JSON.parse(fileContent);
 
 		for (const item of jsonData) {
-			const achiv = await this.prisma.achivement.create({
-				data: {
-					name:			item.name,
-					icon:			item.icon,
-					description:	item.description,
-					effect:			item.effect, 
-				  },
-			});
+			try{
+				const achiv = await this.prisma.achivement.create({
+					data: {
+						name:			item.name,
+						icon:			item.icon,
+						description:	item.description,
+						effect:			item.effect, 
+					  },
+				});
+			}catch(error) {
+				console.log("achivement failed");
+			}
 		}
+		console.log("Achievement Loaded successefuly !");
 		return jsonData;
 	}
+
+	async asignAchiv(statusId: number){
+		const achiv = await this.prisma.achivement.findMany({});
+
+		for (let achv of achiv)	{
+			console.log({
+				"achivId": achv.id,
+			})
+		await this.prisma.achivement_status.create({
+				data:{
+					achivId: achv.id,
+					statusId: statusId,
+				},
+
+			});
+		}
+	}
+
 }
