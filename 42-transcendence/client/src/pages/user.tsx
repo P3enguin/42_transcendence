@@ -1,20 +1,28 @@
 import Image from "next/image";
 import { HomeIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
-
+import { useState } from "react";
 
 function UserHomePage() {
+
+    const [svgIndex,setSvgIndex] = useState(1);
+
+    function handleSvgIndex(index : number) {
+        setSvgIndex(index)
+    }
+
     return (<div className="h-screen p-10">
+        {/* navbar */}
         <div className="  w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] rounded-tr-3xl rounded-bl-3xl
          from-[#28346C] via-[#121C46] to-[#263268] flex flex-row items-center justify-center">
-            <form className="">
-                <input type="search" id="search-bar" placeholder="search here for player,channels... " 
-                        className="bg-[#2F3C78] rounded-xl border-none " ></input>
-                <label htmlFor="search-bar" >
+            <form className="w-1/4 flex flex-row items-center justify-center">
+                <input type="search" id="search-bar" placeholder="search here for players,channels... " 
+                        className="bg-[#2F3C78] rounded-xl border-none w-full text-sm text-white overflow-hidden truncate" ></input>
+                <label htmlFor="search-bar " className="relative right-7 top-1">
                     <button type="submit">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8.59922 17.3065C13.3484 17.3065 17.1984 13.4323 17.1984 8.65324C17.1984 3.87419 13.3484 0 8.59922 0C3.85 0 0 3.87419 0 8.65324C0 13.4323 3.85 17.3065 8.59922 17.3065Z" fill="#8BD9FF"/>
-                        <path opacity="0.4" d="M18.6746 19.9553C18.3406 19.9445 18.0229 19.807 17.7854 19.5705L15.7489 17.1902C15.3123 16.7909 15.2766 16.1123 15.6689 15.6689C15.8525 15.4831 16.1021 15.3787 16.3625 15.3787C16.6229 15.3787 16.8726 15.4831 17.0562 15.6689L19.6172 17.7181C19.9862 18.0957 20.1 18.6563 19.9079 19.1492C19.7158 19.6422 19.2536 19.9754 18.728 20L18.6746 19.9553Z" fill="#8BD9FF"/>
-                    </svg>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.59922 17.3065C13.3484 17.3065 17.1984 13.4323 17.1984 8.65324C17.1984 3.87419 13.3484 0 8.59922 0C3.85 0 0 3.87419 0 8.65324C0 13.4323 3.85 17.3065 8.59922 17.3065Z" fill="#8BD9FF"/>
+                            <path opacity="0.4" d="M18.6746 19.9553C18.3406 19.9445 18.0229 19.807 17.7854 19.5705L15.7489 17.1902C15.3123 16.7909 15.2766 16.1123 15.6689 15.6689C15.8525 15.4831 16.1021 15.3787 16.3625 15.3787C16.6229 15.3787 16.8726 15.4831 17.0562 15.6689L19.6172 17.7181C19.9862 18.0957 20.1 18.6563 19.9079 19.1492C19.7158 19.6422 19.2536 19.9754 18.728 20L18.6746 19.9553Z" fill="#8BD9FF"/>
+                        </svg>
                     </button>
                 </label>
             </form>
@@ -27,46 +35,51 @@ function UserHomePage() {
 
             </div>
         </div>
+
+        {/* SideBar */}
         <div className=" absolute top-10 z-10 flex flex-col items-center w-16 h-5/6 overflow-hidden
               border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
                to-[#28346C] gap-6">
-            <a className="flex items-center justify-center mt-3" href="#">
+            <a className="flex items-center justify-center mt-3" href="#" >
                 <Image src="/logo.png" alt="logo" width={39} height={41}  />
             </a>
             <div className=" border-b  border-t-0 border-r-0 border-l  rounded-bl-3xl
                 border-[#0097E2]  w-16 h-[20px] absolute top-[43px]">
             </div>
             <div className=" ">
-                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded"  href="#">
+                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded"  href="#"
+                    onClick={() => handleSvgIndex(0)}>
                     <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                        className="fill-[#8BD9FF] hover:fill-[#0097E2] ease-in duration-200">
+                        className={`${svgIndex == 0 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path d="M9.9656 28.1732V23.5729C9.96558 22.4071 10.9135 21.4601 12.0877 21.4527H16.3989C17.5783 21.4527 18.5344 22.4019 18.5344 23.5729V28.1598C18.5344 29.1709 19.356 29.9926 20.3744 30H23.3157C24.6895 30.0035 26.0081 29.4642 26.9808 28.5011C27.9534 27.5379 28.5 26.2301 28.5 24.8663V11.7988C28.5 10.6971 28.0081 9.65207 27.1569 8.94525L17.1645 1.0114C15.4178 -0.376316 12.9231 -0.331488 11.2281 1.11808L1.45052 8.94525C0.559111 9.63123 0.0263284 10.6793 0 11.7988V24.853C0 27.6956 2.32107 30 5.18426 30H8.05844C8.54876 30.0035 9.02023 29.8126 9.36821 29.4696C9.71619 29.1267 9.91189 28.66 9.91187 28.1732H9.9656Z" />
                     </svg>
                 </a>
             </div>
-
-            <div className=" ">
-                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#">
+            <div className="">
+                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded " href="#"
+                    onClick={() => handleSvgIndex(1)}>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                    className="fill-[#8BD9FF] hover:fill-[#0097E2] ease-in duration-200">
+                        className={`${svgIndex == 1 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path opacity="0.4" d="M15.03 0C6.315 0 0 7.11 0 15C0 17.52 0.735 20.115 2.025 22.485C2.265 22.875 2.295 23.37 2.13 23.835L1.125 27.195C0.9 28.005 1.59 28.605 2.355 28.365L5.385 27.465C6.21 27.195 6.855 27.54 7.6215 28.005C9.8115 29.295 12.54 29.955 15 29.955C22.44 29.955 30 24.21 30 14.955C30 6.975 23.55 0 15.03 0Z" />
                         <path d="M8.05513 13.0952C9.12013 13.0952 9.97513 13.9502 9.97513 15.0152C9.97513 16.0652 9.12013 16.9202 8.05513 16.9352C7.00513 16.9352 6.13513 16.0652 6.13513 15.0152C6.13513 13.9502 6.99013 13.0952 8.05513 13.0952ZM14.9707 13.0952C16.0357 13.0952 16.8907 13.9502 16.8907 15.0152C16.8907 16.0652 16.0357 16.9352 14.9707 16.9352C13.9057 16.9202 13.0507 16.0652 13.0507 15.0002C13.0507 13.9502 13.9207 13.0802 14.9707 13.0952ZM21.8854 13.0952C22.9504 13.0952 23.8054 13.9502 23.8054 15.0152C23.8054 16.0652 22.9504 16.9352 21.8854 16.9352C20.8204 16.9352 19.9654 16.0652 19.9654 15.0152C19.9654 13.9502 20.8204 13.0952 21.8854 13.0952Z" />
                     </svg>
                 </a>
             </div>
             <div className=" ">
-                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#">
+                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#"
+                    onClick={() => handleSvgIndex(2)}>
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
-                        className="fill-[#8BD9FF] hover:fill-[#0097E2] ease-in duration-200">
+                        className={`${svgIndex == 2 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path opacity="0.4" d="M16.9576 5.82364V6.09821C16.2216 6.08376 15.4856 6.08376 14.7496 6.08376V5.83809C14.7496 4.84099 13.9105 4.03175 12.9095 4.03175H11.4522C9.78884 4.03175 8.43457 2.70229 8.43457 1.0838C8.43457 0.491325 8.93506 0 9.53859 0C10.1568 0 10.6426 0.491325 10.6426 1.0838C10.6426 1.51733 11.0106 1.86414 11.4522 1.86414H12.9095C15.1323 1.87859 16.9429 3.65603 16.9576 5.82364Z" />
                         <path d="M14.7498 6.08405C15.4858 6.08405 16.2218 6.08405 16.9578 6.0985C18.3562 6.0985 19.7547 6.1274 21.1678 6.14185C26.2758 6.14185 30 9.78343 30 14.8123V21.2718C30 26.3006 26.2758 29.9422 21.1678 29.9422C19.1217 29.9855 17.0756 30 15.0147 30C12.9539 30 10.8783 29.9855 8.83219 29.9422C3.72424 29.9422 0 26.3006 0 21.2718V14.8123C0 9.78343 3.72424 6.14185 8.84691 6.14185C10.7753 6.11295 12.7478 6.08405 14.7498 6.08405ZM10.6281 14.3499C10.0098 14.3499 9.52404 14.8412 9.52404 15.4337V16.951H7.96369C7.36016 16.951 6.85967 17.4423 6.85967 18.0348C6.85967 18.6417 7.36016 19.1186 7.96369 19.1186H9.52404V20.6504C9.52404 21.2429 10.0098 21.7342 10.6281 21.7342C11.2316 21.7342 11.7321 21.2429 11.7321 20.6504V19.1186H13.2777C13.8813 19.1186 14.3817 18.6417 14.3817 18.0348C14.3817 17.4423 13.8813 16.951 13.2777 16.951H11.7321V15.4337C11.7321 14.8412 11.2316 14.3499 10.6281 14.3499ZM22.1982 19.4799H22.051C21.4328 19.4799 20.947 19.9712 20.947 20.5637C20.947 21.1706 21.4328 21.6475 22.051 21.6475H22.1982C22.8018 21.6475 23.3023 21.1706 23.3023 20.5637C23.3023 19.9712 22.8018 19.4799 22.1982 19.4799ZM19.6811 14.5088H19.5339C18.9156 14.5088 18.4298 15.0001 18.4298 15.5926C18.4298 16.1996 18.9156 16.6764 19.5339 16.6764H19.6811C20.2846 16.6764 20.7851 16.1996 20.7851 15.5926C20.7851 15.0001 20.2846 14.5088 19.6811 14.5088Z" />
                     </svg>
                 </a>
             </div>
             <div className=" ">
-                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#">
+                <a className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#"
+                    onClick={() => handleSvgIndex(3)}>
                     <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-                         className="fill-[#8BD9FF] hover:fill-[#0097E2] ease-in duration-200">
+                         className={`${svgIndex == 3 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path d="M11.9955 19.7623C5.526 19.7623 0 20.7823 0 24.8623C0 28.9438 5.4915 29.9998 11.9955 29.9998C18.465 29.9998 23.991 28.9813 23.991 24.8998C23.991 20.8183 18.501 19.7623 11.9955 19.7623Z"/>
                         <path opacity="0.4" d="M11.9955 15.876C16.4025 15.876 19.9335 12.3435 19.9335 7.938C19.9335 3.5325 16.4025 0 11.9955 0C7.59 0 4.0575 3.5325 4.0575 7.938C4.0575 12.3435 7.59 15.876 11.9955 15.876Z" />
                     </svg>

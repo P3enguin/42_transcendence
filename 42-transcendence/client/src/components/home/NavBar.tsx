@@ -47,14 +47,7 @@ export default function NavBar({state,handleClick} : {state:Array<pageState>,han
               <div className="flex flex-shrink-0 items-center">
                 <button onClick={(e)=>handleClick(e,0)}>
                   <Image
-                    className="block h-12 w-auto lg:hidden"
-                    src="/logo.png"
-                    alt="Pognitor-logo"
-                    width={44}
-                    height={48}
-                  />
-                  <Image
-                    className="hidden h-12 w-auto lg:block"
+                    className="block h-12 w-auto "
                     src="/logo.png"
                     alt="Pognitor-logo"
                     width={44}
