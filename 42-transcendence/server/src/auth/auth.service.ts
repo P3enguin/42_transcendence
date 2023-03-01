@@ -1,56 +1,92 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaClient ,Prisma } from "prisma/client";
-import { AuthDto } from "./dto/auth.dto";
+import {
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { AuthDto } from './dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { AchivementService } from 'src/achivement/achivement.service';
+import { TitleService } from 'src/title/title.service';
 
+@Injectable()
 export class AuthService {
-    prisma = new PrismaClient();
-    async getUser(userEmail: string){
-        var user :object;
-        try {
-            user = await this.prisma.player.findUnique({
-                where : {
-                    email: userEmail,
-                },
-                select : {
-                    nickname: true,
-                    email: true,
-                }
-            })
-        }
-        catch(e) {
-            console.log(e);
-            if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                console.log(`code : ${e.code} , message : ${e.message}`);
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private config: ConfigService,
+    private achiv: AchivementService,
+    private title: TitleService,
+  ) {}
+
+  
+  async signup(dto: AuthDto) {
+    try {
+      await this.achiv.fillAvhievememt();
+      await this.title.fillTitles();
+      const player = await this.prisma.player.create({
+        data: {
+          email: dto.email,
+          nickname: dto.nickname,
+          status:  {
+            create: {
+            },
+          },
+        },
+      });
+      await  this.achiv.asignAchiv(player.statusId);
+      return this.signToken(player.id, player.email);
+    } catch (error) {
+      if (
+        error instanceof
+        PrismaClientKnownRequestError
+        ) {
+          if (error.code === 'P2002') {
+            throw new ForbiddenException(
+              'Credentials taken',
+              );
             }
+          }
+          throw error;
         }
-        if (!user)
-            return {
-                nickname: null,
-                email: null,
-            }
-        return user;
-    }
-    async createUser(dto:AuthDto) {
-        var user: object ;
-        try {
-            user = await this.prisma.player.create({
-                data: {
-                    nickname:dto.nickname,
-                    email: dto.email,
-                }
-            })
-        }
-        catch(e) {
-            if (e instanceof Prisma.PrismaClientKnownRequestError) {
-                // The .code property can be accessed in a type-safe manner
-                if (e.code === 'P2002') {
-                  return {error:"error Nickname already exist",nickname:null}
-                }
-                else {
-                    return {error:"An Error has occured"}
-                }
-        }}
-        console.log(user);
-        return user;
-    }
+      }
+
+  async signin(dto: AuthDto) {
+    const player =
+      await this.prisma.player.findUnique({
+        where: {
+          nickname: dto.nickname,
+        },
+      });
+    if (!player)
+      throw new ForbiddenException(
+        'Credentials incorrect',
+      );
+
+    return this.signToken(player.id, player.email);
+  }
+
+  async signToken(
+    playerId: number,
+    email: string,
+  ): Promise<{ access_token: string }> {
+    const payload = {
+      sub: playerId,
+      email,
+    };
+    const secret = this.config.get('JWT_SECRET');
+
+    const token = await this.jwt.signAsync(
+      payload,
+      {
+        expiresIn: '15m',
+        secret: secret,
+      },
+    );
+
+    return {
+      access_token: token,
+    };
+  }
 }

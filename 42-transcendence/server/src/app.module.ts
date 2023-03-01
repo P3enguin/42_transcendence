@@ -1,18 +1,31 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { JwtModule } from '@nestjs/jwt';
+
 import { AuthModule } from './auth/auth.module';
-import { AuthController } from './auth/app.controller';
-import { AuthService } from './auth/auth.service';
+import { PlayerModule } from './player/player.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { MatchModule } from './match/match.module';
 
-
-
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
+import { StatusModule } from './status/status.module';
+import { AchivementModule } from './achivement/achivement.module';
+import { TitleModule } from './title/title.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(),AuthModule],
-  controllers: [AuthController],
-  providers:[AuthService]
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    AchivementModule,
+    AuthModule,
+    PlayerModule,
+    MatchModule,
+    PrismaModule,
+    StatusModule,
+    TitleModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

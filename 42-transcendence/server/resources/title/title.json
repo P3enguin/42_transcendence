@@ -1,0 +1,92 @@
+[
+	{
+		"name":			"unstoppable (I, II, III)",
+		"description":	"win 5 ranked game streak",
+		"requirement":	"win 5 ranked game",
+		"effect":		"+2% rp"
+	},
+	{
+		"name":			"Loser (I, II, III)",
+		"description":	"lose 5 ranked game",
+		"requirement":	"lose 5 ranked game",
+		"effect":		"+2% rp"
+	},
+	{
+		"name":			"Toxic",
+		"description":	"send 30 emote",
+		"requirement":	"send 30 emote",
+		"effect":		"+1 free emote"
+	},
+	{
+		"name":			"Cold-Blooded",
+		"description":	"win 30 game streak against the same enemie",
+		"requirement":	"win 30 game streak against the same enemie",
+		"effect":		"+10 ball speed"
+	},
+	{
+		"name":			"Champion",
+		"description":	"win the first plave in ranked season",
+		"requirement":	"win the first plave in ranked season",
+		"effect":		"+500 rp"
+	},
+	{
+		"name":			"Controller",
+		"description":	"win 10 games with 1 point diff",
+		"requirement":	"win 10 match win 5 to 4",
+		"effect":		"+100 coins"
+	},
+	{
+		"name":			"strong castel",
+		"description":	"win 30 game without acception any goal",
+		"requirement":	"win 30 game without acception any goal",
+		"effect":		"non"
+	},
+	{
+		"name":			"Hacker",
+		"description":	"mare a goal without  moving",
+		"requirement":	"mare a goal withou moving",
+		"effect":		"non"
+	},
+	{
+		"name":			"Holy Knight",
+		"description":	"earn all achievements",
+		"requirement":	"earn all avhievements",
+		"effect":		"+10000 exp"
+	},
+	{
+		"name":			"All about money",
+		"description":	"buy two packs from the shop",
+		"requirement":	"buy two packs from the shop",
+		"effect":		"+100 coins"
+	},
+	{
+		"name":			"No Pain No Gain",
+		"description":	"play the game for 5 weeks",
+		"requirement":	"play the game for 5 weeks",
+		"effect":		"+10000 exp"
+	},
+	{
+		"name":			"Fun First",
+		"description":	"play just normal games during a holl season",
+		"requirement":	"play just normal games during a holl season",
+		"effect":		"+10000 exp"
+	},
+	{
+		"name":			"Pay To Win",
+		"description":	"buy a skill from the shop",
+		"requirement":	"buy a skill from the shop",
+		"effect":		"+10000 exp"
+	},
+	{
+		"name":			"impossible maker",
+		"description":	"scoor 1111 goal in a month",
+		"requirement":	"scoor 1111 goal in a month",
+		"effect":		"+10000 exp"
+	},
+	{
+		"name":			"Ultra Instinct",
+		"description":	"reach Gold rank",
+		"requirement":	"reach Gold rank",
+		"effect":		"non"
+	}
+]
