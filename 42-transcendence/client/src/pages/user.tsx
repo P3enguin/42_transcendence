@@ -58,16 +58,14 @@ function UserHomePage() {
                 <a className="ml-3 mt-1 sm:hidden flex" href="#" >
                     <Image src="/logo.png" alt="logo" width={39} height={41}  />
                 </a>
-                <button type="button" className="text-[#8BD9FF] rounded-lg sm:hidden hover:bg-[#01FD91] hover:bg-opacity-50
-                    hover:text-[#01FD91] focus:outline-none focus:ring-2 focus:ring-gray-200 focus:text-[#01FD91] dark:text-gray-400 dark:hover:bg-gray-700
-                    dark:focus:ring-gray-600" aria-controls="navbar-search" aria-expanded="false"
+                <button type="button" className="text-[#8BD9FF] rounded-lg sm:hidden"
                     onClick={toggleSideBar}>
                     <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
                 </button>
             </div>
-            <form className="w-none sm:w-1/4 sm:flex flex-row items-center justify-center ">
+            <form className="w-1/2 sm:w-1/4 flex flex-row items-center justify-center ">
                 <input type="search" id="search-bar" placeholder="search here for players,channels... " 
-                        className="bg-[#2F3C78] rounded-xl border-none w-full text-sm text-white overflow-hidden truncate hidden sm:flex" ></input>
+                        className="bg-[#2F3C78] rounded-xl border-none w-full text-sm text-white overflow-hidden truncate " ></input>
                 <label htmlFor="search-bar " className="relative right-7 top-1">
                     <button type="submit">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
