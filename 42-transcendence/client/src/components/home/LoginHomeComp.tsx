@@ -2,7 +2,7 @@ import { Label } from "flowbite-react";
 import { AnimateSharedLayout, motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
-
+import { signIn } from "next-auth/react";
 
 function LoginComponent() {
 
@@ -28,8 +28,9 @@ function LoginComponent() {
                         <span className="text-black  ">Sign In </span>
                     </button> */}
                     <motion.button whileHover={{scale: 1.5}} 
-                        className={`border border-white rounded-full bg-white p-1 flex flex-row`}>
-
+                        className={`border border-white rounded-full bg-white p-1 flex flex-row`}
+                        onClick={() => {signIn('42',{callbackUrl:"http://localhost:3000/login"})}}>
+                    
                         <Image src="/42_Logo 1.png" alt="42Logo" width={22} height={22}></Image>
                         {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
                     </motion.button>

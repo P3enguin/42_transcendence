@@ -20,7 +20,7 @@ export class AuthService {
     private title: TitleService,
   ) {}
 
-  
+
   async signup(dto: AuthDto) {
     try {
       await this.achiv.fillAvhievememt();
@@ -29,6 +29,7 @@ export class AuthService {
         data: {
           email: dto.email,
           nickname: dto.nickname,
+          // add and hash password
           status:  {
             create: {
             },
@@ -51,7 +52,7 @@ export class AuthService {
           throw error;
         }
       }
-
+  
   async signin(dto: AuthDto) {
     const player =
       await this.prisma.player.findUnique({
@@ -66,6 +67,34 @@ export class AuthService {
 
     return this.signToken(player.id, player.email);
   }
+
+  async getUser(userEmail: string){
+    var user :object;
+    try {
+        user = await this.prisma.player.findUnique({
+            where : {
+                email: userEmail,
+            },
+            select : {
+                nickname: true,
+                email: true,
+            }
+        })
+    }
+    catch(e) {
+        console.log(e);
+        if (e instanceof PrismaClientKnownRequestError) {
+            console.log(`code : ${e.code} , message : ${e.message}`);
+        }
+    }
+    if (!user)
+        return {
+            nickname: null,
+            error:"Error user not found"
+        }
+    return user;
+  }
+
 
   async signToken(
     playerId: number,

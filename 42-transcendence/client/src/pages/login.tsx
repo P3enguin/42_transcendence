@@ -110,9 +110,10 @@ function loginPage(props:object) {
 //     const res = await resp.json();
 //     console.log(res);
 //     if (res.nickname)
+//     // here I should create a jwt token, I guess 
 //     return {
 //         redirect : {
-//             destination: '/profile',
+//             destination: '/user',
 //             permanent:true,
 //         }
 //     }

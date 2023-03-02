@@ -3,9 +3,123 @@ import { motion } from "framer-motion";
 import {PencilSquareIcon} from  '@heroicons/react/24/outline'
 import { Disclosure } from '@headlessui/react'
 import React from "react";
+import Router from "next/router";
+import { useSession } from "next-auth/react";
+
+
+
+
+function isBetween(length:number, min:number, max:number) :boolean {
+    if (length >= min && length <= max)
+      return true;
+    return false
+}
+
+function valideFirstName(firstname : string) : boolean {
+    return true;
+}
+
+function valideLastName() {
+    
+}
+function valideNickName(nickname : string ) : boolean {
+    const nicknameInput = document.getElementById("nickname");
+    const err = document.getElementsByClassName("error");
+
+    err[0].innerHTML="";
+    if (!nickname || nickname.trim() === "")
+    {
+      err[0].innerHTML="Nickname should not be empty!";
+      nicknameInput!.classList.add("err");
+      return false;
+    }
+    else if (!isBetween(nickname.length,6,20))
+    {
+      err[0].innerHTML="Nickname must be 6-25 character long!";
+      nicknameInput!.classList.add("err");
+      return false;
+    }
+    return true;
+}
+
+function validePassword(password : string ) : boolean {
+
+    const passwordInput = document.getElementById("password");
+    const err = document.getElementsByClassName("error");
+
+    err[0].innerHTML="";
+    if (!password || password.trim() === "")
+    {
+      err[0].innerHTML="password field is required!";
+      passwordInput!.classList.add("err");
+      return false;
+    }
+    else if (password.length < 8)
+    {
+      err[0].innerHTML="Password is weak";
+      passwordInput!.classList.add("err");
+      return false;
+    }
+    return true;
+}
+
+
+
+async function handleSubmit(event:any,email:string) {
+    console.log("hh");
+    event.preventDefault();
+
+    const nickname = event.target.nickname.value;
+    const nicknameInput = document.getElementById("nickname");
+    const err = document.getElementsByClassName("error");
+  
+    err[0].innerHTML="";
+    if (!nickname || nickname.trim() === "")
+    {
+      err[0].innerHTML="Nickname should not be empty!";
+      nicknameInput!.classList.add("err");
+    }
+    else if (!isBetween(nickname.length,6,20))
+    {
+      err[0].innerHTML="Nickname must be 6-25 character long!";
+      nicknameInput!.classList.add("err");
+    }
+    else {
+    //   const data = {
+    //       nickname: nickname,
+    //       email: email,
+    //       // picture: event.target.picture.value,
+    //   }
+    //   const url:string = 'http://localhost:8000/auth/user'
+    //   const options = {
+    //       method: 'POST',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify(data),
+    //   }    
+    //   const response = await fetch(url, options);
+    //   const result = await response.json();
+    //   console.log(result);
+  
+    //   if (!result.nickname)
+    //   {
+    //     err[0].innerHTML="Nickname already in use";
+    //     nicknameInput!.classList.add("err");
+    //     return;
+    //   }
+    //   if (result.nickname)
+    //   {
+    //     nicknameInput!.classList.add("success");
+    //     err[0].innerHTML="";
+    //     Router.push('/profile');
+    //   }
+    }
+
+}
 
 function UpdateProfile() {
-    
+
+    const {data: session,status} = useSession();
+
     function handleChange(event:any) {
         const pfp = document.getElementById("pfp-holder") as HTMLImageElement;
         pfp.src = window.URL.createObjectURL(event.target.files![0]);
@@ -37,41 +151,46 @@ function UpdateProfile() {
                         </filter>
                     </defs>
                 </svg>
-            <form className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2">
+            <form className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2"
+                    onSubmit={(event)=>handleSubmit(event,session!.user?.email!)}>
                 <div className="relative z-0 w-3/4 mb-6 group">
-                    <input type="input" name="username" id="username" 
-                    className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    <input type="input" name="firstname" id="firstname" 
+                    className="error block py-2.5 px-3 w-full text-sm text-white bg-transparent 
                     border-2 rounded-full border-gray-300 appearance-none 
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                     <label htmlFor="username" className="peer-focus:font-medium absolute text-sm
+                     <label htmlFor="firstname" className="peer-focus:font-medium absolute text-sm
                      text-gray-500 pl-3 duration-300 transform -translate-y-8
                      scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
                       peer-focus:scale-100 peer-focus:-translate-y-8 ">First Name</label>
+                      <span className="text-red-700 text-sm ml-4">First name should not be empty</span>
                 </div>
                 <div className="relative z-0 w-3/4 mb-6 group">
-                    <input type="input" name="password" id="password" 
+                    <input type="input" name="lastname" id="lastname" 
                     className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
                     border-2 rounded-full border-gray-300 appearance-none 
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                    <label htmlFor="password" className="peer-focus:font-medium absolute text-sm
+                    <label htmlFor="lastname" className="peer-focus:font-medium absolute text-sm
                      text-gray-500 px-3 duration-300 transform 
                      -translate-y-8 scale-100 top-3 -z-10 origin-[0] peer-focus:left-0
                       peer-focus:text-blue-600 
                        peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
                        peer-focus:scale-100 peer-focus:-translate-y-8">Last Name</label>
+                        <span className="text-red-700 text-sm ml-4"></span>
                 </div>
                 <div className="relative z-0 w-3/4 mb-6 group">
-                    <input type="input" name="username" id="username" 
+                    <input type="input" name="nickname" id="nickname" 
                     className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
                     border-2 rounded-full border-gray-300 appearance-none 
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                       
-                     <label htmlFor="username" className="peer-focus:font-medium absolute text-sm
+                     <label htmlFor="nickname" className="peer-focus:font-medium absolute text-sm
                      text-gray-500 pl-3 duration-300 transform -translate-y-8
                      scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-100 peer-focus:-translate-y-8 ">Username</label>
+                      peer-focus:scale-100 peer-focus:-translate-y-8 ">Nickname</label>
+                      <span className="text-red-700 text-sm ml-4"></span>
+
                 </div>
                 <div className="relative z-0 w-3/4 mb-6 group">
                     <input type="password" name="password" id="password" 
@@ -84,10 +203,12 @@ function UpdateProfile() {
                       peer-focus:text-blue-600 
                        peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
                        peer-focus:scale-100 peer-focus:-translate-y-8">Password</label>
+                        <span className="text-red-700 text-sm ml-4"></span>
+
                 </div>
                     <motion.div key="buttonSign" layout={false} layoutId='button'  initial={false} transition={{type: "Tween" }}
                         className="  col-span-2" >
-                        <button className="uppercase w-full  shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
+                        <button type="submit" className="uppercase w-full  shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
                                 transform transition duration-300 
                                 hover:text-l hover:scale-110  text-white text-xs  text-center md:text-base hover:text-md
                                  py-2 px-12  rounded-full">
