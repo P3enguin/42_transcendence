@@ -13,6 +13,9 @@ model Player {
   nickname          String    @unique
   avatar            String    @default("#")
   joinAt            DateTime  @default(now())
+  password          String
+  firstname         String
+  lastname          String
 
   friends           Player[]  @relation("friends") // <- Friend List
   friendsRelation   Player[]  @relation("friends")
@@ -27,9 +30,6 @@ model Player {
   loss              Matchs[]  @relation(name: "loss")
 
   rooms             Room[]
-
-
-
 
   @@map("players")
 }

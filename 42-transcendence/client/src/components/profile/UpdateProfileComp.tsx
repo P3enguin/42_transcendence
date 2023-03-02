@@ -66,53 +66,58 @@ function validePassword(password : string ) : boolean {
 
 
 async function handleSubmit(event:any,email:string) {
-    console.log("hh");
+    // console.log("hh");
     event.preventDefault();
 
-    const nickname = event.target.nickname.value;
-    const nicknameInput = document.getElementById("nickname");
-    const err = document.getElementsByClassName("error");
+    // const nickname = event.target.nickname.value;
+    // const nicknameInput = document.getElementById("nickname");
+    // const err = document.getElementsByClassName("error");
   
-    err[0].innerHTML="";
-    if (!nickname || nickname.trim() === "")
-    {
-      err[0].innerHTML="Nickname should not be empty!";
-      nicknameInput!.classList.add("err");
-    }
-    else if (!isBetween(nickname.length,6,20))
-    {
-      err[0].innerHTML="Nickname must be 6-25 character long!";
-      nicknameInput!.classList.add("err");
-    }
-    else {
-    //   const data = {
-    //       nickname: nickname,
-    //       email: email,
-    //       // picture: event.target.picture.value,
-    //   }
-    //   const url:string = 'http://localhost:8000/auth/user'
-    //   const options = {
-    //       method: 'POST',
-    //       headers: { 'Content-Type': 'application/json' },
-    //       body: JSON.stringify(data),
-    //   }    
-    //   const response = await fetch(url, options);
-    //   const result = await response.json();
-    //   console.log(result);
+    // err[0].innerHTML="";
+    // if (!nickname || nickname.trim() === "")
+    // {
+    //   err[0].innerHTML="Nickname should not be empty!";
+    //   nicknameInput!.classList.add("err");
+    // }
+    // else if (!isBetween(nickname.length,6,20))
+    // {
+    //   err[0].innerHTML="Nickname must be 6-25 character long!";
+    //   nicknameInput!.classList.add("err");
+    // }
+    // else {
+      const data = {
+          nickname: event.target.nickname.value,
+          email: email,
+          password : event.target.password.value,
+          firstname: event.target.firstname.value,
+          lastname : event.target.lastname.value,
+          // picture: event.target.picture.value,
+      }
+      console.log(data);
+      const url:string = 'http://localhost:8000/auth/signup'
+      const options = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+      }    
+      const response = await fetch(url, options);
+      const result = await response.json();
+      console.log(result);
   
-    //   if (!result.nickname)
-    //   {
-    //     err[0].innerHTML="Nickname already in use";
-    //     nicknameInput!.classList.add("err");
-    //     return;
-    //   }
-    //   if (result.nickname)
-    //   {
-    //     nicknameInput!.classList.add("success");
-    //     err[0].innerHTML="";
-    //     Router.push('/profile');
-    //   }
-    }
+      if (!result.nickname)
+      {
+        // err[0].innerHTML="Nickname already in use";
+        // nicknameInput!.classList.add("err");
+        return;
+      }
+      if (result.nickname)
+      {
+        // nicknameInput!.classList.add("success");
+        // err[0].innerHTML="";
+        /* Here I should generate JWT */ 
+        Router.push('/user');
+      }
+    // }
 
 }
 

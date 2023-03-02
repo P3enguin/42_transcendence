@@ -29,6 +29,9 @@ export class AuthService {
         data: {
           email: dto.email,
           nickname: dto.nickname,
+          firstname: dto.firstname,
+          lastname: dto.lastname,
+          password: dto.password,
           // add and hash password
           status:  {
             create: {
