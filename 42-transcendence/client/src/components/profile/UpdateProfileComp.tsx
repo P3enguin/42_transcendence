@@ -2,7 +2,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {PencilSquareIcon} from  '@heroicons/react/24/outline'
 import { Disclosure } from '@headlessui/react'
-import React from "react";
+import React, { useState } from "react";
 import Router from "next/router";
 import { useSession } from "next-auth/react";
 
@@ -119,7 +119,10 @@ async function handleSubmit(event:any,email:string) {
 function UpdateProfile() {
 
     const {data: session,status} = useSession();
-
+    const [state,updateState] = useState({firstname:false,
+                                          lastname:false,
+                                          nickname:false,
+                                          password:false })
     function handleChange(event:any) {
         const pfp = document.getElementById("pfp-holder") as HTMLImageElement;
         pfp.src = window.URL.createObjectURL(event.target.files![0]);
