@@ -9,8 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
+// import { Req,Response,Res } from '@nestjs/common';
 
 @Injectable()
+
 export class AuthService {
   constructor(
     private prisma: PrismaService,
@@ -22,6 +24,7 @@ export class AuthService {
 
 
   async signup(dto: AuthDto) {
+
     try {
       await this.achiv.fillAvhievememt();
       await this.title.fillTitles();
@@ -40,21 +43,20 @@ export class AuthService {
         },
       });
       await  this.achiv.asignAchiv(player.statusId);
-      return this.signToken(player.id, player.email);
-    } catch (error) {
-      if (
-        error instanceof
-        PrismaClientKnownRequestError
-        ) {
-          if (error.code === 'P2002') {
-            throw new ForbiddenException(
-              'Credentials taken',
-              );
-            }
+      const jwtToken = this.signToken(player.id, player.nickname);
+      return jwtToken;
+    }  catch(e) {
+      if (e instanceof PrismaClientKnownRequestError) {
+          // The .code property can be accessed in a type-safe manner
+          if (e.code === 'P2002') {
+            return {error:"error Nickname already exist",nickname:null}
           }
-          throw error;
-        }
-      }
+          else {
+              return {error:"An Error has occured"}
+          }
+    }}  
+  }
+
   
   async signin(dto: AuthDto) {
     const player =
@@ -81,6 +83,8 @@ export class AuthService {
             select : {
                 nickname: true,
                 email: true,
+                firstname:true,
+                lastname:true,
             }
         })
     }
@@ -101,18 +105,18 @@ export class AuthService {
 
   async signToken(
     playerId: number,
-    email: string,
+    nickname: string,
   ): Promise<{ access_token: string }> {
     const payload = {
       sub: playerId,
-      email,
+      nickname,
     };
     const secret = this.config.get('JWT_SECRET');
 
     const token = await this.jwt.signAsync(
       payload,
       {
-        expiresIn: '15m',
+        expiresIn: '60m',
         secret: secret,
       },
     );

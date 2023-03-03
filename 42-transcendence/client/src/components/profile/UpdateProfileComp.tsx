@@ -5,6 +5,7 @@ import { Disclosure } from '@headlessui/react'
 import React, { useState } from "react";
 import Router from "next/router";
 import { useSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt"
 
 
 
@@ -68,7 +69,6 @@ function validePassword(password : string ) : boolean {
 async function handleSubmit(event:any,email:string) {
     // console.log("hh");
     event.preventDefault();
-
     // const nickname = event.target.nickname.value;
     // const nicknameInput = document.getElementById("nickname");
     // const err = document.getElementsByClassName("error");
@@ -93,7 +93,6 @@ async function handleSubmit(event:any,email:string) {
           lastname : event.target.lastname.value,
           // picture: event.target.picture.value,
       }
-      console.log(data);
       const url:string = 'http://localhost:8000/auth/signup'
       const options = {
           method: 'POST',
@@ -101,7 +100,11 @@ async function handleSubmit(event:any,email:string) {
           body: JSON.stringify(data),
       }    
       const response = await fetch(url, options);
+      console.log(response);
+
+      const token = await getToken()
       const result = await response.json();
+
       console.log(result);
   
       if (!result.nickname)
@@ -115,6 +118,7 @@ async function handleSubmit(event:any,email:string) {
         // nicknameInput!.classList.add("success");
         // err[0].innerHTML="";
         /* Here I should generate JWT */ 
+        console.log("im pushing ")
         Router.push('/user');
       }
     // }

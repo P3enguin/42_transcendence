@@ -4,6 +4,8 @@ import { useState,useEffect } from "react";
 import { Disclosure } from "@headlessui/react";
 import { Menu } from '@headlessui/react'
 import { motion,AnimatePresence } from "framer-motion";
+import { getServerSession } from "next-auth";
+import { authOption } from "./api/auth/[...nextauth]";
 
 function UserHomePage() {
 
@@ -60,7 +62,7 @@ function UserHomePage() {
                 </a>
                 <button type="button" className="text-[#8BD9FF] rounded-lg sm:hidden"
                     onClick={toggleSideBar}>
-                    <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
+                    <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path></svg>
                 </button>
             </div>
             <form className="w-1/2 sm:w-1/4 flex flex-row items-center justify-center ">
@@ -164,6 +166,40 @@ function UserHomePage() {
 
 }
 
+export async function getServerSideProps(context:any) {
+
+    const session = await getServerSession(context.req, context.res, authOption)
+    if (!session) {
+        return {
+          redirect: {
+            destination: '/',
+            permanent: false,
+          },
+        }
+      }
+    const email =session?.user?.email;
+    const resp = await fetch("http://localhost:8000/auth/user?email="
+            + email);
+    const res = await resp.json();
+    console.log(res);
+    if (res.nickname)
+    // here I should create a jwt token, I guess 
+    return {
+        props: {  
+            nickname:res.nickname,
+            firstname: res.firstname,
+            lastname: res.lastname,
+        },
+    }
+    else {
+        return {
+            redirect: {
+              destination: '/login',
+              permanent: false,
+            },
+          }
+    }
+}
 export default UserHomePage;
 
 

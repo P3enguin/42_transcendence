@@ -2,6 +2,11 @@ import { profile } from "console";
 import NextAuth, { Awaitable } from "next-auth";
 import FortyTwoProvider from "next-auth/providers/42-school";
 import { User } from "next-auth";
+import { JWT } from "next-auth/jwt";
+
+
+
+
 
 export const authOption = {
     secret: process.env.AUTH_SECRET,
@@ -21,8 +26,10 @@ export const authOption = {
             }
         }),
     ],
-    
-   
+    jwt: {
+        secret: process.env.JWT_SECRET,
+        maxAge: 7 * 24 * 60 * 60, // 7 days
+    },
 }
 
 export default NextAuth(authOption);
