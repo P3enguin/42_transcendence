@@ -24,10 +24,10 @@ export class AchivementService {
 					  },
 				});
 			}catch(error) {
-				console.log("achivement failed");
+				// console.log("achivement failed");
 			}
 		}
-		console.log("Achievement Loaded successefuly !");
+		// console.log("Achievement Loaded successefuly !");
 		return jsonData;
 	}
 
@@ -35,9 +35,9 @@ export class AchivementService {
 		const achiv = await this.prisma.achivement.findMany({});
 
 		for (let achv of achiv)	{
-			console.log({
-				"achivId": achv.id,
-			})
+			// console.log({
+			// 	"achivId": achv.id,
+			// })
 		await this.prisma.achivement_status.create({
 				data:{
 					achivId: achv.id,

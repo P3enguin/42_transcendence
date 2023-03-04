@@ -11,7 +11,7 @@ import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
 import { Request,Response } from 'express';
 
-
+@Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
@@ -43,20 +43,20 @@ export class AuthService {
             console.log(`code : ${e.code} , message : ${e.message}`);
         }
     }
-    // if (!user)
-    // {
-    // }
-    res.status(200).cookie('42access_token', req.user.accessToken, { httpOnly: true, secure: true });
-    res.redirect("http://localhost:3000/login")
+    if (!user)
+    {
+      res.status(200).cookie('42access_token', req.user.accessToken, { httpOnly: true, secure: true });
+      res.redirect("http://localhost:3000/login")
+    }
 
     // if user exist with pass , generate jwt and return it 
     return user;
   }
   
 
-  async signup(req:Request , res:Response, dto:AuthDto) {
+  async signup(req:Request , dto:AuthDto) {
     const session42 = req.cookies["42access_token"]
-    var email : string ;
+    console.log("hello");
     // useless method , should be changed , checked by a real authguard or something !! ! ! !
     if (!session42)
       return {Error : "Unauthorized to put data !"}
@@ -79,9 +79,9 @@ export class AuthService {
         },
       });
       await  this.achiv.asignAchiv(player.statusId);
-      const jwtToken = this.signToken(player.id, player.nickname);
-      res.cookie('jwt_token',jwtToken,{ httpOnly: true, secure: true });
-      return {user : "User created successfully"};
+      const jwtToken = await this.signToken(player.id, player.nickname);
+      console.log(jwtToken);
+      return jwtToken;
     }  catch(e) {
       if (e instanceof PrismaClientKnownRequestError) {
           // The .code property can be accessed in a type-safe manner
@@ -91,7 +91,7 @@ export class AuthService {
           else {
               return {error:"An Error has occured"}
           }
-    }}  
+    }} 
   }
 
   

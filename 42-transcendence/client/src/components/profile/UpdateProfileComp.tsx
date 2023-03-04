@@ -66,7 +66,7 @@ function validePassword(password : string ) : boolean {
 
 
 
-async function handleSubmit(event:any) {
+async function handleSubmit(event:any,email:string) {
     // console.log("hh");
     event.preventDefault();
     // const nickname = event.target.nickname.value;
@@ -87,30 +87,24 @@ async function handleSubmit(event:any) {
     // else {
       const data = {
           nickname: event.target.nickname.value,
-          email: "hh@gmail.com",
+          email: email,
           password : event.target.password.value,
           firstname: event.target.firstname.value,
           lastname : event.target.lastname.value,
           // picture: event.target.picture.value,
       }
       const url:string = 'http://localhost:8000/auth/signup'
-      // const options = {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data),
-      //   credentials: "same-origin" ,
-      // }    
+ 
       const response = await fetch(url,{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         credentials: "include" ,
       });
-      console.log(response);
 
       // const token = await getToken()
       const result = await response.json();
-
+      window.localStorage.setItem('jwt_token',result.access_token);
       console.log(result);
   
       // if (!result.nickname)
@@ -178,7 +172,7 @@ function UpdateProfile({session42,email,fullname,image }:
                     </defs>
                 </svg>
             <form className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2"
-                    onSubmit={(event)=>handleSubmit(event)}>
+                    onSubmit={(event)=>handleSubmit(event,email)}>
                 <div className="relative z-0 w-3/4 mb-6 group">
                     <input type="input" name="firstname" id="firstname" 
                     className="error block py-2.5 px-3 w-full text-sm text-white bg-transparent 

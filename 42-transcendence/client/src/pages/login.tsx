@@ -107,7 +107,7 @@ export async function getServerSideProps(context:any) {
       }
     }
   }
-
+  console.log(session42);
   const resp = await fetch("https://api.intra.42.fr/v2/me",
           { headers: {
             'Content-type': 'application/json',
@@ -117,7 +117,7 @@ export async function getServerSideProps(context:any) {
   const data = await resp.json().catch((error) => {return {
         error : "Error occured while fetching data",
   }});
-  
+
     return {
       props: {  
         session42: session42,
