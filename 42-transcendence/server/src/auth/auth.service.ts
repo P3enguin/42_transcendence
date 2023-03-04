@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
 // import { Req,Response,Res } from '@nestjs/common';
-
+import { Request } from 'express';
 @Injectable()
 
 export class AuthService {
@@ -23,38 +23,81 @@ export class AuthService {
   ) {}
 
 
-  async signup(dto: AuthDto) {
+  async checkUser( req:any,res:any) {
 
+    var userEmail = req.user.email;
+    var user :object;
     try {
-      await this.achiv.fillAvhievememt();
-      await this.title.fillTitles();
-      const player = await this.prisma.player.create({
-        data: {
-          email: dto.email,
-          nickname: dto.nickname,
-          firstname: dto.firstname,
-          lastname: dto.lastname,
-          password: dto.password,
-          // add and hash password
-          status:  {
-            create: {
+        user = await this.prisma.player.findUnique({
+            where : {
+                email: userEmail,
             },
-          },
-        },
-      });
-      await  this.achiv.asignAchiv(player.statusId);
-      const jwtToken = this.signToken(player.id, player.nickname);
-      return jwtToken;
-    }  catch(e) {
-      if (e instanceof PrismaClientKnownRequestError) {
-          // The .code property can be accessed in a type-safe manner
-          if (e.code === 'P2002') {
-            return {error:"error Nickname already exist",nickname:null}
-          }
-          else {
-              return {error:"An Error has occured"}
-          }
-    }}  
+            select : {
+                nickname: true,
+                email: true,
+            }
+        })
+    }
+    catch(e) {
+        console.log(e);
+        if (e instanceof PrismaClientKnownRequestError) {
+            console.log(`code : ${e.code} , message : ${e.message}`);
+        }
+    }
+    // if (!user)
+    // {
+    // }
+    res.status(200).cookie('42access_token', req.user.accessToken, { httpOnly: true, secure: true });
+    res.redirect("http://localhost:3000/login")
+
+    // if user exist with pass , generate jwt and return it 
+    return user;
+  }
+  
+
+  async signup(req:Request , dto:AuthDto) {
+    const session42 = req.cookies["42access_token"]
+    var email : string ;
+    if (!session42)
+      return {Error : "Failed to get session"}
+    
+    const resp = await fetch("https://api.intra.42.fr/v2/me",
+            { headers: {
+              'Content-type': 'application/json',
+              'Authorization': `Bearer ${session42}`, // notice the Bearer before your token
+          }})
+    const data = await resp.json();
+    console.log(data);
+    // try {
+    //   await this.achiv.fillAvhievememt();
+    //   await this.title.fillTitles();
+    //   const player = await this.prisma.player.create({
+    //     data: {
+    //       email: dto.email,
+    //       nickname: dto.nickname,
+    //       firstname: dto.firstname,
+    //       lastname: dto.lastname,
+    //       password: dto.password,
+    //       // add and hash password
+    //       status:  {
+    //         create: {
+    //         },
+    //       },
+    //     },
+    //   });
+    //   await  this.achiv.asignAchiv(player.statusId);
+    //   const jwtToken = this.signToken(player.id, player.nickname);
+    //   return jwtToken;
+    // }  catch(e) {
+    //   if (e instanceof PrismaClientKnownRequestError) {
+    //       // The .code property can be accessed in a type-safe manner
+    //       if (e.code === 'P2002') {
+    //         return {error:"error Nickname already exist",nickname:null}
+    //       }
+    //       else {
+    //           return {error:"An Error has occured"}
+    //       }
+    // }}  
   }
 
   

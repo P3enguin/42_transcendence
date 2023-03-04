@@ -5,9 +5,10 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 
 function LoginComponent() {
-
     const [text,changeText]=useState([{text:"Sign In",status:true},
                                   {text:"gg",status:false}]);
+
+   
 
     return (<div className=" w-full md:w-2/3  max-w-lg	 text-base md:text-2xl justify-center">
         <motion.div key="login" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} 
@@ -27,13 +28,14 @@ function LoginComponent() {
                         <Image src="/google 1.png" alt="google-Logo" width={22} height={22}></Image>
                         <span className="text-black  ">Sign In </span>
                     </button> */}
-                    <motion.button whileHover={{scale: 1.5}} 
-                        className={`border border-white rounded-full bg-white p-1 flex flex-row`}
-                        onClick={() => {signIn('42',{callbackUrl:"http://localhost:3000/login"})}}>
-                    
-                        <Image src="/42_Logo 1.png" alt="42Logo" width={22} height={22}></Image>
-                        {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
-                    </motion.button>
+                    <a href="http://localhost:8000/auth/42-callback">
+                        <motion.button whileHover={{scale: 1.5}} 
+                            className={`border border-white rounded-full bg-white p-1 flex flex-row`}
+                            >
+                            <Image src="/42_Logo 1.png" alt="42Logo" width={22} height={22}></Image>
+                            {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
+                        </motion.button>
+                    </a>  
                 </div>
                 <div className="w-2/4 py-5 self-center">
                         <div className="border border-white"> </div>

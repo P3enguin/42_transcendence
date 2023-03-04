@@ -66,7 +66,7 @@ function validePassword(password : string ) : boolean {
 
 
 
-async function handleSubmit(event:any,email:string) {
+async function handleSubmit(event:any) {
     // console.log("hh");
     event.preventDefault();
     // const nickname = event.target.nickname.value;
@@ -87,47 +87,52 @@ async function handleSubmit(event:any,email:string) {
     // else {
       const data = {
           nickname: event.target.nickname.value,
-          email: email,
+          email: "hh@gmail.com",
           password : event.target.password.value,
           firstname: event.target.firstname.value,
           lastname : event.target.lastname.value,
           // picture: event.target.picture.value,
       }
       const url:string = 'http://localhost:8000/auth/signup'
-      const options = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-      }    
-      const response = await fetch(url, options);
+      // const options = {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(data),
+      //   credentials: "same-origin" ,
+      // }    
+      const response = await fetch(url,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: "include" ,
+      });
       console.log(response);
 
-      const token = await getToken()
+      // const token = await getToken()
       const result = await response.json();
 
       console.log(result);
   
-      if (!result.nickname)
-      {
-        // err[0].innerHTML="Nickname already in use";
-        // nicknameInput!.classList.add("err");
-        return;
-      }
-      if (result.nickname)
-      {
-        // nicknameInput!.classList.add("success");
-        // err[0].innerHTML="";
-        /* Here I should generate JWT */ 
-        console.log("im pushing ")
-        Router.push('/user');
-      }
+      // if (!result.nickname)
+      // {
+      //   // err[0].innerHTML="Nickname already in use";
+      //   // nicknameInput!.classList.add("err");
+      //   return;
+      // }
+      // if (result.nickname)
+      // {
+      //   // nicknameInput!.classList.add("success");
+      //   // err[0].innerHTML="";
+      //   /* Here I should generate JWT */ 
+      //   console.log("im pushing ")
+      //   Router.push('/user');
+      // }
     // }
 
 }
 
-function UpdateProfile() {
+function UpdateProfile({ session42 }: { session42: string }) {
 
-    const {data: session,status} = useSession();
     const [state,updateState] = useState({firstname:false,
                                           lastname:false,
                                           nickname:false,
@@ -164,7 +169,7 @@ function UpdateProfile() {
                     </defs>
                 </svg>
             <form className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2"
-                    onSubmit={(event)=>handleSubmit(event,session!.user?.email!)}>
+                    onSubmit={(event)=>handleSubmit(event)}>
                 <div className="relative z-0 w-3/4 mb-6 group">
                     <input type="input" name="firstname" id="firstname" 
                     className="error block py-2.5 px-3 w-full text-sm text-white bg-transparent 

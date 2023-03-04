@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { getServerSession } from "next-auth/next"
 import { authOption } from '../pages/api/auth/[...nextauth]'
 import UpdateProfile from "@/components/profile/UpdateProfileComp";
+import { cookies } from 'next/headers';
+import { Props } from "@headlessui/react/dist/types";
 
 // function isBetween(length:number, min:number, max:number) :boolean {
 //     if (length >= min && length <= max)
@@ -62,11 +64,11 @@ import UpdateProfile from "@/components/profile/UpdateProfileComp";
 
 // }
 
-function loginPage(props:object) {
-    
+function loginPage({ session42 }: { session42: string }) {
+      console.log(session42);
       return (
         <div className="grid h-screen place-items-center items-start ">
-            <UpdateProfile/>
+            <UpdateProfile session42={session42}/>
         </div>
 
       )
@@ -93,31 +95,43 @@ function loginPage(props:object) {
 
 export async function getServerSideProps(context:any) {
 
-    const session = await getServerSession(context.req, context.res, authOption)
-    if (!session) {
-        return {
-          redirect: {
-            destination: '/',
-            permanent: false,
-          },
-        }
-      }
-    const email =session?.user?.email;
-    const resp = await fetch("http://localhost:8000/auth/user?email="
-            + email);
-    const res = await resp.json();
-    console.log(res);
-    if (res.nickname)
-    // here I should create a jwt token, I guess 
+
+  const session42 : string  = context.req.cookies["42access_token"];
+  if (!session42)
+  {
     return {
-        redirect : {
-            destination: '/user',
-            permanent:true,
-        }
+      redirect : {
+        destination : '/',
+        permanent : true,
+      }
     }
+  }
+
+    // const session = await getServerSession(context.req, context.res, authOption)
+    // if (!session) {
+    //     return {
+    //       redirect: {
+    //         destination: '/',
+    //         permanent: false,
+    //       },
+    //     }
+    //   }
+    // const email =session?.user?.email;
+    // const resp = await fetch("http://localhost:8000/auth/user?email="
+    //         + email);
+    // const res = await resp.json();
+    // console.log(res);
+    // if (res.nickname)
+    // // here I should create a jwt token, I guess 
+    // return {
+    //     redirect : {
+    //         destination: '/user',
+    //         permanent:true,
+    //     }
+    // }
     return {
       props: {  
-        emailExists: true
+        session42: session42,
       },
     };
 }
