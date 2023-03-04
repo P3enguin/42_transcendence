@@ -2,7 +2,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {PencilSquareIcon} from  '@heroicons/react/24/outline'
 import { Disclosure } from '@headlessui/react'
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Router from "next/router";
 import { useSession } from "next-auth/react";
 import { getToken } from "next-auth/jwt"
@@ -131,8 +131,10 @@ async function handleSubmit(event:any) {
 
 }
 
-function UpdateProfile({ session42 }: { session42: string }) {
-
+function UpdateProfile({session42,email,fullname,image }: 
+    { session42: string,email:string,fullname:string,image:string }) {
+    
+    const name = fullname.split(" ");
     const [state,updateState] = useState({firstname:false,
                                           lastname:false,
                                           nickname:false,
@@ -142,6 +144,13 @@ function UpdateProfile({ session42 }: { session42: string }) {
         pfp.src = window.URL.createObjectURL(event.target.files![0]);
     }
 
+    useEffect(() => {
+        const firstNameInput = document.getElementById("firstname") as HTMLInputElement;
+        const lastNameInput = document.getElementById("lastname") as HTMLInputElement;
+
+        firstNameInput!.value   = name[0];
+        lastNameInput!.value   = name[1];
+    },[])
     return (<div className="border-2 border-gray-300 p-12 max-w-4xl rounded-md w-5/6 md:w-2/3 mg-top"> 
                 <div className="flex flex-col justify-center items-center">
 

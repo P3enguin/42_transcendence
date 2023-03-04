@@ -10,10 +10,8 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-
-import { Request } from 'express';
+import { Request,Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
 
@@ -31,9 +29,9 @@ export class AuthController {
 
 
   @Post("signup")
-  signup(@Req() req:Request, @Body() dto:AuthDto) {
+  signup(@Req() req:Request, @Res() res:Response, @Body() dto:AuthDto) {
     console.log(req.cookies['42access_token']);
-    return this.authService.signup(req,dto);
+    return this.authService.signup(req,res,dto);
   }
 
   @HttpCode(HttpStatus.OK)

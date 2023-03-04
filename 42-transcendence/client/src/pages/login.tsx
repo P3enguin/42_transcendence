@@ -64,11 +64,12 @@ import { Props } from "@headlessui/react/dist/types";
 
 // }
 
-function loginPage({ session42 }: { session42: string }) {
-      console.log(session42);
+function loginPage({session42,email,fullname,image }: 
+          { session42: string,email:string,fullname:string,image:string }) {
+
       return (
         <div className="grid h-screen place-items-center items-start ">
-            <UpdateProfile session42={session42}/>
+            <UpdateProfile session42={session42} email={email} fullname={fullname}  image={image}/>
         </div>
 
       )
@@ -107,31 +108,22 @@ export async function getServerSideProps(context:any) {
     }
   }
 
-    // const session = await getServerSession(context.req, context.res, authOption)
-    // if (!session) {
-    //     return {
-    //       redirect: {
-    //         destination: '/',
-    //         permanent: false,
-    //       },
-    //     }
-    //   }
-    // const email =session?.user?.email;
-    // const resp = await fetch("http://localhost:8000/auth/user?email="
-    //         + email);
-    // const res = await resp.json();
-    // console.log(res);
-    // if (res.nickname)
-    // // here I should create a jwt token, I guess 
-    // return {
-    //     redirect : {
-    //         destination: '/user',
-    //         permanent:true,
-    //     }
-    // }
+  const resp = await fetch("https://api.intra.42.fr/v2/me",
+          { headers: {
+            'Content-type': 'application/json',
+            'Authorization': `Bearer ${session42}`, // notice the Bearer before your token
+        }})
+      
+  const data = await resp.json().catch((error) => {return {
+        error : "Error occured while fetching data",
+  }});
+  
     return {
       props: {  
         session42: session42,
+        email:data.email as string,
+        fullname:data.displayname as string,
+        image:data.image.link as string
       },
     };
 }
