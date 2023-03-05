@@ -10,15 +10,10 @@ import { AnimatePresence } from 'framer-motion'
 
 const App: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   Component,
-  pageProps:{session, ...pageProps}
+  pageProps:{ ...pageProps}
 }: AppLayoutProps) => {
-  // const getLayout = Component.getLayout || ((page: React.ReactNode) => page);
   return (
-    <SessionProvider session={session}>
-      {/* {getLayout( */}
-      <Component {...pageProps} />
-      {/* )} */}
-    </SessionProvider>
+    <Component {...pageProps} />
   )
 };
 

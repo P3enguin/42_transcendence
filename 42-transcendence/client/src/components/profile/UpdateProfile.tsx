@@ -105,25 +105,7 @@ async function handleSubmit(event:any,email:string) {
       if (response.status  == 201)
       {
           Router.push("/profile");
-      }      
-      // window.localStorage.setItem('jwt_token',result.access_token);
-      // console.log(result);
-  
-      // if (!result.nickname)
-      // {
-      //   // err[0].innerHTML="Nickname already in use";
-      //   // nicknameInput!.classList.add("err");
-      //   return;
-      // }
-      // if (result.nickname)
-      // {
-      //   // nicknameInput!.classList.add("success");
-      //   // err[0].innerHTML="";
-      //   /* Here I should generate JWT */ 
-      //   console.log("im pushing ")
-      //   Router.push('/user');
-      // }
-    // }
+      }
 
 }
 
