@@ -13,6 +13,18 @@ export class AuthDto {
   @IsNotEmpty()
   nickname: string;
   
+  // @IsString()
+  // avatar: string;
+
   @IsString()
-  avatar: string;
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  firstname: string;
+  
+  @IsString()
+  @IsNotEmpty()
+  lastname: string;
 }
