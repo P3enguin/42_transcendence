@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 
-function LoginComponent() {
+function Login() {
     const [text,changeText]=useState([{text:"Sign In",status:true},
                                   {text:"gg",status:false}]);
 
@@ -82,4 +82,4 @@ function LoginComponent() {
     </div>  );
 }
 
-export default LoginComponent;
+export default Login;

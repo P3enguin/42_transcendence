@@ -49,10 +49,9 @@ export class AuthService {
           res.cookie('jwt_token', jwtToken.access_token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'strict',
-            maxAge: 1000 * 60 * 60 // expires after 1 hour
+            maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
           });
-          res.redirect("http://localhost:3000/user");
+          res.redirect("http://localhost:3000/profile");
         }
     }
     catch(e) {
@@ -92,8 +91,7 @@ export class AuthService {
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
-        maxAge: 1000 * 60 * 60 // expires after 1 hour
+        maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
       });
       res.status(201).send({ success: true });
     }  catch(e) {

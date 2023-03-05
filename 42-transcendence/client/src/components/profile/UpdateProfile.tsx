@@ -104,7 +104,7 @@ async function handleSubmit(event:any,email:string) {
 
       if (response.status  == 201)
       {
-          Router.push("/user");
+          Router.push("/profile");
       }      
       // window.localStorage.setItem('jwt_token',result.access_token);
       // console.log(result);

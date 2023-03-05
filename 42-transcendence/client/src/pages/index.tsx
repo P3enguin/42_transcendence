@@ -1,16 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { Inter, Nabla } from '@next/font/google'
-import Layout from '@/components/Layout'
-import LoginContent from '@/components/login/LoginContent'
-import NavBarLayout from '@/components/Layout'
 import { AnimatePresence, motion ,AnimateSharedLayout} from 'framer-motion'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
-import HomeTextComponent from '@/components/home/HomeTextComp'
-import LoginComponent from '@/components/home/LoginHomeComp'
+import Login from '@/components/home/LoginHome'
 import NavBar from '@/components/home/NavBar'
+import HomeText from '@/components/home/homeText'
 
 export default function Home() {
 
@@ -97,8 +91,8 @@ export default function Home() {
                           />
                       </div>
                     </motion.div>
-              { state[0].current && <HomeTextComponent handleJoin={handleJoin}/> }
-              { join && <LoginComponent />}
+              { state[0].current && <HomeText handleJoin={handleJoin}/> }
+              { join && <Login />}
             </div>
           </div>
       </AnimateSharedLayout>

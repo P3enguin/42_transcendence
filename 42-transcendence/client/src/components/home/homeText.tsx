@@ -5,7 +5,7 @@ export interface handleFunc {
 
 }
 
-function HomeTextComponent({handleJoin}:any) {
+function HomeText({handleJoin}:any) {
     return (
          <div className="text-center xl:text-left w-auto xl:w-1/4 css ">
                   <motion.div
@@ -37,4 +37,4 @@ function HomeTextComponent({handleJoin}:any) {
     );
 }
 
-export default HomeTextComponent;
+export default HomeText;
