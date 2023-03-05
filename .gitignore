@@ -4,27 +4,27 @@
 # dependencies
 **/node_modules
 **/.pnp
-.pnp.js
+**/.pnp.js
 
 # next.js
 **/.next/
 **/out/
 # vercel
-.vercel
+**/.vercel
 
 
 # misc
-.DS_Store
-*.pem
+**/.DS_Store
+**/*.pem
 
 
 # local env files
-.env*.local
-.env
+**/.env*.local
+**/.env*
 
 # typescript
-*.tsbuildinfo
-next-env.d.ts
+**/*.tsbuildinfo
+**/next-env.d.ts
 
 
 # compiled output
@@ -34,13 +34,13 @@ next-env.d.ts
 **/build
 
 # Logs
-logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
+**/logs
+**/*.log
+**/npm-debug.log*
+**/pnpm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/lerna-debug.log*
 
 # Tests
 **/coverage
@@ -48,16 +48,16 @@ lerna-debug.log*
 
 # IDEs and editors
 **/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+**/.project
+**/.classpath
+**/.c9/
+**/*.launch
+**/.settings/
+**/*.sublime-workspace
 
 # IDE - VSCode
 **/.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+**/!.vscode/settings.json
+**/!.vscode/tasks.json
+**/!.vscode/launch.json
+**/!.vscode/extensions.json
