@@ -166,40 +166,40 @@ function UserHomePage() {
 
 }
 
-export async function getServerSideProps(context:any) {
+// export async function getServerSideProps(context:any) {
 
-    const session = await getServerSession(context.req, context.res, authOption)
-    if (!session) {
-        return {
-          redirect: {
-            destination: '/',
-            permanent: false,
-          },
-        }
-      }
-    const email =session?.user?.email;
-    const resp = await fetch("http://localhost:8000/auth/user?email="
-            + email);
-    const res = await resp.json();
-    console.log(res);
-    if (res.nickname)
-    // here I should create a jwt token, I guess 
-    return {
-        props: {  
-            nickname:res.nickname,
-            firstname: res.firstname,
-            lastname: res.lastname,
-        },
-    }
-    else {
-        return {
-            redirect: {
-              destination: '/login',
-              permanent: false,
-            },
-          }
-    }
-}
+//     const session = await getServerSession(context.req, context.res, authOption)
+//     if (!session) {
+//         return {
+//           redirect: {
+//             destination: '/',
+//             permanent: false,
+//           },
+//         }
+//       }
+//     const email =session?.user?.email;
+//     const resp = await fetch("http://localhost:8000/auth/user?email="
+//             + email);
+//     const res = await resp.json();
+//     console.log(res);
+//     if (res.nickname)
+//     // here I should create a jwt token, I guess 
+//     return {
+//         props: {  
+//             nickname:res.nickname,
+//             firstname: res.firstname,
+//             lastname: res.lastname,
+//         },
+//     }
+//     else {
+//         return {
+//             redirect: {
+//               destination: '/login',
+//               permanent: false,
+//             },
+//           }
+//     }
+// }
 export default UserHomePage;
 
 

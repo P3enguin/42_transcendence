@@ -69,29 +69,11 @@ function loginPage({session42,email,fullname,image }:
 
       return (
         <div className="grid h-screen place-items-center items-start ">
-            <UpdateProfile session42={session42} email={email} fullname={fullname}  image={image}/>
+            <UpdateProfile session42={session42} email={email} fullname={fullname}  
+            image={image}/>
         </div>
 
       )
-    // const {data: session,status} = useSession();
-
-    // if (status ==="authenticated")
-    // {
-        // return (<div className="registration-container">
-        //             <form className="login-form"onSubmit={(event)=>handleSubmit(event,session.user?.email!)}>
-        //                 <div className="login-page-element-container nick" id="nick">
-        //                   <InputLabels _id="nickname" _labelValue="Enter a nickname" disabled={false} />
-        //                   <div className="error"></div>
-        //                 </div>
-        //                 <div className="login-page-element-container pic">
-        //                   <InputLabels _id="picture" _labelValue="Enter a picture" disabled={false} _type="file" />
-        //                   <small></small>
-        //                 </div>
-        //                 <button className="login-submit-button" type="submit">Submit</button>
-        //             </form>
-        //         </div>
-        //     );
-    // }
 }
 
 export async function getServerSideProps(context:any) {
@@ -111,7 +93,7 @@ export async function getServerSideProps(context:any) {
   const resp = await fetch("https://api.intra.42.fr/v2/me",
           { headers: {
             'Content-type': 'application/json',
-            'Authorization': `Bearer ${session42}`, // notice the Bearer before your token
+            'Authorization': `Bearer ${session42}`,
         }})
       
   const data = await resp.json().catch((error) => {return {

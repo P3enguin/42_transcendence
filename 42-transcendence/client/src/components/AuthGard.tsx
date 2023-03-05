@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { Session } from "inspector";
 
 async function getData(email : string) {
-    console.log("hh");
     const resp = await fetch("http://localhost:8000/auth/user?email="
             + email);
     const res = await resp.json();
@@ -21,7 +20,6 @@ export  function AuthGuard({children}: {children: JSX.Element}):JSX.Element {
     const {data,status } = useSession()
     const router = useRouter();
 
-    console.log(status);
     if (!status)
         router.push("/");
     else if (status === "loading") 

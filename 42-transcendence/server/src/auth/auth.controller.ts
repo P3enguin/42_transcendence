@@ -29,9 +29,8 @@ export class AuthController {
 
 
   @Post("signup")
-  signup(@Req() req:Request,  @Body() dto:AuthDto) {
-    console.log(req.cookies['42access_token']);
-    return this.authService.signup(req,dto);
+  signup(@Req() req:Request, @Res() res:any , @Body() dto:AuthDto) {
+    return this.authService.signup(req,res,dto);
   }
 
   @HttpCode(HttpStatus.OK)

@@ -102,10 +102,12 @@ async function handleSubmit(event:any,email:string) {
         credentials: "include" ,
       });
 
-      // const token = await getToken()
-      const result = await response.json();
-      window.localStorage.setItem('jwt_token',result.access_token);
-      console.log(result);
+      if (response.status  == 201)
+      {
+          Router.push("/user");
+      }      
+      // window.localStorage.setItem('jwt_token',result.access_token);
+      // console.log(result);
   
       // if (!result.nickname)
       // {

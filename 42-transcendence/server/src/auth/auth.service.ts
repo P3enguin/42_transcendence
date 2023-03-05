@@ -25,38 +25,47 @@ export class AuthService {
   async checkUser( req:any,res:any) {
 
     var userEmail = req.user.email;
-    var user :object;
     try {
-        user = await this.prisma.player.findUnique({
+        const player = await this.prisma.player.findUnique({
             where : {
                 email: userEmail,
             },
             select : {
+                id : true,
                 nickname: true,
                 email: true,
+                avatar: true,
+
             }
         })
+        if (!player)
+        {
+          res.status(200).cookie('42access_token', req.user.accessToken, { httpOnly: true, secure: true });
+          res.redirect("http://localhost:3000/login");
+        }
+        else
+        {
+          const jwtToken = await this.signToken(player.id, player.nickname);
+          res.cookie('jwt_token', jwtToken.access_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 1000 * 60 * 60 // expires after 1 hour
+          });
+          res.redirect("http://localhost:3000/user");
+        }
     }
     catch(e) {
         console.log(e);
         if (e instanceof PrismaClientKnownRequestError) {
             console.log(`code : ${e.code} , message : ${e.message}`);
         }
-    }
-    if (!user)
-    {
-      res.status(200).cookie('42access_token', req.user.accessToken, { httpOnly: true, secure: true });
-      res.redirect("http://localhost:3000/login")
-    }
-
-    // if user exist with pass , generate jwt and return it 
-    return user;
+    } 
   }
   
 
-  async signup(req:Request , dto:AuthDto) {
+  async signup(req:Request, res:any,dto:AuthDto) {
     const session42 = req.cookies["42access_token"]
-    console.log("hello");
     // useless method , should be changed , checked by a real authguard or something !! ! ! !
     if (!session42)
       return {Error : "Unauthorized to put data !"}
@@ -80,8 +89,13 @@ export class AuthService {
       });
       await  this.achiv.asignAchiv(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
-      console.log(jwtToken);
-      return jwtToken;
+      res.cookie('jwt_token', jwtToken.access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 1000 * 60 * 60 // expires after 1 hour
+      });
+      res.status(201).send({ success: true });
     }  catch(e) {
       if (e instanceof PrismaClientKnownRequestError) {
           // The .code property can be accessed in a type-safe manner
@@ -157,7 +171,6 @@ export class AuthService {
         secret: secret,
       },
     );
-
     return {
       access_token: token,
     };
