@@ -1,1 +1,62 @@
-.history
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+**/node_modules
+**/.pnp
+**/.pnp.js
+
+# next.js
+**/.next/
+**/out/
+# vercel
+**/.vercel
+
+
+# misc
+**/.DS_Store
+**/*.pem
+
+
+# local env files
+**/.env*
+
+# typescript
+**/*.tsbuildinfo
+**/next-env.d.ts
+
+
+# compiled output
+**/dist
+**/node_modules
+# production
+**/build
+
+# Logs
+**/logs
+**/*.log
+**/npm-debug.log*
+**/pnpm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/lerna-debug.log*
+
+# Tests
+**/coverage
+**/.nyc_output
+
+# IDEs and editors
+**/.idea
+**/.project
+**/.classpath
+**/.c9/
+**/*.launch
+**/.settings/
+**/*.sublime-workspace
+
+# IDE - VSCode
+**/.vscode/*
+**/!.vscode/settings.json
+**/!.vscode/tasks.json
+**/!.vscode/launch.json
+**/!.vscode/extensions.json
