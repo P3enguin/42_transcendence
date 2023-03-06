@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
 import { Request,Response } from 'express';
+import { endWith } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -22,9 +23,11 @@ export class AuthService {
   ) {}
 
 
-  async checkUser( req:any,res:any) {
+  async checkUser( req:any,res:any,AuthMethod:string) {
 
+    console.log(req.user);
     var userEmail = req.user.email;
+    const accessTokenObj = {AuthMethod: AuthMethod, accessToken: req.user.accessToken};
     try {
         const player = await this.prisma.player.findUnique({
             where : {
@@ -40,7 +43,8 @@ export class AuthService {
         })
         if (!player)
         {
-          res.status(200).cookie('42access_token', req.user.accessToken, { httpOnly: true, secure: true });
+   
+          res.status(200).cookie('access_token', JSON.stringify(accessTokenObj), { httpOnly: true, secure: true });
           res.redirect(process.env.SESSION_AUTH_REDIRECTION);
         }
         else
@@ -64,9 +68,9 @@ export class AuthService {
   
 
   async signup(req:Request, res:any,dto:AuthDto) {
-    const session42 = req.cookies["42access_token"]
+    const session = req.cookies["access_token"]
     // useless method , should be changed , checked by a real authguard or something !! ! ! !
-    if (!session42)
+    if (!session)
       return {Error : "Unauthorized to put data !"}
     
     try {

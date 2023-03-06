@@ -23,10 +23,15 @@ export class AuthController {
 
   @Get('42-callback')
   @UseGuards(AuthGuard('42'))
-  async checkUser(@Req() req:any , @Res() res:any) {
-      return this.authService.checkUser(req,res);
+  async Auth42(@Req() req:any , @Res() res:any) {
+    return this.authService.checkUser(req,res,"42");
   }
 
+  @Get('google-callback')
+  @UseGuards(AuthGuard('google'))
+  async AuthGoogle(@Req() req:any, @Res() res:any){
+    return this.authService.checkUser(req,res,"google");
+  }
 
   @Post("signup")
   signup(@Req() req:Request, @Res() res:any , @Body() dto:AuthDto) {

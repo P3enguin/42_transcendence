@@ -109,8 +109,8 @@ async function handleSubmit(event:any,email:string) {
 
 }
 
-function UpdateProfile({session42,email,fullname,image }: 
-    { session42: string,email:string,fullname:string,image:string }) {
+function UpdateProfile({session,email,fullname,image }: 
+    { session: string,email:string,fullname:string,image:string }) {
     
     const name = fullname.split(" ");
     const [state,updateState] = useState({firstname:false,

@@ -16,14 +16,15 @@ function Login() {
             <div className="text-white flex flex-col items-center gap-5 w-full">
                 <p>CONTINUE WITH</p>
                 <div className="flex flex-row gap-5">
-                    <motion.button whileHover={{scale: 1.5}} 
-                        className={`border border-white rounded-full bg-white p-1 flex flex-row `}
-                        >
-
-                        <Image src="/googleLogo.png" alt="google-Logo" width={22} height={22} className=""></Image>
-                        {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
-
-                    </motion.button>
+                    <a href="http://localhost:8000/auth/google-callback">
+                        <motion.button whileHover={{scale: 1.5}} 
+                            className={`border border-white rounded-full bg-white p-1 flex flex-row `}
+                            >
+                            
+                            <Image src="/googleLogo.png" alt="google-Logo" width={22} height={22} className=""></Image>
+                            {/* <span className={`text-black ${text[0].status ? "contents" : "hidden"}`}>{text[0].text}</span> */}
+                        </motion.button>
+                    </a>
                     {/* <button className="border border-white rounded-full bg-white p-1 hover:w-10 hover:contents">
                         <Image src="/google 1.png" alt="google-Logo" width={22} height={22}></Image>
                         <span className="text-black  ">Sign In </span>

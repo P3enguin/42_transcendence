@@ -3,8 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Strategy } from 'passport-42';
 
 
-
-
 @Injectable() 
 export class Auth42Strategy extends PassportStrategy(Strategy){
     constructor()
@@ -12,7 +10,7 @@ export class Auth42Strategy extends PassportStrategy(Strategy){
         super({
             clientID: process.env.FORTYTWO_APP_UID,
             clientSecret:process.env.FORTYTWO_APP_SECRET,
-            callbackURL: 'http://localhost:8000/auth/42-callback',
+            callbackURL: process.env.FORTYTWO_CALLBACK_URL ,
         })
     }
 
@@ -32,3 +30,4 @@ export class Auth42Strategy extends PassportStrategy(Strategy){
     }
 
 }
+
