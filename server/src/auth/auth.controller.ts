@@ -34,7 +34,7 @@ export class AuthController {
   }
 
   @Post("signup")
-  signup(@Req() req:Request, @Res() res:any , @Body() dto:AuthDto) {
+  signup(@Req() req:Request, @Res() res:any , @Body() dto: AuthDto) {
     return this.authService.signup(req,res,dto);
   }
 
