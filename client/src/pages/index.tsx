@@ -49,7 +49,7 @@ export default function Home() {
       if (state[0].current)
         return ("px-4 shrink-0")
       else if (state[1].current)
-        return ("w-3/5 md:max-xl:w-4/6 xl:w-full")
+        return ("w-3/5 md:max-xl:w-5/6 xl:w-full")
       else
         return "px-4 shrink-0";
   }
