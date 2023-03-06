@@ -6,15 +6,12 @@ interface session {
    accessToken:string
 }
 
-function loginPage({session,email,fullname,image }: 
-          { session: string,email:string,fullname:string,image:string }) {
-      console.log(`session : ${session}`);
-      console.log(`email : ${email}`);
-      console.log(`fullanme : ${fullname}`);
-      console.log(`image : ${image}`);
+function loginPage({session,email,firstName,lastName,image }: 
+          { session: string,email:string,firstName:string,lastName:string,image:string }) {
+
       return (
         <div className="grid h-screen place-items-center items-start ">
-            <UpdateProfile session={session} email={email} fullname={fullname}  
+            <UpdateProfile session={session} email={email} firstName={firstName}  lastName={lastName}
             image={image}/>
         </div>
 
@@ -57,7 +54,8 @@ export async function getServerSideProps(context:any) {
             props: {  
               session: session.AuthMethod,
               email:data.email as string,
-              fullname:data.displayname as string,
+              firstName:data.first_name as string,
+              lastName:data.last_name as string,
               image:data.image.link as string
             },
           };
@@ -73,10 +71,11 @@ export async function getServerSideProps(context:any) {
           }});
     
           return {
-            props: {  
+            props: {
               session: session.AuthMethod,
               email:data.email as string,
-              fullname:data.name as string,
+              firstName:data.given_name as string,
+              lastName:data.family_name as string,
               image:data.picture as string
             },
           };

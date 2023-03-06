@@ -109,10 +109,10 @@ async function handleSubmit(event:any,email:string) {
 
 }
 
-function UpdateProfile({session,email,fullname,image }: 
-    { session: string,email:string,fullname:string,image:string }) {
+function UpdateProfile({session,email,firstName,lastName,image }: 
+    { session: string,email:string,firstName:string,lastName:string,image:string }) {
     
-    const name = fullname.split(" ");
+
     const [state,updateState] = useState({firstname:false,
                                           lastname:false,
                                           nickname:false,
@@ -126,8 +126,8 @@ function UpdateProfile({session,email,fullname,image }:
         const firstNameInput = document.getElementById("firstname") as HTMLInputElement;
         const lastNameInput = document.getElementById("lastname") as HTMLInputElement;
 
-        firstNameInput!.value   = name[0];
-        lastNameInput!.value   = name[1];
+        firstNameInput!.value   = firstName;
+        lastNameInput!.value   = lastName;
     },[])
     return (<div className="border-2 border-gray-300 p-12 max-w-4xl rounded-md w-5/6 md:w-2/3 mg-top"> 
                 <div className="flex flex-col justify-center items-center">

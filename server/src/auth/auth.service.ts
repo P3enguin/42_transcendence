@@ -11,6 +11,7 @@ import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
 import { Request,Response } from 'express';
 import { endWith } from 'rxjs';
+import * as argon2 from "argon2";
 
 @Injectable()
 export class AuthService {
@@ -43,7 +44,6 @@ export class AuthService {
         })
         if (!player)
         {
-   
           res.status(200).cookie('access_token', JSON.stringify(accessTokenObj), { httpOnly: true, secure: true });
           res.redirect(process.env.SESSION_AUTH_REDIRECTION);
         }
@@ -76,13 +76,14 @@ export class AuthService {
     try {
       await this.achiv.fillAvhievememt();
       await this.title.fillTitles();
+      const hash = await argon2.hash(dto.password);
       const player = await this.prisma.player.create({
         data: {
           email: dto.email,
           nickname: dto.nickname,
           firstname: dto.firstname,
           lastname: dto.lastname,
-          password: dto.password,
+          password: hash,
           // add and hash password
           status:  {
             create: {

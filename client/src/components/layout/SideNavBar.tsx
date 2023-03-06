@@ -2,18 +2,23 @@ import Image from "next/image";
 import { useState,useEffect } from "react";
 import { motion,AnimatePresence } from "framer-motion";
 import Link from "next/link";
+ import { useRouter } from "next/router";
+
 function SideNavBar() {
 
-    const [svgIndex,setSvgIndex] = useState(3);
+    const [svgIndex,setSvgIndex] = useState(5);
     const [isVisible,setVisible] = useState(false);
+    const pages = [{ path:'/home',index:0},
+                    { path:'/chat',index:1},
+                    { path:'/game',index:2},
+                    { path:'/profile',index:3},
+                    { path:'/settings',index:4}]
+
+    const router = useRouter();
 
     const variants = {
         open: { opacity: 1},
         closed: { opacity: 0 },
-    }
-
-    function handleSvgIndex(index : number) {
-        setSvgIndex(index)
     }
 
     function toggleSideBar() {
@@ -23,7 +28,7 @@ function SideNavBar() {
         const handleResize = () => {
           // Get the current screen width
           const screenWidth = window.innerWidth;
-    
+
           // If the screen width is medium or larger, hide the sidebar
           if (screenWidth >= 640) {
             setVisible(true);
@@ -31,21 +36,29 @@ function SideNavBar() {
           else
             setVisible(false);
         };
-    
+
         // Add a resize event listener to the window object
         window.addEventListener('resize', handleResize);
-    
+
         // Call the resize handler initially to ensure that the sidebar is hidden if necessary
         handleResize();
-    
+
         // Remove the resize event listener when the component is unmounted
         return () => {
           window.removeEventListener('resize', handleResize);
         };
       }, []);
+    
+    // Handle the color of the icon based on the page we are in 
+    useEffect(() => {
+
+        pages.forEach(page => {
+            if (page.path == router.pathname)
+                setSvgIndex(page.index);
+        });
+    },[])
 
     return (
-
     <div className="sm:p-10">
         {/* navbar */}
         <div className="  w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] rounded-tr-3xl rounded-bl-3xl
@@ -96,8 +109,7 @@ function SideNavBar() {
                 border-[#0097E2]  w-16 h-[20px] absolute top-[43px]">
             </div>
             <div className=" ">
-                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded"  href="/home"
-                    onClick={() => handleSvgIndex(0)}>
+                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded"  href="/home">
                     <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
                         className={`${svgIndex == 0 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path d="M9.9656 28.1732V23.5729C9.96558 22.4071 10.9135 21.4601 12.0877 21.4527H16.3989C17.5783 21.4527 18.5344 22.4019 18.5344 23.5729V28.1598C18.5344 29.1709 19.356 29.9926 20.3744 30H23.3157C24.6895 30.0035 26.0081 29.4642 26.9808 28.5011C27.9534 27.5379 28.5 26.2301 28.5 24.8663V11.7988C28.5 10.6971 28.0081 9.65207 27.1569 8.94525L17.1645 1.0114C15.4178 -0.376316 12.9231 -0.331488 11.2281 1.11808L1.45052 8.94525C0.559111 9.63123 0.0263284 10.6793 0 11.7988V24.853C0 27.6956 2.32107 30 5.18426 30H8.05844C8.54876 30.0035 9.02023 29.8126 9.36821 29.4696C9.71619 29.1267 9.91189 28.66 9.91187 28.1732H9.9656Z" />
@@ -105,8 +117,7 @@ function SideNavBar() {
                 </Link>
             </div>
             <div className="">
-                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded " href="#"
-                    onClick={() => handleSvgIndex(1)}>
+                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded " href="/chat">
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
                         className={`${svgIndex == 1 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path opacity="0.4" d="M15.03 0C6.315 0 0 7.11 0 15C0 17.52 0.735 20.115 2.025 22.485C2.265 22.875 2.295 23.37 2.13 23.835L1.125 27.195C0.9 28.005 1.59 28.605 2.355 28.365L5.385 27.465C6.21 27.195 6.855 27.54 7.6215 28.005C9.8115 29.295 12.54 29.955 15 29.955C22.44 29.955 30 24.21 30 14.955C30 6.975 23.55 0 15.03 0Z" />
@@ -115,8 +126,7 @@ function SideNavBar() {
                 </Link>
             </div>
             <div className=" ">
-                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="#"
-                    onClick={() => handleSvgIndex(2)}>
+                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="/game">
                     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" 
                         className={`${svgIndex == 2 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path opacity="0.4" d="M16.9576 5.82364V6.09821C16.2216 6.08376 15.4856 6.08376 14.7496 6.08376V5.83809C14.7496 4.84099 13.9105 4.03175 12.9095 4.03175H11.4522C9.78884 4.03175 8.43457 2.70229 8.43457 1.0838C8.43457 0.491325 8.93506 0 9.53859 0C10.1568 0 10.6426 0.491325 10.6426 1.0838C10.6426 1.51733 11.0106 1.86414 11.4522 1.86414H12.9095C15.1323 1.87859 16.9429 3.65603 16.9576 5.82364Z" />
@@ -125,8 +135,7 @@ function SideNavBar() {
                 </Link>
             </div>
             <div className=" ">
-                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="/profile"
-                    onClick={() => handleSvgIndex(3)}>
+                <Link className="flex items-center justify-center w-12 h-12 mt-2 rounded  " href="/profile">
                     <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg"
                         className={`${svgIndex == 3 ? "fill-[#01FD91]" : "fill-[#8BD9FF]"} hover:fill-[#0097E2] ease-in duration-200`}>
                         <path d="M11.9955 19.7623C5.526 19.7623 0 20.7823 0 24.8623C0 28.9438 5.4915 29.9998 11.9955 29.9998C18.465 29.9998 23.991 28.9813 23.991 24.8998C23.991 20.8183 18.501 19.7623 11.9955 19.7623Z"/>
