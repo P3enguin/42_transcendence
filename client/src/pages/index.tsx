@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { AnimatePresence, motion ,AnimateSharedLayout} from 'framer-motion'
-import { useState } from 'react'
+import {useState} from 'react'
 import Login from '@/components/home/LoginHome'
 import NavBar from '@/components/home/NavBar'
 import HomeText from '@/components/home/homeText'
@@ -13,8 +13,8 @@ export default function Home() {
     { name: 'About', current: false,animation:{rotate:-90}},
     { name: 'Contact', current: false,animation:{rotate:0}},
   ]);
-  const [animate,setAnimation] = useState({rotate:0});
-  const [join,setJoin] = useState(false);
+  const [animate, setAnimation] = useState({ rotate: 0 });
+  const [join, setJoin] = useState(false);
 
 
   function handleClick(e:any,index:number) {
@@ -68,6 +68,7 @@ export default function Home() {
       <NavBar state={state} handleClick={handleClick}/>
 
       {/* Home Content components */}
+      {/* AnimateSharedLayout is DEPRECATED, CHANGE IT!!! */}
       <AnimateSharedLayout>
         <div className="relative pt-12">
             <div className={` items-center flex   gap-12
