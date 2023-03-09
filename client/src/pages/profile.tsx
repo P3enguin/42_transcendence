@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getServerSession } from "next-auth";
 import Layout from "@/components/layout/layout";
 function PlayerProfile() {
   return (

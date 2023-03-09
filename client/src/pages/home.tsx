@@ -1,14 +1,11 @@
 import Layout from "@/components/layout/layout";
 
-
 function HomePlayer() {
-    return ( 
+  return (
     <Layout>
-        <div>
-            Hello world
-        </div> 
+      <div>Hello world</div>
     </Layout>
-    )
+  );
 }
-// protection not included hh 
+// protection not included hh
 export default HomePlayer;

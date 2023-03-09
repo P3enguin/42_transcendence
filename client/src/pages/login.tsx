@@ -1,4 +1,3 @@
-import { getServerSession } from "next-auth/next";
 import UpdateProfile from "@/components/profile/UpdateProfile";
 
 interface session {

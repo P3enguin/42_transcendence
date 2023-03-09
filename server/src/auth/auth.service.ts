@@ -61,7 +61,7 @@ export class AuthService {
     catch(e) {
         console.log(e);
         if (e instanceof PrismaClientKnownRequestError) {
-            console.log(`code : ${e.code} , message : ${e.message}`);
+            console.log(`code : ${e.code} ,message : ${e.message}`);
         }
     } 
   }

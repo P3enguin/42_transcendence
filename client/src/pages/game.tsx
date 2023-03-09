@@ -1,13 +1,11 @@
 import Layout from "@/components/layout/layout";
 
-
 function Chat() {
-    return (
-        <Layout>
-        <>
-        </>
+  return (
+    <Layout>
+      <></>
     </Layout>
-    )
+  );
 }
 
 export default Chat;

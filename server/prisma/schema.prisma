@@ -141,3 +141,9 @@ model Ban {
   playerId Int
   reason   String
 }
+
+model InvalidToken {
+
+  token String @unique
+
+}
