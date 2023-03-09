@@ -13,6 +13,7 @@ import { Request,Response } from 'express';
 import { endWith } from 'rxjs';
 import * as argon2 from "argon2";
 
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -26,7 +27,6 @@ export class AuthService {
 
   async checkUser( req:any,res:any,AuthMethod:string) {
 
-    console.log(req.user);
     var userEmail = req.user.email;
     const accessTokenObj = {AuthMethod: AuthMethod, accessToken: req.user.accessToken};
     try {
@@ -67,12 +67,19 @@ export class AuthService {
   }
   
 
-  async signup(req:Request, res:any,dto:AuthDto) {
-    const session = req.cookies["access_token"]
-    // useless method , should be changed , checked by a real authguard or something !! ! ! !
+  async signup(req:Request, res:Response,dto:AuthDto) {
+
+    // should add more 
+    const session = req.cookies["access_token"];
     if (!session)
-      return {Error : "Unauthorized to put data !"}
-    
+      return res.status(401).send({error : "session not found"})
+    // const token =  JSON.parse(req.cookies["access_token"])
+    // if (token.AuthMethod !== "42" && token.AuthMethod !== "google" ) {
+    //   return res.status(401).send({error : "Unauthorized to create a user, invalid session"})
+    // }
+    // console.log(` access token : ${token.accessToken}`);
+    // const data = this.jwt.decode(token.accessToken)
+    res.clearCookie('access_token')
     try {
       await this.achiv.fillAvhievememt();
       await this.title.fillTitles();
@@ -84,7 +91,7 @@ export class AuthService {
           firstname: dto.firstname,
           lastname: dto.lastname,
           password: hash,
-          // add and hash password
+          coins:0,
           status:  {
             create: {
             },
@@ -101,7 +108,6 @@ export class AuthService {
       res.status(201).send({ success: true });
     }  catch(e) {
       if (e instanceof PrismaClientKnownRequestError) {
-          // The .code property can be accessed in a type-safe manner
           if (e.code === 'P2002') {
             return {error:"error Nickname already exist",nickname:null}
           }
@@ -156,7 +162,6 @@ export class AuthService {
     return user;
   }
 
-
   async signToken(
     playerId: number,
     nickname: string,
@@ -177,5 +182,44 @@ export class AuthService {
     return {
       access_token: token,
     };
+  }
+
+  async verifyToken (req:Request,res:Response) {
+    const token = req.cookies["jwt_token"];
+    if (!token)
+      return res.status(401).json({error : "No token provided"})
+    const secret :string = process.env.JWT_SECRET;
+   try {
+      const decoded = this.jwt.verify(token,{secret});
+      console.log(decoded);
+      return res.status(200).json({success : "valid token"})
+   }
+   catch (err){
+      return res.status(401).json({error : err});
+   }
+  }
+
+
+  async logout(req:Request,res:Response)
+  {
+      const token = req.cookies["jwt_token"];
+      if (!token)
+        return res.status(401).json({error : "No token provided"})
+      const secret :string = process.env.JWT_SECRET;
+      try {
+          const decoded = this.jwt.verify(token,{secret});
+          await this.prisma.invalidToken.create ({
+            data :
+            {
+              token : token,
+              ExpireDate: decoded.exp,
+            }
+          })
+          // console.log()
+       }
+       catch (err){
+          return res.status(401).json({error : err});
+       }
+      res.clearCookie('jwt_token');
   }
 }

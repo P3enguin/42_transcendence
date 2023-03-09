@@ -17,6 +17,8 @@ model Player {
   firstname         String
   lastname          String
 
+  coins             Int
+
   friends           Player[]  @relation("friends") // <- Friend List
   friendsRelation   Player[]  @relation("friends")
 
@@ -145,5 +147,6 @@ model Ban {
 model InvalidToken {
 
   token String @unique
+  ExpireDate DateTime
 
 }

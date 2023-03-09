@@ -76,7 +76,7 @@ async function handleSubmit(event: any, email: string) {
     lastname: event.target.lastname.value,
     // picture: event.target.picture.value,
   };
-  const url: string = "http://localhost:8000/auth/signup";
+  const url: string = process.env.NEXT_PUBLIC_SINGUP_ENDPOINT;
 
   const response = await fetch(url, {
     method: "POST",

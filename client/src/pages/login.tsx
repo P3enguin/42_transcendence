@@ -1,4 +1,5 @@
 import UpdateProfile from "@/components/profile/UpdateProfile";
+import { verifyToken } from "@/components/VerifyToken";
 
 interface session {
   AuthMethod: string;
@@ -32,14 +33,12 @@ function loginPage({
 }
 
 export async function getServerSideProps(context: any) {
-  // Checking the validity of ACCESS TOKEN NOT DONE YET !!!
+
   const jwt_token: string = context.req.cookies["jwt_token"];
   if (!jwt_token) {
     const session: session = JSON.parse(context.req.cookies["access_token"]);
-    console.log(session);
 
     if (session.AuthMethod !== "42" && session.AuthMethod !== "google") {
-      console.log("hh");
       return {
         redirect: {
           destination: "/",
@@ -92,10 +91,21 @@ export async function getServerSideProps(context: any) {
       };
     }
   }
+  if (jwt_token) {
+    const res = await verifyToken(context.req.headers.cookie);
+    if (res.ok) {
+      return {
+        redirect: {
+          destination: "/profile",
+          permanent: true,
+        },
+      };
+    }
+  }
   //  to check the validity of jwt before redirecting later
   return {
     redirect: {
-      destination: "/profile",
+      destination: "/",
       permanent: true,
     },
   };

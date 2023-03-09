@@ -42,7 +42,6 @@ export default function Home() {
     else if (state[1].current) return "w-3/5 md:max-xl:w-4/5 xl:w-full";
     else return "px-4 shrink-0";
   }
-
   return (
     <>
       <Head>
@@ -90,11 +89,3 @@ export default function Home() {
     </>
   );
 }
-
-// Home.getLayout = function getLayout(page : React.ReactNode) {
-//   return (
-//     <NavBarLayout>
-//         {page}
-//     </NavBarLayout>
-//   )
-// }

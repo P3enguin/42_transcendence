@@ -23,18 +23,18 @@ export class AuthController {
 
   @Get('42-callback')
   @UseGuards(AuthGuard('42'))
-  async Auth42(@Req() req:any , @Res() res:any) {
+  async Auth42(@Req() req:any , @Res() res:Response) {
     return this.authService.checkUser(req,res,"42");
   }
 
   @Get('google-callback')
   @UseGuards(AuthGuard('google'))
-  async AuthGoogle(@Req() req:any, @Res() res:any){
+  async AuthGoogle(@Req() req:Response, @Res() res:any){
     return this.authService.checkUser(req,res,"google");
   }
 
   @Post("signup")
-  signup(@Req() req:Request, @Res() res:any , @Body() dto: AuthDto) {
+  signup(@Req() req:Request, @Res() res:Response , @Body() dto: AuthDto) {
     return this.authService.signup(req,res,dto);
   }
 
@@ -44,9 +44,20 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
+  @Get('verifytoken')
+  verifyToken(@Req() req:Request,@Res() res:Response){
+    return this.authService.verifyToken(req,res);
+  }
+
   @Get('user')
   getUser(@Query() query: {email: string}):object {
      return this.authService.getUser(query.email);
+  }
+
+  @Get('logout')
+  logout(@Req() req:Request,@Res() res:Response)
+  {
+    return this.authService.logout(req,res);
   }
 
 

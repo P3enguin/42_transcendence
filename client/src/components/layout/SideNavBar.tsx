@@ -5,7 +5,7 @@ import GameNavBar from "./GameNavBar";
 import NavBar from "../home/NavBar";
 import React from "react";
 
-function SideNavBar() {
+function SideNavBar({jwt_token} : {jwt_token:string}) {
   const [svgIndex, setSvgIndex] = useState(5);
   const [isVisible, setVisible] = useState(false);
   const pages = [
@@ -54,20 +54,20 @@ function SideNavBar() {
   async function handleLogOut(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
 
-    const url: string = "http://localhost:8000/auth/logout";
+    // const url = process.env.NEXT_PUBLIC_LOGOUT_ENDPOINT;
 
-    const resp = await fetch("https://api.intra.42.fr/v2/me", {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${session.accessToken}`,
-      },
-    });
+    // const resp = await fetch("https://api.intra.42.fr/v2/me", {
+    //   headers: {
+    //     "Content-type": "application/json",
+    //     Authorization: `Bearer ${session.accessToken}`,
+    //   },
+    // });
 
-    const data = await resp.json().catch((error) => {
-      return {
-        error: "Error occured while fetching data",
-      };
-    });
+    // const data = await resp.json().catch((error) => {
+    //   return {
+    //     error: "Error occured while fetching data",
+    //   };
+    // });
   }
 
   return (
