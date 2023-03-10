@@ -49,7 +49,7 @@ function validePassword(password: string): boolean {
   return true;
 }
 
-async function handleSubmit(event: any, email: string) {
+async function handleSubmit(event: any, email: string, coins: number) {
   // console.log("hh");
   event.preventDefault();
   // const nickname = event.target.nickname.value;
@@ -74,6 +74,7 @@ async function handleSubmit(event: any, email: string) {
     password: event.target.password.value,
     firstname: event.target.firstname.value,
     lastname: event.target.lastname.value,
+    coins: coins,
     // picture: event.target.picture.value,
   };
   const url: string = process.env.NEXT_PUBLIC_SINGUP_ENDPOINT;
@@ -91,17 +92,17 @@ async function handleSubmit(event: any, email: string) {
 }
 
 function UpdateProfile({
-  session,
   email,
   firstName,
   lastName,
   image,
+  coins,
 }: {
-  session: string;
   email: string;
   firstName: string;
   lastName: string;
   image: string;
+  coins: number;
 }) {
   const [state, updateState] = useState({
     firstname: false,
@@ -185,7 +186,7 @@ function UpdateProfile({
       </svg>
       <form
         className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2"
-        onSubmit={(event) => handleSubmit(event, email)}
+        onSubmit={(event) => handleSubmit(event, email, coins)}
       >
         <div className="relative z-0 w-3/4 mb-6 group">
           <input
@@ -290,7 +291,7 @@ function UpdateProfile({
           layoutId="button"
           initial={false}
           transition={{ type: "Tween" }}
-          className="  col-span-2"
+          className="col-span-2"
         >
           <button
             type="submit"

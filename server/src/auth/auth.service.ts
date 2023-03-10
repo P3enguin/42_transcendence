@@ -12,6 +12,7 @@ import { TitleService } from 'src/title/title.service';
 import { Request,Response } from 'express';
 import { endWith } from 'rxjs';
 import * as argon2 from "argon2";
+import { verify } from 'crypto';
 
 interface playerStrat {
   email: string,
@@ -86,18 +87,15 @@ export class AuthService {
 
   async signup(req:Request, res:Response,dto:AuthDto) {
 
-    // should add more 
-    // const session = req.cookies["access_token"];
-    // if (!session)
-    //   return res.status(401).send({error : "session not found"})
-    // const token =  JSON.parse(req.cookies["access_token"])
-    // if (token.AuthMethod !== "42" && token.AuthMethod !== "google" ) {
-    //   return res.status(401).send({error : "Unauthorized to create a user, invalid session"})
-    // }
-    // console.log(` access token : ${token.accessToken}`);
-    // const data = this.jwt.decode(token.accessToken)
-    res.clearCookie('access_token')
+    const token = req.cookies["jwt_session"];
+    if (!token)
+      return res.status(401).json({error : "unauthorized to update profile"})
+    const secret :string = process.env.JWT_SECRET;
     try {
+
+      // if the token is valid , the code will continue 
+      const decoded = this.jwt.verify(token,{secret});
+      res.clearCookie('jwt_session')
       await this.achiv.fillAvhievememt();
       await this.title.fillTitles();
       const hash = await argon2.hash(dto.password);
@@ -108,7 +106,7 @@ export class AuthService {
           firstname: dto.firstname,
           lastname: dto.lastname,
           password: hash,
-          coins:0,
+          coins:dto.coins,
           status:  {
             create: {
             },
@@ -131,7 +129,10 @@ export class AuthService {
           else {
               return {error:"An Error has occured"}
           }
-    }} 
+        }
+        // error handling for invalid session token
+        return res.status(401).json({error : e});
+      } 
   }
 
   
@@ -217,7 +218,6 @@ export class AuthService {
 
   async verifySession (req:Request,res:Response) {
     const token = req.cookies["jwt_session"];
-    console.log(token);
     if (!token)
       return res.status(401).json({error : "No token provided"})
     const secret :string = process.env.JWT_SECRET;
