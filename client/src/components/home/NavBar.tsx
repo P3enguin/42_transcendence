@@ -57,8 +57,8 @@ export default function NavBar({
                       className="block h-12 w-auto "
                       src="/logo.png"
                       alt="Pognitor-logo"
-                      width={44}
-                      height={48}
+                      width={39}
+                      height={41}
                     />
                   </button>
                 </div>

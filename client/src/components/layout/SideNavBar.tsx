@@ -6,7 +6,7 @@ import NavBar from "../home/NavBar";
 import React from "react";
 import Router from "next/router";
 
-function SideNavBar({jwt_token} : {jwt_token:string}) {
+function SideNavBar() {
   const [svgIndex, setSvgIndex] = useState(5);
   const [isVisible, setVisible] = useState(false);
   const pages = [
@@ -52,7 +52,9 @@ function SideNavBar({jwt_token} : {jwt_token:string}) {
     });
   }, []);
 
-  async function handleLogOut(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  async function handleLogOut(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
     e.preventDefault();
 
     const url = process.env.NEXT_PUBLIC_LOGOUT_ENDPOINT;
@@ -63,8 +65,7 @@ function SideNavBar({jwt_token} : {jwt_token:string}) {
       credentials: "include",
     });
 
-    if (resp.status === 201)
-      Router.push("/");
+    if (resp.status === 201) Router.push("/");
   }
 
   return (
@@ -73,7 +74,7 @@ function SideNavBar({jwt_token} : {jwt_token:string}) {
       <GameNavBar toggleSideBar={toggleSideBar} handleLogOut={handleLogOut} />
 
       {/* SideBar */}
-      <SideBar isVisible={isVisible} svgIndex={svgIndex} />
+      <SideBar isVisible={isVisible} svgIndex={svgIndex} handleLogOut={handleLogOut} />
     </div>
   );
 }

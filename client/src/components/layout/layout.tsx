@@ -4,13 +4,12 @@ import { ReactNode } from "react";
 
 interface LayoutProps {
   children: ReactNode;
-  jwt_token: string
 }
 
-const Layout = ({ children,jwt_token }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
-      <SideNavBar jwt_token={jwt_token} />
+      <SideNavBar />
       <main>{children}</main>
     </>
   );

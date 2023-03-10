@@ -11,12 +11,18 @@ import {
   SettingsIcon,
 } from "../icons/Icons";
 
+interface FunctionProps {
+  (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+}
+
 function SideBar({
   isVisible,
   svgIndex,
+  handleLogOut,
 }: {
   isVisible: boolean;
   svgIndex: number;
+  handleLogOut: FunctionProps;
 }) {
   const variants = {
     open: { opacity: 1 },
@@ -72,7 +78,9 @@ function SideBar({
 
         <div className="flex flex-col absolute bottom-0 items-center gap-7">
           <div className="flex sm:hidden">
-            <LogoutIcon />
+            <button onClick={handleLogOut}>
+              <LogoutIcon />
+            </button>
           </div>
           <div className=" mb-3 ">
             <Link

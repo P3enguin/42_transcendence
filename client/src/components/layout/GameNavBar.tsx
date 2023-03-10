@@ -5,7 +5,7 @@ import { SideBarIcon, LogoutIcon, SearchBarIcon } from "../icons/Icons";
 
 interface FunctionProps {
   toggleSideBar: () => void;
-  handleLogOut: (e :React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  handleLogOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 function GameNavBar({ toggleSideBar, handleLogOut }: FunctionProps) {
