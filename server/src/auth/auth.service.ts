@@ -13,6 +13,14 @@ import { Request,Response } from 'express';
 import { endWith } from 'rxjs';
 import * as argon2 from "argon2";
 
+interface playerStrat {
+  email: string,
+  firstName: string,
+  lastName: string,
+  picture: string,
+  coins: number,
+  accessToken: string,
+}
 
 @Injectable()
 export class AuthService {
@@ -23,16 +31,13 @@ export class AuthService {
     private achiv: AchivementService,
     private title: TitleService,
   ) {}
-
-
-  async checkUser( req:any,res:any,AuthMethod:string) {
-
-    var userEmail = req.user.email;
-    const accessTokenObj = {AuthMethod: AuthMethod, accessToken: req.user.accessToken};
+  
+  async checkUser( user:playerStrat,res:Response) {
+   
     try {
         const player = await this.prisma.player.findUnique({
             where : {
-                email: userEmail,
+                email: user.email,
             },
             select : {
                 id : true,
@@ -42,9 +47,21 @@ export class AuthService {
 
             }
         })
+        // the player not exist : create a short-live jwt and redirect to complete the profile
         if (!player)
-        {
-          res.status(200).cookie('access_token', JSON.stringify(accessTokenObj), { httpOnly: true, secure: true });
+        { 
+          const secret = process.env.JWT_SECRET;
+          const jwtSession = await this.jwt.signAsync(
+          user,
+          {
+            expiresIn: '15m',
+            secret: secret,
+          })
+          res.status(200).cookie('jwt_session',jwtSession,{ 
+            httpOnly: true, 
+            secure: true, 
+            maxAge: 1000 * 60 * 15 // expires after 15 min
+          });
           res.redirect(process.env.SESSION_AUTH_REDIRECTION);
         }
         else
@@ -70,9 +87,9 @@ export class AuthService {
   async signup(req:Request, res:Response,dto:AuthDto) {
 
     // should add more 
-    const session = req.cookies["access_token"];
-    if (!session)
-      return res.status(401).send({error : "session not found"})
+    // const session = req.cookies["access_token"];
+    // if (!session)
+    //   return res.status(401).send({error : "session not found"})
     // const token =  JSON.parse(req.cookies["access_token"])
     // if (token.AuthMethod !== "42" && token.AuthMethod !== "google" ) {
     //   return res.status(401).send({error : "Unauthorized to create a user, invalid session"})
@@ -191,14 +208,27 @@ export class AuthService {
     const secret :string = process.env.JWT_SECRET;
    try {
       const decoded = this.jwt.verify(token,{secret});
-      console.log(decoded);
-      return res.status(200).json({success : "valid token"})
+      return res.status(200).json({data : decoded})
    }
    catch (err){
       return res.status(401).json({error : err});
    }
   }
 
+  async verifySession (req:Request,res:Response) {
+    const token = req.cookies["jwt_session"];
+    console.log(token);
+    if (!token)
+      return res.status(401).json({error : "No token provided"})
+    const secret :string = process.env.JWT_SECRET;
+   try {
+      const decoded = this.jwt.verify(token,{secret});
+      return res.status(200).json({data : decoded})
+   }
+   catch (err){
+      return res.status(401).json({error : err});
+   }
+  }
 
   async logout(req:Request,res:Response)
   {

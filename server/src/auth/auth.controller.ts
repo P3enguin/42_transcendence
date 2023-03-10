@@ -24,13 +24,13 @@ export class AuthController {
   @Get('42-callback')
   @UseGuards(AuthGuard('42'))
   async Auth42(@Req() req:any , @Res() res:Response) {
-    return this.authService.checkUser(req,res,"42");
+    return this.authService.checkUser(req.user,res);
   }
 
   @Get('google-callback')
   @UseGuards(AuthGuard('google'))
-  async AuthGoogle(@Req() req:Response, @Res() res:any){
-    return this.authService.checkUser(req,res,"google");
+  async AuthGoogle(@Req() req:any, @Res() res:Response){
+    return this.authService.checkUser(req.user,res);
   }
 
   @Post("signup")
@@ -47,6 +47,11 @@ export class AuthController {
   @Get('verifytoken')
   verifyToken(@Req() req:Request,@Res() res:Response){
     return this.authService.verifyToken(req,res);
+  }
+
+  @Get('verifysession')
+  verifySession(@Req() req:Request,@Res() res:Response){
+    return this.authService.verifySession(req,res);
   }
 
   @Get('user')

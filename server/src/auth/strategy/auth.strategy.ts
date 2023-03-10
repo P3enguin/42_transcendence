@@ -16,14 +16,15 @@ export class Auth42Strategy extends PassportStrategy(Strategy){
 
     async validate (accessToken: string, refreshToken: string, 
                         profile: any, done: any): Promise<any> {
+        
 
-        const { name, emails,username,profileUrl} = profile;
+        const { name, emails,username,_json} = profile;
         const user = {
             email: emails[0].value,
             firstName: name.givenName,
             lastName: name.familyName,
-            login: username,
-            url: profileUrl,
+            picture: _json.image.link,
+            coins:_json.wallet,
             accessToken
         }
         done(null, user);
