@@ -74,7 +74,11 @@ function SideNavBar() {
       <GameNavBar toggleSideBar={toggleSideBar} handleLogOut={handleLogOut} />
 
       {/* SideBar */}
-      <SideBar isVisible={isVisible} svgIndex={svgIndex} handleLogOut={handleLogOut} />
+      <SideBar
+        isVisible={isVisible}
+        svgIndex={svgIndex}
+        handleLogOut={handleLogOut}
+      />
     </div>
   );
 }

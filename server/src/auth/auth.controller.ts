@@ -13,7 +13,7 @@ import {
 import { Request,Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { AuthDto } from './dto';
+import { AuthDto, singDTO} from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,10 +38,9 @@ export class AuthController {
     return this.authService.signup(req,res,dto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Post('signin')
-  signin(@Body() dto: AuthDto) {
-    return this.authService.signin(dto);
+  signin(@Res() res:Response,@Body() dto: singDTO) {
+    return this.authService.signin(res,dto);
   }
 
   @Get('verifytoken')
@@ -64,6 +63,5 @@ export class AuthController {
   {
     return this.authService.logout(req,res);
   }
-
 
 }

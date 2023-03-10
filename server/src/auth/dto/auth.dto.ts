@@ -30,5 +30,19 @@ export class AuthDto {
   lastname: string;
 
   @IsNumber()
-  coins:number;
+  coins:number
 }
+
+export class singDTO {
+
+  @IsString()
+  @IsNotEmpty()
+  nickname: string;
+  
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+}
+

@@ -5,6 +5,16 @@ import { Disclosure } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import Router from "next/router";
 
+interface data {
+  nickname: string,
+  email: string,
+  password: string,
+  firstname: string,
+  lastname: string,
+  coins: number,
+  // picture: event.target.picture.value,
+}
+
 function isBetween(length: number, min: number, max: number): boolean {
   if (length >= min && length <= max) return true;
   return false;
@@ -68,7 +78,7 @@ async function handleSubmit(event: any, email: string, coins: number) {
   //   nicknameInput!.classList.add("err");
   // }
   // else {
-  const data = {
+  const data : data = {
     nickname: event.target.nickname.value,
     email: email,
     password: event.target.password.value,
@@ -77,7 +87,7 @@ async function handleSubmit(event: any, email: string, coins: number) {
     coins: coins,
     // picture: event.target.picture.value,
   };
-  const url: string = process.env.NEXT_PUBLIC_SINGUP_ENDPOINT;
+  const url: string = process.env.NEXT_PUBLIC_SIGNUP_ENDPOINT;
 
   const response = await fetch(url, {
     method: "POST",
