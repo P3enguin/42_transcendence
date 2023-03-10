@@ -1,49 +1,78 @@
-import { getServerSession } from "next-auth/next"
 import UpdateProfile from "@/components/profile/UpdateProfile";
-
-function loginPage({session42,email,fullname,image }: 
-          { session42: string,email:string,fullname:string,image:string }) {
-
-      return (
-        <div className="grid h-screen place-items-center items-start ">
-            <UpdateProfile session42={session42} email={email} fullname={fullname}  
-            image={image}/>
-        </div>
-
-      )
+import { verifyToken, verifySession } from "@/components/VerifyToken";
+import { Jwt, verify } from "jsonwebtoken";
+interface session {
+  AuthMethod: string;
+  accessToken: string;
 }
 
-export async function getServerSideProps(context:any) {
+function loginPage({
+  email,
+  firstName,
+  lastName,
+  image,
+  coins,
+}: {
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  coins: number;
+}) {
+  return (
+    <div className="grid h-screen place-items-center items-start ">
+      <UpdateProfile
+        email={email}
+        firstName={firstName}
+        lastName={lastName}
+        image={image}
+        coins={coins}
+      />
+    </div>
+  );
+}
 
-  const session42 : string  = context.req.cookies["42access_token"];
-  if (!session42)
-  {
-    return {
-      redirect : {
-        destination : '/',
-        permanent : true,
-      }
+export async function getServerSideProps(context: any) {
+  const jwt_token: string = context.req.cookies["jwt_token"];
+  if (!jwt_token) {
+    const response = await verifySession(context.req.headers.cookie);
+    if (!response.ok) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: true,
+        },
+      };
     }
-  }
-  console.log(session42);
-  const resp = await fetch("https://api.intra.42.fr/v2/me",
-          { headers: {
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${session42}`,
-        }})
-      
-  const data = await resp.json().catch((error) => {return {
-        error : "Error occured while fetching data",
-  }});
-
+    const result = await response.json();
     return {
-      props: {  
-        session42: session42,
-        email:data.email as string,
-        fullname:data.displayname as string,
-        image:data.image.link as string
+      props: {
+        email: result.data.email,
+        firstName: result.data.firstName,
+        lastName: result.data.lastName,
+        image: result.data.picture,
+        coins: result.data.coins,
       },
     };
+  }
+  if (jwt_token) {
+    const res = await verifyToken(context.req.headers.cookie);
+    if (res.ok) {
+      return {
+        redirect: {
+          destination: "/profile",
+          permanent: true,
+        },
+      };
+    }
+  }
+  //  to check the validity of jwt before redirecting later
+  return {
+    redirect: {
+      destination: "/",
+      permanent: true,
+    },
+  };
 }
 
 export default loginPage;

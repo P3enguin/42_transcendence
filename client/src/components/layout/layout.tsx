@@ -9,11 +9,12 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <>
-      <SideNavBar/>
+      <SideNavBar />
       <main>{children}</main>
-
     </>
   );
 };
+
+
 
 export default Layout;

@@ -6,7 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy';
 import { Auth42Strategy } from './strategy/auth.strategy';
-
+import { GoogleStrategy } from './strategy/auth.strategy.google';
 @Module({
   imports: [
     JwtModule.register({}),
@@ -14,7 +14,7 @@ import { Auth42Strategy } from './strategy/auth.strategy';
     TitleModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy,Auth42Strategy],
+  providers: [AuthService, JwtStrategy,Auth42Strategy,GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

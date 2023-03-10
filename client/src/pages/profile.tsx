@@ -1,44 +1,36 @@
 import Image from "next/image";
-import { useState,useEffect } from "react";
-import { motion,AnimatePresence } from "framer-motion";
-import { getServerSession } from "next-auth";
-import Layout
- from "@/components/layout/layout";
-function PlayerProfile() {
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Layout from "@/components/layout/layout";
+import { verifyToken } from "@/components/VerifyToken";
 
-    return (
-        <Layout>
-            <div>
-                hh
-            </div>
-        </Layout>
-    );
-
+function PlayerProfile({ jwt_token }: { jwt_token: string }) {
+  return (
+    <Layout>
+      <div>hh</div>
+    </Layout>
+  );
 }
 
-export async function getServerSideProps(context:any) {
+export async function getServerSideProps({ req }: any) {
+  const jwt_token: string = req.cookies["jwt_token"];
 
-  const jwt_token : string = context.req.cookies["jwt_token"];
-  if (!jwt_token)
-  {
+  if (jwt_token) {
+    const res = await verifyToken(req.headers.cookie);
+    if (res.ok) {
       return {
-        redirect : {
-          destination : '/',
-          permanent : true,
-        }
-      }
+        // modify this to return anything you want before your page load
+        props: {
+          jwt_token: jwt_token,
+        },
+      };
+    }
   }
- 
-  
-    return {
-      props: {  
-        authenticated : true
-      },
-    };
-
+  return {
+    redirect: {
+      destination: "/",
+      permanent: true,
+    },
+  };
 }
-
 export default PlayerProfile;
-
-
-

@@ -1,10 +1,10 @@
 import Layout from "@/components/layout/layout";
 import { verifyToken } from "@/components/VerifyToken";
 
-function HomePlayer({ jwt_token }: { jwt_token: string }) {
+function Chat({ jwt_token }: { jwt_token: string }) {
   return (
     <Layout>
-      <div>Hello world</div>
+      <></>
     </Layout>
   );
 }
@@ -31,4 +31,4 @@ export async function getServerSideProps({ req }: any) {
   };
 }
 
-export default HomePlayer;
+export default Chat;

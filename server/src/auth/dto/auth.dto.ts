@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsString,
 } from 'class-validator';
 
@@ -27,4 +28,21 @@ export class AuthDto {
   @IsString()
   @IsNotEmpty()
   lastname: string;
+
+  @IsNumber()
+  coins:number
 }
+
+export class singDTO {
+
+  @IsString()
+  @IsNotEmpty()
+  nickname: string;
+  
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+}
+
