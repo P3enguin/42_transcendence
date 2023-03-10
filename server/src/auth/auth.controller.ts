@@ -59,7 +59,7 @@ export class AuthController {
      return this.authService.getUser(query.email);
   }
 
-  @Get('logout')
+  @Post('logout')
   logout(@Req() req:Request,@Res() res:Response)
   {
     return this.authService.logout(req,res);

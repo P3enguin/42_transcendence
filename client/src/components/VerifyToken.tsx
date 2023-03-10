@@ -1,3 +1,5 @@
+// type of cookie param should be checked 
+
 export async function verifyToken(cookie:string) : Promise<Response> {
     return await fetch(process.env.NEXT_PUBLIC_VERIFY_TOKEN_ENDPOINT,{
         method: "GET",

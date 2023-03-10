@@ -242,14 +242,14 @@ export class AuthService {
             data :
             {
               token : token,
-              ExpireDate: decoded.exp,
+              ExpireDate: new Date(decoded.exp * 1000),
             }
           })
-          // console.log()
+          res.status(201).clearCookie('jwt_token').json({success:"logged out succesfully"});
        }
        catch (err){
+          console.log(err);
           return res.status(401).json({error : err});
        }
-      res.clearCookie('jwt_token');
   }
 }

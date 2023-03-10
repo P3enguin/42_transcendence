@@ -4,6 +4,7 @@ import SideBar from "./SideBar";
 import GameNavBar from "./GameNavBar";
 import NavBar from "../home/NavBar";
 import React from "react";
+import Router from "next/router";
 
 function SideNavBar({jwt_token} : {jwt_token:string}) {
   const [svgIndex, setSvgIndex] = useState(5);
@@ -54,20 +55,16 @@ function SideNavBar({jwt_token} : {jwt_token:string}) {
   async function handleLogOut(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
 
-    // const url = process.env.NEXT_PUBLIC_LOGOUT_ENDPOINT;
+    const url = process.env.NEXT_PUBLIC_LOGOUT_ENDPOINT;
 
-    // const resp = await fetch("https://api.intra.42.fr/v2/me", {
-    //   headers: {
-    //     "Content-type": "application/json",
-    //     Authorization: `Bearer ${session.accessToken}`,
-    //   },
-    // });
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
 
-    // const data = await resp.json().catch((error) => {
-    //   return {
-    //     error: "Error occured while fetching data",
-    //   };
-    // });
+    if (resp.status === 201)
+      Router.push("/");
   }
 
   return (
