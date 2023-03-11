@@ -4,49 +4,16 @@ import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Disclosure } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import Router from "next/router";
+import { data, statObj } from "./Interface";
+import {
+  isBetween,
+  isValidName,
+  isTooLong,
+  isEmpty,
+  isClear,
+  isStrong,
+} from "./ValidationFuncs";
 
-interface data {
-  nickname: string;
-  email: string;
-  password: string;
-  firstname: string;
-  lastname: string;
-  coins: number;
-  // picture: event.target.picture.value,
-}
-
-function isBetween(str: string, min: number, max: number): boolean {
-  if (str.length >= min && str.length <= max) return true;
-  return false;
-}
-
-function isValidName(str: string): boolean {
-  const pattern = /^[\w'\-,.][^_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/g;
-
-  return pattern.test(str);
-}
-function isTooLong(str: string): boolean {
-  if (str.length > 30) return true;
-  return false;
-}
-
-function isEmpty(str: string): boolean {
-  if (!str || str.trim() === "") return true;
-  return false;
-}
-
-function isClear(str: string): boolean {
-  const pattern = /^[A-Za-z0-9]+([A-Za-z0-9]*|[._-]?[A-Za-z0-9]+)*$/;
-
-  return pattern.test(str);
-}
-
-function isStrong(str: string): boolean {
-  const pattern =
-    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,100}$/g;
-
-  return pattern.test(str);
-}
 
 async function handleSubmit(event: any, email: string, coins: number) {
   event.preventDefault();
@@ -74,10 +41,8 @@ async function handleSubmit(event: any, email: string, coins: number) {
   }
 }
 
-interface statObj {
-  valid: boolean;
-  touched: boolean;
-}
+
+
 function UpdateProfile({
   email,
   firstName,
@@ -497,7 +462,11 @@ function UpdateProfile({
             disabled={!isEnabled}
             type="submit"
             className={`uppercase w-full   py-2 px-12  rounded-full bg-[#0097E2]  text-white text-xs  text-center md:text-base hover:text-md 
-            ${isEnabled ? "hover:bg-[#2C3B7C] transform transition duration-300 hover:text-l hover:scale-110" : "opacity-25"} `}
+            ${
+              isEnabled
+                ? "hover:bg-[#2C3B7C] transform transition duration-300 hover:text-l hover:scale-110"
+                : "opacity-25"
+            } `}
           >
             Update
           </button>
