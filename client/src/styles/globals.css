@@ -45,4 +45,8 @@ html {
 .error {
   border-color: red;
 }
+
+.valid {
+  border-color: green;
+}
 /******************************* profile css **********************************/

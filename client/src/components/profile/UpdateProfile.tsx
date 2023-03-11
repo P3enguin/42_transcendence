@@ -20,11 +20,10 @@ function isBetween(str: string, min: number, max: number): boolean {
   return false;
 }
 
-function isValidName(str:string) : boolean { 
-  const pattern = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/g;
+function isValidName(str: string): boolean {
+  const pattern = /^[\w'\-,.][^_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/g;
 
   return pattern.test(str);
-
 }
 function isTooLong(str: string): boolean {
   if (str.length > 30) return true;
@@ -42,12 +41,12 @@ function isClear(str: string): boolean {
   return pattern.test(str);
 }
 
-function isStrong(str:string) : boolean {
-  const pattern = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,100}$/g;
+function isStrong(str: string): boolean {
+  const pattern =
+    /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,100}$/g;
 
   return pattern.test(str);
 }
-
 
 async function handleSubmit(event: any, email: string, coins: number) {
   event.preventDefault();
@@ -75,6 +74,10 @@ async function handleSubmit(event: any, email: string, coins: number) {
   }
 }
 
+interface statObj {
+  valid: boolean;
+  touched: boolean;
+}
 function UpdateProfile({
   email,
   firstName,
@@ -89,93 +92,150 @@ function UpdateProfile({
   coins: number;
 }) {
   // stats for error handling
-  const [state, updateState] = useState({
-    firstname: false,
-    lastname: true,
-    nickname: false,
-    password: false,
-  });
+  const [state, updateState] = useState([
+    { valid: true, touched: false },
+    { valid: true, touched: false },
+    { valid: false, touched: false },
+    { valid: false, touched: false },
+  ]);
+  const [isEnabled, setEnabled] = useState(false);
 
-  function updateField(field: object, span: HTMLElement | null, error: string) {
-    updateState((state) => ({
-      ...state,
-      ...field,
-    }));
+  function updateField(
+    index: number,
+    val: statObj,
+    span: HTMLElement | null,
+    error: string
+  ) {
+    const newState = state.map((elem, i) => {
+      if (i == index) return val;
+      else return elem;
+    });
+    updateState(newState);
     if (span) span.innerHTML = error;
   }
 
   function valideFirstName(event: any) {
     const first_name: string = event.target.value;
     const span = document.getElementById("fnspan");
+    var touched = state[0].touched;
+    if (!touched) touched = true;
 
     span!.innerHTML = "";
     if (isEmpty(first_name)) {
-      updateField({ firstname: false }, span, "First name cannot be empty!");
+      updateField(
+        0,
+        { valid: false, touched: touched },
+        span,
+        "First name cannot be empty!"
+      );
     } else if (isTooLong(first_name)) {
-      updateField({ firstname: false }, span, "Input is too long!");
+      updateField(
+        0,
+        { valid: false, touched: touched },
+        span,
+        "Input is too long!"
+      );
     } else if (!isValidName(first_name)) {
-      updateField({ firstname: false }, span, "first name contains forbidden characters!");
-    }
-    else {
-      updateField({ firstname: true }, null, "");
+      updateField(
+        0,
+        { valid: false, touched: touched },
+        span,
+        "first name contains forbidden characters!"
+      );
+    } else {
+      updateField(0, { valid: true, touched: touched }, null, "");
     }
   }
 
   function valideLastName(event: any) {
     const last_name: string = event.target.value;
     const span = document.getElementById("lnspan");
+    var touched = state[1].touched;
+    if (!touched) touched = true;
 
     span!.innerHTML = "";
     if (isEmpty(last_name)) {
-      updateField({ lastname: false }, span, "Last name cannot be empty!");
+      updateField(
+        1,
+        { valid: false, touched: touched },
+        span,
+        "Last name cannot be empty!"
+      );
     } else if (isTooLong(last_name)) {
-      updateField({ lastname: false }, span, "Input is too long!");
+      updateField(
+        1,
+        { valid: false, touched: touched },
+        span,
+        "Input is too long!"
+      );
     } else if (!isValidName(last_name)) {
-      updateField({ lastname: false }, span, "Last name contains forbidden characters!");
-    }else {
-      updateField({ lastname: true }, null, "");
+      updateField(
+        1,
+        { valid: false, touched: touched },
+        span,
+        "Last name contains forbidden characters!"
+      );
+    } else {
+      updateField(1, { valid: true, touched: touched }, null, "");
     }
   }
 
   function valideNickName(event: any) {
     const nick_name: string = event.target.value;
     const span = document.getElementById("nickspan");
+    var touched = state[2].touched;
+    if (!touched) touched = true;
 
     span!.innerHTML = "";
     if (isEmpty(nick_name)) {
-      updateField({ nickname: false }, span, "Nickname cannot be empty!");
+      updateField(
+        2,
+        { valid: false, touched: touched },
+        span,
+        "Nickname cannot be empty!"
+      );
     } else if (!isBetween(nick_name, 3, 20)) {
       updateField(
-        { nickname: false },
+        2,
+        { valid: false, touched: touched },
         span,
         "Nickname should be (3-20) character long!"
       );
     } else if (!isClear(nick_name)) {
       updateField(
-        { nickname: false },
+        2,
+        { valid: false, touched: touched },
         span,
         "Nickname contains forbidden characters!"
       );
     } else {
-      updateField({ nickname: true }, null, "");
+      updateField(2, { valid: true, touched: touched }, null, "");
     }
   }
 
   function validePassword(event: any) {
     const password: string = event.target.value;
     const span = document.getElementById("pwdspan");
+    var touched = state[3].touched;
+    if (!touched) touched = true;
 
     span!.innerHTML = "";
     if (isEmpty(password)) {
-      updateField({ password: false }, span, "Password cannot be empty!");
-    }  else if (!isStrong(password)) {
       updateField(
-        { password: false },
+        3,
+        { valid: false, touched: touched },
+        span,
+        "Password cannot be empty!"
+      );
+    } else if (!isStrong(password)) {
+      updateField(
+        3,
+        { valid: false, touched: touched },
         span,
         "Password is too weak!"
       );
     } else {
-      updateField({ password: true }, null, "");
+      updateField(3, { valid: true, touched: touched }, null, "");
     }
   }
 
@@ -184,6 +244,9 @@ function UpdateProfile({
     pfp.src = window.URL.createObjectURL(event.target.files![0]);
   }
 
+  function allTrue(elem: statObj) {
+    return elem.valid ? true : false;
+  }
   // To add default value of First Name and Last Name
   useEffect(() => {
     const firstNameInput = document.getElementById(
@@ -195,7 +258,11 @@ function UpdateProfile({
 
     firstNameInput!.value = firstName;
     lastNameInput!.value = lastName;
-  }, []);
+  });
+
+  useEffect(() => {
+    if (state.every(allTrue)) setEnabled(true);
+  });
 
   return (
     <div className="border-2 border-gray-300 p-12 max-w-4xl rounded-md w-5/6 md:w-2/3 mg-top">
@@ -264,20 +331,32 @@ function UpdateProfile({
             type="input"
             name="firstname"
             id="firstname"
-            className=" block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            className={` ${
+              state[0].touched && state[0].valid
+                ? " border-green-500"
+                : state[0].touched && !state[0].valid
+                ? "border-red-600"
+                : "border-gray-300"
+            } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    border-2 rounded-full appearance-none 
+                      focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
             placeholder=" "
             required
             onBlur={(event) => valideFirstName(event)}
           />
           <label
             htmlFor="firstname"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 pl-3 duration-300 transform -translate-y-8
+            className={`${
+              state[0].touched && state[0].valid
+                ? "text-green-500"
+                : state[0].touched && !state[0].valid
+                ? "text-red-600"
+                : "text-gray-500"
+            } peer-focus:font-medium absolute text-sm
+                      pl-3 duration-300 transform -translate-y-8
                      scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-100 peer-focus:-translate-y-8 "
+                      peer-focus:scale-100 peer-focus:-translate-y-8 `}
           >
             First Name
           </label>
@@ -291,9 +370,15 @@ function UpdateProfile({
             type="input"
             name="lastname"
             id="lastname"
-            className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            className={`${
+              state[1].touched && state[1].valid
+                ? " border-green-500"
+                : state[1].touched && !state[1].valid
+                ? "border-red-600"
+                : "border-gray-300"
+            } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    border-2 rounded-full  appearance-none 
+                      focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
             placeholder=" "
             required
             onBlur={(event) => {
@@ -302,12 +387,17 @@ function UpdateProfile({
           />
           <label
             htmlFor="lastname"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 px-3 duration-300 transform 
-                     -translate-y-8 scale-100 top-3 -z-10 origin-[0] peer-focus:left-0
-                      peer-focus:text-blue-600 
-                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                       peer-focus:scale-100 peer-focus:-translate-y-8"
+            className={`${
+              state[1].touched && state[1].valid
+                ? "text-green-500"
+                : state[1].touched && !state[1].valid
+                ? "text-red-600"
+                : "text-gray-500"
+            } peer-focus:font-medium absolute text-sm
+                      pl-3 duration-300 transform -translate-y-8
+                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
+                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
+                      peer-focus:scale-100 peer-focus:-translate-y-8 `}
           >
             Last Name
           </label>
@@ -321,9 +411,15 @@ function UpdateProfile({
             type="input"
             name="nickname"
             id="nickname"
-            className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            className={`${
+              state[2].touched && state[2].valid
+                ? " border-green-500"
+                : state[2].touched && !state[2].valid
+                ? "border-red-600"
+                : "border-gray-300"
+            } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    border-2 rounded-full  appearance-none 
+                      focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
             placeholder=" "
             required
             onBlur={(event) => valideNickName(event)}
@@ -331,11 +427,17 @@ function UpdateProfile({
 
           <label
             htmlFor="nickname"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 pl-3 duration-300 transform -translate-y-8
-                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-100 peer-focus:-translate-y-8 "
+            className={`${
+              state[2].touched && state[2].valid
+                ? "text-green-500"
+                : state[2].touched && !state[2].valid
+                ? "text-red-600"
+                : "text-gray-500"
+            } peer-focus:font-medium absolute text-sm
+                    pl-3 duration-300 transform -translate-y-8
+                   scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
+                    peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
+                    peer-focus:scale-100 peer-focus:-translate-y-8 `}
           >
             Nickname
           </label>
@@ -349,25 +451,39 @@ function UpdateProfile({
             type="password"
             name="password"
             id="password"
-            className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            className={`${
+              state[3].touched && state[3].valid
+                ? " border-green-500"
+                : state[3].touched && !state[3].valid
+                ? "border-red-600"
+                : "border-gray-300"
+            } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+                    border-2 rounded-full  appearance-none 
+                      focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
             placeholder=" "
             required
-            onBlur={(event => validePassword(event))}
+            onBlur={(event) => validePassword(event)}
           />
           <label
             htmlFor="password"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 px-3 duration-300 transform 
-                     -translate-y-8 scale-100 top-3 -z-10 origin-[0] peer-focus:left-0
-                      peer-focus:text-blue-600 
-                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                       peer-focus:scale-100 peer-focus:-translate-y-8"
+            className={`${
+              state[3].touched && state[3].valid
+                ? "text-green-500"
+                : state[3].touched && !state[3].valid
+                ? "text-red-600"
+                : "text-gray-500"
+            } peer-focus:font-medium absolute text-sm
+                      pl-3 duration-300 transform -translate-y-8
+                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
+                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
+                      peer-focus:scale-100 peer-focus:-translate-y-8 `}
           >
             Password
           </label>
-          <span id="pwdspan" className="text-red-700 text-sm ml-4 mt-2 flex justify-even"></span>
+          <span
+            id="pwdspan"
+            className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+          ></span>
         </div>
         <motion.div
           key="buttonSign"
@@ -378,11 +494,10 @@ function UpdateProfile({
           className="col-span-2"
         >
           <button
+            disabled={!isEnabled}
             type="submit"
-            className="uppercase w-full  shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
-                                transform transition duration-300 
-                                hover:text-l hover:scale-110  text-white text-xs  text-center md:text-base hover:text-md
-                                 py-2 px-12  rounded-full"
+            className={`uppercase w-full   py-2 px-12  rounded-full bg-[#0097E2]  text-white text-xs  text-center md:text-base hover:text-md 
+            ${isEnabled ? "hover:bg-[#2C3B7C] transform transition duration-300 hover:text-l hover:scale-110" : "opacity-25"} `}
           >
             Update
           </button>
