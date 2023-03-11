@@ -6,79 +6,53 @@ import React, { useEffect, useState } from "react";
 import Router from "next/router";
 
 interface data {
-  nickname: string,
-  email: string,
-  password: string,
-  firstname: string,
-  lastname: string,
-  coins: number,
+  nickname: string;
+  email: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  coins: number;
   // picture: event.target.picture.value,
 }
 
-function isBetween(length: number, min: number, max: number): boolean {
-  if (length >= min && length <= max) return true;
+function isBetween(str: string, min: number, max: number): boolean {
+  if (str.length >= min && str.length <= max) return true;
   return false;
 }
 
-function valideFirstName(firstname: string): boolean {
-  return true;
+function isValidName(str:string) : boolean { 
+  const pattern = /^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/g;
+
+  return pattern.test(str);
+
+}
+function isTooLong(str: string): boolean {
+  if (str.length > 30) return true;
+  return false;
 }
 
-function valideLastName() {}
-function valideNickName(nickname: string): boolean {
-  const nicknameInput = document.getElementById("nickname");
-  const err = document.getElementsByClassName("error");
-
-  err[0].innerHTML = "";
-  if (!nickname || nickname.trim() === "") {
-    err[0].innerHTML = "Nickname should not be empty!";
-    nicknameInput!.classList.add("err");
-    return false;
-  } else if (!isBetween(nickname.length, 6, 20)) {
-    err[0].innerHTML = "Nickname must be 6-25 character long!";
-    nicknameInput!.classList.add("err");
-    return false;
-  }
-  return true;
+function isEmpty(str: string): boolean {
+  if (!str || str.trim() === "") return true;
+  return false;
 }
 
-function validePassword(password: string): boolean {
-  const passwordInput = document.getElementById("password");
-  const err = document.getElementsByClassName("error");
+function isClear(str: string): boolean {
+  const pattern = /^[A-Za-z0-9]+([A-Za-z0-9]*|[._-]?[A-Za-z0-9]+)*$/;
 
-  err[0].innerHTML = "";
-  if (!password || password.trim() === "") {
-    err[0].innerHTML = "password field is required!";
-    passwordInput!.classList.add("err");
-    return false;
-  } else if (password.length < 8) {
-    err[0].innerHTML = "Password is weak";
-    passwordInput!.classList.add("err");
-    return false;
-  }
-  return true;
+  return pattern.test(str);
 }
+
+function isStrong(str:string) : boolean {
+  const pattern = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,100}$/g;
+
+  return pattern.test(str);
+}
+
 
 async function handleSubmit(event: any, email: string, coins: number) {
-  // console.log("hh");
   event.preventDefault();
-  // const nickname = event.target.nickname.value;
-  // const nicknameInput = document.getElementById("nickname");
-  // const err = document.getElementsByClassName("error");
 
-  // err[0].innerHTML="";
-  // if (!nickname || nickname.trim() === "")
-  // {
-  //   err[0].innerHTML="Nickname should not be empty!";
-  //   nicknameInput!.classList.add("err");
-  // }
-  // else if (!isBetween(nickname.length,6,20))
-  // {
-  //   err[0].innerHTML="Nickname must be 6-25 character long!";
-  //   nicknameInput!.classList.add("err");
-  // }
-  // else {
-  const data : data = {
+  const data: data = {
     nickname: event.target.nickname.value,
     email: email,
     password: event.target.password.value,
@@ -114,17 +88,103 @@ function UpdateProfile({
   image: string;
   coins: number;
 }) {
+  // stats for error handling
   const [state, updateState] = useState({
     firstname: false,
-    lastname: false,
+    lastname: true,
     nickname: false,
     password: false,
   });
+
+  function updateField(field: object, span: HTMLElement | null, error: string) {
+    updateState((state) => ({
+      ...state,
+      ...field,
+    }));
+    if (span) span.innerHTML = error;
+  }
+
+  function valideFirstName(event: any) {
+    const first_name: string = event.target.value;
+    const span = document.getElementById("fnspan");
+
+    span!.innerHTML = "";
+    if (isEmpty(first_name)) {
+      updateField({ firstname: false }, span, "First name cannot be empty!");
+    } else if (isTooLong(first_name)) {
+      updateField({ firstname: false }, span, "Input is too long!");
+    } else if (!isValidName(first_name)) {
+      updateField({ firstname: false }, span, "first name contains forbidden characters!");
+    }
+    else {
+      updateField({ firstname: true }, null, "");
+    }
+  }
+
+  function valideLastName(event: any) {
+    const last_name: string = event.target.value;
+    const span = document.getElementById("lnspan");
+
+    span!.innerHTML = "";
+    if (isEmpty(last_name)) {
+      updateField({ lastname: false }, span, "Last name cannot be empty!");
+    } else if (isTooLong(last_name)) {
+      updateField({ lastname: false }, span, "Input is too long!");
+    } else if (!isValidName(last_name)) {
+      updateField({ lastname: false }, span, "Last name contains forbidden characters!");
+    }else {
+      updateField({ lastname: true }, null, "");
+    }
+  }
+
+  function valideNickName(event: any) {
+    const nick_name: string = event.target.value;
+    const span = document.getElementById("nickspan");
+
+    span!.innerHTML = "";
+    if (isEmpty(nick_name)) {
+      updateField({ nickname: false }, span, "Nickname cannot be empty!");
+    } else if (!isBetween(nick_name, 3, 20)) {
+      updateField(
+        { nickname: false },
+        span,
+        "Nickname should be (3-20) character long!"
+      );
+    } else if (!isClear(nick_name)) {
+      updateField(
+        { nickname: false },
+        span,
+        "Nickname contains forbidden characters!"
+      );
+    } else {
+      updateField({ nickname: true }, null, "");
+    }
+  }
+
+  function validePassword(event: any) {
+    const password: string = event.target.value;
+    const span = document.getElementById("pwdspan");
+
+    span!.innerHTML = "";
+    if (isEmpty(password)) {
+      updateField({ password: false }, span, "Password cannot be empty!");
+    }  else if (!isStrong(password)) {
+      updateField(
+        { password: false },
+        span,
+        "Password is too weak!"
+      );
+    } else {
+      updateField({ password: true }, null, "");
+    }
+  }
+
   function handleChange(event: any) {
     const pfp = document.getElementById("pfp-holder") as HTMLImageElement;
     pfp.src = window.URL.createObjectURL(event.target.files![0]);
   }
 
+  // To add default value of First Name and Last Name
   useEffect(() => {
     const firstNameInput = document.getElementById(
       "firstname"
@@ -136,6 +196,7 @@ function UpdateProfile({
     firstNameInput!.value = firstName;
     lastNameInput!.value = lastName;
   }, []);
+
   return (
     <div className="border-2 border-gray-300 p-12 max-w-4xl rounded-md w-5/6 md:w-2/3 mg-top">
       <div className="flex flex-col justify-center items-center">
@@ -203,11 +264,12 @@ function UpdateProfile({
             type="input"
             name="firstname"
             id="firstname"
-            className="error block py-2.5 px-3 w-full text-sm text-white bg-transparent 
+            className=" block py-2.5 px-3 w-full text-sm text-white bg-transparent 
                     border-2 rounded-full border-gray-300 appearance-none 
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
+            onBlur={(event) => valideFirstName(event)}
           />
           <label
             htmlFor="firstname"
@@ -219,9 +281,10 @@ function UpdateProfile({
           >
             First Name
           </label>
-          <span className="text-red-700 text-sm ml-4">
-            First name should not be empty
-          </span>
+          <span
+            id="fnspan"
+            className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+          ></span>
         </div>
         <div className="relative z-0 w-3/4 mb-6 group">
           <input
@@ -233,6 +296,9 @@ function UpdateProfile({
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
+            onBlur={(event) => {
+              valideLastName(event);
+            }}
           />
           <label
             htmlFor="lastname"
@@ -245,7 +311,10 @@ function UpdateProfile({
           >
             Last Name
           </label>
-          <span className="text-red-700 text-sm ml-4"></span>
+          <span
+            id="lnspan"
+            className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+          ></span>
         </div>
         <div className="relative z-0 w-3/4 mb-6 group">
           <input
@@ -257,6 +326,7 @@ function UpdateProfile({
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
+            onBlur={(event) => valideNickName(event)}
           />
 
           <label
@@ -269,7 +339,10 @@ function UpdateProfile({
           >
             Nickname
           </label>
-          <span className="text-red-700 text-sm ml-4"></span>
+          <span
+            id="nickspan"
+            className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+          ></span>
         </div>
         <div className="relative z-0 w-3/4 mb-6 group">
           <input
@@ -281,6 +354,7 @@ function UpdateProfile({
                       focus:outline-none focus:ring-0 focus:border-blue-600 peer"
             placeholder=" "
             required
+            onBlur={(event => validePassword(event))}
           />
           <label
             htmlFor="password"
@@ -293,7 +367,7 @@ function UpdateProfile({
           >
             Password
           </label>
-          <span className="text-red-700 text-sm ml-4"></span>
+          <span id="pwdspan" className="text-red-700 text-sm ml-4 mt-2 flex justify-even"></span>
         </div>
         <motion.div
           key="buttonSign"
