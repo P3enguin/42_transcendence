@@ -14,6 +14,7 @@ export interface statObj {
     touched: boolean;
 }
 
-export interface handl {
-
-}
+export interface validFunc {
+    (e:React.FocusEvent<HTMLInputElement, Element>) : void;
+  }
+  

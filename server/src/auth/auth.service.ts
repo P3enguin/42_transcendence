@@ -129,17 +129,18 @@ export class AuthService {
       });
       res.status(201).send({ success: true });
     }  catch(e) {
+      var error ;
       if (e instanceof PrismaClientKnownRequestError) {
           if (e.code === 'P2002') {
-            return {error:"error Nickname already exist",nickname:null}
+            error =  "Nickname already exist";
           }
           else {
-              return {error:"An Error has occured"}
+            error = "An Error has occured";
           }
         }
         // error handling for invalid session token
-        return res.status(401).json({error : e});
-      } 
+          return res.status(401).send(JSON.stringify({error: error}));
+        } 
   }
 
   
