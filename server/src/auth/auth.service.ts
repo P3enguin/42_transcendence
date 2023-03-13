@@ -34,7 +34,7 @@ export class AuthService {
   ) {}
   
   async checkUser( user:playerStrat,res:Response) {
-   
+    
     try {
         const player = await this.prisma.player.findUnique({
             where : {
@@ -59,9 +59,9 @@ export class AuthService {
           })
           res.status(200).cookie('jwt_session',jwtSession,{ 
             httpOnly: true, 
-            secure: true, 
+            // secure: true, 
             maxAge: 1000 * 60 * 15 // expires after 15 min
-          });
+          });   
           res.redirect(process.env.SESSION_AUTH_REDIRECTION);
         }
         else
@@ -69,7 +69,7 @@ export class AuthService {
           const jwtToken = await this.signToken(player.id, player.nickname);
           res.cookie('jwt_token', jwtToken.access_token, {
             httpOnly: true,
-            secure: true,
+            // secure: true,
             maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
           });
           res.redirect(process.env.FULL_AUTH_REDIRECTION);
@@ -124,7 +124,7 @@ export class AuthService {
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
-        secure: true,
+        // secure: true,
         maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
       });
       res.status(201).send({ success: true });
@@ -166,7 +166,7 @@ export class AuthService {
         const token = await this.signToken(player.id, player.nickname);
         res.cookie('jwt_token', token.access_token, {
           httpOnly: true,
-          secure: true,
+          // secure: true,
           maxAge: 1000 * 60 * 60
         });
         res.status(200).send({ success: true });
