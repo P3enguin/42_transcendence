@@ -14,6 +14,8 @@ import { Request,Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthDto, singDTO} from './dto';
+import { JwtSessionGuard,JwtGuard } from 'src/auth/guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +36,7 @@ export class AuthController {
   }
 
   @Post("signup")
+  @UseGuards(JwtSessionGuard)
   signup(@Req() req:Request, @Res() res:Response , @Body() dto: AuthDto) {
     return this.authService.signup(req,res,dto);
   }
@@ -44,13 +47,15 @@ export class AuthController {
   }
 
   @Get('verifytoken')
+  @UseGuards(JwtGuard)
   verifyToken(@Req() req:Request,@Res() res:Response){
-    return this.authService.verifyToken(req,res);
+    return res.status(200).json(req.body.jwtDecoded);
   }
 
   @Get('verifysession')
+  @UseGuards(JwtSessionGuard)
   verifySession(@Req() req:Request,@Res() res:Response){
-    return this.authService.verifySession(req,res);
+    return res.status(200).json(req.body.jwtDecoded);
   }
 
   @Get('user')
@@ -58,7 +63,9 @@ export class AuthController {
      return this.authService.getUser(query.email);
   }
 
+
   @Post('logout')
+  @UseGuards(JwtGuard)
   logout(@Req() req:Request,@Res() res:Response)
   {
     return this.authService.logout(req,res);

@@ -9,8 +9,7 @@ import { extname } from  'path';
 import { limits } from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 
-
-// @UseGuards(JwtGuard)
+@UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
 

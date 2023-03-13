@@ -36,7 +36,6 @@ export async function getServerSideProps(context: any) {
   const jwt_token: string = context.req.cookies["jwt_token"];
   if (!jwt_token) {
     const response = await verifySession(context.req.headers.cookie);
-    console.log(context.req.headers.cookie);
     if (!response.ok) {
       return {
         redirect: {
@@ -48,11 +47,11 @@ export async function getServerSideProps(context: any) {
     const result = await response.json();
     return {
       props: {
-        email: result.data.email,
-        firstName: result.data.firstName,
-        lastName: result.data.lastName,
-        image: result.data.picture,
-        coins: result.data.coins,
+        email: result.jwtDecoded.email,
+        firstName: result.jwtDecoded.firstName,
+        lastName: result.jwtDecoded.lastName,
+        image: result.jwtDecoded.picture,
+        coins: result.jwtDecoded.coins,
       },
     };
   }

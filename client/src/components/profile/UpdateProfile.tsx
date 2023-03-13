@@ -19,44 +19,7 @@ import {
   isStrong,
 } from "./ValidationFuncs";
 
-// async function handleSubmit(event: any, email: string, coins: number) {
-//   event.preventDefault();
 
-//   const data: data = {
-//     nickname: event.target.nickname.value,
-//     email: email,
-//     password: event.target.password.value,
-//     firstname: event.target.firstname.value,
-//     lastname: event.target.lastname.value,
-//     coins: coins,
-//     // picture: event.target.picture.value,
-//   };
-//   const singupURL: string = process.env.NEXT_PUBLIC_SIGNUP_ENDPOINT;
-
-//   const response = await fetch(singupURL, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(data),
-//     credentials: "include",
-//   });
-//   if (response.status == 201) {
-//     // Router.push("/profile");
-//     const pfpImg = event.target.pfp.files[0];
-//     let formData = new FormData();
-//     formData.append("file", pfpImg);
-
-//     const url = "http://localhost:8000/players/profile";
-
-//     await fetch(url, {
-//       method: "POST",
-//       body: formData,
-//       credentials: "include",
-//     }).then(async (resp) => {
-//       const hh = await resp.json();
-//       console.log(hh);
-//     });
-//   }
-// }
 
 function UpdateProfile({
   email,
@@ -93,6 +56,7 @@ function UpdateProfile({
       credentials: "include",
     });
     if (response.status == 201) {
+      console.log(response.headers);
       // Router.push("/profile");
       if (uploads.pfp) {
         const pfpImg = event.target.pfp.files[0];

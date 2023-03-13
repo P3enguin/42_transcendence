@@ -5,8 +5,8 @@ import { useState } from "react";
 import Router from "next/router";
 
 interface data {
-  nickname: string,
-  password: string,
+  nickname: string;
+  password: string;
 }
 
 function Login() {
@@ -17,7 +17,7 @@ function Login() {
 
   async function handleSubmit(event: any) {
     event.preventDefault();
-    const data : data = {
+    const data: data = {
       nickname: event.target.nickname.value,
       password: event.target.password.value,
     };
@@ -26,7 +26,7 @@ function Login() {
     console.log(url);
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
       credentials: "include",
     });
@@ -34,9 +34,7 @@ function Login() {
     if (response.ok) {
       Router.push("/profile");
     }
-
   }
-
 
   return (
     <div className=" w-full md:w-2/3  max-w-lg	 text-base md:text-2xl justify-center">
@@ -83,8 +81,10 @@ function Login() {
           </div>
           <p>OR</p>
         </div>
-        <form className="flex flex-col items-center mt-3 gap-3 w-full"
-              onSubmit={(event) => handleSubmit(event)} >
+        <form
+          className="flex flex-col items-center mt-3 gap-3 w-full"
+          onSubmit={(event) => handleSubmit(event)}
+        >
           <div className="relative z-0 w-3/4 mb-6 group">
             <input
               type="input"
