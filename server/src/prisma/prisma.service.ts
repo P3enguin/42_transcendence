@@ -16,6 +16,7 @@ export class PrismaService extends PrismaClient {
 			},
 		});
 	}
+	
 
 	GetStatus(statusId: number): Promise<Status> {
 		const status = this.status.findUnique({
@@ -110,4 +111,7 @@ export class PrismaService extends PrismaClient {
 	}
 
 }
+
+
+
 

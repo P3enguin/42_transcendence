@@ -1,8 +1,10 @@
 {
-  "devDependencies": {
-    "prisma": "^4.11.0"
-  },
   "dependencies": {
-    "@prisma/client": "^4.11.0"
+    "@nestjs/passport": "^9.0.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/passport-local": "^1.0.35"
   }
 }
