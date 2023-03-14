@@ -1,2 +1,5 @@
-# 42_transcendence
-This project is about creating a website for the mighty Pong contest!
+
+# ft_transcendence
+
+Soon, you will realize that you already know things
+that you thought you didn’t

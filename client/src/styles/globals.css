@@ -1,0 +1,48 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background: rgb(44,59,124);
+  background: linear-gradient(90deg, rgba(44,59,124,1) 0%, rgba(13,23,67,1) 100%);
+  font-family: 'Outfit'
+}
+
+/* css properties that I couldn't do with tailwind :sad: */
+
+.sh{
+  text-shadow: 2px 2px 2px black;
+
+}
+.css{
+  margin-bottom:300px;
+}
+
+.mg-top{
+  margin-top:150px;
+}
+
+@media screen and (max-width: 1279px){
+  .css{
+    margin-bottom:0;
+  }
+}
+
+.pfp-container {
+  filter:url(#round);
+  
+}
+
+.pfp {
+  background-color: #0D1743; /*color of the main-background*/
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+}
+
+.error {
+  border-color: red;
+}
+/******************************* profile css **********************************/
