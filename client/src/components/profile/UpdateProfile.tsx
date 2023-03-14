@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { EditIconProfile, EditIconWallpaper } from "../icons/Icons";
+import {
+  EditIconProfile,
+  EditIconWallpaper,
+  SvgShapingMethod,
+} from "../icons/Icons";
 import Router from "next/router";
 import { data, statObj } from "./Interface";
 import {
@@ -88,12 +92,10 @@ function UpdateProfile({
           span,
           err.error
         );
-      }
-      else {
+      } else {
         const span = document.getElementById("wp-span");
-        // to check later , 
-        if (span)
-          span.innerHTML = err;
+        // to check later ,
+        if (span) span.innerHTML = err;
       }
     }
   }
@@ -298,6 +300,7 @@ function UpdateProfile({
       updateField(4, { valid: true, touched: false }, null, "");
     }
   }
+
   function allTrue(elem: statObj) {
     return elem.valid ? true : false;
   }
@@ -359,30 +362,7 @@ function UpdateProfile({
             className="text-red-700 text-sm ml-4 mt-2 mb-4 flex justify-even"
           ></span>
         </div>
-        <svg
-          style={{ visibility: "hidden", position: "absolute" }}
-          width="0"
-          height="0"
-          xmlns="http://www.w3.org/2000/svg"
-          version="1.1"
-        >
-          <defs>
-            <filter id="round">
-              <feGaussianBlur
-                in="SourceGraphic"
-                stdDeviation="3"
-                result="blur"
-              />
-              <feColorMatrix
-                in="blur"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-                result="goo"
-              />
-              <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-            </filter>
-          </defs>
-        </svg>
+        <SvgShapingMethod />
         <div className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2">
           <FirstNameInput
             state={state[0]}
@@ -407,7 +387,7 @@ function UpdateProfile({
             <button
               disabled={!isEnabled}
               type="submit"
-              className={`uppercase w-full   py-2 px-12  rounded-full bg-[#0097E2]  text-white text-xs  
+              className={`uppercase w-full py-2 px-12 rounded-full bg-[#0097E2]  text-white text-xs  
                   text-center md:text-base hover:text-md 
             ${
               isEnabled

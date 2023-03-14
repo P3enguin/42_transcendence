@@ -21,18 +21,21 @@ function Login() {
       nickname: event.target.nickname.value,
       password: event.target.password.value,
     };
-    console.log(data);
     const url: string = process.env.NEXT_PUBLIC_SIGNIN_ENDPOINT;
-    console.log(url);
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
       credentials: "include",
     });
-    console.log(response.status);
     if (response.ok) {
       Router.push("/profile");
+    }
+    else {
+      const err = await response.json();
+      const span = document.getElementById("error-span");
+      if (span)
+        span.innerHTML = err.error.message;
     }
   }
 
@@ -82,10 +85,14 @@ function Login() {
           <p>OR</p>
         </div>
         <form
-          className="flex flex-col items-center mt-3 gap-3 w-full"
+          className="flex flex-col items-center mt-3  gap-3 w-full"
           onSubmit={(event) => handleSubmit(event)}
         >
-          <div className="relative z-0 w-3/4 mb-6 group">
+           <span
+              id="error-span"
+              className="text-red-700 text-lg mb-3 flex justify-center"
+            ></span>
+          <div className="relative z-0 w-3/4 mb-6 ">
             <input
               type="input"
               name="nickname"
@@ -107,7 +114,7 @@ function Login() {
               Nickname
             </label>
           </div>
-          <div className="relative z-0 w-3/4 mb-6 group">
+          <div className="relative z-0 w-3/4 mb-6 ">
             <input
               type="password"
               name="password"

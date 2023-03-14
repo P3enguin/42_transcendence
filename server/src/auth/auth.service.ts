@@ -145,7 +145,7 @@ export class AuthService {
       });
       if (!player)
         throw new ForbiddenException(
-          'Username Not found',
+          'Nickname Not found',
           );
       if (await argon2.verify(player.password,dto.password))
       {
@@ -165,6 +165,7 @@ export class AuthService {
     }
     catch (err)
     {
+      
       res.status(401).json({error : err});
     }
 
