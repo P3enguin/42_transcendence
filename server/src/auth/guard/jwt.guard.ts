@@ -1,7 +1,6 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
-import { AuthService } from '../auth.service';
 import { Request,Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -54,23 +53,24 @@ export class JwtGuard extends AuthGuard('jwt_token') {
   }
 
   async verifyToken (req:Request, res:Response) : Promise<boolean> {
-    const token = req.cookies["jwt_token"];
-    if (!token)
-      return false;
-    const secret :string = process.env.JWT_SECRET;
-   try {
-      const decoded = this.jwt.verify(token,{secret});
-      const resp = await this.prisma.invalidToken.findUnique({
-          where : {
-            token:token,
-          }
+     const token = req.cookies["jwt_token"];
+      if (!token)
+        return false;
+      const secret :string = process.env.JWT_SECRET;
+      try {
+        const decoded:object = this.jwt.verify(token,{secret});
+        const resp = await this.prisma.invalidToken.findUnique({
+            where : {
+              token:token,
+            }
       })
       if (resp)
         throw new Error("Token is invalid")
-       req.body.jwtDecoded = decoded;
-       return true;
+      req.body.jwtDecoded = decoded;
+      return true;
    }
    catch (err){
+    console.log(err);
     return false;
    }
   }

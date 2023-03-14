@@ -1,11 +1,8 @@
 import {
   Body,
   Controller,
-  HttpCode,
-  HttpStatus,
   Post,
   Get,
-  Query,
   UseGuards,
   Req,
   Res,
@@ -35,6 +32,7 @@ export class AuthController {
     return this.authService.checkUser(req.user,res);
   }
 
+  
   @Post("signup")
   @UseGuards(JwtSessionGuard)
   signup(@Req() req:Request, @Res() res:Response , @Body() dto: AuthDto) {
@@ -58,10 +56,10 @@ export class AuthController {
     return res.status(200).json(req.body.jwtDecoded);
   }
 
-  @Get('user')
-  getUser(@Query() query: {email: string}):object {
-     return this.authService.getUser(query.email);
-  }
+  // @Get('user')
+  // getUser(@Query() query: {email: string}):object {
+  //    return this.authService.getUser(query.email);
+  // }
 
 
   @Post('logout')

@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors } from '@nestjs/common';
+import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Player } from '@prisma/client'
 import { JwtGuard } from 'src/auth/guard';
@@ -6,15 +6,15 @@ import { PlayerService } from './player.service';
 import { GetPlayer } from 'src/auth/decorator';
 import { diskStorage } from 'multer';
 import { extname } from  'path';
-import { limits } from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
+import { Request,Response } from 'express';
 
 @UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
-
+	
 	constructor(private playerService: PlayerService) {}
-
+	
 	@Get('me')
 	getMe(@GetPlayer() player: Player) {
 		return player
@@ -32,8 +32,8 @@ export class PlayerController {
 		limits: {
 			fieldSize:2
 		}}))
-	  uploadProfile(@UploadedFile() file: Express.Multer.File){
-		console.log(file);
+		uploadProfile(@Req() req: Request, @UploadedFile() file: Express.Multer.File){
+		return this.playerService.updatePFP(req,file.filename);
 	}
 
 	@Post('wallpaper')
@@ -48,9 +48,7 @@ export class PlayerController {
 		limits: {
 			fieldSize:2
 		}}))
-	  uploadBackGround(@UploadedFile() file: Express.Multer.File){
-		console.log(file);
+	  uploadBackGround(@Req() req :Request, @UploadedFile() file: Express.Multer.File){
+		return this.playerService.updateWallpaper(req,file.filename);
 	}
-
-
 }

@@ -170,34 +170,34 @@ export class AuthService {
 
   }
 
-  async getUser(userEmail: string){
-    var user :object;
-    try {
-        user = await this.prisma.player.findUnique({
-            where : {
-                email: userEmail,
-            },
-            select : {
-                nickname: true,
-                email: true,
-                firstname:true,
-                lastname:true,
-            }
-        })
-    }
-    catch(e) {
-        console.log(e);
-        if (e instanceof PrismaClientKnownRequestError) {
-            console.log(`code : ${e.code} , message : ${e.message}`);
-        }
-    }
-    if (!user)
-        return {
-            nickname: null,
-            error:"Error user not found"
-        }
-    return user;
-  }
+  // async getUser(userEmail: string){
+  //   var user :object;
+  //   try {
+  //       user = await this.prisma.player.findUnique({
+  //           where : {
+  //               email: userEmail,
+  //           },
+  //           select : {
+  //               nickname: true,
+  //               email: true,
+  //               firstname:true,
+  //               lastname:true,
+  //           }
+  //       })
+  //   }
+  //   catch(e) {
+  //       console.log(e);
+  //       if (e instanceof PrismaClientKnownRequestError) {
+  //           console.log(`code : ${e.code} , message : ${e.message}`);
+  //       }
+  //   }
+  //   if (!user)
+  //       return {
+  //           nickname: null,
+  //           error:"Error user not found"
+  //       }
+  //   return user;
+  // }
 
   async signToken(
     playerId: number,
@@ -224,7 +224,6 @@ export class AuthService {
 
 
   async logout(req:Request,res:Response) {
-
     const token = req.cookies["jwt_token"];
     try {
         await this.prisma.invalidToken.create ({

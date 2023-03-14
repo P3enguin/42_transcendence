@@ -56,9 +56,8 @@ function UpdateProfile({
       credentials: "include",
     });
     if (response.status == 201) {
-      console.log(response.headers);
-      // Router.push("/profile");
       if (uploads.pfp) {
+        console.log("in pfp");
         const pfpImg = event.target.pfp.files[0];
         let formData = new FormData();
         formData.append("file", pfpImg);
