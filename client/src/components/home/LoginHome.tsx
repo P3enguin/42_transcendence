@@ -30,12 +30,10 @@ function Login() {
     });
     if (response.ok) {
       Router.push("/profile");
-    }
-    else {
+    } else {
       const err = await response.json();
       const span = document.getElementById("error-span");
-      if (span)
-        span.innerHTML = err.error.message;
+      if (span) span.innerHTML = err.error.message;
     }
   }
 
@@ -88,10 +86,10 @@ function Login() {
           className="flex flex-col items-center mt-3  gap-3 w-full"
           onSubmit={(event) => handleSubmit(event)}
         >
-           <span
-              id="error-span"
-              className="text-red-700 text-lg mb-3 flex justify-center"
-            ></span>
+          <span
+            id="error-span"
+            className="text-red-700 text-lg mb-3 flex justify-center"
+          ></span>
           <div className="relative z-0 w-3/4 mb-6 ">
             <input
               type="input"
