@@ -1,105 +1,27 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { Disclosure } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
+import {
+  EditIconProfile,
+  EditIconWallpaper,
+  SvgShapingMethod,
+} from "../icons/Icons";
 import Router from "next/router";
-
-interface data {
-  nickname: string,
-  email: string,
-  password: string,
-  firstname: string,
-  lastname: string,
-  coins: number,
-  // picture: event.target.picture.value,
-}
-
-function isBetween(length: number, min: number, max: number): boolean {
-  if (length >= min && length <= max) return true;
-  return false;
-}
-
-function valideFirstName(firstname: string): boolean {
-  return true;
-}
-
-function valideLastName() {}
-function valideNickName(nickname: string): boolean {
-  const nicknameInput = document.getElementById("nickname");
-  const err = document.getElementsByClassName("error");
-
-  err[0].innerHTML = "";
-  if (!nickname || nickname.trim() === "") {
-    err[0].innerHTML = "Nickname should not be empty!";
-    nicknameInput!.classList.add("err");
-    return false;
-  } else if (!isBetween(nickname.length, 6, 20)) {
-    err[0].innerHTML = "Nickname must be 6-25 character long!";
-    nicknameInput!.classList.add("err");
-    return false;
-  }
-  return true;
-}
-
-function validePassword(password: string): boolean {
-  const passwordInput = document.getElementById("password");
-  const err = document.getElementsByClassName("error");
-
-  err[0].innerHTML = "";
-  if (!password || password.trim() === "") {
-    err[0].innerHTML = "password field is required!";
-    passwordInput!.classList.add("err");
-    return false;
-  } else if (password.length < 8) {
-    err[0].innerHTML = "Password is weak";
-    passwordInput!.classList.add("err");
-    return false;
-  }
-  return true;
-}
-
-async function handleSubmit(event: any, email: string, coins: number) {
-  // console.log("hh");
-  event.preventDefault();
-  // const nickname = event.target.nickname.value;
-  // const nicknameInput = document.getElementById("nickname");
-  // const err = document.getElementsByClassName("error");
-
-  // err[0].innerHTML="";
-  // if (!nickname || nickname.trim() === "")
-  // {
-  //   err[0].innerHTML="Nickname should not be empty!";
-  //   nicknameInput!.classList.add("err");
-  // }
-  // else if (!isBetween(nickname.length,6,20))
-  // {
-  //   err[0].innerHTML="Nickname must be 6-25 character long!";
-  //   nicknameInput!.classList.add("err");
-  // }
-  // else {
-  const data : data = {
-    nickname: event.target.nickname.value,
-    email: email,
-    password: event.target.password.value,
-    firstname: event.target.firstname.value,
-    lastname: event.target.lastname.value,
-    coins: coins,
-    // picture: event.target.picture.value,
-  };
-  const url: string = process.env.NEXT_PUBLIC_SIGNUP_ENDPOINT;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    credentials: "include",
-  });
-
-  if (response.status == 201) {
-    Router.push("/profile");
-  }
-}
+import { data, statObj } from "./Interface";
+import {
+  FirstNameInput,
+  LastNameInput,
+  NickNameInput,
+  PasswordInput,
+} from "./Inputs";
+import {
+  isBetween,
+  isValidName,
+  isTooLong,
+  isEmpty,
+  isClear,
+  isStrong,
+} from "./ValidationFuncs";
 
 function UpdateProfile({
   email,
@@ -114,205 +36,369 @@ function UpdateProfile({
   image: string;
   coins: number;
 }) {
-  const [state, updateState] = useState({
-    firstname: false,
-    lastname: false,
-    nickname: false,
-    password: false,
-  });
-  function handleChange(event: any) {
-    const pfp = document.getElementById("pfp-holder") as HTMLImageElement;
-    pfp.src = window.URL.createObjectURL(event.target.files![0]);
+  async function handleSubmit(event: any) {
+    event.preventDefault();
+
+    const data: data = {
+      nickname: event.target.nickname.value,
+      email: email,
+      password: event.target.password.value,
+      firstname: event.target.firstname.value,
+      lastname: event.target.lastname.value,
+      coins: coins,
+    };
+    const singupURL: string = process.env.NEXT_PUBLIC_SIGNUP_ENDPOINT;
+
+    const response = await fetch(singupURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+      credentials: "include",
+    });
+    if (response.status == 201) {
+      if (uploads.pfp) {
+        const pfpImg = event.target.pfp.files[0];
+        let formData = new FormData();
+        formData.append("file", pfpImg);
+
+        const url = process.env.NEXT_PUBLIC_UPLOAD_PROFILE_ENDPOINT;
+
+        const resp = await fetch(url, {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+      }
+      if (uploads.wp) {
+        const pfpImg = event.target.wallpaper.files[0];
+        let formData = new FormData();
+        formData.append("file", pfpImg);
+        const url = process.env.NEXT_PUBLIC_UPLOAD_WALLPAPER_ENDPOINT;
+
+        const resp = await fetch(url, {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+      }
+      Router.push("/profile");
+    } else if (response.status == 401) {
+      const err = await response.json();
+      if (err.error === "Nickname already exist") {
+        const span = document.getElementById("nickspan");
+        updateField(
+          2,
+          { valid: false, touched: state[2].touched },
+          span,
+          err.error
+        );
+      } else {
+        const span = document.getElementById("wp-span");
+        // to check later ,
+        if (span) span.innerHTML = err;
+      }
+    }
+  }
+  // stats for error handling
+  const [state, updateState] = useState([
+    { valid: true, touched: false },
+    { valid: true, touched: false },
+    { valid: false, touched: false },
+    { valid: false, touched: false },
+    { valid: true, touched: false },
+    { valid: true, touched: false },
+  ]);
+  // state for the button
+  const [isEnabled, setEnabled] = useState(false);
+
+  // state for image upload
+  const [uploads, handleImage] = useState({ pfp: false, wp: false });
+
+  function updateField(
+    index: number,
+    val: statObj,
+    span: HTMLElement | null,
+    error: string
+  ) {
+    const newState = state.map((elem, i) => {
+      if (i == index) return val;
+      else return elem;
+    });
+    updateState(newState);
+    if (span) span.innerHTML = error;
   }
 
-  useEffect(() => {
-    const firstNameInput = document.getElementById(
-      "firstname"
-    ) as HTMLInputElement;
-    const lastNameInput = document.getElementById(
-      "lastname"
-    ) as HTMLInputElement;
+  function validFirstName(event: React.FocusEvent<HTMLInputElement, Element>) {
+    const first_name: string = event.target.value;
+    const span = document.getElementById("fnspan");
+    var touched = state[0].touched;
+    if (!touched) touched = true;
 
-    firstNameInput!.value = firstName;
-    lastNameInput!.value = lastName;
-  }, []);
+    span!.innerHTML = "";
+    if (isEmpty(first_name)) {
+      updateField(
+        0,
+        { valid: false, touched: touched },
+        span,
+        "First name cannot be empty!"
+      );
+    } else if (isTooLong(first_name)) {
+      updateField(
+        0,
+        { valid: false, touched: touched },
+        span,
+        "Input is too long!"
+      );
+    } else if (!isValidName(first_name)) {
+      updateField(
+        0,
+        { valid: false, touched: touched },
+        span,
+        "first name contains forbidden characters!"
+      );
+    } else {
+      updateField(0, { valid: true, touched: touched }, null, "");
+    }
+  }
+
+  function validLastName(event: React.FocusEvent<HTMLInputElement, Element>) {
+    const last_name: string = event.target.value;
+    const span = document.getElementById("lnspan");
+    var touched = state[1].touched;
+    if (!touched) touched = true;
+
+    span!.innerHTML = "";
+    if (isEmpty(last_name)) {
+      updateField(
+        1,
+        { valid: false, touched: touched },
+        span,
+        "Last name cannot be empty!"
+      );
+    } else if (isTooLong(last_name)) {
+      updateField(
+        1,
+        { valid: false, touched: touched },
+        span,
+        "Input is too long!"
+      );
+    } else if (!isValidName(last_name)) {
+      updateField(
+        1,
+        { valid: false, touched: touched },
+        span,
+        "Last name contains forbidden characters!"
+      );
+    } else {
+      updateField(1, { valid: true, touched: touched }, null, "");
+    }
+  }
+
+  function validNickName(event: React.FocusEvent<HTMLInputElement, Element>) {
+    const nick_name: string = event.target.value;
+    const span = document.getElementById("nickspan");
+    var touched = state[2].touched;
+    if (!touched) touched = true;
+
+    span!.innerHTML = "";
+    if (isEmpty(nick_name)) {
+      updateField(
+        2,
+        { valid: false, touched: touched },
+        span,
+        "Nickname cannot be empty!"
+      );
+    } else if (!isBetween(nick_name, 3, 20)) {
+      updateField(
+        2,
+        { valid: false, touched: touched },
+        span,
+        "Nickname should be (3-20) character long!"
+      );
+    } else if (!isClear(nick_name)) {
+      updateField(
+        2,
+        { valid: false, touched: touched },
+        span,
+        "Nickname contains forbidden characters!"
+      );
+    } else {
+      updateField(2, { valid: true, touched: touched }, null, "");
+    }
+  }
+
+  function validPassword(event: React.FocusEvent<HTMLInputElement, Element>) {
+    const password: string = event.target.value;
+    const span = document.getElementById("pwdspan");
+    var touched = state[3].touched;
+    if (!touched) touched = true;
+
+    span!.innerHTML = "";
+    if (isEmpty(password)) {
+      updateField(
+        3,
+        { valid: false, touched: touched },
+        span,
+        "Password cannot be empty!"
+      );
+    } else if (!isStrong(password)) {
+      updateField(
+        3,
+        { valid: false, touched: touched },
+        span,
+        "Password is too weak!"
+      );
+    } else {
+      updateField(3, { valid: true, touched: touched }, null, "");
+    }
+  }
+
+  function handlePfpChange(event: any) {
+    const span = document.getElementById("pfp-span");
+    if (event.target.files[0]) {
+      if (event.target.files[0].size > 1024 * 1024 * 2) {
+        updateField(
+          5,
+          { valid: false, touched: false },
+          span,
+          "File must be 2MB Large!"
+        );
+        return;
+      }
+      const pfp = document.getElementById("pfp-holder") as HTMLImageElement;
+      if (uploads.pfp) window.URL.revokeObjectURL(pfp.src);
+      pfp.src = window.URL.createObjectURL(event.target.files[0]);
+      handleImage((item) => ({
+        ...item,
+        ...{ pfp: true, wp: uploads.wp },
+      }));
+      updateField(5, { valid: true, touched: false }, null, "");
+    }
+  }
+
+  function handleWpChange(event: any) {
+    const span = document.getElementById("wp-span");
+    if (event.target.files[0]) {
+      if (event.target.files[0].size > 1024 * 1024 * 2) {
+        updateField(
+          4,
+          { valid: false, touched: false },
+          span,
+          "File must be 2MB Large!"
+        );
+        return;
+      }
+      const pfp = document.getElementById(
+        "wallpaper-holder"
+      ) as HTMLImageElement;
+      if (uploads.wp) window.URL.revokeObjectURL(pfp.src);
+      pfp.src = window.URL.createObjectURL(event.target.files[0]);
+      handleImage((item) => ({
+        ...item,
+        ...{ pfp: uploads.pfp, wp: true },
+      }));
+      updateField(4, { valid: true, touched: false }, null, "");
+    }
+  }
+
+  function allTrue(elem: statObj) {
+    return elem.valid ? true : false;
+  }
+  // To add default value of First Name and Last Name
+
+  useEffect(() => {
+    if (state.every(allTrue)) setEnabled(true);
+    else setEnabled(false);
+  });
+
   return (
     <div className="border-2 border-gray-300 p-12 max-w-4xl rounded-md w-5/6 md:w-2/3 mg-top">
-      <div className="flex flex-col justify-center items-center">
-        <Image
-          src="/wallpaper.png"
-          alt="wallpaper"
-          className="rounded-3xl flex-shrink-0 min-w-[200px] min-h-[80px]"
-          width={500}
-          height={500}
-        />
-        <div className="pfp-container">
-          <img
-            src="/pfp1.png"
-            alt="pfp"
-            id="pfp-holder"
-            className="pfp -mt-10  w-[100px] h-[100px] "
-          />
-          <label htmlFor="pfp" className="cursor-pointer ">
-            <svg
-              width="30"
-              height="30"
-              viewBox="0 0 30 30"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="rounded absolute  bg-opacity-50 h-1/4  bg-[#8BD9FF] -top-[13px]  hover:bg-[#357550]
-                                   fill-[#9CD8FB] hover:fill-[#70F89B] right-[2px] w-[17px]"
-            >
-              <path d="M22.5818 12.5963L12.7527 22.4743C12.2415 22.9719 11.5697 23.2499 10.8686 23.2499H7.43644C7.24657 23.2499 7.07131 23.1768 6.93987 23.0451C6.80842 22.9134 6.75 22.7377 6.75 22.5475L6.83763 19.0792C6.85224 18.3914 7.12973 17.7475 7.6117 17.2646L14.5783 10.2841C14.6951 10.167 14.8996 10.167 15.0164 10.2841L17.4598 12.7177C17.6205 12.8773 17.8542 12.9812 18.1025 12.9812C18.6429 12.9812 19.0664 12.5421 19.0664 12.0153C19.0664 11.7519 18.9642 11.5177 18.8035 11.3421C18.7597 11.2836 16.4331 8.96701 16.4331 8.96701C16.2871 8.82067 16.2871 8.57189 16.4331 8.42555L17.4117 7.43043C18.3172 6.52311 19.7777 6.52311 20.6832 7.43043L22.5818 9.33287C23.4727 10.2255 23.4727 11.689 22.5818 12.5963Z" />
-            </svg>
-          </label>
-        </div>
-        <input
-          className="hidden cursor-pointer"
-          id="pfp"
-          type="file"
-          onChange={handleChange}
-        />
-      </div>
-      <svg
-        style={{ visibility: "hidden", position: "absolute" }}
-        width="0"
-        height="0"
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-      >
-        <defs>
-          <filter id="round">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-              result="goo"
+      <form onSubmit={(event) => handleSubmit(event)}>
+        <div className="flex flex-col justify-center items-center">
+          <span
+            id="wp-span"
+            className="text-red-700 text-lg ml-4 mt-2 flex justify-even"
+          ></span>
+          <div className="pfp-container">
+            <img
+              src="/wallpaper.png"
+              alt="wallpaper"
+              id="wallpaper-holder"
+              className="rounded-3xl flex-shrink-0 min-w-[200px] min-h-[80px] w-[700px] h-[170px]"
             />
-            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-          </filter>
-        </defs>
-      </svg>
-      <form
-        className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2"
-        onSubmit={(event) => handleSubmit(event, email, coins)}
-      >
-        <div className="relative z-0 w-3/4 mb-6 group">
+            <label htmlFor="wallpaper" className="cursor-pointer ">
+              <EditIconWallpaper />
+            </label>
+          </div>
           <input
-            type="input"
-            name="firstname"
-            id="firstname"
-            className="error block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
+            className="hidden cursor-pointer"
+            name="wallpaper"
+            id="wallpaper"
+            type="file"
+            accept="image/*"
+            onChange={handleWpChange}
           />
-          <label
-            htmlFor="firstname"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 pl-3 duration-300 transform -translate-y-8
-                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-100 peer-focus:-translate-y-8 "
-          >
-            First Name
-          </label>
-          <span className="text-red-700 text-sm ml-4">
-            First name should not be empty
-          </span>
-        </div>
-        <div className="relative z-0 w-3/4 mb-6 group">
+          <div className="pfp-container">
+            <img
+              src="/pfp1.png"
+              alt="pfp"
+              id="pfp-holder"
+              className="pfp -mt-10  w-[100px] h-[100px] "
+            />
+            <label htmlFor="pfp" className="cursor-pointer ">
+              <EditIconProfile />
+            </label>
+          </div>
           <input
-            type="input"
-            name="lastname"
-            id="lastname"
-            className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
+            className="hidden cursor-pointer"
+            name="pfp"
+            id="pfp"
+            type="file"
+            accept="image/*"
+            onChange={handlePfpChange}
           />
-          <label
-            htmlFor="lastname"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 px-3 duration-300 transform 
-                     -translate-y-8 scale-100 top-3 -z-10 origin-[0] peer-focus:left-0
-                      peer-focus:text-blue-600 
-                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                       peer-focus:scale-100 peer-focus:-translate-y-8"
-          >
-            Last Name
-          </label>
-          <span className="text-red-700 text-sm ml-4"></span>
+          <span
+            id="pfp-span"
+            className="text-red-700 text-sm ml-4 mt-2 mb-4 flex justify-even"
+          ></span>
         </div>
-        <div className="relative z-0 w-3/4 mb-6 group">
-          <input
-            type="input"
-            name="nickname"
-            id="nickname"
-            className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
+        <SvgShapingMethod />
+        <div className="justify-items-center mt-3 gap-3 flex flex-col items-center md:grid md:grid-cols-2">
+          <FirstNameInput
+            state={state[0]}
+            defaultValue={firstName}
+            validFirstName={validFirstName}
           />
-
-          <label
-            htmlFor="nickname"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 pl-3 duration-300 transform -translate-y-8
-                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-100 peer-focus:-translate-y-8 "
-          >
-            Nickname
-          </label>
-          <span className="text-red-700 text-sm ml-4"></span>
-        </div>
-        <div className="relative z-0 w-3/4 mb-6 group">
-          <input
-            type="password"
-            name="password"
-            id="password"
-            className="block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full border-gray-300 appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
+          <LastNameInput
+            state={state[1]}
+            defaultValue={lastName}
+            validLastName={validLastName}
           />
-          <label
-            htmlFor="password"
-            className="peer-focus:font-medium absolute text-sm
-                     text-gray-500 px-3 duration-300 transform 
-                     -translate-y-8 scale-100 top-3 -z-10 origin-[0] peer-focus:left-0
-                      peer-focus:text-blue-600 
-                       peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                       peer-focus:scale-100 peer-focus:-translate-y-8"
+          <NickNameInput state={state[2]} validNickName={validNickName} />
+          <PasswordInput state={state[3]} validPassword={validPassword} />
+          <motion.div
+            key="buttonSign"
+            layout={false}
+            layoutId="button"
+            initial={false}
+            transition={{ type: "Tween" }}
+            className="col-span-2"
           >
-            Password
-          </label>
-          <span className="text-red-700 text-sm ml-4"></span>
+            <button
+              disabled={!isEnabled}
+              type="submit"
+              className={`uppercase w-full py-2 px-12 rounded-full bg-[#0097E2]  text-white text-xs  
+                  text-center md:text-base hover:text-md 
+            ${
+              isEnabled
+                ? "hover:bg-[#2C3B7C] transform transition duration-300 hover:text-l hover:scale-110"
+                : "opacity-25"
+            } `}
+            >
+              Update
+            </button>
+          </motion.div>
         </div>
-        <motion.div
-          key="buttonSign"
-          layout={false}
-          layoutId="button"
-          initial={false}
-          transition={{ type: "Tween" }}
-          className="col-span-2"
-        >
-          <button
-            type="submit"
-            className="uppercase w-full  shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
-                                transform transition duration-300 
-                                hover:text-l hover:scale-110  text-white text-xs  text-center md:text-base hover:text-md
-                                 py-2 px-12  rounded-full"
-          >
-            Update
-          </button>
-        </motion.div>
       </form>
     </div>
   );

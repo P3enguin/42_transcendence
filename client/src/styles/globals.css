@@ -33,7 +33,6 @@ html {
 
 .pfp-container {
   filter:url(#round);
-  
 }
 
 .pfp {
@@ -45,4 +44,11 @@ html {
 .error {
   border-color: red;
 }
+
+.valid {
+  border-color: green;
+}
+
+
+
 /******************************* profile css **********************************/

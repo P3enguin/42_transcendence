@@ -8,5 +8,7 @@ namespace NodeJS {
         NEXT_PUBLIC_VERIFY_SESSION_ENDPOINT:string;
         NEXT_PUBLIC_JWT_SECRET:string;
         NEXT_PUBLIC_SIGNIN_ENDPOINT:string;
+        NEXT_PUBLIC_UPLOAD_PROFILE_ENDPOINT:string;
+        NEXT_PUBLIC_UPLOAD_WALLPAPER_ENDPOINT : string;
     }
 }
