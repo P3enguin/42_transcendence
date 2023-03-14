@@ -5,8 +5,9 @@ import GameNavBar from "./GameNavBar";
 import NavBar from "../home/NavBar";
 import React from "react";
 import Router from "next/router";
+import { LayoutProps } from "./layout";
 
-function SideNavBar() {
+function SideNavBar({children}: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
   const [isVisible, setVisible] = useState(false);
   const pages = [
@@ -69,7 +70,7 @@ function SideNavBar() {
   }
 
   return (
-    <div className="sm:p-10">
+    <div className="h-screen">
       {/* navbar */}
       <GameNavBar toggleSideBar={toggleSideBar} handleLogOut={handleLogOut} />
 
@@ -78,6 +79,7 @@ function SideNavBar() {
         isVisible={isVisible}
         svgIndex={svgIndex}
         handleLogOut={handleLogOut}
+        children={children}
       />
     </div>
   );

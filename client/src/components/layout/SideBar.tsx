@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { LayoutProps } from "./layout";
 
 import {
   LogoutIcon,
@@ -10,6 +11,7 @@ import {
   ProfileIcon,
   SettingsIcon,
 } from "../icons/Icons";
+import { ReactNode } from "react";
 
 interface FunctionProps {
   (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
@@ -19,10 +21,12 @@ function SideBar({
   isVisible,
   svgIndex,
   handleLogOut,
+  children,
 }: {
   isVisible: boolean;
   svgIndex: number;
   handleLogOut: FunctionProps;
+  children:ReactNode
 }) {
   const variants = {
     open: { opacity: 1 },
@@ -30,24 +34,13 @@ function SideBar({
   };
 
   return (
-    <motion.nav
-      animate={isVisible ? "open" : "closed"}
-      variants={variants}
-      exit={{ opacity: 0 }}
-    >
+    <div className="flex flex-row  h-full">
       <div
         id="userSideBar"
-        className={`absolute top-0 sm:top-10 z-10  flex-col items-center w-16 h-5/6 overflow-hidden
-            border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-            to-[#28346C] gap-6  ${isVisible ? "flex" : "hidden"}`}
+        className={`flex-col items-center w-16 h-full
+            border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+            to-[#28346C] gap-6 border-t-0 ${isVisible ? "flex" : "hidden"}`}
       >
-        <a className="flex items-center justify-center mt-3" href="#">
-          <Image src="/logo.png" alt="logo" width={39} height={41} />
-        </a>
-        <div
-          className=" border-b  border-t-0 border-r-0 border-l  rounded-bl-3xl
-                border-[#0097E2]  w-16 h-[20px] absolute top-[43px]"
-        ></div>
         <Link
           className="flex items-center justify-center w-12 h-12 mt-2 rounded"
           href="/home"
@@ -92,7 +85,8 @@ function SideBar({
           </div>
         </div>
       </div>
-    </motion.nav>
+     <div>{children}</div>
+    </div>
   );
 }
 
