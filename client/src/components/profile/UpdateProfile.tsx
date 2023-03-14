@@ -19,8 +19,6 @@ import {
   isStrong,
 } from "./ValidationFuncs";
 
-
-
 function UpdateProfile({
   email,
   firstName,
@@ -36,9 +34,7 @@ function UpdateProfile({
 }) {
   async function handleSubmit(event: any) {
     event.preventDefault();
-    console.log(`pfp : ${uploads.pfp}`);
-    console.log(`bg : ${uploads.wp}`);
-    
+
     const data: data = {
       nickname: event.target.nickname.value,
       email: email,
@@ -57,7 +53,6 @@ function UpdateProfile({
     });
     if (response.status == 201) {
       if (uploads.pfp) {
-        console.log("in pfp");
         const pfpImg = event.target.pfp.files[0];
         let formData = new FormData();
         formData.append("file", pfpImg);
@@ -68,21 +63,38 @@ function UpdateProfile({
           method: "POST",
           body: formData,
           credentials: "include",
-        })
-      } 
+        });
+      }
       if (uploads.wp) {
         const pfpImg = event.target.wallpaper.files[0];
         let formData = new FormData();
         formData.append("file", pfpImg);
         const url = process.env.NEXT_PUBLIC_UPLOAD_WALLPAPER_ENDPOINT;
 
-        const resp =  await fetch(url, {
+        const resp = await fetch(url, {
           method: "POST",
           body: formData,
           credentials: "include",
-        })
+        });
       }
       Router.push("/profile");
+    } else if (response.status == 401) {
+      const err = await response.json();
+      if (err.error === "Nickname already exist") {
+        const span = document.getElementById("nickspan");
+        updateField(
+          2,
+          { valid: false, touched: state[2].touched },
+          span,
+          err.error
+        );
+      }
+      else {
+        const span = document.getElementById("wp-span");
+        // to check later , 
+        if (span)
+          span.innerHTML = err;
+      }
     }
   }
   // stats for error handling
@@ -344,7 +356,7 @@ function UpdateProfile({
           />
           <span
             id="pfp-span"
-            className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+            className="text-red-700 text-sm ml-4 mt-2 mb-4 flex justify-even"
           ></span>
         </div>
         <svg

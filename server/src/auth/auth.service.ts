@@ -221,8 +221,6 @@ export class AuthService {
     };
   }
 
-
-
   async logout(req:Request,res:Response) {
     const token = req.cookies["jwt_token"];
     try {
