@@ -8,9 +8,9 @@ export class MatchService {
 	constructor(private prisma: PrismaService) {}
 
 	async saveGame(dto: MatchDto) {
-		console.log({
-			dto,
-		})
+		// console.log({
+		// 	dto,
+		// })
 		try{
 			const match = await this.prisma.matchs.create({
 				data: {
