@@ -55,7 +55,7 @@ function Login() {
                 className={`border border-white rounded-full bg-white p-1 flex flex-row `}
               >
                 <Image
-                  src="/googleLogo.png"
+                  src="/googlelogo.svg"
                   alt="google-Logo"
                   width={22}
                   height={22}

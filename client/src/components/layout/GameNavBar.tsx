@@ -16,7 +16,7 @@ function GameNavBar({ toggleSideBar, handleLogOut }: FunctionProps) {
     >
       <div className="flex flex-row gap-10 items-center">
         <a className="ml-3 mt-1 sm:hidden flex" href="#">
-          <Image src="/logo.png" alt="logo" width={39} height={41} />
+          <Image src="/logo.svg" alt="logo" width={39} height={41} />
         </a>
         <button
           type="button"

@@ -42,7 +42,7 @@ function SideBar({
             to-[#28346C] gap-6  ${isVisible ? "flex" : "hidden"}`}
       >
         <a className="flex items-center justify-center mt-3" href="#">
-          <Image src="/logo.png" alt="logo" width={39} height={41} />
+          <Image src="/logo.svg" alt="logo" width={39} height={41} />
         </a>
         <div
           className=" border-b  border-t-0 border-r-0 border-l  rounded-bl-3xl
