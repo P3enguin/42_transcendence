@@ -9,7 +9,7 @@ import { LayoutProps } from "./layout";
 
 function SideNavBar({children}: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
-  const [isVisible, setVisible] = useState(false);
+  const [isVisible, setVisible] = useState(true);
   const pages = [
     { path: "/home", index: 0 },
     { path: "/chat", index: 1 },
@@ -24,26 +24,26 @@ function SideNavBar({children}: LayoutProps) {
     setVisible(!isVisible);
   }
   useEffect(() => {
-    const handleResize = () => {
-      // Get the current screen width
-      const screenWidth = window.innerWidth;
+    // const handleResize = () => {
+    //   // Get the current screen width
+    //   const screenWidth = window.innerWidth;
 
-      // If the screen width is medium or larger, hide the sidebar
-      if (screenWidth >= 640) {
-        setVisible(true);
-      } else setVisible(false);
-    };
+    //   // If the screen width is medium or larger, hide the sidebar
+    //   if (screenWidth >= 640) {
+    //     setVisible(true);
+    //   } else setVisible(false);
+    // };
 
-    // Add a resize event listener to the window object
-    window.addEventListener("resize", handleResize);
+    // // // Add a resize event listener to the window object
+    // window.addEventListener("resize", handleResize);
 
-    // Call the resize handler initially to ensure that the sidebar is hidden if necessary
-    handleResize();
+    // // Call the resize handler initially to ensure that the sidebar is hidden if necessary
+    // handleResize();
 
-    // Remove the resize event listener when the component is unmounted
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    // // Remove the resize event listener when the component is unmounted
+    // return () => {
+    //   window.removeEventListener("resize", handleResize);
+    // };
   }, []);
 
   // Handle the color of the icon based on the page we are in
@@ -72,7 +72,7 @@ function SideNavBar({children}: LayoutProps) {
   return (
     <div className="h-screen">
       {/* navbar */}
-      <GameNavBar toggleSideBar={toggleSideBar} handleLogOut={handleLogOut} />
+      <GameNavBar toggleSideBar={toggleSideBar} handleLogOut={handleLogOut} isVisible={isVisible}/>
 
       {/* SideBar */}
       <SideBar

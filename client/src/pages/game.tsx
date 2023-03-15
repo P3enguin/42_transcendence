@@ -3,9 +3,7 @@ import { verifyToken } from "@/components/VerifyToken";
 
 function Game({ jwt_token }: { jwt_token: string }) {
   return (
-    <Layout>
       <></>
-    </Layout>
   );
 }
 
@@ -29,6 +27,14 @@ export async function getServerSideProps({ req }: any) {
       permanent: true,
     },
   };
+}
+
+Game.getLayout = function getLayout(page:React.ReactNode) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 export default Game;

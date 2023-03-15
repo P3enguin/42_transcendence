@@ -6,23 +6,39 @@ import { SideBarIcon, LogoutIcon, SearchBarIcon } from "../icons/Icons";
 interface FunctionProps {
   toggleSideBar: () => void;
   handleLogOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  isVisible : boolean,
 }
 
-function GameNavBar({ toggleSideBar, handleLogOut }: FunctionProps) {
+function GameNavBar({ toggleSideBar, handleLogOut,isVisible }: FunctionProps) {
   return (
-    <div className="flex flex-row w-full justify-center ">
-      <div className="border-r-0 border-b-0 w-[64px] shrink-0 z-0 bg-[#2A3568] border  border-[#0097E2] flex 
-          justify-center items-center">
-        <Link className="absolute flex justify-center  items-center top-0 left-0 bg-[#2A3568] border w-[64px] h-[64px] border-[#0097E2] rounded-tr-3xl rounded-bl-3xl"  href="/home">
-          <Image className="  " src="/logo.png" alt="logo" width={39} height={41} />
-        </Link>
+    <div className="flex flex-row w-full  ">
+      <div
+        className={`border-r-0 border-b-0 w-[64px] shrink-0 z-0 bg-[#2A3568]
+                  border border-[#0097E2] justify-center items-center flex ${isVisible ? "border-l" :  "border-l-0"} `}
+      >
+        <div className="absolute flex justify-center  items-center top-0 left-0
+            bg-[#2A3568] border w-[64px] h-[64px] border-[#0097E2] 
+              rounded-tr-3xl rounded-bl-3xl">
+          <Link
+            className=""
+            href="/home"
+          >
+            <Image
+              className=""
+              src="/logo.png"
+              alt="logo"
+              width={39}
+              height={41}
+            />
+          </Link>
+        </div>
       </div>
       <div
         className="w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] 
       from-[#28346C] via-[#121C46] to-[#263268] flex flex-row items-center
-           border-l-0 sm:justify-center justify-between"
+           border-l-0 sm:justify-center justify-between rounded-tr-3xl"
       >
-        <div className="flex flex-row gap-10 items-center">
+        <div className="flex flex-row items-center ml-4">
           <button
             type="button"
             className="text-[#8BD9FF] rounded-lg sm:hidden"
