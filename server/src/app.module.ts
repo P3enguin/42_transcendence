@@ -11,6 +11,7 @@ import { AppController } from './app.controller';
 import { StatusModule } from './status/status.module';
 import { AchivementModule } from './achivement/achivement.module';
 import { TitleModule } from './title/title.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TitleModule } from './title/title.module';
     PrismaModule,
     StatusModule,
     TitleModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
