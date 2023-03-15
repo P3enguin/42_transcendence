@@ -6,9 +6,7 @@ import { verifyToken } from "@/components/VerifyToken";
 
 function PlayerProfile({ jwt_token }: { jwt_token: string }) {
   return (
-    <Layout>
       <div>hh</div>
-    </Layout>
   );
 }
 
@@ -32,5 +30,13 @@ export async function getServerSideProps({ req }: any) {
       permanent: true,
     },
   };
+}
+
+PlayerProfile.getLayout = function getLayout(page:React.ReactNode) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 export default PlayerProfile;
