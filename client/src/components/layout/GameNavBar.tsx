@@ -1,18 +1,19 @@
+import { AnimatePresence, LazyMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-
+import { motion } from "framer-motion";
 import { SideBarIcon, LogoutIcon, SearchBarIcon } from "../icons/Icons";
 
 interface FunctionProps {
   toggleSideBar: () => void;
   handleLogOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  isVisible : boolean,
+  isVisible: boolean;
 }
 
-function GameNavBar({ toggleSideBar, handleLogOut,isVisible }: FunctionProps) {
+function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
   return (
     <div className="flex flex-row w-full  ">
-      <div
+      {/* <div
         className={`border-r-0 border-b-0 w-[64px] shrink-0 z-0 bg-[#2A3568]
                   border border-[#0097E2] justify-center items-center flex ${isVisible ? "border-l" :  "border-l-0"} `}
       >
@@ -32,6 +33,39 @@ function GameNavBar({ toggleSideBar, handleLogOut,isVisible }: FunctionProps) {
             />
           </Link>
         </div>
+      </div> */}
+      <div
+        className="w-[64px] shrink-0 z-0 bg-[#2A3568]
+                  border-b-0 border-t sm:border-l border-[#0097E2] justify-center items-center flex"
+      >
+        <AnimatePresence>
+          {isVisible && 
+          <motion.div
+          initial={{ x: "-100%" }}
+          animate={{ x: 0 }}
+          exit={{ x: "-100%" }}
+          transition={{ type: "Tween" }}
+            className="absolute flex justify-center  items-center top-0 left-0
+            bg-[#2A3568] border w-[64px] h-[64px] border-[#0097E2] 
+              border-b-0  border-r-0"
+          ></motion.div>
+          }
+        </AnimatePresence>
+      </div>
+      <div
+        className="absolute flex justify-center  items-center top-0 left-0
+            bg-[#2A3568] border w-[64px] h-[64px] border-[#0097E2] 
+              rounded-tr-3xl rounded-bl-3xl"
+      >
+        <Link className="" href="/home">
+          <Image
+            className=""
+            src="/logo.png"
+            alt="logo"
+            width={39}
+            height={41}
+          />
+        </Link>
       </div>
       <div
         className="w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] 

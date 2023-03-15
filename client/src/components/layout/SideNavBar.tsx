@@ -51,7 +51,7 @@ function SideNavBar({children}: LayoutProps) {
     pages.forEach((page) => {
       if (page.path == router.pathname) setSvgIndex(page.index);
     });
-  }, []);
+  }, [router.pathname]);
 
   async function handleLogOut(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
