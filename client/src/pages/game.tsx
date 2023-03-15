@@ -4,7 +4,9 @@ import { verifyToken } from "@/components/VerifyToken";
 function Game({ jwt_token }: { jwt_token: string }) {
   return (
     <Layout>
-      <></>
+      <>
+        <img src="GameBoard.svg" alt="game borad" />
+      </>
     </Layout>
   );
 }
