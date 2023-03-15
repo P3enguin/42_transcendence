@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-
+import { LayoutProps } from "./layout";
+import { AnimatePresence } from "framer-motion";
 import {
   LogoutIcon,
   HomeIcon,
@@ -10,6 +11,7 @@ import {
   ProfileIcon,
   SettingsIcon,
 } from "../icons/Icons";
+import { ReactNode } from "react";
 
 interface FunctionProps {
   (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
@@ -19,80 +21,141 @@ function SideBar({
   isVisible,
   svgIndex,
   handleLogOut,
+  children,
 }: {
   isVisible: boolean;
   svgIndex: number;
   handleLogOut: FunctionProps;
+  children: ReactNode;
 }) {
-  const variants = {
-    open: { opacity: 1 },
-    closed: { opacity: 0 },
-  };
-
   return (
-    <motion.nav
-      animate={isVisible ? "open" : "closed"}
-      variants={variants}
-      exit={{ opacity: 0 }}
-    >
-      <div
+    <div className="flex flex-row h-[95%]">
+       {/* For normal page */}
+      <motion.aside
         id="userSideBar"
-        className={`absolute top-0 sm:top-10 z-10  flex-col items-center w-16 h-5/6 overflow-hidden
-            border rounded-tr-3xl rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-            to-[#28346C] gap-6  ${isVisible ? "flex" : "hidden"}`}
+        className={` flex-col items-center w-16 h-full justify-between
+              border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+              to-[#28346C] gap-6 border-t-0 sm:flex hidden`}
       >
-        <a className="flex items-center justify-center mt-3" href="#">
-          <Image src="/logo.svg" alt="logo" width={39} height={41} />
-        </a>
-        <div
-          className=" border-b  border-t-0 border-r-0 border-l  rounded-bl-3xl
-                border-[#0097E2]  w-16 h-[20px] absolute top-[43px]"
-        ></div>
-        <Link
-          className="flex items-center justify-center w-12 h-12 mt-2 rounded"
-          href="/home"
-        >
-          <HomeIcon svgIndex={svgIndex} />
-        </Link>
+        <div className="flex flex-col items-center justify-around h-1/3">
+          <Link
+            className="flex items-center justify-center w-12 h-12 mt-2 "
+            href="/home"
+            shallow
+          >
+            <HomeIcon svgIndex={svgIndex} />
+          </Link>
 
-        <Link
-          className="flex items-center justify-center w-12 h-12 mt-2 rounded "
-          href="/chat"
-        >
-          <ChatIcon svgIndex={svgIndex} />
-        </Link>
+          <Link
+            className="flex items-center justify-center w-12 h-12 mt-2 "
+            href="/chat"
+            shallow
+          >
+            <ChatIcon svgIndex={svgIndex} />
+          </Link>
 
-        <Link
-          className="flex items-center justify-center w-12 h-12 mt-2 rounded  "
-          href="/game"
-        >
-          <GameIcon svgIndex={svgIndex} />
-        </Link>
+          <Link
+            className="flex items-center justify-center w-12 h-12 mt-2 "
+            href="/game"
+            shallow
+          >
+            <GameIcon svgIndex={svgIndex} />
+          </Link>
 
-        <Link
-          className="flex items-center justify-center w-12 h-12 mt-2 rounded  "
-          href="/profile"
-        >
-          <ProfileIcon svgIndex={svgIndex} />
-        </Link>
+          <Link
+            className="flex items-center justify-center w-12 h-12 mt-2 "
+            href="/profile"
+            shallow
+          >
+            <ProfileIcon svgIndex={svgIndex} />
+          </Link>
+        </div>
 
-        <div className="flex flex-col absolute bottom-0 items-center gap-7">
+        <div className="flex flex-col items-center gap-10">
           <div className="flex sm:hidden">
             <button onClick={handleLogOut}>
               <LogoutIcon />
             </button>
           </div>
-          <div className=" mb-3 ">
+          <div className="mb-3 ">
             <Link
-              className="flex items-center justify-center w-12 h-12 mt-2 "
+              className="flex items-center justify-center w-12 h-12 mt-2"
               href="/settings"
+              shallow
             >
               <SettingsIcon svgIndex={svgIndex} />
             </Link>
           </div>
         </div>
-      </div>
-    </motion.nav>
+      </motion.aside>
+      {/* For Mobile Pages */}
+      <AnimatePresence>
+      {isVisible && (
+          <motion.aside
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "Tween" }}
+            id="userSideBar"
+            className={` flex-col items-center w-16 h-full justify-between
+              border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+              to-[#28346C] gap-6 border-t-0 sm:hidden flex`}
+          >
+            <div className="flex flex-col items-center justify-around h-1/3">
+              <Link
+                className="flex items-center justify-center w-12 h-12 mt-2 "
+                href="/home"
+                shallow
+              >
+                <HomeIcon svgIndex={svgIndex} />
+              </Link>
+
+              <Link
+                className="flex items-center justify-center w-12 h-12 mt-2 "
+                href="/chat"
+                shallow
+              >
+                <ChatIcon svgIndex={svgIndex} />
+              </Link>
+
+              <Link
+                className="flex items-center justify-center w-12 h-12 mt-2 "
+                href="/game"
+                shallow
+              >
+                <GameIcon svgIndex={svgIndex} />
+              </Link>
+
+              <Link
+                className="flex items-center justify-center w-12 h-12 mt-2 "
+                href="/profile"
+                shallow
+              >
+                <ProfileIcon svgIndex={svgIndex} />
+              </Link>
+            </div>
+
+            <div className="flex flex-col items-center gap-10">
+              <div className="flex sm:hidden">
+                <button onClick={handleLogOut}>
+                  <LogoutIcon />
+                </button>
+              </div>
+              <div className="mb-3 ">
+                <Link
+                  className="flex items-center justify-center w-12 h-12 mt-2"
+                  href="/settings"
+                  shallow
+                >
+                  <SettingsIcon svgIndex={svgIndex} />
+                </Link>
+              </div>
+            </div>
+          </motion.aside>
+      )}
+      </AnimatePresence>
+      {children}
+    </div>
   );
 }
 

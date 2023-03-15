@@ -20,7 +20,7 @@ function LogoutIcon() {
 function SideBarIcon() {
   return (
     <svg
-      className="w-6 h-6"
+      className="w-6 h-6 "
       aria-hidden="true"
       fill="currentColor"
       viewBox="0 0 20 20"
@@ -190,32 +190,40 @@ function EditIconWallpaper() {
 }
 
 function SvgShapingMethod() {
-   return ( <svg
-    style={{ visibility: "hidden", position: "absolute" }}
-    width="0"
-    height="0"
-    xmlns="http://www.w3.org/2000/svg"
-    version="1.1"
-  >
-    <defs>
-      <filter id="round">
-        <feGaussianBlur
-          in="SourceGraphic"
-          stdDeviation="3"
-          result="blur"
-        />
-        <feColorMatrix
-          in="blur"
-          mode="matrix"
-          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
-          result="goo"
-        />
-        <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-      </filter>
-    </defs>
-  </svg>)
+  return (
+    <svg
+      style={{ visibility: "hidden", position: "absolute" }}
+      width="0"
+      height="0"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.1"
+    >
+      <defs>
+        <filter id="round">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+          <feColorMatrix
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+            result="goo"
+          />
+          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+        </filter>
+      </defs>
+    </svg>
+  );
 }
 
+function CloseButtonIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+      <path
+        d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 
+  45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z"
+      />
+    </svg>
+  );
+}
 
 export {
   SideBarIcon,
@@ -229,4 +237,5 @@ export {
   EditIconProfile,
   EditIconWallpaper,
   SvgShapingMethod,
+  CloseButtonIcon,
 };

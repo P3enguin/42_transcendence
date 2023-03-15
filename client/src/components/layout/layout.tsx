@@ -2,15 +2,15 @@ import SideNavBar from "./SideNavBar";
 
 import { ReactNode } from "react";
 
-interface LayoutProps {
+export interface LayoutProps {
   children: ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
   return (
     <>
-      <SideNavBar />
-      <main>{children}</main>
+      <SideNavBar children={children}/>
+      {/* <main>{children}</main> */}
     </>
   );
 };
