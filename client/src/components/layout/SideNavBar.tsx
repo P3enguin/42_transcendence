@@ -9,7 +9,7 @@ import { LayoutProps } from "./layout";
 
 function SideNavBar({children}: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
-  const [isVisible, setVisible] = useState(true);
+  const [isVisible, setVisible] = useState(false);
   const pages = [
     { path: "/home", index: 0 },
     { path: "/chat", index: 1 },
@@ -23,6 +23,8 @@ function SideNavBar({children}: LayoutProps) {
   function toggleSideBar() {
     setVisible(!isVisible);
   }
+
+  // to fix later 
   useEffect(() => {
     // const handleResize = () => {
     //   // Get the current screen width

@@ -30,6 +30,7 @@ function SideBar({
 }) {
   return (
     <div className="flex flex-row h-[95%]">
+       {/* For normal page */}
       <motion.aside
         id="userSideBar"
         className={` flex-col items-center w-16 h-full justify-between
@@ -40,7 +41,7 @@ function SideBar({
           <Link
             className="flex items-center justify-center w-12 h-12 mt-2 "
             href="/home"
-            shallow={true}
+            shallow
           >
             <HomeIcon svgIndex={svgIndex} />
           </Link>
@@ -48,7 +49,7 @@ function SideBar({
           <Link
             className="flex items-center justify-center w-12 h-12 mt-2  "
             href="/chat"
-            shallow={true}
+            shallow
           >
             <ChatIcon svgIndex={svgIndex} />
           </Link>
@@ -56,7 +57,7 @@ function SideBar({
           <Link
             className="flex items-center justify-center w-12 h-12 mt-2   "
             href="/game"
-            shallow={true}
+            shallow
           >
             <GameIcon svgIndex={svgIndex} />
           </Link>
@@ -64,7 +65,7 @@ function SideBar({
           <Link
             className="flex items-center justify-center w-12 h-12 mt-2   "
             href="/profile"
-            shallow={true}
+            shallow
           >
             <ProfileIcon svgIndex={svgIndex} />
           </Link>
@@ -80,13 +81,14 @@ function SideBar({
             <Link
               className="flex items-center justify-center w-12 h-12 mt-2"
               href="/settings"
-              shallow={true}
+              shallow
             >
               <SettingsIcon svgIndex={svgIndex} />
             </Link>
           </div>
         </div>
       </motion.aside>
+      {/* For Mobile Pages */}
       <AnimatePresence>
       {isVisible && (
           <motion.aside
@@ -103,7 +105,7 @@ function SideBar({
               <Link
                 className="flex items-center justify-center w-12 h-12 mt-2 "
                 href="/home"
-                shallow={true}
+                shallow
               >
                 <HomeIcon svgIndex={svgIndex} />
               </Link>
@@ -111,7 +113,7 @@ function SideBar({
               <Link
                 className="flex items-center justify-center w-12 h-12 mt-2  "
                 href="/chat"
-                shallow={true}
+                shallow
               >
                 <ChatIcon svgIndex={svgIndex} />
               </Link>
@@ -119,7 +121,7 @@ function SideBar({
               <Link
                 className="flex items-center justify-center w-12 h-12 mt-2   "
                 href="/game"
-                shallow={true}
+                shallow
               >
                 <GameIcon svgIndex={svgIndex} />
               </Link>
@@ -127,7 +129,7 @@ function SideBar({
               <Link
                 className="flex items-center justify-center w-12 h-12 mt-2   "
                 href="/profile"
-                shallow={true}
+                shallow
               >
                 <ProfileIcon svgIndex={svgIndex} />
               </Link>
@@ -143,7 +145,7 @@ function SideBar({
                 <Link
                   className="flex items-center justify-center w-12 h-12 mt-2"
                   href="/settings"
-                  shallow={true}
+                  shallow
                 >
                   <SettingsIcon svgIndex={svgIndex} />
                 </Link>
