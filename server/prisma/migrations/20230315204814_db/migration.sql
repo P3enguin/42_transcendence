@@ -3,8 +3,12 @@ CREATE TABLE "players" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
-    "avatar" TEXT,
+    "avatar" TEXT NOT NULL DEFAULT '#',
     "joinAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "password" TEXT NOT NULL,
+    "firstname" TEXT NOT NULL,
+    "lastname" TEXT NOT NULL,
+    "coins" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
 
     CONSTRAINT "players_pkey" PRIMARY KEY ("id")
@@ -109,6 +113,12 @@ CREATE TABLE "Ban" (
 );
 
 -- CreateTable
+CREATE TABLE "InvalidToken" (
+    "token" TEXT NOT NULL,
+    "ExpireDate" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "_friends" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
@@ -146,6 +156,15 @@ CREATE UNIQUE INDEX "players_nickname_key" ON "players"("nickname");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "players_statusId_key" ON "players"("statusId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Achivement_name_key" ON "Achivement"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Titles_name_key" ON "Titles"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "InvalidToken_token_key" ON "InvalidToken"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");

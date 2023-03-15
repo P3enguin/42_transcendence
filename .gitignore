@@ -61,4 +61,6 @@
 **/!.vscode/launch.json
 **/!.vscode/extensions.json
 
+.vscode
+.history
 todo
