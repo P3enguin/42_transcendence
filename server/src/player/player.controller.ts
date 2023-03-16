@@ -1,6 +1,6 @@
-import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req } from '@nestjs/common';
+import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req, Patch } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Player } from '@prisma/client'
+import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
 import { PlayerService } from './player.service';
 import { GetPlayer } from 'src/auth/decorator';
@@ -17,6 +17,9 @@ export class PlayerController {
 	
 	@Get('me')
 	getMe(@GetPlayer() player: Player) {
+		console.log({
+			player,
+		})
 		return player
 	}
 	
@@ -51,4 +54,19 @@ export class PlayerController {
 	  uploadBackGround(@Req() req :Request, @UploadedFile() file: Express.Multer.File){
 		return this.playerService.updateWallpaper(req,file.filename);
 	}
+
+	@Patch('upd')
+	AddFriend(@GetPlayer() playerId :Player){
+		console.log({
+			playerId,
+		})
+		return this.playerService.AddFriend(playerId.id, 1);
+	}
+	
+	@Get('friends')
+	GetFriends(@GetPlayer() playerId: Player) {
+		console.log({"geting : ":playerId});
+		return this.playerService.GetFriends(playerId.id);
+	}
+
 }

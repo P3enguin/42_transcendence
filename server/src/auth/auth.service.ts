@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  UseGuards,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto,singDTO } from './dto';
@@ -10,9 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
 import { Request,Response } from 'express';
-import { endWith } from 'rxjs';
 import * as argon2 from "argon2";
-import { verify } from 'crypto';
 
 interface playerStrat {
   email: string,
@@ -22,6 +21,8 @@ interface playerStrat {
   coins: number,
   accessToken: string,
 }
+
+
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
   ) {}
   
   async checkUser( user:playerStrat,res:Response) {
-   
+    
     try {
         const player = await this.prisma.player.findUnique({
             where : {
@@ -59,9 +60,9 @@ export class AuthService {
           })
           res.status(200).cookie('jwt_session',jwtSession,{ 
             httpOnly: true, 
-            secure: true, 
+            // secure: true, 
             maxAge: 1000 * 60 * 15 // expires after 15 min
-          });
+          });   
           res.redirect(process.env.SESSION_AUTH_REDIRECTION);
         }
         else
@@ -69,7 +70,7 @@ export class AuthService {
           const jwtToken = await this.signToken(player.id, player.nickname);
           res.cookie('jwt_token', jwtToken.access_token, {
             httpOnly: true,
-            secure: true,
+            // secure: true,
             maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
           });
           res.redirect(process.env.FULL_AUTH_REDIRECTION);
@@ -83,26 +84,10 @@ export class AuthService {
     } 
   }
   
-
   async signup(req:Request, res:Response,dto:AuthDto) {
 
-    const token = req.cookies["jwt_session"];
-    if (!token)
-      return res.status(401).json({error : "unauthorized to update profile"})
     const secret :string = process.env.JWT_SECRET;
     try {
-      // if the token is valid , the code will continue 
-      const decoded = this.jwt.verify(token,{secret});
-
-      // checking if the token is invalid in database
-      const resp = await this.prisma.invalidToken.findUnique({
-        where : {
-          token:token,
-        }
-      })
-      if (resp)
-        throw new Error("Token is invalid")
-      res.clearCookie('jwt_session')
       await this.achiv.fillAvhievememt();
       await this.title.fillTitles();
       const hash = await argon2.hash(dto.password);
@@ -124,22 +109,24 @@ export class AuthService {
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
-        secure: true,
+        // secure: true,
         maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
       });
+      res.clearCookie("jwt_session");
       res.status(201).send({ success: true });
     }  catch(e) {
+      var error ;
       if (e instanceof PrismaClientKnownRequestError) {
           if (e.code === 'P2002') {
-            return {error:"error Nickname already exist",nickname:null}
+            error =  "Nickname already exist";
           }
           else {
-              return {error:"An Error has occured"}
+            error = "An Error has occured";
           }
         }
         // error handling for invalid session token
-        return res.status(401).json({error : e});
-      } 
+          return res.status(401).send(JSON.stringify({error: error}));
+        } 
   }
 
   
@@ -158,14 +145,14 @@ export class AuthService {
       });
       if (!player)
         throw new ForbiddenException(
-          'Username Not found',
+          'Nickname Not found',
           );
       if (await argon2.verify(player.password,dto.password))
       {
         const token = await this.signToken(player.id, player.nickname);
         res.cookie('jwt_token', token.access_token, {
           httpOnly: true,
-          secure: true,
+          // secure: true,
           maxAge: 1000 * 60 * 60
         });
         res.status(200).send({ success: true });
@@ -178,39 +165,40 @@ export class AuthService {
     }
     catch (err)
     {
+      
       res.status(401).json({error : err});
     }
 
   }
 
-  async getUser(userEmail: string){
-    var user :object;
-    try {
-        user = await this.prisma.player.findUnique({
-            where : {
-                email: userEmail,
-            },
-            select : {
-                nickname: true,
-                email: true,
-                firstname:true,
-                lastname:true,
-            }
-        })
-    }
-    catch(e) {
-        console.log(e);
-        if (e instanceof PrismaClientKnownRequestError) {
-            console.log(`code : ${e.code} , message : ${e.message}`);
-        }
-    }
-    if (!user)
-        return {
-            nickname: null,
-            error:"Error user not found"
-        }
-    return user;
-  }
+  // async getUser(userEmail: string){
+  //   var user :object;
+  //   try {
+  //       user = await this.prisma.player.findUnique({
+  //           where : {
+  //               email: userEmail,
+  //           },
+  //           select : {
+  //               nickname: true,
+  //               email: true,
+  //               firstname:true,
+  //               lastname:true,
+  //           }
+  //       })
+  //   }
+  //   catch(e) {
+  //       console.log(e);
+  //       if (e instanceof PrismaClientKnownRequestError) {
+  //           console.log(`code : ${e.code} , message : ${e.message}`);
+  //       }
+  //   }
+  //   if (!user)
+  //       return {
+  //           nickname: null,
+  //           error:"Error user not found"
+  //       }
+  //   return user;
+  // }
 
   async signToken(
     playerId: number,
@@ -234,54 +222,14 @@ export class AuthService {
     };
   }
 
-  async verifyToken (req:Request,res:Response) {
-    const token = req.cookies["jwt_token"];
-    if (!token)
-      return res.status(401).json({error : "No token provided"})
-    const secret :string = process.env.JWT_SECRET;
-   try {
-      const decoded = this.jwt.verify(token,{secret});
-      const resp = await this.prisma.invalidToken.findUnique({
-          where : {
-            token:token,
-          }
-      })
-      if (resp)
-        throw new Error("Token is invalid")
-      return res.status(200).json({data : decoded})
-   }
-   catch (err){
-      return res.status(401).json({error : err});
-   }
-  }
-
-  async verifySession (req:Request,res:Response) {
-    const token = req.cookies["jwt_session"];
-    if (!token)
-      return res.status(401).json({error : "No token provided"})
-    const secret :string = process.env.JWT_SECRET;
-   try {
-      const decoded = this.jwt.verify(token,{secret});
-      return res.status(200).json({data : decoded})
-   }
-   catch (err){
-      return res.status(401).json({error : err});
-   }
-  }
-
   async logout(req:Request,res:Response) {
-
     const token = req.cookies["jwt_token"];
-    if (!token)
-      return res.status(401).json({error : "No token provided"})
-    const secret :string = process.env.JWT_SECRET;
     try {
-        const decoded = this.jwt.verify(token,{secret});
         await this.prisma.invalidToken.create ({
           data :
           {
             token : token,
-            ExpireDate: new Date(decoded.exp * 1000),
+            ExpireDate: new Date(req.body.jwtDecoded.exp * 1000),
           }
         })
         res.status(201).clearCookie('jwt_token').json({success:"logged out succesfully"});

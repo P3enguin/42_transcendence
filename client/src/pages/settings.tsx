@@ -2,10 +2,17 @@ import Layout from "@/components/layout/layout";
 
 function settings() {
   return (
-    <Layout>
       <></>
-    </Layout>
   );
+}
+
+
+settings.getLayout = function getLayout(page:React.ReactNode) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
 }
 
 export default settings;

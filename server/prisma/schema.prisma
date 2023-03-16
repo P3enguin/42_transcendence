@@ -11,7 +11,8 @@ model Player {
   id                Int       @id @default(autoincrement())
   email             String    @unique
   nickname          String    @unique
-  avatar            String    @default("#")
+  avatar            String    @default("default.png")
+  wallpaper         String    @default("wallpaper.png")
   joinAt            DateTime  @default(now())
   password          String
   firstname         String

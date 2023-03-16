@@ -3,15 +3,13 @@ import { verifyToken } from "@/components/VerifyToken";
 
 function Chat({ jwt_token }: { jwt_token: string }) {
   return (
-    <Layout>
       <></>
-    </Layout>
   );
 }
 
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies["jwt_token"];
-
+  console.log(jwt_token);
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
@@ -31,4 +29,12 @@ export async function getServerSideProps({ req }: any) {
   };
 }
 
+
+Chat.getLayout = function getLayout(page:React.ReactNode) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}
 export default Chat;

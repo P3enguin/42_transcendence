@@ -64,3 +64,9 @@
 .vscode
 .history
 todo
+todo
+**/uploads/profiles/*
+**/uploads/wallpapers/*
+
+!**/uploads/profiles/default.png
+!**/uploads/wallpapers/wallpaper.png
