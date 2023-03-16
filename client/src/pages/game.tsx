@@ -16,9 +16,9 @@ function Game({ jwt_token }: { jwt_token: string }) {
       console.log('connected');
       socket.emit('message', { username: 'test', message: 'hello' });
     });
-    return () => {
+    return (() => {
       socket.disconnect();
-    };
+    });
   }, []);
   return (
     <>

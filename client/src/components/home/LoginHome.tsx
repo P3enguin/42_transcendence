@@ -38,7 +38,7 @@ function Login() {
   }
 
   return (
-    <div className=" w-full md:w-2/3  max-w-lg	 text-base md:text-2xl justify-center">
+    <div className="justify-center w-full max-w-lg text-base  md:w-2/3 md:text-2xl">
       <motion.div
         key="login"
         initial={{ opacity: 0 }}
@@ -46,7 +46,7 @@ function Login() {
         exit={{ opacity: 0 }}
         className=""
       >
-        <div className="text-white flex flex-col items-center gap-5 w-full">
+        <div className="flex flex-col items-center w-full gap-5 text-white">
           <p>CONTINUE WITH</p>
           <div className="flex flex-row gap-5">
             <a href={process.env.NEXT_PUBLIC_GOOGLE_ENDPOINT}>
@@ -55,7 +55,7 @@ function Login() {
                 className={`border border-white rounded-full bg-white p-1 flex flex-row `}
               >
                 <Image
-                  src="/googlelogo.svg"
+                  src="/googlelogo.png"
                   alt="google-Logo"
                   width={22}
                   height={22}
@@ -77,18 +77,18 @@ function Login() {
               </motion.button>
             </a>
           </div>
-          <div className="w-2/4 py-5 self-center">
+          <div className="self-center w-2/4 py-5">
             <div className="border border-white"> </div>
           </div>
           <p>OR</p>
         </div>
         <form
-          className="flex flex-col items-center mt-3  gap-3 w-full"
+          className="flex flex-col items-center w-full gap-3 mt-3"
           onSubmit={(event) => handleSubmit(event)}
         >
           <span
             id="error-span"
-            className="text-red-700 text-lg mb-3 flex justify-center"
+            className="flex justify-center mb-3 text-lg text-red-700"
           ></span>
           <div className="relative z-0 w-3/4 mb-6 ">
             <input
@@ -142,7 +142,7 @@ function Login() {
             layoutId="button"
             initial={false}
             transition={{ type: "Tween" }}
-            className="self-center  w-3/4"
+            className="self-center w-3/4"
           >
             <button
               type="submit"
