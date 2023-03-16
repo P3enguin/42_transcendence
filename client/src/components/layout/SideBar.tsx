@@ -34,7 +34,7 @@ function SideBar({
       <motion.aside
         id="userSideBar"
         className={` flex-col items-center w-16 h-full justify-between
-              border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+              border  rounded-br-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
               to-[#28346C] gap-6 border-t-0 sm:flex hidden`}
       >
         <div className="flex-col items-center flex h-1/3 justify-around">
