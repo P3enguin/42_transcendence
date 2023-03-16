@@ -1,4 +1,6 @@
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
@@ -7,8 +9,14 @@ import {
 } from '@nestjs/websockets';
 import { GameService } from './game.service';
 import { Server, Socket } from 'socket.io';
-import { LoggerService } from '@nestjs/common';
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './inteface';
+import { LoggerService, UseGuards, ValidationPipe } from '@nestjs/common';
+import {
+  ClientToServerEvents,
+  InterServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from './inteface';
+import { JwtGuard } from 'src/auth/guard';
 
 @WebSocketGateway({
   namespace: 'game',
@@ -18,21 +26,28 @@ import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketDa
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>;
-  constructor(
-    private gameService: GameService,
-  ) // private logger: LoggerService,
-  {}
-
+  server: Server<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    InterServerEvents,
+    SocketData
+  >;
+  constructor(private gameService: GameService) {}
   handleConnection(client: Socket) {
-    // this.logger.log('Client connected to game namespace:', client.id);
+    console.log(client.handshake.auth);
+
+    console.log('client connected:', client.id);
   }
   handleDisconnect(client: Socket) {
-    // this.logger.log('Client disconnected from game namespace:', client.id);
+    console.log('client disconnected:', client.id);
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: any): string {
+  handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: SocketData,
+  ): string {
+    console.log('message:', data.username);
     return 'Hello world!';
   }
 }
