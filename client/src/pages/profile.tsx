@@ -1,12 +1,17 @@
-import Image from "next/image";
 import Layout from "@/components/layout/layout";
 import { verifyToken } from "@/components/VerifyToken";
-import { SvgShapingMethod } from "@/components/icons/Icons";
+import {
+  FriendIcon,
+  AchievementIcon,
+  MatchHistoryIcon,
+  RankingIcon,
+} from "@/components/icons/Icons";
+import { motion } from "framer-motion";
 
 function PlayerProfile({ jwt_token }: { jwt_token: string }) {
   return (
-    <div className=" flex flex-col  items-center  w-11/12 ">
-      <div className="flex flex-col justify-center rounded-3xl  bg-[#2F3B78]">
+    <div className=" flex flex-col  items-center  w-11/12 gap-[100px] ">
+      <div className="flex flex-col justify-center rounded-3xl  bg-[#2F3B78] mt-[100px]">
         <img
           src="/wallpaper.png"
           alt="wallpaper"
@@ -51,8 +56,13 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
               <span className="text-[10px]  text-gray-400">
                 MEMBER SINCE:08 JAN 2023
               </span>
-              <select id="title" className=" bg-transparent  bg-none text-white  border-white  rounded-2xl">
-                <option value="" selected disabled hidden>
+              <select
+                id="title"
+                className=" text-xs   bg-[#2C3B7C] text-white 
+                   border-white  rounded-lg   outline-none focus:border-black  
+                    focus:outline-none focus:ring-black  p-1"
+              >
+                <option value="select a title" disabled hidden>
                   select a title
                 </option>
                 <option value="title1">title1</option>
@@ -61,7 +71,7 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
               </select>
             </div>
           </div>
-          <div className="w-2/3 flex   justify-evenly items-center ">
+          <div className="w-2/3 flex justify-evenly items-center ">
             <div className="flex  items-center">
               <img
                 src="rankGold.svg"
@@ -103,7 +113,58 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
           </div>
         </div>
       </div>
-      <div>div2</div>
+      <div className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] w-2/4 ">
+        <div
+          className="flex border-gray-100 p-2 border-2 border-t-0 
+                  border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] text-sm"
+        >
+          <button
+            className="w-1/4  border-2 flex justify-center 
+                       border-gray-100  border-t-0 border-l-0 
+                       h-[60px] items-center border-opacity-70 
+                       border-b-0 transition-all"
+          >
+            <FriendIcon />
+            <span className="friend-text absolute invisible transition-all opacity-0">
+              Friends
+            </span>
+          </button>
+          <button
+            className="w-1/4 border-2 flex justify-center 
+                       border-gray-100  border-t-0 
+                        border-l-0 h-[60px] items-center border-opacity-70 
+                        border-b-0 transition-all "
+          >
+            <AchievementIcon />
+            <span className="friend-text absolute invisible transition-all opacity-0 ">
+              Achievement
+            </span>
+          </button>
+          <button
+            className="w-1/4 border-2 flex justify-center 
+                        border-gray-100  border-t-0 border-l-0 
+                        h-[60px] items-center  border-opacity-70 
+                        border-b-0 transition-all"
+          >
+            <MatchHistoryIcon />
+            <span className="friend-text absolute invisible transition-all opacity-0 text-xs">
+              Match History
+            </span>
+          </button>
+          <button
+            className="w-1/4 border-2 flex justify-center 
+                      border-gray-100 border-t-0  border-r-0 
+                      border-l-0 h-[60px] items-center  border-opacity-70 
+                      border-b-0 transition-all "
+          >
+            <RankingIcon />
+            <span className="friend-text absolute invisible transition-all opacity-0">
+              Ranking
+            </span>
+          </button>
+        </div>
+        <div className="h-[600px]">dfdsf sdfdsf sdfdsfdsf dsf</div>
+      </div>
     </div>
   );
 }

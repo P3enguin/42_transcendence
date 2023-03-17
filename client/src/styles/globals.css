@@ -87,14 +87,14 @@ html {
 	font-size: 120px;
 }
 
+button:hover .friend-icon {
+  fill: #0097E2; /* Change to the color you want */
+  transform: translate(-3.4rem, 0)
+}
 
-/* .noselect {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-		cursor: default;
-} */
+button:hover .friend-text {
+  visibility:visible;
+  opacity: 1;
+  transition: opacity 0.3s, visibility 0.3s;
+}
 /******************************* profile css **********************************/
