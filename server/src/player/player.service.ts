@@ -3,8 +3,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditPlayerDto } from './dto';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { Player } from '@prisma/client';
-import { GetPlayer } from 'src/auth/decorator';
 @Injectable()
 export class PlayerService {
 	constructor(private jwt :JwtService, private prisma: PrismaService) {}
@@ -69,46 +67,77 @@ export class PlayerService {
 
 
 	//-----------------------------------{ FRIEND }-----------------------------------\\
-
+	//-----------------------------------{ Add a fried }
+	
 	AddFriend(playerId :number, friendId: number) {
 		const check_friend = this.prisma.player.findUnique({
-		where: {
-			id: friendId,
+			where: {
+				id: friendId,
 			},
 		});
 		if (!check_friend)
 		{
 			return this.prisma.player.update({
 				where: {
-			id: playerId,
+					id: playerId,
 				},
 				data:{
 					friends: {
-					connect: {
-						id: friendId,
-					},
+						connect: {
+							id: friendId,
+						},
 					},
 				},
-					});
-					console.log("Friend added !", friendId);
-				}
-		else
-		{
-					
-					console.log(friendId,"exist !");
+			});
+			console.log("Friend added !", friendId);
 		}
-  }
+		else
+			console.log(friendId,"exist !");
 
-  async GetFriends(playerId: number) {
-	const FriendList =  await this.prisma.player.findUnique({
-		where: {
-			id: playerId,
+	}
+
+	//-----------------------------------{ get the list if all friends }
+	
+	async GetFriends(playerId: number) {
+		const FriendList =  await this.prisma.player.findUnique({
+			where: {
+				id: playerId,
 		},
 		include: {
 			friends: true,
 		},
 	});
 	return FriendList;
-  }
-
 }
+//-----------------------------------{ Block }-----------------------------------\\
+//-----------------------------------{ block a friends }
+
+BanFriend(playerId: number, friendId: number) {
+	const friend = this.prisma.player.findFirst({
+		where: {
+			id: playerId,
+			friends: {
+				some: {
+					id: friendId,
+				},
+			},
+		},
+	});
+		if (!friend)
+			console.log("No friend!");
+			return this.prisma.player.update({
+				where: {
+					id:playerId,
+				},
+				data:{
+					block: {
+						connect:{
+							id: friendId,
+						}
+					},
+				},
+			});
+		}
+	}
+
+	//-----------------------------------{  }

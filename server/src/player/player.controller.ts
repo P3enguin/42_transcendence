@@ -7,13 +7,15 @@ import { GetPlayer } from 'src/auth/decorator';
 import { diskStorage } from 'multer';
 import { extname } from  'path';
 import { v4 as uuidv4 } from 'uuid';
-import { Request,Response } from 'express';
+import { Request } from 'express';
 
 @UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
 	
-	constructor(private playerService: PlayerService) {}
+	constructor(
+		private playerService: PlayerService,
+		) {}
 	
 	@Get('me')
 	getMe(@GetPlayer() player: Player) {
@@ -55,6 +57,8 @@ export class PlayerController {
 		return this.playerService.updateWallpaper(req,file.filename);
 	}
 
+//------------------------------{ Friend }----------------------------------
+
 	@Patch('upd')
 	AddFriend(@GetPlayer() playerId :Player){
 		console.log({
@@ -65,8 +69,11 @@ export class PlayerController {
 	
 	@Get('friends')
 	GetFriends(@GetPlayer() playerId: Player) {
-		console.log({"geting : ":playerId});
+		console.log({"getting":playerId});
 		return this.playerService.GetFriends(playerId.id);
 	}
-
+	@Patch('ban')
+	BanFriend(@GetPlayer() playerId: Player, @GetPlayer() friendId: Player) {
+		return this.playerService.BanFriend(playerId.id, friendId.id);
+	}
 }
