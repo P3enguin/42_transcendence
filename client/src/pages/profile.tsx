@@ -12,20 +12,20 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
   return (
     <div className=" flex flex-col  items-center justify-center gap-[100px] ">
       <div
-        className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
-          mt-[100px] w-full md:max-3xl:w-4/6  3xl:w-1/2 "
+        className="flex flex-col justify-center rounded-3xl bg-[#2F3B78]
+          mt-[100px] w-full xl:max-3xl:w-4/6 3xl:w-1/2 md:max-xl:w-5/6 "
       >
         <img
           src="/wallpaper.png"
           alt="wallpaper"
           id="wallpaper-holder"
-          className=" rounded-3xl flex-shrink-0 min-w-[200px] min-h-[80px] w-full xl:h-[300px] h-[180px] "
+          className=" rounded-t-3xl flex-shrink-0 min-w-[200px] min-h-[80px] w-full xl:h-[300px] h-[180px] "
         />
-        <div className="flex xl:flex-row flex-col  items-center">
-          <div className="xl:w-1/3 w-full flex  justify-center items-start  xl:items-start md:ml-6">
+        <div className="flex xl:flex-row flex-col items-center mb-7">
+          <div className="xl:w-1/3 w-full flex justify-center items-start xl:ml-6 gap-2 ">
             <select
               id="title"
-              className=" xl:hidden   text-xs   bg-[#2C3B7C] text-white 
+              className=" xl:hidden  text-[10px] leading-3    bg-[#2C3B7C] text-white 
                    border-white  rounded-lg   outline-none focus:border-black  
                     focus:outline-none focus:ring-black  p-1"
             >
@@ -75,15 +75,15 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
                 <span>@nickname</span>
               </div>
             </div>
-            <div>
-              <span className="text-[8px]  text-gray-400">
+            <div className="flex flex-col items-end justify-end gap-[50px] ">
+              <span className="text-[7px]  text-gray-400">
                 MEMBER SINCE:08 JAN 2023
               </span>
               <select
                 id="title"
-                className=" text-xs  xl:flex hidden bg-[#2C3B7C] text-white 
-                   border-white  rounded-lg   outline-none focus:border-black  
-                    focus:outline-none focus:ring-black  p-1"
+                className="text-[10px] leading-3 xl:flex hidden bg-[#2C3B7C] text-white 
+                   border-white  rounded-lg outline-none focus:border-black  
+                    focus:outline-none focus:ring-black p-1"
               >
                 <option
                   value="select a title"
@@ -100,14 +100,13 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
             </div>
           </div>
           {/* player state  */}
-          <div className="xl:w-2/3 w-full flex justify-evenly items-center ">
-            <div className="flex  items-center">
-              <img
-                src="rankGold.svg"
-                alt="rankIcon"
-                width={60}
-                height={36}
-              ></img>
+          <div className="xl:w-2/3 w-full flex justify-evenly items-end mt-7  ">
+            <div className="flex items-center gap-2  self-end">
+                <img
+                  src="Gold.svg"
+                  alt="rankIcon"
+                ></img>
+
               <div className="flex  flex-col ">
                 <strong className=" text-gray-100 text-sm">GOLD</strong>
                 <span className="text-gray-400 text-xs">Ranking</span>
@@ -144,7 +143,7 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
       </div>
       <div
         className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
-              w-full md:max-3xl:w-4/6  3xl:w-1/2 "
+        w-full xl:max-3xl:w-4/6 3xl:w-1/2 md:max-xl:w-5/6 "
       >
         <div
           className="flex border-gray-100 p-2 border-2 border-t-0 
