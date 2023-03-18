@@ -6,20 +6,24 @@ import {
   MatchHistoryIcon,
   RankingIcon,
 } from "@/components/icons/Icons";
-import { motion } from "framer-motion";
+
+interface user  {
+
+}
 
 function PlayerProfile({ jwt_token }: { jwt_token: string }) {
   return (
-    <div className=" flex flex-col  items-center justify-center gap-[100px] ">
+    <div className=" flex flex-col  items-center justify-center xl:gap-[100px] gap-10 ">
       <div
-        className="flex flex-col justify-center rounded-3xl bg-[#2F3B78]
-          mt-[100px] w-full xl:max-3xl:w-4/6 3xl:w-1/2 md:max-xl:w-5/6 "
+        className="flex flex-col justify-center sm:rounded-3xl bg-[#2F3B78]
+          xl:mt-[100px] mt-[20px] w-full xl:w-[1200px]  md:max-xl:w-5/6"
       >
         <img
           src="/wallpaper.png"
           alt="wallpaper"
           id="wallpaper-holder"
-          className=" rounded-t-3xl flex-shrink-0 min-w-[200px] min-h-[80px] w-full xl:h-[300px] h-[180px] "
+          className=" sm:rounded-t-3xl flex-shrink-0 min-w-[200px] min-h-[80px] 
+                w-full xl:h-[300px] sm:h-[180px]  h-[120px]"
         />
         <div className="flex xl:flex-row flex-col items-center mb-7">
           <div className="xl:w-1/3 w-full flex justify-center items-start xl:ml-6 gap-2 ">
@@ -70,9 +74,9 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
                   ></path>
                 </svg>
               </div>
-              <div className="text-white flex flex-col items-center">
-                <h1>PLAYER FULL NAME</h1>
-                <span>@nickname</span>
+              <div className=" text-white flex flex-col xl:items-start xl:pl-6 items-center">
+                <strong>PLAYER FULL NAME</strong>
+                <span className=" text-gray-400">@nickname</span>
               </div>
             </div>
             <div className="flex flex-col items-end justify-end gap-[50px] ">
@@ -100,50 +104,51 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
             </div>
           </div>
           {/* player state  */}
-          <div className="xl:w-2/3 w-full flex justify-evenly items-end mt-7  ">
-            <div className="flex items-center gap-2  self-end">
-                <img
-                  src="Gold.svg"
-                  alt="rankIcon"
-                ></img>
+          <div className="xl:w-2/3 w-full flex justify-around sm:items-end mt-7  items-center gap-10">
+            <div className="flex sm:flex-row  flex-col gap-10">
+              <div className="flex items-center gap-2  ">
+                <img src="King.svg" alt="rankIcon"></img>
 
-              <div className="flex  flex-col ">
-                <strong className=" text-gray-100 text-sm">GOLD</strong>
-                <span className="text-gray-400 text-xs">Ranking</span>
+                <div className="flex  flex-col ">
+                  <strong className=" text-gray-100 text-sm">GOLD</strong>
+                  <span className="text-gray-400 text-xs">Ranking</span>
+                </div>
+              </div>
+              <div className="flex items-center  gap-2">
+                <img src="coin.svg" alt="coinIcon" width={36} height={36}></img>
+                <div className="flex  flex-col ">
+                  <strong className=" text-gray-100 text-sm">1646 ₳</strong>
+                  <span className="text-gray-400 text-xs">cache earned</span>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <img src="coin.svg" alt="coinIcon" width={36} height={36}></img>
-              <div className="flex  flex-col ">
-                <strong className=" text-gray-100 text-sm">1646 ₳</strong>
-                <span className="text-gray-400 text-xs">cache earned</span>
+            <div  className="flex sm:flex-row  flex-col gap-10">
+              <div className="flex items-center gap-2">
+                <img src="star.svg" alt="startIcon" width={36} height={36}></img>
+                <div className="flex  flex-col ">
+                  <strong className=" text-gray-100 text-sm">1800/2500 XP</strong>
+                  <span className="text-gray-400 text-xs">player XP</span>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <img src="star.svg" alt="startIcon" width={36} height={36}></img>
-              <div className="flex  flex-col ">
-                <strong className=" text-gray-100 text-sm">1800/2500 XP</strong>
-                <span className="text-gray-400 text-xs">player XP</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <img
-                src="champion.svg"
-                alt="champIcon"
-                width={36}
-                height={36}
-              ></img>
-              <div className="flex  flex-col ">
-                <strong className=" text-gray-100 text-sm">91 %</strong>
-                <span className="text-gray-400 text-xs">win ratio</span>
+              <div className="flex items-center gap-2">
+                <img
+                  src="champion.svg"
+                  alt="champIcon"
+                  width={36}
+                  height={36}
+                ></img>
+                <div className="flex  flex-col ">
+                  <strong className=" text-gray-100 text-sm">91 %</strong>
+                  <span className="text-gray-400 text-xs">win ratio</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div
-        className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
-        w-full xl:max-3xl:w-4/6 3xl:w-1/2 md:max-xl:w-5/6 "
+        className="flex flex-col justify-center sm:rounded-3xl bg-[#2F3B78] 
+        w-full xl:w-[1200px]  md:max-xl:w-5/6"
       >
         <div
           className="flex border-gray-100 p-2 border-2 border-t-0 
@@ -201,8 +206,11 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
 }
 
 export async function getServerSideProps({ req }: any) {
-  const jwt_token: string = req.cookies["jwt_token"];
 
+
+  // fetching all data : 
+
+  const jwt_token: string = req.cookies["jwt_token"];
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {

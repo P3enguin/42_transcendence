@@ -55,7 +55,7 @@ export default function NavBar({
                   <button onClick={(e) => handleClick(e, 0)}>
                     <Image
                       className="block h-12 w-auto "
-                      src="/logo.png"
+                      src="/logo.svg"
                       alt="Pognitor-logo"
                       width={39}
                       height={41}

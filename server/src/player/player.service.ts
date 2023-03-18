@@ -3,6 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { EditPlayerDto } from './dto';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { Response
+ } from 'express';
 @Injectable()
 export class PlayerService {
 	constructor(private jwt :JwtService, private prisma: PrismaService) {}
@@ -22,6 +24,31 @@ export class PlayerService {
 		return player;
 	}
 	
+	async getDataForProfile(id:number,res:Response){
+		try {
+			const prisma = await this.prisma.player.findUnique({
+				where : {
+					id : id,
+				},
+				select : {
+					id:true,
+					nickname:true,
+					firstname:true,
+					lastname:true,
+					coins:true,
+					avatar:true,
+					wallpaper:true,
+					joinAt:true,
+				}
+			})
+		}
+		catch(err)
+		{
+			return res.status(400).json({error : err})
+		}
+
+	}
+
 	async updatePFP(req : Request,fileName: string) {
 		const token = req.cookies["jwt_token"];
 		/* not necessary , we already using auth guard

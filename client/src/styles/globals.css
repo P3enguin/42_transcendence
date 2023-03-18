@@ -87,10 +87,20 @@ html {
 	font-size: 120px;
 }
 
-button:hover .friend-icon {
-  fill: #0097E2; /* Change to the color you want */
-  transform: translate(-3.4rem, 0)
+@media only screen and (min-device-width: 640px) {
+  button:hover .friend-icon {
+    fill: #0097E2; /* Change to the color you want */
+    transform: translate(-3.4rem, 0)
+  }
 }
+
+@media only screen and (max-width: 600px) {
+  button:hover .friend-icon {
+    fill: #0097E2; /* Change to the color you want */
+    transform: translate(0, -1.7rem)
+  }
+}
+
 
 button:hover .friend-text {
   visibility:visible;

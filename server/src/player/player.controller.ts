@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req } from '@nestjs/common';
+import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req,Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Player } from '@prisma/client'
 import { JwtGuard } from 'src/auth/guard';
@@ -20,6 +20,12 @@ export class PlayerController {
 		return req.body.jwtDecoded;
 	}
 	
+
+	@Get('data')
+	getData(@Req() req:Request,@Res() res:Response){
+		return this.playerService.getDataForProfile(req.body.jwtDecoded.id as number,res)
+	}
+
 	@Post('profile')
 	@UseInterceptors(FileInterceptor('file',
 		{storage: diskStorage({
