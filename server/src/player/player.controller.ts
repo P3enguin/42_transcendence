@@ -16,8 +16,8 @@ export class PlayerController {
 	constructor(private playerService: PlayerService) {}
 	
 	@Get('me')
-	getMe(@GetPlayer() player: Player) {
-		return player
+	getMe(@Req() req: Request) {
+		return req.body.jwtDecoded;
 	}
 	
 	@Post('profile')

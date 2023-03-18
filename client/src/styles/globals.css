@@ -50,5 +50,51 @@ html {
 }
 
 
+/*===== The CSS =====*/
 
+
+
+.progress .track, .progress .fill{
+	fill: rgba(0, 0, 0, 0);
+	stroke-width: 50;
+	transform: translate(100px, 700px)rotate(-90deg);
+}
+.progress .track{
+	stroke: rgb(56, 71, 83);
+}
+.progress .fill {
+	stroke: rgb(255, 255, 255);
+	stroke-linecap: round;
+	stroke-dasharray: 2160;
+	stroke-dashoffset: 0;
+	transition: stroke-dashoffset 1s;
+}
+.progress.blue .fill {
+	stroke: rgb(104, 214, 198);
+}
+.progress.green .fill {
+	stroke: rgb(186, 223, 172);
+}
+.progress .value, .progress .text {
+	font-family: 'Open Sans';
+	fill: rgb(255, 255, 255);
+	text-anchor: middle;
+}
+.progress .value {
+	font-size: 180px;
+}
+.progress .text {
+	font-size: 120px;
+}
+
+button:hover .friend-icon {
+  fill: #0097E2; /* Change to the color you want */
+  transform: translate(-3.4rem, 0)
+}
+
+button:hover .friend-text {
+  visibility:visible;
+  opacity: 1;
+  transition: opacity 0.3s, visibility 0.3s;
+}
 /******************************* profile css **********************************/
