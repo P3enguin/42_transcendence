@@ -10,43 +10,50 @@ import { motion } from "framer-motion";
 
 function PlayerProfile({ jwt_token }: { jwt_token: string }) {
   return (
-    <div className=" flex flex-col  items-center  w-11/12 gap-[100px] ">
-      <div className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
-          mt-[100px] w-full md:max-2xl:w-3/4 2xl:max-3xl:w-4/6  3xl:w-1/2">
+    <div className=" flex flex-col  items-center justify-center gap-[100px] ">
+      <div
+        className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
+          mt-[100px] w-full md:max-3xl:w-4/6  3xl:w-1/2 "
+      >
         <img
           src="/wallpaper.png"
           alt="wallpaper"
           id="wallpaper-holder"
           className=" rounded-3xl flex-shrink-0 min-w-[200px] min-h-[80px] w-full xl:h-[300px] h-[180px] "
         />
-        <div className="flex lg:flex-row flex-col  items-center">
-          <div className="lg:w-1/3 w-full flex  justify-center items-start  lg:items-start md:ml-6">
-          <select
-                id="title"
-                className=" lg:hidden   text-xs   bg-[#2C3B7C] text-white 
+        <div className="flex xl:flex-row flex-col  items-center">
+          <div className="xl:w-1/3 w-full flex  justify-center items-start  xl:items-start md:ml-6">
+            <select
+              id="title"
+              className=" xl:hidden   text-xs   bg-[#2C3B7C] text-white 
                    border-white  rounded-lg   outline-none focus:border-black  
                     focus:outline-none focus:ring-black  p-1"
+            >
+              <option
+                value="select a title"
+                defaultValue={"select a title"}
+                disabled
+                hidden
               >
-                <option value="select a title" defaultValue={"select a title"}  disabled hidden>
-                  select a title
-                </option>
-                <option value="title1">title1</option>
-                <option value="title2">title2</option>
-                <option value="title3">title3</option>
-              </select>
+                select a title
+              </option>
+              <option value="title1">title1</option>
+              <option value="title2">title2</option>
+              <option value="title3">title3</option>
+            </select>
             {/* player info  */}
             <div className="flex flex-col ">
               {/* image  */}
-              <div className="flex lg:-mt-[180px] -mt-[120px]">
+              <div className="flex xl:-mt-[180px] -mt-[120px]">
                 <img
                   src="/pfp1.png"
                   alt="pfp"
                   id="pfp-holder"
-                  className="pfp absolute lg:w-[160px] lg:h-[179px]  w-[120px] h-[130px] lg:translate-x-[27px] 
-                            lg:translate-y-[40px] translate-x-[20px] translate-y-[28px]"
+                  className="pfp absolute xl:w-[160px] xl:h-[179px]  w-[120px] h-[130px] xl:translate-x-[27px] 
+                            xl:translate-y-[40px] translate-x-[20px] translate-y-[28px]"
                 />
                 <svg
-                  className="progress blue noselect z-10 shrink-0 lg:w-[200px] lg:h-[240px] w-[150px] h-[170px]"
+                  className="progress blue noselect z-10 shrink-0 xl:w-[200px] xl:h-[240px] w-[150px] h-[170px]"
                   data-progress="55"
                   x="0px"
                   y="0px"
@@ -74,11 +81,16 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
               </span>
               <select
                 id="title"
-                className=" text-xs  lg:flex hidden bg-[#2C3B7C] text-white 
+                className=" text-xs  xl:flex hidden bg-[#2C3B7C] text-white 
                    border-white  rounded-lg   outline-none focus:border-black  
                     focus:outline-none focus:ring-black  p-1"
               >
-                <option value="select a title" defaultValue={"select a title"}  disabled hidden>
+                <option
+                  value="select a title"
+                  defaultValue={"select a title"}
+                  disabled
+                  hidden
+                >
                   select a title
                 </option>
                 <option value="title1">title1</option>
@@ -88,7 +100,7 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
             </div>
           </div>
           {/* player state  */}
-          <div className="lg:w-2/3 w-full flex justify-evenly items-center ">
+          <div className="xl:w-2/3 w-full flex justify-evenly items-center ">
             <div className="flex  items-center">
               <img
                 src="rankGold.svg"
@@ -130,8 +142,10 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
-              w-full md:max-2xl:w-3/4 2xl:max-3xl:w-4/6  3xl:w-1/2 ">
+      <div
+        className="flex flex-col justify-center rounded-3xl bg-[#2F3B78] 
+              w-full md:max-3xl:w-4/6  3xl:w-1/2 "
+      >
         <div
           className="flex border-gray-100 p-2 border-2 border-t-0 
                   border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] text-sm"
