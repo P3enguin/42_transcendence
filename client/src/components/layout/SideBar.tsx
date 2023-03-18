@@ -30,12 +30,12 @@ function SideBar({
 }) {
   return (
     <div className="flex flex-row h-[95%]">
-       {/* For normal page */}
+      {/* For normal page */}
       <motion.aside
         id="userSideBar"
         className={` flex-col items-center w-16 h-full justify-between
-              border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-              to-[#28346C] gap-6 border-t-0 sm:flex hidden`}
+              border  rounded-br-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+              to-[#28346C] gap-6 border-t-0 sm:flex hidden shrink-0`}
       >
         <div className="flex flex-col items-center justify-around h-1/3">
           <Link
@@ -90,7 +90,7 @@ function SideBar({
       </motion.aside>
       {/* For Mobile Pages */}
       <AnimatePresence>
-      {isVisible && (
+        {isVisible && (
           <motion.aside
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
@@ -99,7 +99,7 @@ function SideBar({
             id="userSideBar"
             className={` flex-col items-center w-16 h-full justify-between
               border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-              to-[#28346C] gap-6 border-t-0 sm:hidden flex`}
+              to-[#28346C] gap-6 border-t-0 sm:hidden flex shrink-0`}
           >
             <div className="flex flex-col items-center justify-around h-1/3">
               <Link
@@ -152,9 +152,9 @@ function SideBar({
               </div>
             </div>
           </motion.aside>
-      )}
+        )}
       </AnimatePresence>
-      {children}
+      <div className="w-full">{children}</div>
     </div>
   );
 }
