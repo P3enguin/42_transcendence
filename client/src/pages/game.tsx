@@ -7,7 +7,7 @@ let socket: Socket;
 
 function Game({ jwt_token }: { jwt_token: string }) {
   useEffect(() => {
-    socket = io('http://localhost:8000/game', {
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },
@@ -16,15 +16,26 @@ function Game({ jwt_token }: { jwt_token: string }) {
       console.log('connected');
       socket.emit('message', { username: 'test', message: 'hello' });
     });
-    return (() => {
+    return () => {
       socket.disconnect();
-    });
+    };
   }, []);
   return (
     <>
       <Head>
         <title>Ponginator | Start Game</title>
       </Head>
+      <div className="container">
+        <div className="invite-friends">
+          <h1>Invite your online friends to play:</h1>
+        </div>
+        <div className="matchmaking">
+          <h1>Select a Game</h1>
+        </div>
+        <div className="training">
+          <h1>Start Training</h1>
+        </div>
+      </div>
     </>
   );
 }
