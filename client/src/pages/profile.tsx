@@ -152,7 +152,7 @@ function PlayerProfile({ jwt_token }: { jwt_token: string }) {
       >
         <div
           className="flex border-gray-100 p-2 border-2 border-t-0 
-                  border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] text-sm"
+                  border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] hover:text-[#0097E2] text-sm"
         >
           <button
             className="w-1/4  border-2 flex justify-center 

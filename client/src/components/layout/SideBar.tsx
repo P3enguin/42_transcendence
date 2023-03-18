@@ -73,7 +73,7 @@ function SideBar({
 
         <div className="flex flex-col items-center gap-10">
           <div className="flex sm:hidden">
-            <button onClick={handleLogOut}>
+            <button onClick={handleLogOut}>/wallpaper.png
               <LogoutIcon />
             </button>
           </div>
@@ -99,7 +99,7 @@ function SideBar({
             id="userSideBar"
             className={` flex-col items-center w-16 h-full justify-between
               border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-              to-[#28346C] gap-6 border-t-0 sm:hidden flex shrink-0`}
+              to-[#28346C] gap-6 border-t-0 sm:hidden flex shrink-0 absolute z-10`}
           >
             <div className="flex-col items-center flex h-1/3 justify-around">
               <Link
@@ -154,7 +154,15 @@ function SideBar({
           </motion.aside>
         )}
       </AnimatePresence>
-      <div className="w-full">{children}</div>
+      <motion.div
+        animate={{
+          opacity: isVisible ? 0.1 : 1,
+        }}
+        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+        className="w-full"
+      >
+        {children}
+      </motion.div>
     </div>
   );
 }
