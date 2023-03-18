@@ -8,6 +8,7 @@ import { diskStorage } from 'multer';
 import { extname } from  'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
 
 @UseGuards(JwtGuard)
 @Controller('players')
@@ -15,13 +16,14 @@ export class PlayerController {
 	
 	constructor(
 		private playerService: PlayerService,
+		private jwt:	JwtService,
 		) {}
 	
 	@Get('me')
 	getMe(@GetPlayer() player: Player) {
 		console.log({
 			player,
-		})
+		});
 		return player
 	}
 	
@@ -60,20 +62,20 @@ export class PlayerController {
 //------------------------------{ Friend }----------------------------------
 
 	@Patch('upd')
-	AddFriend(@GetPlayer() playerId :Player){
-		console.log({
-			playerId,
-		})
-		return this.playerService.AddFriend(playerId.id, 1);
+	AddFriend(@Req() req: Request, friendId: number){
+		return this.playerService.AddFriend(req, 2);
 	}
 	
 	@Get('friends')
-	GetFriends(@GetPlayer() playerId: Player) {
-		console.log({"getting":playerId});
-		return this.playerService.GetFriends(playerId.id);
+	GetFriends(@Req() req: Request) {
+		return this.playerService.GetFriends(req);
 	}
-	@Patch('ban')
-	BanFriend(@GetPlayer() playerId: Player, @GetPlayer() friendId: Player) {
-		return this.playerService.BanFriend(playerId.id, friendId.id);
+	@Patch('block')
+	BlockFriend(@Req() req: Request, friendId: number) {
+		return this.playerService.BlockFriend(req, 2);
+	}
+	@Get('blocked')
+	GetBlockedFriends(@Req() req: Request) {
+		return this.playerService.GetBlockedFriends(req);
 	}
 }

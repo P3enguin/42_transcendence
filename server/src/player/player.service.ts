@@ -1,27 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { EditPlayerDto } from './dto';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { Player } from '@prisma/client';
 @Injectable()
 export class PlayerService {
 	constructor(private jwt :JwtService, private prisma: PrismaService) {}
 
-	async editPlayer(
-		id: number,
-		dto: EditPlayerDto,
-	) {
-		const player = await this.prisma.player.update({
-			where: {
-				id: id,
-			},
-			data: {
-				...dto,
-			},
-		});
-		return player;
-	}
-	
 	async updatePFP(req : Request,fileName: string) {
 		const token = req.cookies["jwt_token"];
 		/* not necessary , we already using auth guard
@@ -65,21 +50,55 @@ export class PlayerService {
 		}
 	}
 
-
+	
 	//-----------------------------------{ FRIEND }-----------------------------------\\
+	
+	Get_Player(req: Request) {
+		const token = req.cookies["jwt_token"];
+		try {
+			const secret = process.env.JWT_SECRET;
+			const decoded = this.jwt.verify(token,{secret});
+			const player = this.prisma.player.findUnique({
+				where: {
+					id: decoded.sub,
+				},
+			});
+			return decoded;
+		}
+		catch (err)
+		{
+			console.log (err);
+		}
+	}
 	//-----------------------------------{ Add a fried }
 	
-	AddFriend(playerId :number, friendId: number) {
-		const check_friend = this.prisma.player.findUnique({
+	async AddFriend(req: Request, friendId: number) {
+		const player = this.Get_Player(req);
+		console.log({
+			player,
+		})
+		const check_friend  = await this.prisma.player.findUnique({
 			where: {
-				id: friendId,
+			  id: player.sub,
 			},
-		});
-		if (!check_friend)
+			select: {
+			  friends: {
+				select: {
+				  id: true,
+				},
+			  },
+			  block: {
+				select: {
+					id: true,
+				}
+			  }
+			},
+		  });
+		if (!check_friend.friends.some(f => f.id === friendId))
 		{
-			return this.prisma.player.update({
+			this.prisma.player.update({
 				where: {
-					id: playerId,
+					id: player.sub,
 				},
 				data:{
 					friends: {
@@ -90,18 +109,23 @@ export class PlayerService {
 				},
 			});
 			console.log("Friend added !", friendId);
+			return "Friend added successfully"
 		}
 		else
+		{
 			console.log(friendId,"exist !");
+			return "Friend already exist !";
+		}
 
 	}
 
 	//-----------------------------------{ get the list if all friends }
 	
-	async GetFriends(playerId: number) {
+	async GetFriends(req: Request) {
+		const player = this.Get_Player(req);
 		const FriendList =  await this.prisma.player.findUnique({
 			where: {
-				id: playerId,
+				id: player.sub,
 		},
 		include: {
 			friends: true,
@@ -112,32 +136,60 @@ export class PlayerService {
 //-----------------------------------{ Block }-----------------------------------\\
 //-----------------------------------{ block a friends }
 
-BanFriend(playerId: number, friendId: number) {
-	const friend = this.prisma.player.findFirst({
-		where: {
-			id: playerId,
-			friends: {
-				some: {
-					id: friendId,
-				},
+async BlockFriend(req: Request, friendId: number) {
+		const player = this.Get_Player(req);
+		const check_friend  = await this.prisma.player.findUnique({
+			where: {
+			  id: player.sub,
 			},
-		},
-	});
-		if (!friend)
-			console.log("No friend!");
-			return this.prisma.player.update({
-				where: {
-					id:playerId,
+			select: {
+			  friends: {
+				select: {
+				  id: true,
 				},
-				data:{
-					block: {
-						connect:{
-							id: friendId,
-						}
+			  },
+			},
+		  });
+		if (check_friend.friends.some(f => f.id === friendId)){
+			try {
+				await this.prisma.player.update({
+					where: {
+						id:player.sub,
 					},
-				},
-			});
+					data:{
+						friends: {
+							disconnect: {
+								id: friendId,
+							},
+						},
+						block: {
+							connect:{
+								id: friendId,
+							}
+						},
+					},
+				});
+			}catch (err){
+				console.log("friend doesn't exist!", err);
+			}
+			return" friend Blocked";
 		}
-	}
+		else
+			return("friend doesn't exist!");
 
-	//-----------------------------------{  }
+	}
+		
+	async GetBlockedFriends(req: Request) {
+	const player = this.Get_Player(req);
+	const BlockedList =  await this.prisma.player.findUnique({
+				where: {
+					id: player.sub,
+			},
+			include: {
+				block: true,
+			},
+		});
+		return BlockedList;
+	}
+}
+		//-----------------------------------{  }

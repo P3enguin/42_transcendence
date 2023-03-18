@@ -11,6 +11,7 @@ import { StatusModule } from './status/status.module';
 import { AchivementModule } from './achivement/achivement.module';
 import { TitleModule } from './title/title.module';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './auth/auth.module';
     PrismaModule,
     StatusModule,
     TitleModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

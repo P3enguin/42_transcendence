@@ -29,8 +29,8 @@
     "@nestjs/jwt": "^10.0.2",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/platform-socket.io": "^9.3.9",
-    "@nestjs/websockets": "^9.3.9",
+    "@nestjs/platform-socket.io": "^9.3.10",
+    "@nestjs/websockets": "^9.3.10",
     "@types/bcrypt": "^5.0.0",
     "@types/passport": "^1.0.12",
     "@types/uuid": "^9.0.1",
@@ -48,7 +48,7 @@
     "rxjs": "^7.8.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^7.5.1",
+    "@nestjs/cli": "^9.3.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
