@@ -1,44 +1,54 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+* {
+  color: white;
+}
+
+body {
+  min-width: 300px;
+  min-height: 750px;
+}
+
 html {
-  background: rgb(44,59,124);
-  background: linear-gradient(90deg, rgba(44,59,124,1) 0%, rgba(13,23,67,1) 100%);
-  font-family: 'Outfit'
+  background: rgb(44, 59, 124);
+  background: linear-gradient(
+    90deg,
+    rgba(44, 59, 124, 1) 0%,
+    rgba(13, 23, 67, 1) 100%
+  );
+  font-family: 'Outfit';
 }
 
 /* css properties that I couldn't do with tailwind :sad: */
 
-.sh{
+.sh {
   text-shadow: 2px 2px 2px black;
-
 }
-.css{
-  margin-bottom:300px;
-}
-
-.mg-top{
-  margin-top:150px;
+.css {
+  margin-bottom: 300px;
 }
 
-@media screen and (max-width: 1279px){
-  .css{
-    margin-bottom:0;
+.mg-top {
+  margin-top: 150px;
+}
+
+@media screen and (max-width: 1279px) {
+  .css {
+    margin-bottom: 0;
   }
 }
 
 .pfp-container {
-  filter:url(#round);
+  filter: url(#round);
 }
 
 .pfp {
-  background-color: #0D1743; /*color of the main-background*/
+  background-color: #0d1743; /*color of the main-background*/
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-
 }
 
 .error {
@@ -49,52 +59,52 @@ html {
   border-color: green;
 }
 
-
 /*===== The CSS =====*/
 
-
-
-.progress .track, .progress .fill{
-	fill: rgba(0, 0, 0, 0);
-	stroke-width: 50;
-	transform: translate(100px, 700px)rotate(-90deg);
+.progress .track,
+.progress .fill {
+  fill: rgba(0, 0, 0, 0);
+  stroke-width: 50;
+  transform: translate(100px, 700px) rotate(-90deg);
 }
-.progress .track{
-	stroke: rgb(56, 71, 83);
+.progress .track {
+  stroke: rgb(56, 71, 83);
 }
 .progress .fill {
-	stroke: rgb(255, 255, 255);
-	stroke-linecap: round;
-	stroke-dasharray: 2160;
-	stroke-dashoffset: 0;
-	transition: stroke-dashoffset 1s;
+  stroke: rgb(255, 255, 255);
+  stroke-linecap: round;
+  stroke-dasharray: 2160;
+  stroke-dashoffset: 600;
+  transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill {
-	stroke: rgb(104, 214, 198);
+  stroke: rgb(104, 214, 198);
 }
 .progress.green .fill {
-	stroke: rgb(186, 223, 172);
+  stroke: rgb(186, 223, 172);
 }
-.progress .value, .progress .text {
-	font-family: 'Open Sans';
-	fill: rgb(255, 255, 255);
-	text-anchor: middle;
+.progress .value,
+.progress .text {
+  font-family: 'Open Sans';
+  fill: rgb(255, 255, 255);
+  text-anchor: middle;
 }
 .progress .value {
-	font-size: 180px;
+  font-size: 180px;
 }
 .progress .text {
-	font-size: 120px;
+  font-size: 120px;
 }
 
 button:hover .friend-icon {
-  fill: #0097E2; /* Change to the color you want */
-  transform: translate(-3.4rem, 0)
+  fill: #0097e2; /* Change to the color you want */
+  transform: translate(-3.4rem, 0);
 }
 
 button:hover .friend-text {
-  visibility:visible;
+  visibility: visible;
   opacity: 1;
   transition: opacity 0.3s, visibility 0.3s;
 }
+
 /******************************* profile css **********************************/
