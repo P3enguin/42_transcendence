@@ -22,14 +22,16 @@ function SideBar({
   svgIndex,
   handleLogOut,
   children,
+  isMobile,
 }: {
   isVisible: boolean;
   svgIndex: number;
   handleLogOut: FunctionProps;
   children: ReactNode;
+  isMobile: boolean,
 }) {
   return (
-    <div className="flex flex-row h-[95%]">
+    <div className="flex flex-row h-[calc(100%-64px)]">
       {/* For normal page */}
       <motion.aside
         id="userSideBar"
@@ -90,7 +92,7 @@ function SideBar({
       </motion.aside>
       {/* For Mobile Pages */}
       <AnimatePresence>
-        {isVisible && (
+        {isVisible  && (
           <motion.aside
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
@@ -156,7 +158,7 @@ function SideBar({
       </AnimatePresence>
       <motion.div
         animate={{
-          opacity: isVisible ? 0.1 : 1,
+          opacity: (isMobile && isVisible) ? 0.1 : 1,
         }}
         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
         className="w-full"

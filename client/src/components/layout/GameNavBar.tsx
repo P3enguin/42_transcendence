@@ -10,6 +10,8 @@ interface FunctionProps {
   isVisible: boolean;
 }
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
+
+  
   return (
     <div className="flex flex-row w-full  ">
       <div

@@ -7,9 +7,11 @@ import React from "react";
 import Router from "next/router";
 import { LayoutProps } from "./layout";
 
-function SideNavBar({children}: LayoutProps) {
+function SideNavBar({ children }: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
   const [isVisible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const pages = [
     { path: "/home", index: 0 },
     { path: "/chat", index: 1 },
@@ -24,28 +26,20 @@ function SideNavBar({children}: LayoutProps) {
     setVisible(!isVisible);
   }
 
-  // to fix later 
+  // to fix later
   useEffect(() => {
-    // const handleResize = () => {
-    //   // Get the current screen width
-    //   const screenWidth = window.innerWidth;
+    const hanldeResize = () => {
+      if (window.innerWidth <= 640 && !isMobile) {
+        setIsMobile(true);
+      } else if (window.innerWidth > 640 && isMobile) {
+        setIsMobile(false);
+        setVisible(false);
+      }
+    };
 
-    //   // If the screen width is medium or larger, hide the sidebar
-    //   if (screenWidth >= 640) {
-    //     setVisible(true);
-    //   } else setVisible(false);
-    // };
-
-    // // // Add a resize event listener to the window object
-    // window.addEventListener("resize", handleResize);
-
-    // // Call the resize handler initially to ensure that the sidebar is hidden if necessary
-    // handleResize();
-
-    // // Remove the resize event listener when the component is unmounted
-    // return () => {
-    //   window.removeEventListener("resize", handleResize);
-    // };
+    window.addEventListener("resize", hanldeResize);
+    hanldeResize();
+    return () => window.removeEventListener("resize", hanldeResize);
   }, []);
 
   // Handle the color of the icon based on the page we are in
@@ -74,7 +68,11 @@ function SideNavBar({children}: LayoutProps) {
   return (
     <div className="h-screen">
       {/* navbar */}
-      <GameNavBar toggleSideBar={toggleSideBar} handleLogOut={handleLogOut} isVisible={isVisible}/>
+      <GameNavBar
+        toggleSideBar={toggleSideBar}
+        handleLogOut={handleLogOut}
+        isVisible={isVisible}
+      />
 
       {/* SideBar */}
       <SideBar
@@ -82,6 +80,7 @@ function SideNavBar({children}: LayoutProps) {
         svgIndex={svgIndex}
         handleLogOut={handleLogOut}
         children={children}
+        isMobile={isMobile}
       />
     </div>
   );

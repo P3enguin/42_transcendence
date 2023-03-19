@@ -1,10 +1,5 @@
 import UpdateProfile from "@/components/profile/UpdateProfile";
 import { verifyToken, verifySession } from "@/components/VerifyToken";
-import { Jwt, verify } from "jsonwebtoken";
-interface session {
-  AuthMethod: string;
-  accessToken: string;
-}
 
 function loginPage({
   email,

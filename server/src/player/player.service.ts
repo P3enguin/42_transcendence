@@ -26,7 +26,7 @@ export class PlayerService {
 	
 	async getDataForProfile(id:number,res:Response){
 		try {
-			const prisma = await this.prisma.player.findUnique({
+			const player = await this.prisma.player.findUnique({
 				where : {
 					id : id,
 				},
@@ -41,12 +41,13 @@ export class PlayerService {
 					joinAt:true,
 				}
 			})
+			return res.json({player});
 		}
 		catch(err)
 		{
+			console.log(err);
 			return res.status(400).json({error : err})
 		}
-
 	}
 
 	async updatePFP(req : Request,fileName: string) {
