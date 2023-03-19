@@ -33,8 +33,8 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
             INVITE YOUR ONLINE FRIENDS TO PLAY:
           </h2>
           <div className="flex flex-wrap justify-center overflow-y-auto sm:justify-start">
-            {data.map((user: any) => (
-              <div className="m-3 mb-10 flex w-[170px] flex-col items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 p-5">
+            {data.map((user: any, index) => (
+              <div key={index}  className="m-3 mb-10 flex w-[170px] flex-col items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 p-5">
                 <img
                   className="h-12 w-12 rounded-full"
                   src={user.avatar}
