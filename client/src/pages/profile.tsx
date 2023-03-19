@@ -76,24 +76,24 @@ function PlayerProfile({
   if (!isLoading)
   {
     return (
-      <div className=" flex flex-col  items-center justify-center xl:gap-[100px] gap-10 ">
+      <div className=" flex flex-col items-center  xl:gap-[100px] gap-10  w-full ">
         <div
           className="flex flex-col justify-center sm:rounded-3xl bg-[#2F3B78]
-          xl:mt-[100px] mt-[20px] w-full xl:w-[1200px]  md:max-xl:w-5/6"
+          xl:mt-[100px] mt-[20px] w-full xl:w-[1000px]  md:max-xl:w-5/6"
         >
           <img
             src={pictures.wp}
             alt="wallpaper"
             id="wallpaper-holder"
-            className=" sm:rounded-t-3xl flex-shrink-0 min-w-[200px] min-h-[80px] 
+            className=" sm:rounded-t-3xl  min-w-[200px] min-h-[80px] 
                 w-full xl:h-[320px] sm:h-[220px]  h-[160px]"
           />
           <div className="flex xl:flex-row flex-col items-center mb-7">
             <div className="xl:w-1/3 w-full flex justify-center items-start xl:ml-6 gap-2 ">
               <select
                 id="title"
-                className=" xl:hidden  text-[10px] leading-3    bg-[#2C3B7C] text-white 
-                   border-white  rounded-lg   outline-none focus:border-black  
+                className=" xl:hidden text-[10px] leading-3  bg-[#2C3B7C] text-white 
+                   border-white rounded-lg outline-none focus:border-black  
                     focus:outline-none focus:ring-black  p-1"
               >
                 <option
@@ -228,11 +228,11 @@ function PlayerProfile({
         </div>
         <div
           className="flex flex-col justify-center sm:rounded-3xl bg-[#2F3B78] 
-        w-full xl:w-[1200px]  md:max-xl:w-5/6"
+        w-full xl:w-[1000px]  md:max-xl:w-5/6"
         >
           <div
             className="flex border-gray-100 p-2 border-2 border-t-0 
-                  border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] hover:text-[#0097E2] text-sm"
+                  border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] text-sm"
           >
             <button
               className="w-1/4  border-2 flex justify-center 

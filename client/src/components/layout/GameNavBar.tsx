@@ -13,7 +13,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
 
   
   return (
-    <div className="flex flex-row w-full  ">
+    <div className="flex flex-row w-full ">
       <div
         className="w-[64px] shrink-0 z-0 bg-[#2A3568]
                   border-b-0 border-t sm:border-l border-[#0097E2] 
@@ -62,7 +62,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             <SideBarIcon />
           </button>
         </div>
-        <form className="w-1/2 sm:w-1/4 flex flex-row items-center justify-center ">
+        <form className="flex flex-row items-center justify-center w-1/2 sm:w-1/4 ">
           <input
             type="search"
             id="search-bar"
