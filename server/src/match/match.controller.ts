@@ -12,7 +12,7 @@ export class MatchController {
 
 	@Get('loadGame')
 	loadGames(@GetPlayer() player: Player) {
-		console.log("email", player);
+		// console.log("email", player);
 		return this.matchservice.loadGame(
 			player.email,
 		);

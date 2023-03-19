@@ -31,7 +31,7 @@ function SideNavBar({ children }: LayoutProps) {
     const hanldeResize = () => {
       if (window.innerWidth <= 640 && !isMobile) {
         setIsMobile(true);
-      } else if (window.innerWidth > 640 && isMobile) {
+      } else {
         setIsMobile(false);
         setVisible(false);
       }

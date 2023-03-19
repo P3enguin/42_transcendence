@@ -8,7 +8,6 @@ import {
   RankingIcon,
 } from "@/components/icons/Icons";
 
-import useSWR, { Fetcher } from "swr";
 import { useEffect } from "react";
 
 interface player {

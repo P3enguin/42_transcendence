@@ -22,9 +22,7 @@ export class PrismaService extends PrismaClient {
 				id: statusId,
 			},
 		});
-		console.log({
-			status
-		})
+		// console.log({ status });
 		return status;
 	}
 
