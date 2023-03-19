@@ -29,17 +29,17 @@ function SideBar({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-row h-[95%]">
+    <div className="flex h-[calc(100%-64px)] flex-row">
       {/* For normal page */}
       <motion.aside
         id="userSideBar"
-        className={` flex-col items-center w-16 h-full justify-between
-              border  rounded-br-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-              to-[#28346C] gap-6 border-t-0 sm:flex hidden shrink-0`}
+        className={` hidden h-full w-16 shrink-0 flex-col
+              items-center  justify-between gap-6 rounded-br-3xl border
+              border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:flex`}
       >
-        <div className="flex flex-col items-center justify-around h-1/3">
+        <div className="flex h-1/3 flex-col items-center justify-around">
           <Link
-            className="flex items-center justify-center w-12 h-12 mt-2 "
+            className="mt-2 flex h-12 w-12 items-center justify-center "
             href="/home"
             shallow
           >
@@ -47,7 +47,7 @@ function SideBar({
           </Link>
 
           <Link
-            className="flex items-center justify-center w-12 h-12 mt-2 "
+            className="mt-2 flex h-12 w-12 items-center justify-center "
             href="/chat"
             shallow
           >
@@ -55,7 +55,7 @@ function SideBar({
           </Link>
 
           <Link
-            className="flex items-center justify-center w-12 h-12 mt-2 "
+            className="mt-2 flex h-12 w-12 items-center justify-center "
             href="/game"
             shallow
           >
@@ -63,7 +63,7 @@ function SideBar({
           </Link>
 
           <Link
-            className="flex items-center justify-center w-12 h-12 mt-2 "
+            className="mt-2 flex h-12 w-12 items-center justify-center "
             href="/profile"
             shallow
           >
@@ -79,7 +79,7 @@ function SideBar({
           </div>
           <div className="mb-3 ">
             <Link
-              className="flex items-center justify-center w-12 h-12 mt-2"
+              className="mt-2 flex h-12 w-12 items-center justify-center"
               href="/settings"
               shallow
             >
@@ -92,18 +92,18 @@ function SideBar({
       <AnimatePresence>
         {isVisible && (
           <motion.aside
-            initial={{ x: "-100%" }}
+            initial={{ x: '-100%' }}
             animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "Tween" }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'Tween' }}
             id="userSideBar"
-            className={` flex-col items-center w-16 h-full justify-between
-              border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-              to-[#28346C] gap-6 border-t-0 sm:hidden flex shrink-0`}
+            className={` flex h-full w-16 shrink-0 flex-col
+              items-center  justify-between gap-6 rounded-bl-3xl border
+              border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:hidden`}
           >
-            <div className="flex flex-col items-center justify-around h-1/3">
+            <div className="flex h-1/3 flex-col items-center justify-around">
               <Link
-                className="flex items-center justify-center w-12 h-12 mt-2 "
+                className="mt-2 flex h-12 w-12 items-center justify-center "
                 href="/home"
                 shallow
               >
@@ -111,7 +111,7 @@ function SideBar({
               </Link>
 
               <Link
-                className="flex items-center justify-center w-12 h-12 mt-2 "
+                className="mt-2 flex h-12 w-12 items-center justify-center "
                 href="/chat"
                 shallow
               >
@@ -119,7 +119,7 @@ function SideBar({
               </Link>
 
               <Link
-                className="flex items-center justify-center w-12 h-12 mt-2 "
+                className="mt-2 flex h-12 w-12 items-center justify-center "
                 href="/game"
                 shallow
               >
@@ -127,7 +127,7 @@ function SideBar({
               </Link>
 
               <Link
-                className="flex items-center justify-center w-12 h-12 mt-2 "
+                className="mt-2 flex h-12 w-12 items-center justify-center "
                 href="/profile"
                 shallow
               >
@@ -143,7 +143,7 @@ function SideBar({
               </div>
               <div className="mb-3 ">
                 <Link
-                  className="flex items-center justify-center w-12 h-12 mt-2"
+                  className="mt-2 flex h-12 w-12 items-center justify-center"
                   href="/settings"
                   shallow
                 >
@@ -154,7 +154,7 @@ function SideBar({
           </motion.aside>
         )}
       </AnimatePresence>
-      <div className="w-full">{children}</div>
+      <div className="w-full flex justify-center">{children}</div>
     </div>
   );
 }
