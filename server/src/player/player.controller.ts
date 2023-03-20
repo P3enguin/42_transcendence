@@ -7,7 +7,12 @@ import { GetPlayer } from 'src/auth/decorator';
 import { diskStorage } from 'multer';
 import { extname } from  'path';
 import { v4 as uuidv4 } from 'uuid';
-import { Request,Response } from 'express';
+import { query, Request,Response } from 'express';
+
+interface queryParam {
+	 nickname : string,
+}
+
 
 @UseGuards(JwtGuard)
 @Controller('players')
@@ -22,8 +27,11 @@ export class PlayerController {
 	
 
 	@Get('data')
-	getData(@Req() req:Request,@Res() res:Response){
-		return this.playerService.getDataForProfile(req.body.jwtDecoded.sub as number,res)
+	getData(@Req() req:Request,@Query() query:queryParam, @Res() res:Response){
+		if (query.nickname)
+			return this.playerService.getDataForProfile(query.nickname as string,res)
+		else
+			return this.playerService.getDataForProfile(req.body.jwtDecoded.nickname as string,res)
 	}
 
 	@Post('avatar')
