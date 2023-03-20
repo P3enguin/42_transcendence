@@ -20,11 +20,8 @@ export class PlayerController {
 		) {}
 	
 	@Get('me')
-	getMe(@GetPlayer() player: Player) {
-		console.log({
-			player,
-		});
-		return player
+	getMe(@Req() req: Request) {
+		return req.body.jwtDecoded;
 	}
 	
 	@Post('profile')

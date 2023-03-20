@@ -14,20 +14,21 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
     <div className="flex flex-row w-full  ">
       <div
         className="w-[64px] shrink-0 z-0 bg-[#2A3568]
-                  border-b-0 border-t sm:border-l border-[#0097E2] justify-center items-center flex"
+                  border-b-0 border-t sm:border-l border-[#0097E2] 
+                    justify-center items-center  rounded-bl-3xl sm:rounded-none flex"
       >
         <AnimatePresence>
-          {isVisible && 
-          <motion.div
-          initial={{ x: "-100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "-100%" }}
-          transition={{ type: "Tween" }}
-            className="absolute flex justify-center  items-center top-0 left-0
+          {isVisible && (
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "Tween" }}
+              className="absolute flex justify-center  items-center top-0 left-0
             bg-[#2A3568] border w-[64px] h-[64px] border-[#0097E2] 
               border-b-0  border-r-0 sm:hidden"
-          ></motion.div>
-          }
+            ></motion.div>
+          )}
         </AnimatePresence>
       </div>
       <div
@@ -48,7 +49,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
       <div
         className="w-full h-16 z-0 bg-gradient-to-r border  border-[#0097E2] 
       from-[#28346C] via-[#121C46] to-[#263268] flex flex-row items-center
-           border-l-0 sm:justify-center justify-between rounded-tr-3xl"
+           border-l-0 sm:justify-center justify-between rounded-br-3xl"
       >
         <div className="flex flex-row items-center ml-4">
           <button

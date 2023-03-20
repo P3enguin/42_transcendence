@@ -20,8 +20,6 @@ model Player {
 
   coins             Int
 
-  socketId          Int
-
   friends           Player[]  @relation("friends") // <- Friend List
   friendsRelation   Player[]  @relation("friends")
 
@@ -35,7 +33,6 @@ model Player {
   loss              Matchs[]  @relation(name: "loss")
 
   rooms             Room[]
-
 
   @@map("players")
 }
