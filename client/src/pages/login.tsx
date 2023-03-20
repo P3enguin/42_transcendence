@@ -32,6 +32,8 @@ export async function getServerSideProps(context: any) {
   if (!jwt_token) {
     const response = await verifySession(context.req.headers.cookie);
     if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
       return {
         redirect: {
           destination: "/",

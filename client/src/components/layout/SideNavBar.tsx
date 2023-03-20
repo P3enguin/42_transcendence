@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import SideBar from "./SideBar";
-import GameNavBar from "./GameNavBar";
-import NavBar from "../home/NavBar";
-import React from "react";
-import Router from "next/router";
-import { LayoutProps } from "./layout";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import SideBar from './SideBar';
+import GameNavBar from './GameNavBar';
+import NavBar from '../home/NavBar';
+import React from 'react';
+import Router from 'next/router';
+import { LayoutProps } from './layout';
 
 function SideNavBar({ children }: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
@@ -13,11 +13,11 @@ function SideNavBar({ children }: LayoutProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   const pages = [
-    { path: "/home", index: 0 },
-    { path: "/chat", index: 1 },
-    { path: "/game", index: 2 },
-    { path: "/profile", index: 3 },
-    { path: "/settings", index: 4 },
+    { path: '/home', index: 0 },
+    { path: '/chat', index: 1 },
+    { path: '/game', index: 2 },
+    { path: '/profile', index: 3 },
+    { path: '/settings', index: 4 },
   ];
 
   const router = useRouter();
@@ -37,9 +37,9 @@ function SideNavBar({ children }: LayoutProps) {
       }
     };
 
-    window.addEventListener("resize", hanldeResize);
+    window.addEventListener('resize', hanldeResize);
     hanldeResize();
-    return () => window.removeEventListener("resize", hanldeResize);
+    return () => window.removeEventListener('resize', hanldeResize);
   }, []);
 
   // Handle the color of the icon based on the page we are in
@@ -50,19 +50,19 @@ function SideNavBar({ children }: LayoutProps) {
   }, [router.pathname]);
 
   async function handleLogOut(
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) {
     e.preventDefault();
 
-    const url = process.env.NEXT_PUBLIC_LOGOUT_ENDPOINT;
+    const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/logout';
 
     const resp = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
     });
 
-    if (resp.status === 201) Router.push("/");
+    if (resp.status === 201) Router.push('/');
   }
 
   return (
@@ -81,6 +81,7 @@ function SideNavBar({ children }: LayoutProps) {
         handleLogOut={handleLogOut}
         children={children}
         isMobile={isMobile}
+        toggleSideBar={toggleSideBar}
       />
     </div>
   );

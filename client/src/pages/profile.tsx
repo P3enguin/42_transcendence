@@ -164,8 +164,9 @@ function PlayerProfile({
                     select a title
                   </option>
                   {
-                  list.map(elem => (
-                    <option value={elem}>{elem}</option>
+                  list.map((elem, index) => (
+                    
+                    <option key={index} value={elem}>{elem}</option>
                   ))
                 }
                 </select>
@@ -279,7 +280,7 @@ function PlayerProfile({
               </span>
             </button>
           </div>
-          <div className="h-[400px] flex overflow-auto"></div>
+          <div className=" min-h-[300px] flex overflow-auto "></div>
         </div>
       </div>
     );
@@ -291,7 +292,7 @@ export async function getServerSideProps({ req }: any) {
 
   const jwt_token: string = req.cookies["jwt_token"];
   if (jwt_token) {
-    const res = await fetch(process.env.NEXT_PUBLIC_PLAYER_DATA_ENDPOINT, {
+    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_HOST + "/players/data", {
       headers: {
         Cookie: req.headers.cookie,
       },
