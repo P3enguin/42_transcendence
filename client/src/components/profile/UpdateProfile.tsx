@@ -62,7 +62,7 @@ function UpdateProfile({
         let formData = new FormData();
         formData.append('file', pfpImg);
 
-        const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/profile';
+        const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
 
         const resp = await fetch(url, {
           method: 'POST',

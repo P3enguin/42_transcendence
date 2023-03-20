@@ -62,8 +62,8 @@
 **/!.vscode/extensions.json
 
 todo
-**/uploads/profiles/*
+**/uploads/avatars/*
 **/uploads/wallpapers/*
 
-!**/uploads/profiles/default.png
+!**/uploads/avatars/default.png
 !**/uploads/wallpapers/wallpaper.png
