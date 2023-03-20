@@ -1,6 +1,5 @@
 import Layout from '@/components/layout/layout';
 import { useState } from 'react';
-import { verifyToken } from '@/components/VerifyToken';
 import {
   FriendIcon,
   AchievementIcon,
@@ -17,10 +16,11 @@ interface player {
   coins: number;
   avatar: string;
   wallpaper: string;
-  joinAt: string;
+  joinAt: Date;
+  exist? : boolean
 }
 
-function PlayerProfile({
+function UserProfile({
   nickname,
   firstname,
   lastname,
@@ -28,6 +28,7 @@ function PlayerProfile({
   avatar,
   wallpaper,
   joinAt,
+  exist,
 }: player) {
   const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(true);
@@ -66,15 +67,17 @@ function PlayerProfile({
         ...{ pfp: pictures.pfp, wp: url },
       }));
     };
-    if (pictures.pfp != avatar) fetchPFP();
-    if (pictures.wp != wallpaper) fetchWp();
+    if (exist && pictures.pfp != avatar) fetchPFP();
+    if (exist && pictures.wp != wallpaper) fetchWp();
     setLoading(false);
   }, []);
 
+  if (!exist)
+    return <p className='text-xl  text-red-600 mt-[400px]'>Player does not exist!</p>
   if (isLoading) return <p>Loading...</p>;
-  if (!isLoading) {
+  if (!isLoading && exist) {
     return (
-      <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
+      <div className="flex w-full flex-col items-center gap-10 xl:gap-[100px]">
         <div
           className="mt-[20px] flex w-11/12 flex-col justify-center
           rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:mt-[100px] xl:w-[1000px]"
@@ -84,31 +87,17 @@ function PlayerProfile({
             alt="wallpaper"
             id="wallpaper-holder"
             className=" h-[160px]  min-h-[80px] w-full 
-                min-w-[200px] sm:h-[220px] rounded-t-3xl  xl:h-[250px]"
+                min-w-[200px] rounded-t-3xl sm:h-[220px]  xl:h-[250px]"
           />
           <div className="mb-5 flex flex-col items-center xl:flex-row">
             <div className="flex w-full items-start justify-center  xl:w-1/3 ">
-              <select
-                id="title"
-                className="rounded-lg border-white bg-[#2C3B7C]  p-1 text-[10px] 
-                   leading-3 text-white outline-none focus:border-black  
-                    focus:outline-none focus:ring-black  xl:hidden"
+              <strong
+                id="titleUser"
+                className="   p-1 text-xs 
+                   leading-3 text-white xl:hidden"
               >
-                <option
-                  value="select a title"
-                  defaultValue={'select a title'}
-                  disabled
-                  id="titles"
-                  hidden
-                >
-                  select a title
-                </option>
-                {list.map((elem, index) => (
-                  <option key={index} value={elem}>
-                    {elem}
-                  </option>
-                ))}
-              </select>
+                the title
+              </strong>
               {/* player info  */}
               <div className="block">
                 {/* image  */}
@@ -143,46 +132,39 @@ function PlayerProfile({
                 </div>
                 <div className=" flex flex-col text-center text-white  xl:pl-6  xl:text-start">
                   <strong className="w-[155px]">
-                    {firstname + " " + lastname}
+                    {firstname + ' ' + lastname}
                   </strong>
                   <span className=" text-gray-400">{'@' + nickname}</span>
                 </div>
               </div>
-              <div className="flex flex-col items-end justify-end gap-[50px] ">
+              <div className="flex flex-col gap-[43px] ">
                 <span className="text-[7px]  text-gray-400">
-                  {"MEMBER SINCE: " +  joinAt}
+                  {'MEMBER SINCE: ' + joinAt}
                 </span>
-                <select
-                  id="title"
-                  className="hidden rounded-lg border-white bg-[#2C3B7C] p-1 text-[10px] 
-                   leading-3  text-white outline-none focus:border-black  
-                    focus:outline-none focus:ring-black xl:flex"
-                >
-                  <option
-                    value="select a title"
-                    defaultValue={'select a title'}
-                    disabled
-                    hidden
-                  >
-                    select a title
-                  </option>
-                  {list.map((elem, index) => (
-                    <option key={index} value={elem}>
-                      {elem}
-                    </option>
-                  ))}
-                </select>
+                <strong
+                id="titleUser"
+                className="  hidden  text-sm
+                   text-white outline-none focus:border-black  
+                 xl:flex"
+              >
+                the title
+              </strong>
+      
               </div>
             </div>
             {/* player state  */}
             <div
               className="mt-2 flex w-full items-center justify-around 
-                  gap-10  text-[12px] sm:items-end
+                  gap-10  text-xs sm:items-end
                    md:text-sm  xl:w-2/3"
             >
-              <div className="flex flex-col  gap-4 sm:gap-10 sm:flex-row">
+              <div className="flex flex-col  gap-4 sm:flex-row sm:gap-10">
                 <div className="flex items-center gap-2 ">
-                  <img src="King.svg" alt="rankIcon"  className='w-[45px] md:w-[64px]'></img>
+                  <img
+                    src="/King.svg"
+                    alt="rankIcon"
+                    className="w-[45px] md:w-[64px]"
+                  ></img>
                   <div className="flex  flex-col ">
                     <strong className="  text-gray-100">GOLD</strong>
                     <span className=" text-gray-400">Ranking</span>
@@ -190,11 +172,11 @@ function PlayerProfile({
                 </div>
                 <div className="flex items-center  gap-2">
                   <img
-                    src="coin.svg"
+                    src="/coin.svg"
                     alt="coinIcon"
                     // width={36}
                     // height={36}
-                    className='w-[27px] md:w-[36px]'
+                    className="w-[27px] md:w-[36px]"
                   ></img>
                   <div className="flex  flex-col ">
                     <strong className="  text-gray-100">{coins + ' ₳'} </strong>
@@ -202,14 +184,14 @@ function PlayerProfile({
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col  gap-4 sm:gap-10 sm:flex-row">
+              <div className="flex flex-col  gap-4 sm:flex-row sm:gap-10">
                 <div className="flex items-center gap-2">
                   <img
-                    src="star.svg"
+                    src="/star.svg"
                     alt="startIcon"
                     // width={36}
                     // height={36}
-                    className='w-[27px] md:w-[36px]'
+                    className="w-[27px] md:w-[36px]"
                   ></img>
                   <div className="flex  flex-col ">
                     <strong className="  text-gray-100">1800/2500 XP</strong>
@@ -218,11 +200,11 @@ function PlayerProfile({
                 </div>
                 <div className="flex items-center gap-2">
                   <img
-                    src="champion.svg"
+                    src="/champion.svg"
                     alt="champIcon"
                     // width={36}
                     // height={36}
-                    className='w-[27px] md:w-[36px]'
+                    className="w-[27px] md:w-[36px]"
                   ></img>
                   <div className="flex  flex-col ">
                     <strong className="  text-gray-100">91 %</strong>
@@ -293,13 +275,13 @@ function PlayerProfile({
   }
 }
 
-export async function getServerSideProps({ req }: any) {
-  // fetching all data :
-
+export async function getServerSideProps({ params, req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
+      process.env.NEXT_PUBLIC_BACKEND_HOST +
+        '/players/data?' +
+        new URLSearchParams({ nickname: params.user }),
       {
         headers: {
           Cookie: req.headers.cookie,
@@ -307,13 +289,21 @@ export async function getServerSideProps({ req }: any) {
       },
     );
     const data = await res.json();
-
-    const timeFormat: Intl.DateTimeFormatOptions =
-     { 
-     year: "numeric",
-     month: "long",
-     day: "numeric", }
-    const date = new Intl.DateTimeFormat("en-US", timeFormat).format(new Date(data.player.joinAt));
+    if (!data.player)
+      return {
+        props: {
+          exist: false,
+        },
+      };
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+    console.log(data);
+    const date = new Intl.DateTimeFormat('en-US', options).format(
+      new Date(data.player.joinAt),
+    );
     return {
       // modify this to return anything you want before your page load
       props: {
@@ -324,6 +314,7 @@ export async function getServerSideProps({ req }: any) {
         avatar: data.player.avatar,
         wallpaper: data.player.wallpaper,
         joinAt: date,
+        exist:true,
       },
     };
   }
@@ -335,7 +326,7 @@ export async function getServerSideProps({ req }: any) {
   };
 }
 
-PlayerProfile.getLayout = function getLayout(page: React.ReactNode) {
+UserProfile.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout>{page}</Layout>;
 };
-export default PlayerProfile;
+export default UserProfile;
