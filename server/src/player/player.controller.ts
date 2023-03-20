@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req } from '@nestjs/common';
+import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req,Res, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Player } from '@prisma/client'
 import { JwtGuard } from 'src/auth/guard';
@@ -20,6 +20,12 @@ export class PlayerController {
 		return req.body.jwtDecoded;
 	}
 	
+
+	@Get('data')
+	getData(@Req() req:Request,@Res() res:Response){
+		return this.playerService.getDataForProfile(req.body.jwtDecoded.sub as number,res)
+	}
+
 	@Post('profile')
 	@UseInterceptors(FileInterceptor('file',
 		{storage: diskStorage({
@@ -50,5 +56,19 @@ export class PlayerController {
 		}}))
 	  uploadBackGround(@Req() req :Request, @UploadedFile() file: Express.Multer.File){
 		return this.playerService.updateWallpaper(req,file.filename);
+	}
+
+	@Get('pfp')
+	GetProfileImage(@Query() query,@Res() res:Response)
+	{
+		const fileName = query.pfp;
+		return res.sendFile(process.env.PROFILE_UPLOADS_PATH + "/" + fileName);
+	}
+
+	@Get('wp')
+	GetWallPaperImage(@Query() query,@Res() res:Response)
+	{
+		const fileName = query.wp;
+		return res.sendFile(process.env.WALLPAPER_UPLOADS_PATH + "/" + fileName);
 	}
 }

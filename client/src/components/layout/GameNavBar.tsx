@@ -10,6 +10,8 @@ interface FunctionProps {
   isVisible: boolean;
 }
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
+
+  
   return (
     <div className="flex flex-row w-full ">
       <div
@@ -26,7 +28,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               transition={{ type: "Tween" }}
               className="absolute flex justify-center  items-center top-0 left-0
             bg-[#2A3568] border w-[64px] h-[64px] border-[#0097E2] 
-              border-b-0  border-r-0 sm:hidden"
+              border-b-0  border-r-1  rounded-tr-3xl sm:hidden"
             ></motion.div>
           )}
         </AnimatePresence>
@@ -39,7 +41,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
         <Link className="" href="/home">
           <Image
             className=""
-            src="/logo.png"
+            src="/logo.svg"
             alt="logo"
             width={39}
             height={41}

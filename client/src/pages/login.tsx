@@ -1,10 +1,5 @@
 import UpdateProfile from "@/components/profile/UpdateProfile";
 import { verifyToken, verifySession } from "@/components/VerifyToken";
-import { Jwt, verify } from "jsonwebtoken";
-interface session {
-  AuthMethod: string;
-  accessToken: string;
-}
 
 function loginPage({
   email,
@@ -37,6 +32,8 @@ export async function getServerSideProps(context: any) {
   if (!jwt_token) {
     const response = await verifySession(context.req.headers.cookie);
     if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
       return {
         redirect: {
           destination: "/",
