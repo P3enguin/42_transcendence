@@ -36,6 +36,7 @@ function SideBar({
   isMobile: boolean,
   toggleSideBar : FunctionProps2,
 }) {
+  
   return (
     <div className="flex h-[calc(100%-64px)] flex-row">
       {/* For normal page */}

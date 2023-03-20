@@ -28,7 +28,6 @@ export class PlayerController {
 
 	@Get('data')
 	getData(@Req() req:Request,@Query() query:queryParam, @Res() res:Response){
-		console.log(query.nickname);
 		if (query.nickname)
 			return this.playerService.getDataForProfile(query.nickname as string,res)
 		else
