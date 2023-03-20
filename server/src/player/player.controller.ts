@@ -26,10 +26,10 @@ export class PlayerController {
 		return this.playerService.getDataForProfile(req.body.jwtDecoded.sub as number,res)
 	}
 
-	@Post('profile')
+	@Post('avatar')
 	@UseInterceptors(FileInterceptor('file',
 		{storage: diskStorage({
-		destination: process.env.PROFILE_UPLOADS_PATH,
+		destination: process.cwd() + "/uploads/avatars/",
 		filename: (req, file, cb) => {
 			const randomName = uuidv4();
 			 cb(null, `${randomName}${extname(file.originalname)}`)
@@ -45,7 +45,7 @@ export class PlayerController {
 	@Post('wallpaper')
 	@UseInterceptors(FileInterceptor('file',
 		{storage: diskStorage({
-		destination: process.env.WALLPAPER_UPLOADS_PATH,
+		destination: process.cwd() + "/uploads/wallpapers/",
 		filename: (req, file, cb) => {
 			const randomName = uuidv4();
 			cb(null, `${randomName}${extname(file.originalname)}`)
@@ -58,17 +58,17 @@ export class PlayerController {
 		return this.playerService.updateWallpaper(req,file.filename);
 	}
 
-	@Get('pfp')
+	@Get('avatar')
 	GetProfileImage(@Query() query,@Res() res:Response)
 	{
 		const fileName = query.pfp;
-		return res.sendFile(process.env.PROFILE_UPLOADS_PATH + "/" + fileName);
+		return res.sendFile(process.cwd() + "/uploads/avatars/"  + fileName);
 	}
 
-	@Get('wp')
+	@Get('wallpaper')
 	GetWallPaperImage(@Query() query,@Res() res:Response)
 	{
 		const fileName = query.wp;
-		return res.sendFile(process.env.WALLPAPER_UPLOADS_PATH + "/" + fileName);
+		return res.sendFile(process.cwd() + "/uploads/wallpapers/" + fileName);
 	}
 }
