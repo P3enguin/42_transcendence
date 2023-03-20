@@ -25,7 +25,7 @@ function SideNavBar({ children }: LayoutProps) {
   function toggleSideBar() {
     setVisible(!isVisible);
   }
-
+  
   // to fix later
   useEffect(() => {
     const hanldeResize = () => {
