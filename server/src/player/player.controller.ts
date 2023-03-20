@@ -9,6 +9,7 @@ import { extname } from  'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Request,Response } from 'express';
 
+
 @UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
@@ -23,7 +24,7 @@ export class PlayerController {
 
 	@Get('data')
 	getData(@Req() req:Request,@Res() res:Response){
-		return this.playerService.getDataForProfile(req.body.jwtDecoded.sub as number,res)
+		return this.playerService.getDataForProfile(req.body.jwtDecoded.nickname as string,res)
 	}
 
 	@Post('avatar')

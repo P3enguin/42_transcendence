@@ -24,11 +24,11 @@ export class PlayerService {
 		return player;
 	}
 	
-	async getDataForProfile(id:number,res:Response){
+	async getDataForProfile(nickname:string,res:Response){
 		try {
 			const player = await this.prisma.player.findUnique({
 				where : {
-					id : id,
+					nickname : nickname,
 				},
 				select : {
 					id:true,

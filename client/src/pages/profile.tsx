@@ -1,14 +1,14 @@
-import Layout from "@/components/layout/layout";
-import { useState } from "react";
-import { verifyToken } from "@/components/VerifyToken";
+import Layout from '@/components/layout/layout';
+import { useState } from 'react';
+import { verifyToken } from '@/components/VerifyToken';
 import {
   FriendIcon,
   AchievementIcon,
   MatchHistoryIcon,
   RankingIcon,
-} from "@/components/icons/Icons";
+} from '@/components/icons/Icons';
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 interface player {
   nickname: string;
@@ -20,7 +20,6 @@ interface player {
   joinAt: string;
 }
 
-
 function PlayerProfile({
   nickname,
   firstname,
@@ -30,19 +29,19 @@ function PlayerProfile({
   wallpaper,
   joinAt,
 }: player) {
-  const [pictures, changePictures] = useState({ pfp: "", wp: "" });
+  const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(true);
-  const list  = ["hh","hh2","hh3"];
+  const list = ['hh', 'hh2', 'hh3'];
 
   useEffect(() => {
     const fetchPFP = async () => {
       setLoading(true);
       const res = await fetch(
-        "http://e2r7p6.1337.ma:8000/players/avatar?" +
+        'http://e2r7p6.1337.ma:8000/players/avatar?' +
           new URLSearchParams({ pfp: avatar }),
         {
-          credentials: "include",
-        }
+          credentials: 'include',
+        },
       );
       const pfp = await res.blob();
       const url = URL.createObjectURL(pfp);
@@ -54,11 +53,11 @@ function PlayerProfile({
 
     const fetchWp = async () => {
       const res = await fetch(
-        "http://e2r7p6.1337.ma:8000/players/wallpaper?" +
+        'http://e2r7p6.1337.ma:8000/players/wallpaper?' +
           new URLSearchParams({ wp: wallpaper }),
         {
-          credentials: "include",
-        }
+          credentials: 'include',
+        },
       );
       const wp = await res.blob();
       const url = URL.createObjectURL(wp);
@@ -73,57 +72,59 @@ function PlayerProfile({
   }, []);
 
   if (isLoading) return <p>Loading...</p>;
-  if (!isLoading)
-  {
+  if (!isLoading) {
     return (
-      <div className=" flex flex-col items-center  xl:gap-[100px] gap-10  w-full ">
+      <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
         <div
-          className="flex flex-col justify-center sm:rounded-3xl bg-[#2F3B78]
-          xl:mt-[100px] mt-[20px] w-full xl:w-[1000px]  md:max-xl:w-5/6"
+          className="mt-[20px] flex w-11/12 flex-col justify-center
+          rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:mt-[100px] xl:w-[1000px]"
         >
           <img
             src={pictures.wp}
             alt="wallpaper"
             id="wallpaper-holder"
-            className=" sm:rounded-t-3xl  min-w-[200px] min-h-[80px] 
-                w-full xl:h-[320px] sm:h-[220px]  h-[160px]"
+            className=" h-[160px]  min-h-[80px] w-full 
+                min-w-[200px] sm:h-[220px] rounded-t-3xl  xl:h-[250px]"
           />
-          <div className="flex xl:flex-row flex-col items-center mb-7">
-            <div className="xl:w-1/3 w-full flex justify-center items-start xl:ml-6 gap-2 ">
+          <div className="mb-5 flex flex-col items-center xl:flex-row">
+            <div className="flex w-full items-start justify-center  xl:w-1/3 ">
               <select
                 id="title"
-                className=" xl:hidden text-[10px] leading-3  bg-[#2C3B7C] text-white 
-                   border-white rounded-lg outline-none focus:border-black  
-                    focus:outline-none focus:ring-black  p-1"
+                className="rounded-lg border-white bg-[#2C3B7C]  p-1 text-[10px] 
+                   leading-3 text-white outline-none focus:border-black  
+                    focus:outline-none focus:ring-black  xl:hidden"
               >
                 <option
                   value="select a title"
-                  defaultValue={"select a title"}
+                  defaultValue={'select a title'}
                   disabled
                   id="titles"
                   hidden
                 >
                   select a title
                 </option>
-                {
-                  list.map(elem => (
-                    <option value={elem}>{elem}</option>
-                  ))
-                }
+                {list.map((elem, index) => (
+                  <option key={index} value={elem}>
+                    {elem}
+                  </option>
+                ))}
               </select>
               {/* player info  */}
-              <div className="flex flex-col ">
+              <div className="block">
                 {/* image  */}
-                <div className="flex xl:-mt-[180px] -mt-[120px]">
+                <div className="-mt-[120px] flex xl:-mt-[150px]">
                   <img
                     src={pictures.pfp}
                     alt="pfp"
                     id="pfp-holder"
-                    className="pfp absolute xl:w-[160px] xl:h-[179px]  w-[120px] h-[130px] xl:translate-x-[27px] 
-                            xl:translate-y-[40px] translate-x-[20px] translate-y-[28px]"
+                    className="pfp absolute h-[130px] w-[120px] 
+                             translate-x-[20px] translate-y-[28px] 
+                            xl:h-[150px] xl:w-[130px] xl:translate-x-[25px] 
+                            xl:translate-y-[31px]"
                   />
                   <svg
-                    className="progress blue noselect z-10 shrink-0 xl:w-[200px] xl:h-[240px] w-[150px] h-[170px]"
+                    className="progress blue  z-10 h-[170px] w-[150px] 
+                      shrink-0 xl:h-[200px] xl:w-[170px]"
                     data-progress="55"
                     x="0px"
                     y="0px"
@@ -140,9 +141,11 @@ function PlayerProfile({
                     ></path>
                   </svg>
                 </div>
-                <div className=" text-white flex flex-col xl:items-start xl:pl-6 items-center">
-                  <strong>{firstname + " " + lastname}</strong>
-                  <span className=" text-gray-400">{"@" + nickname}</span>
+                <div className=" flex flex-col text-center text-white  xl:pl-6  xl:text-start">
+                  <strong className="w-[155px]">
+                    asrewrew rsdfds fdsfdsfsd afsdfew
+                  </strong>
+                  <span className=" text-gray-400">{'@' + nickname}</span>
                 </div>
               </div>
               <div className="flex flex-col items-end justify-end gap-[50px] ">
@@ -151,76 +154,79 @@ function PlayerProfile({
                 </span>
                 <select
                   id="title"
-                  className="text-[10px] leading-3 xl:flex hidden bg-[#2C3B7C] text-white 
-                   border-white  rounded-lg outline-none focus:border-black  
-                    focus:outline-none focus:ring-black p-1"
+                  className="hidden rounded-lg border-white bg-[#2C3B7C] p-1 text-[10px] 
+                   leading-3  text-white outline-none focus:border-black  
+                    focus:outline-none focus:ring-black xl:flex"
                 >
                   <option
                     value="select a title"
-                    defaultValue={"select a title"}
+                    defaultValue={'select a title'}
                     disabled
                     hidden
                   >
                     select a title
                   </option>
-                  {
-                  list.map((elem, index) => (
-                    
-                    <option key={index} value={elem}>{elem}</option>
-                  ))
-                }
+                  {list.map((elem, index) => (
+                    <option key={index} value={elem}>
+                      {elem}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
             {/* player state  */}
-            <div className="xl:w-2/3 w-full flex justify-around sm:items-end mt-7  items-center gap-10">
-              <div className="flex sm:flex-row  flex-col gap-10">
-                <div className="flex items-center gap-2  ">
-                  <img src="King.svg" alt="rankIcon"></img>
-
+            <div
+              className="mt-2 flex w-full items-center justify-around 
+                  gap-10  text-[12px] sm:items-end
+                   md:text-sm  xl:w-2/3"
+            >
+              <div className="flex flex-col  gap-4 sm:gap-10 sm:flex-row">
+                <div className="flex items-center gap-2 ">
+                  <img src="King.svg" alt="rankIcon"  className='w-[45px] md:w-[64px]'></img>
                   <div className="flex  flex-col ">
-                    <strong className=" text-gray-100 text-sm">GOLD</strong>
-                    <span className="text-gray-400 text-xs">Ranking</span>
+                    <strong className="  text-gray-100">GOLD</strong>
+                    <span className=" text-gray-400">Ranking</span>
                   </div>
                 </div>
                 <div className="flex items-center  gap-2">
                   <img
                     src="coin.svg"
                     alt="coinIcon"
-                    width={36}
-                    height={36}
+                    // width={36}
+                    // height={36}
+                    className='w-[27px] md:w-[36px]'
                   ></img>
                   <div className="flex  flex-col ">
-                    <strong className=" text-gray-100 text-sm">{coins + " ₳"} </strong>
-                    <span className="text-gray-400 text-xs">cache earned</span>
+                    <strong className="  text-gray-100">{coins + ' ₳'} </strong>
+                    <span className=" text-gray-400">cache earned</span>
                   </div>
                 </div>
               </div>
-              <div className="flex sm:flex-row  flex-col gap-10">
+              <div className="flex flex-col  gap-4 sm:gap-10 sm:flex-row">
                 <div className="flex items-center gap-2">
                   <img
                     src="star.svg"
                     alt="startIcon"
-                    width={36}
-                    height={36}
+                    // width={36}
+                    // height={36}
+                    className='w-[27px] md:w-[36px]'
                   ></img>
                   <div className="flex  flex-col ">
-                    <strong className=" text-gray-100 text-sm">
-                      1800/2500 XP
-                    </strong>
-                    <span className="text-gray-400 text-xs">player XP</span>
+                    <strong className="  text-gray-100">1800/2500 XP</strong>
+                    <span className=" text-gray-400">player XP</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <img
                     src="champion.svg"
                     alt="champIcon"
-                    width={36}
-                    height={36}
+                    // width={36}
+                    // height={36}
+                    className='w-[27px] md:w-[36px]'
                   ></img>
                   <div className="flex  flex-col ">
-                    <strong className=" text-gray-100 text-sm">91 %</strong>
-                    <span className="text-gray-400 text-xs">win ratio</span>
+                    <strong className="  text-gray-100">91 %</strong>
+                    <span className=" text-gray-400">win ratio</span>
                   </div>
                 </div>
               </div>
@@ -228,59 +234,59 @@ function PlayerProfile({
           </div>
         </div>
         <div
-          className="flex flex-col justify-center sm:rounded-3xl bg-[#2F3B78] 
-        w-full xl:w-[1000px]  md:max-xl:w-5/6"
+          className="flex  w-11/12 flex-col justify-center rounded-3xl 
+          bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
         >
           <div
-            className="flex border-gray-100 p-2 border-2 border-t-0 
-                  border-l-0 border-r-0 border-opacity-70 text-[#8BD9FF] text-sm"
+            className="flex border-2 border-t-0 border-l-0 border-r-0 
+                  border-gray-100 border-opacity-70 p-2 text-sm text-[#8BD9FF]"
           >
             <button
-              className="w-1/4  border-2 flex justify-center 
-                       border-gray-100  border-t-0 border-l-0 
-                       h-[60px] items-center border-opacity-70 
-                       border-b-0 transition-all"
+              className="flex  h-[60px] w-1/4 items-center 
+                       justify-center  border-2 border-t-0 
+                       border-l-0 border-b-0 border-gray-100 
+                       border-opacity-70 transition-all"
             >
               <FriendIcon />
-              <span className="friend-text absolute invisible transition-all opacity-0">
+              <span className="friend-text invisible absolute opacity-0 transition-all">
                 Friends
               </span>
             </button>
             <button
-              className="w-1/4 border-2 flex justify-center 
-                       border-gray-100  border-t-0 
-                        border-l-0 h-[60px] items-center border-opacity-70 
-                        border-b-0 transition-all "
+              className="flex h-[60px] w-1/4 items-center 
+                       justify-center  border-2 
+                        border-t-0 border-l-0 border-b-0 border-gray-100 
+                        border-opacity-70 transition-all "
             >
               <AchievementIcon />
-              <span className="friend-text absolute invisible transition-all opacity-0 ">
+              <span className="friend-text invisible absolute opacity-0 transition-all ">
                 Achievement
               </span>
             </button>
             <button
-              className="w-1/4 border-2 flex justify-center 
-                        border-gray-100  border-t-0 border-l-0 
-                        h-[60px] items-center  border-opacity-70 
-                        border-b-0 transition-all"
+              className="flex h-[60px] w-1/4 items-center 
+                        justify-center  border-2 border-t-0 
+                        border-l-0 border-b-0  border-gray-100 
+                        border-opacity-70 transition-all"
             >
               <MatchHistoryIcon />
-              <span className="friend-text absolute invisible transition-all opacity-0 text-xs">
+              <span className="friend-text invisible absolute text-xs opacity-0 transition-all">
                 Match History
               </span>
             </button>
             <button
-              className="w-1/4 border-2 flex justify-center 
-                      border-gray-100 border-t-0  border-r-0 
-                      border-l-0 h-[60px] items-center  border-opacity-70 
-                      border-b-0 transition-all "
+              className="flex h-[60px] w-1/4 items-center 
+                      justify-center border-2  border-t-0 
+                      border-r-0 border-l-0 border-b-0  border-gray-100 
+                      border-opacity-70 transition-all "
             >
               <RankingIcon />
-              <span className="friend-text absolute invisible transition-all opacity-0">
+              <span className="friend-text invisible absolute opacity-0 transition-all">
                 Ranking
               </span>
             </button>
           </div>
-          <div className=" min-h-[300px] flex overflow-auto "></div>
+          <div className=" flex h-[200px] overflow-auto md:h-[400px] "></div>
         </div>
       </div>
     );
@@ -290,24 +296,18 @@ function PlayerProfile({
 export async function getServerSideProps({ req }: any) {
   // fetching all data :
 
-  const jwt_token: string = req.cookies["jwt_token"];
+  const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_HOST + "/players/data", {
-      headers: {
-        Cookie: req.headers.cookie,
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
+      {
+        headers: {
+          Cookie: req.headers.cookie,
+        },
       },
-    });
+    );
     const data = await res.json();
 
-    // const res2 = await fetch(
-    //   "http://e2r7p6.1337.ma:8000/players/pfp?" +
-    //     new URLSearchParams({ pfp: data.player.avatar }),
-    //   {
-    //     headers: {
-    //       Cookie: req.headers.cookie,
-    //     },
-    //   }
-    // );
     return {
       // modify this to return anything you want before your page load
       props: {
@@ -323,7 +323,7 @@ export async function getServerSideProps({ req }: any) {
   }
   return {
     redirect: {
-      destination: "/",
+      destination: '/',
       permanent: true,
     },
   };
