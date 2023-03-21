@@ -325,9 +325,9 @@ function UpdateProfile({
               src="/wallpaper.png"
               alt="wallpaper"
               id="wallpaper-holder"
-              className="h-[170px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl"
+              className="lg:h-[200px] h-[140px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl"
             />
-            <label htmlFor="wallpaper" className="cursor-pointer ">
+            <label htmlFor="wallpaper" className="cursor-pointer absolute top-[10px] right-[10px] ">
               <EditIconWallpaper />
             </label>
           </div>
@@ -344,9 +344,9 @@ function UpdateProfile({
               src="/pfp1.png"
               alt="pfp"
               id="pfp-holder"
-              className="pfp -mt-10  h-[100px] w-[100px] "
+              className="pfp -mt-10  h-[100px] w-[100px]"
             />
-            <label htmlFor="pfp" className="cursor-pointer ">
+            <label htmlFor="pfp" className="cursor-pointer absolute -top-[13px] right-[2px]">
               <EditIconProfile />
             </label>
           </div>
@@ -404,5 +404,6 @@ function UpdateProfile({
     </div>
   );
 }
+
 
 export default UpdateProfile;
