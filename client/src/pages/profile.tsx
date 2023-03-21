@@ -108,9 +108,9 @@ export async function getServerSideProps({ req }: any) {
       month: 'long',
       day: 'numeric',
     };
+    console.log(data);
     const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
-      new Date(data.player.joinAt),
-    );
+      new Date(data.player.joinAt));
     return {
       // modify this to return anything you want before your page load
       props: {

@@ -129,7 +129,7 @@ function UpdateProfile({
     if (span) span.innerHTML = error;
   }
 
-  function validFirstName(event: React.FocusEvent<HTMLInputElement, Element>) {
+  function validFirstName(event: React.ChangeEvent<HTMLInputElement>) {
     const first_name: string = event.target.value;
     const span = document.getElementById('fnspan');
     var touched = state[0].touched;
@@ -162,7 +162,7 @@ function UpdateProfile({
     }
   }
 
-  function validLastName(event: React.FocusEvent<HTMLInputElement, Element>) {
+  function validLastName(event: React.ChangeEvent<HTMLInputElement>) {
     const last_name: string = event.target.value;
     const span = document.getElementById('lnspan');
     var touched = state[1].touched;
@@ -195,7 +195,7 @@ function UpdateProfile({
     }
   }
 
-  function validNickName(event: React.FocusEvent<HTMLInputElement, Element>) {
+  function validNickName(event: React.ChangeEvent<HTMLInputElement>) {
     const nick_name: string = event.target.value;
     const span = document.getElementById('nickspan');
     var touched = state[2].touched;
@@ -209,7 +209,7 @@ function UpdateProfile({
         span,
         'Nickname cannot be empty!',
       );
-    } else if (!isBetween(nick_name, 3, 20)) {
+    } else if (!isBetween(nick_name, 3, 15)) {
       updateField(
         2,
         { valid: false, touched: touched },
@@ -228,7 +228,7 @@ function UpdateProfile({
     }
   }
 
-  function validPassword(event: React.FocusEvent<HTMLInputElement, Element>) {
+  function validPassword(event: React.ChangeEvent<HTMLInputElement>) {
     const password: string = event.target.value;
     const span = document.getElementById('pwdspan');
     var touched = state[3].touched;
@@ -325,9 +325,12 @@ function UpdateProfile({
               src="/wallpaper.png"
               alt="wallpaper"
               id="wallpaper-holder"
-              className="h-[170px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl"
+              className="h-[140px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl lg:h-[200px]"
             />
-            <label htmlFor="wallpaper" className="cursor-pointer ">
+            <label
+              htmlFor="wallpaper"
+              className="absolute top-[10px] right-[10px] cursor-pointer "
+            >
               <EditIconWallpaper />
             </label>
           </div>
@@ -344,9 +347,12 @@ function UpdateProfile({
               src="/pfp1.png"
               alt="pfp"
               id="pfp-holder"
-              className="pfp -mt-10  h-[100px] w-[100px] "
+              className="pfp -mt-10  h-[100px] w-[100px]"
             />
-            <label htmlFor="pfp" className="cursor-pointer ">
+            <label
+              htmlFor="pfp"
+              className="absolute -top-[13px] right-[2px] cursor-pointer"
+            >
               <EditIconProfile />
             </label>
           </div>

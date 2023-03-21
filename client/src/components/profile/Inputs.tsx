@@ -1,6 +1,6 @@
-import { statObj } from "./Interface";
-import { validFunc } from "./Interface";
-import { useEffect } from "react";
+import { statObj } from './Interface';
+import { validFunc } from './Interface';
+import { useEffect } from 'react';
 
 export function FirstNameInput({
   state,
@@ -12,44 +12,44 @@ export function FirstNameInput({
   validFirstName: validFunc;
 }) {
   return (
-    <div className="relative z-0 w-3/4 mb-6 group">
+    <div className="group relative z-0 mb-6 w-3/4">
       <input
         type="input"
         name="firstname"
         id="firstname"
         className={` ${
           state.touched && state.valid
-            ? " border-green-500"
+            ? ' border-green-500'
             : state.touched && !state.valid
-            ? "border-red-600"
-            : "border-gray-300"
-        } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-              border-2 rounded-full appearance-none 
-                focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+            ? 'border-red-600'
+            : 'border-gray-300'
+        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
+              py-2.5 px-3 text-xs md:text-sm
+                text-white focus:border-blue-600 focus:outline-none focus:ring-0`}
         placeholder=" "
         required
         defaultValue={defaultValue}
-        onBlur={(event) => validFirstName(event)}
+        onChange={(event) => validFirstName(event)}
       />
       <label
         htmlFor="firstname"
         className={`${
           state.touched && state.valid
-            ? "text-green-500"
+            ? 'text-green-500'
             : state.touched && !state.valid
-            ? "text-red-600"
-            : "text-gray-500"
-        } peer-focus:font-medium absolute text-sm
-                pl-3 duration-300 transform -translate-y-8
-               scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-                peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                peer-focus:scale-100 peer-focus:-translate-y-8 `}
+            ? 'text-red-600'
+            : 'text-gray-500'
+        } absolute top-3 -z-10
+                origin-[0] -translate-y-8 scale-100 transform
+               pl-3 text-xs md:text-sm duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+                peer-focus:-translate-y-8 peer-focus:scale-100 
+                peer-focus:font-medium peer-focus:text-blue-600 `}
       >
         First Name
       </label>
       <span
         id="fnspan"
-        className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+        className="justify-even ml-4 mt-2 flex text-xs md:text-sm text-red-700"
       ></span>
     </div>
   );
@@ -65,24 +65,24 @@ export function LastNameInput({
   validLastName: validFunc;
 }) {
   return (
-    <div className="relative z-0 w-3/4 mb-6 group">
+    <div className="group relative z-0 mb-6 w-3/4">
       <input
         type="input"
         name="lastname"
         id="lastname"
         className={`${
           state.touched && state.valid
-            ? " border-green-500"
+            ? ' border-green-500'
             : state.touched && !state.valid
-            ? "border-red-600"
-            : "border-gray-300"
-        } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-                    border-2 rounded-full  appearance-none 
-                      focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+            ? 'border-red-600'
+            : 'border-gray-300'
+        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
+                    py-2.5 px-3  text-xs md:text-sm
+                      text-white focus:border-blue-600 focus:outline-none focus:ring-0`}
         placeholder=" "
         defaultValue={defaultValue}
         required
-        onBlur={(event) => {
+        onChange={(event) => {
           validLastName(event);
         }}
       />
@@ -90,21 +90,21 @@ export function LastNameInput({
         htmlFor="lastname"
         className={`${
           state.touched && state.valid
-            ? "text-green-500"
+            ? 'text-green-500'
             : state.touched && !state.valid
-            ? "text-red-600"
-            : "text-gray-500"
-        } peer-focus:font-medium absolute text-sm
-                      pl-3 duration-300 transform -translate-y-8
-                     scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-                      peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-                      peer-focus:scale-100 peer-focus:-translate-y-8 `}
+            ? 'text-red-600'
+            : 'text-gray-500'
+        } absolute top-3 -z-10
+                      origin-[0] -translate-y-8 scale-100 transform
+                     pl-3 text-xs md:text-sm duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+                      peer-focus:-translate-y-8 peer-focus:scale-100 
+                      peer-focus:font-medium peer-focus:text-blue-600 `}
       >
         Last Name
       </label>
       <span
         id="lnspan"
-        className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+        className="justify-even ml-4 mt-2 flex text-xs md:text-sm text-red-700"
       ></span>
     </div>
   );
@@ -113,49 +113,52 @@ export function LastNameInput({
 export function NickNameInput({
   state,
   validNickName,
+  defaultValue,
 }: {
   state: statObj;
+  defaultValue?:string,
   validNickName: validFunc;
 }) {
   return (
-    <div className="relative z-0 w-3/4 mb-6 group">
+    <div className="group relative z-0 mb-6 w-3/4">
       <input
         type="input"
         name="nickname"
         id="nickname"
         className={`${
           state.touched && state.valid
-            ? " border-green-500"
+            ? ' border-green-500'
             : state.touched && !state.valid
-            ? "border-red-600"
-            : "border-gray-300"
-        } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-              border-2 rounded-full  appearance-none 
-                focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+            ? 'border-red-600'
+            : 'border-gray-300'
+        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
+              py-2.5 px-3  text-xs md:text-sm 
+                text-white focus:border-blue-600 focus:outline-none focus:ring-0`}
         placeholder=" "
+        defaultValue={defaultValue}
         required
-        onBlur={(event) => validNickName(event)}
+        onChange={(event) => validNickName(event)}
       />
 
       <label
         htmlFor="nickname"
         className={`${
           state.touched && state.valid
-            ? "text-green-500"
+            ? 'text-green-500'
             : state.touched && !state.valid
-            ? "text-red-600"
-            : "text-gray-500"
-        } peer-focus:font-medium absolute text-sm
-              pl-3 duration-300 transform -translate-y-8
-             scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-              peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-              peer-focus:scale-100 peer-focus:-translate-y-8 `}
+            ? 'text-red-600'
+            : 'text-gray-500'
+        } absolute top-3 -z-10
+              origin-[0] -translate-y-8 scale-100 transform
+             pl-3 text-xs md:text-sm duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+              peer-focus:-translate-y-8 peer-focus:scale-100 
+              peer-focus:font-medium peer-focus:text-blue-600 `}
       >
         Nickname
       </label>
       <span
         id="nickspan"
-        className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+        className="justify-even ml-4 mt-2 flex text-xs md:text-sm text-red-700"
       ></span>
     </div>
   );
@@ -164,49 +167,104 @@ export function NickNameInput({
 export function PasswordInput({
   state,
   validPassword,
+  holder,
 }: {
   state: statObj;
   validPassword: validFunc;
+  holder?:string;
 }) {
   return (
-    <div className="relative z-0 w-3/4 mb-6 group">
+    <div className="group relative z-0 mb-6 w-3/4">
       <input
         type="password"
         name="password"
         id="password"
         className={`${
           state.touched && state.valid
-            ? " border-green-500"
+            ? ' border-green-500'
             : state.touched && !state.valid
-            ? "border-red-600"
-            : "border-gray-300"
-        } block py-2.5 px-3 w-full text-sm text-white bg-transparent 
-            border-2 rounded-full  appearance-none 
-              focus:outline-none focus:ring-0 focus:border-blue-600 peer`}
+            ? 'border-red-600'
+            : 'border-gray-300'
+        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
+            py-2.5 px-3  text-xs md:text-sm 
+              text-white focus:border-blue-600 focus:outline-none focus:ring-0`}
         placeholder=" "
         required
-        onBlur={(event) => validPassword(event)}
+        onChange={(event) => validPassword(event)}
       />
       <label
         htmlFor="password"
         className={`${
           state.touched && state.valid
-            ? "text-green-500"
+            ? 'text-green-500'
             : state.touched && !state.valid
-            ? "text-red-600"
-            : "text-gray-500"
-        } peer-focus:font-medium absolute text-sm
-              pl-3 duration-300 transform -translate-y-8
-             scale-100 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600
-              peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 
-              peer-focus:scale-100 peer-focus:-translate-y-8 `}
+            ? 'text-red-600'
+            : 'text-gray-500'
+        } absolute top-3 -z-10
+              origin-[0] -translate-y-8 scale-100 transform
+             pl-3 text-xs md:text-sm duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+              peer-focus:-translate-y-8 peer-focus:scale-100 
+              peer-focus:font-medium peer-focus:text-blue-600 `}
       >
-        Password
+        {holder? holder : "Password"}
       </label>
       <span
         id="pwdspan"
-        className="text-red-700 text-sm ml-4 mt-2 flex justify-even"
+        className="justify-even ml-4 mt-2 flex text-xs md:text-sm text-red-700"
       ></span>
     </div>
   );
+      }
+
+  export function RePasswordInput({
+    state,
+    validRePassword,
+    holder,
+  }: {
+    state: statObj;
+    validRePassword: validFunc;
+    holder?:string;
+  }) {
+    return (
+      <div className="group relative z-0 mb-6 w-3/4">
+        <input
+          type="password"
+          name="repassword"
+          id="repassword"
+          className={`${
+            state.touched && state.valid
+              ? ' border-green-500'
+              : state.touched && !state.valid
+              ? 'border-red-600'
+              : 'border-gray-300'
+          } peer block w-full appearance-none rounded-full border-2 bg-transparent 
+              py-2.5 px-3  text-xs md:text-sm 
+                text-white focus:border-blue-600 focus:outline-none focus:ring-0`}
+          placeholder=" "
+          required
+          onChange={(event) => validRePassword(event)}
+        />
+        <label
+          htmlFor="repassword"
+          className={`${
+            state.touched && state.valid
+              ? 'text-green-500'
+              : state.touched && !state.valid
+              ? 'text-red-600'
+              : 'text-gray-500'
+          } absolute top-3 -z-10
+                origin-[0] -translate-y-8 scale-100 transform
+               pl-3 text-xs md:text-sm duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+                peer-focus:-translate-y-8 peer-focus:scale-100 
+                peer-focus:font-medium peer-focus:text-blue-600 `}
+        >
+          {holder? holder : "Password"}
+        </label>
+        <span
+          id="repwdspan"
+          className="justify-even ml-4 mt-2 flex text-xs md:text-sm text-red-700"
+        ></span>
+      </div>
+    );
 }
+
