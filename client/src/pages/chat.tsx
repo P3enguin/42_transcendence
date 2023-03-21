@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket;
+let players = new Map<number, string>();
 
 //use the chat : 
 function Chat({ jwt_token }: { jwt_token: string }) {
@@ -14,7 +15,8 @@ function Chat({ jwt_token }: { jwt_token: string }) {
       },
     });
     socket.on('connect', () => {
-      console.log('connected');
+      players.set(1,"Naahio");
+      console.log(players.get(1));
       socket.emit('message', { username: 'test', message: 'hello' });
     });
     return () => {
@@ -23,14 +25,25 @@ function Chat({ jwt_token }: { jwt_token: string }) {
   }, []);
   return (
     <>
-      <div className=" flex flex-col  items-center justify-center gap-[100px] ">
+      <div class="m-5 flex min-h-[700px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20 md:h-[80%] grid grid-cols-10 gap-rows-10">
+        <div class="col-span-3  rounded-2xl  border-neutral-300 sm:m-20 md:h-[80%]">
+          <h2 className="m-2 text-lg font-bold md:text-white ">Chat Room</h2>
+        </div>
+        <div class="col-span-7 border"></div>
+        <div class="row-span-7 col-span-3 border">
+          <div class="flex h-150 ">
+            <h2 className="m-2 text-lg font-bold md:text-white ">Online Now</h2>
+          </div>
+        </div>
+        <div class="col-span-7 row-span-6 rounded-2xl border">
+        </div>
       </div>
     </>
   );
 }
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies["jwt_token"];
-  console.log(jwt_token);
+  // console.log(jwt_token);
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {

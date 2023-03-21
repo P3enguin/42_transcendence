@@ -13,7 +13,6 @@ export class ChatService {
     // check if the receiver blocked, the player can send to anyone else
     SendPrivMessage(friendId: string, message: string)
     {
-        
        return ('SendPrivMessage');
     }
     

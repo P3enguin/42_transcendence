@@ -1,6 +1,5 @@
 import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req, Patch } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
 import { PlayerService } from './player.service';
 import { GetPlayer } from 'src/auth/decorator';
@@ -58,7 +57,7 @@ export class PlayerController {
 
 //------------------------------{ Friend }----------------------------------
 
-	@Patch('upd')
+	@Patch('AddFriend')
 	AddFriend(@Req() req: Request, friendId: number){
 		return this.playerService.AddFriend(req, 2);
 	}

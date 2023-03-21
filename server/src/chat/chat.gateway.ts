@@ -6,7 +6,12 @@ import {
         } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  namespace: 'chat',
+  cors: {
+    origin: '*',
+  },
+})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer()
   server: Server;
