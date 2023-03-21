@@ -11,6 +11,13 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
 
   function joinMatchmaking(gametype: string) {
     console.log(gametype);
+    axios
+      .get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/game/join', {
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res);
+      });
   }
   return (
     <>
