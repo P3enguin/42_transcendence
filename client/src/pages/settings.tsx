@@ -2,6 +2,7 @@ import Layout from '@/components/layout/layout';
 import { useState } from 'react';
 import { statObj } from '@/components/profile/Interface';
 import { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FirstNameInput,
   LastNameInput,
@@ -26,6 +27,10 @@ interface propsData {
 }
 
 function settings({ firstname, lastname, nickname }: propsData) {
+  const [error, setError] = useState(false);
+  const [successPass, setSuccesPass] = useState(false);
+  const [successSave, setSuccess] = useState(false);
+
   const [state, updateState] = useState([
     { valid: true, touched: false },
     { valid: true, touched: false },
@@ -38,36 +43,93 @@ function settings({ firstname, lastname, nickname }: propsData) {
   const [isEnabled, setEnabled] = useState(false);
   const [isEnabledSecond, setEnabledSecond] = useState(false);
 
-  // here is the problem
-  function touched() {
-      state.forEach((elem) => {
-        if (elem.touched)
-        {
-          return true;
-        }
-      })
-      return false;
+  async function handlePasswordUpdate(event: any) {
+    event.preventDefault();
+
+    const data = {
+      password: event.target.password.value,
+    };
+    const updateURL: string =
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
+
+    const response = await fetch(updateURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      credentials: 'include',
+    });
+    if (response.status == 201) {
+      setSuccesPass(true);
+      setTimeout(() => {
+        setSuccesPass(false);
+      }, 3000);
+    } else if (response.status == 400) {
+      const err = await response.json();
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
   }
 
-  
+  async function handleDataSave(event: any) {
+    event.preventDefault();
+
+    const data: propsData = {
+      nickname: event.target.nickname.value,
+      firstname: event.target.firstname.value,
+      lastname: event.target.lastname.value,
+    };
+    const updateURL: string =
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
+
+    const response = await fetch(updateURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      credentials: 'include',
+    });
+    if (response.status == 201) {
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+    } else if (response.status == 400) {
+      const err = await response.json();
+      if (err.error === 'Nickname already exist') {
+        const span = document.getElementById('nickspan');
+        updateField(2, { valid: false, touched: false }, span, err.error);
+      } else {
+        setError(true);
+        setTimeout(() => {
+          setError(false);
+        }, 3000);
+      }
+    }
+  }
+
+  // here is the problem
+  function touched(elem: statObj) {
+    return elem.touched ? false : true;
+  }
+
   function allTrue(elem: statObj) {
     return elem.valid ? true : false;
   }
   // To add default value of First Name and Last Name
 
   useEffect(() => {
-    console.log(touched());
-    if (state.every(allTrue) && touched())
-    {
+    if (state.every(allTrue) && !state.every(touched)) {
       setEnabled(true);
-    } 
-    else setEnabled(false);
-  }),[state];
+    } else setEnabled(false);
+  }),
+    [state];
 
   useEffect(() => {
     if (statePass.every(allTrue)) setEnabledSecond(true);
     else setEnabledSecond(false);
-  }),[statePass];
+  }),
+    [statePass];
   function updateField(
     index: number,
     val: statObj,
@@ -251,12 +313,53 @@ function settings({ firstname, lastname, nickname }: propsData) {
 
   return (
     <>
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={` absolute  -mb-12 w-[300px] rounded
+              border border-red-400 bg-red-600 px-4 py-3 text-center`}
+          >
+            <strong id="err-profile" className="font-bold">
+              An Error has occurred!
+            </strong>
+          </motion.div>
+        )}
+        {successSave && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={` absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
+            px-4  py-3 text-center text-teal-900 shadow-md `}
+          >
+            <strong id="succ-profile" className="font-bold">
+              Updated Successfully!
+            </strong>
+          </motion.div>
+        )}
+        {successPass && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={` absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
+            px-4  py-3 text-center text-teal-900 shadow-md `}
+          >
+            <strong id="succ-profile" className="font-bold">
+              Password Change Successfully
+            </strong>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div
         className="mt-[40px] flex h-[750px] w-11/12 flex-col
            gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
       >
         <h1 className="mt-5 text-center text-[35px]">Settings</h1>
-        <form>
+        <form onSubmit={handleDataSave}>
           <div
             className="mt-3 flex flex-col items-center
                  justify-items-center gap-3 md:grid md:grid-cols-2"
@@ -294,7 +397,7 @@ function settings({ firstname, lastname, nickname }: propsData) {
             </div>
           </div>
         </form>
-        <form>
+        <form onSubmit={handlePasswordUpdate}>
           <div
             className="mt-3 flex flex-col items-center
                  justify-items-center gap-3 md:grid md:grid-cols-2"
