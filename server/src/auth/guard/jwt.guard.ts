@@ -48,21 +48,25 @@ export class JwtGuard extends AuthGuard('jwt_token') {
   constructor(private jwt: JwtService, private prisma: PrismaService) {
     super();
   }
-  async verifyToken(token: string): Promise<object> {
-    if (!token) return null;
+
+  async verifyToken(req: Request, res: Response): Promise<boolean> {
+    const token = req.cookies['jwt_token'];
+    if (!token) return false;
     const secret: string = process.env.JWT_SECRET;
     try {
       const decoded: object = this.jwt.verify(token, { secret });
+      console.log(decoded);
       const resp = await this.prisma.invalidToken.findUnique({
         where: {
           token: token,
         },
       });
       if (resp) throw new Error('Token is invalid');
-      return decoded;
+      req.body.jwtDecoded = decoded;
+      return true;
     } catch (err) {
       console.log(err);
-      return null;
+      return false;
     }
   }
 
@@ -71,9 +75,7 @@ export class JwtGuard extends AuthGuard('jwt_token') {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req: Request = context.switchToHttp().getRequest();
     const res: Response = context.switchToHttp().getResponse();
-    const token = req.cookies['jwt_token'];
 
-    req.body.jwtDecoded = this.jwt.decode(token);
-    return req.body.jwtDecoded ? true : false;
+    return this.verifyToken(req, res);
   }
 }
