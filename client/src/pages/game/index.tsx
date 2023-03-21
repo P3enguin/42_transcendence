@@ -3,8 +3,15 @@ import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
+import { useState } from 'react';
 
 function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
+  const [gametype, setGametype] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  function joinMatchmaking(gametype: string) {
+    console.log(gametype);
+  }
   return (
     <>
       <Head>
@@ -16,7 +23,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
           <h2 className="m-2 text-lg font-bold md:text-2xl">
             INVITE YOUR ONLINE FRIENDS TO PLAY:
           </h2>
-          <div className="flex flex-wrap justify-center overflow-y-auto sm:justify-start">
+          <div className="flex flex-wrap justify-center overflow-y-auto">
             {data.map((user: any, index) => (
               <div
                 key={index}
@@ -40,16 +47,43 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
           <div className="flex h-full flex-col rounded-2xl p-5 md:w-[50%]">
             <h2 className="m-2 text-lg font-bold md:text-2xl">START A GAME</h2>
             <div className="felx m-auto mb-0 flex-row self-center">
-              <input type="radio" name="type" />
-              <label htmlFor="default" className=" m-1">
-                Normal Game
-              </label>
-              <input type="radio" name="type" />
-              <label htmlFor="default" className=" m-1">
-                Ranked Game
-              </label>
+              <div className="mr-6 inline-flex items-center self-center whitespace-nowrap">
+                <input
+                  type="radio"
+                  id="normal"
+                  name="type"
+                  onChange={() => {
+                    setGametype('normal');
+                    setIsButtonDisabled(false);
+                  }}
+                />
+                <label htmlFor="normal" className="m-1 whitespace-nowrap">
+                  Normal Game
+                </label>
+              </div>
+              <div className="inline-flex items-center self-center whitespace-nowrap">
+                <input
+                  type="radio"
+                  id="ranked"
+                  name="type"
+                  onChange={() => {
+                    setGametype('ranked');
+                    setIsButtonDisabled(false);
+                  }}
+                />
+                <label htmlFor="ranked" className="m-1 whitespace-nowrap">
+                  Ranked Game
+                </label>
+              </div>
             </div>
-            <button className="m-auto mt-5 w-[200px] rounded-xl bg-[#0097E2] p-1">
+            <button
+              className="m-auto mt-5 w-[200px] rounded-xl bg-[#0097E2] p-1"
+              onClick={(e) => {
+                e.preventDefault();
+                joinMatchmaking(gametype);
+              }}
+              disabled={isButtonDisabled}
+            >
               JOIN MATCHMAKING
             </button>
           </div>

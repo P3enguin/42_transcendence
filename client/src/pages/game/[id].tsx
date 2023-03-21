@@ -7,8 +7,7 @@ import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
-
-const playGame = ({ jwt_token }: any) => {
+const playGame = ({ jwt_token, params }: any) => {
   useEffect(() => {
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
@@ -23,38 +22,27 @@ const playGame = ({ jwt_token }: any) => {
       socket.disconnect();
     };
   }, []);
-  return <div>playGame</div>;
+  return <div>playGame {params.id}</div>;
 };
 
-export async function getServerSideProps({ req , params }: { req: NextApiRequest; params: { id: string }}) {
+export async function getServerSideProps({
+  req,
+  params,
+}: {
+  req: NextApiRequest;
+  params: { id: string };
+}) {
   const jwt_token = req.cookies['jwt_token'];
 
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
-      try {
-        const resp = await axios.get('http://localhost:4444/games', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwt_token}`,
-          },
-        });
-        const data = resp.data;
-        return {
-          props: {
-            data,
-            jwt_token: jwt_token,
-          },
-        };
-      } catch (error: any) {
-        console.error(error.message);
-        return {
-          props: {
-            data: [],
-            jwt_token: jwt_token,
-          },
-        };
-      }
+      return {
+        props: {
+          params,
+          jwt_token: jwt_token,
+        },
+      };
     }
   }
   return {
