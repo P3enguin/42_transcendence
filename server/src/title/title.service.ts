@@ -25,7 +25,7 @@ export class TitleService {
 
 			}catch(error)
 			{
-				console.log("titles");
+				// console.log("titles");
 			}
 		}
 		return "Done";

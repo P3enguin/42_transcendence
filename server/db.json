@@ -1,0 +1,36 @@
+{
+  "online": [
+    {
+      "nickname": "Quern",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=2"
+    },
+    {
+      "nickname": "Rubrick",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=65"
+    },
+    {
+      "nickname": "Safflower",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=3"
+    },
+    {
+      "nickname": "CommandameComma",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=4"
+    },
+    {
+      "nickname": "SaffronYellow",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=5"
+    },
+    {
+      "nickname": "Prysm",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=6"
+    },
+    {
+      "nickname": "MsMittens",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=7"
+    },
+    {
+      "nickname": "TommyGun",
+      "avatar": "https://api.dicebear.com/5.x/avataaars/svg?seed=15"
+    }
+  ]
+}

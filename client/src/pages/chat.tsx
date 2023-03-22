@@ -25,17 +25,17 @@ function Chat({ jwt_token }: { jwt_token: string }) {
   }, []);
   return (
     <>
-      <div class="m-5 flex min-h-[700px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20 md:h-[80%] grid grid-cols-10 gap-rows-10">
-        <div class="col-span-3  rounded-2xl  border-neutral-300 sm:m-20 md:h-[80%]">
+      <div className="m-5 flex min-h-[700px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20 md:h-[80%] grid grid-cols-10 gap-rows-10">
+        <div className="col-span-3  rounded-2xl  border-neutral-300 sm:m-20 md:h-[80%]">
           <h2 className="m-2 text-lg font-bold md:text-white ">Chat Room</h2>
         </div>
-        <div class="col-span-7 border"></div>
-        <div class="row-span-7 col-span-3 border">
-          <div class="flex h-150 ">
+        <div className="col-span-7 border"></div>
+        <div className="row-span-7 col-span-3 border">
+          <div className="flex h-150 ">
             <h2 className="m-2 text-lg font-bold md:text-white ">Online Now</h2>
           </div>
         </div>
-        <div class="col-span-7 row-span-6 rounded-2xl border">
+        <div className="col-span-7 row-span-6 rounded-2xl border">
         </div>
       </div>
     </>

@@ -65,8 +65,13 @@
 .history
 todo
 todo
-**/uploads/profiles/*
+**/uploads/avatars/*
 **/uploads/wallpapers/*
 
+<<<<<<< HEAD
 !**/uploads/profiles/default.png
 !**/uploads/wallpapers/wallpaper.png
+=======
+!**/uploads/avatars/default.png
+!**/uploads/wallpapers/wallpaper.png
+>>>>>>> origin/dev
