@@ -3,7 +3,11 @@ import { verifyToken } from "@/components/VerifyToken";
 
 function Chat({ jwt_token }: { jwt_token: string }) {
   return (
-      <></>
+    <>
+      <head>
+        <title>Ponginator | Chat</title>
+      </head>
+    </>
   );
 }
 

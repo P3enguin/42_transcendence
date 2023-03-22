@@ -3,7 +3,12 @@ import { verifyToken } from "@/components/VerifyToken";
 
 function HomePlayer({ jwt_token }: { jwt_token: string }) {
   return (
+    <>
+      <head>
+        <title>Ponginator | Home</title>
+      </head>
       <div>Hello world</div>
+    </>
   );
 }
 
