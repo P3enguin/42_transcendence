@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Player } from '@prisma/client';
 
 interface jwtData {
   decoded: any;
@@ -37,10 +38,17 @@ export class JwtSessionGuard extends AuthGuard('jwt_session') {
     const data: jwtData = this.verifySession(req);
 
     if (data.authorized) {
-      req.body.jwtDecoded = { jwtDecoded: data.decoded };
+      req.body.user = { jwtDecoded: data.decoded };
       return true;
     } else return false;
   }
+}
+
+interface user extends Player {
+  jwt?: {
+    exp: number;
+    iat: number;
+  };
 }
 
 @Injectable()
@@ -49,33 +57,44 @@ export class JwtGuard extends AuthGuard('jwt_token') {
     super();
   }
 
-  async verifyToken(req: Request, res: Response): Promise<boolean> {
-    const token = req.cookies['jwt_token'];
-    if (!token) return false;
+  async verifyToken(token: string): Promise<Player> {
+    if (!token) return null;
     const secret: string = process.env.JWT_SECRET;
     try {
+      const isInvalidToken = await this.prisma.invalidToken.findUnique({
+        where: { token },
+      });
+      if (isInvalidToken) throw new Error('Error: invalid token');
       const decoded: object = this.jwt.verify(token, { secret });
       console.log(decoded);
-      const resp = await this.prisma.invalidToken.findUnique({
+      const user: user = await this.prisma.player.findUnique({
         where: {
-          token: token,
+          nickname: decoded['nickname'],
         },
       });
-      if (resp) throw new Error('Token is invalid');
-      req.body.jwtDecoded = decoded;
-      return true;
+      if (!user) throw new Error('Error: invalid token');
+      // console.log(user);
+      // req.body.user = user;
+      delete user.password;
+      user.jwt = { exp: decoded['exp'], iat: decoded['iat'] };
+      return user;
     } catch (err) {
       console.log(err);
-      return false;
+      return null;
     }
   }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const req: Request = context.switchToHttp().getRequest();
     const res: Response = context.switchToHttp().getResponse();
-
-    return this.verifyToken(req, res);
+    const token: string = req.cookies['jwt_token'];
+    if (!token) return false;
+    req.body.user = await this.verifyToken(token);
+    if (req.body.user) {
+      return true;
+    } else {
+      return false;
+    }
+    // return this.verifyToken(token);
   }
 }
