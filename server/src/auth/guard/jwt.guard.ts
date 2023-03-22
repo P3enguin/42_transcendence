@@ -66,15 +66,12 @@ export class JwtGuard extends AuthGuard('jwt_token') {
       });
       if (isInvalidToken) throw new Error('Error: invalid token');
       const decoded: object = this.jwt.verify(token, { secret });
-      console.log(decoded);
       const user: user = await this.prisma.player.findUnique({
         where: {
           nickname: decoded['nickname'],
         },
       });
       if (!user) throw new Error('Error: invalid token');
-      // console.log(user);
-      // req.body.user = user;
       delete user.password;
       user.jwt = { exp: decoded['exp'], iat: decoded['iat'] };
       return user;
