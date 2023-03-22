@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Game } from './interfaces';
+import { Game, Player } from './interfaces';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -9,12 +9,29 @@ export class GameService {
 
   constructor(private prisma: PrismaService) {}
 
+  joinGame(player: Player) {
+    const game = this.getAvailableGame();
+    if (game) {
+      game.players.push(player);
+      return game.id;
+    } else {
+      const id = this.createGame();
+      this.games.get(id).players.push(player);
+      return id;
+    }
+  }
+
+  getGame(id: string) {
+    const game = this.games.get(id);
+    return game;
+  }
+
   createGame() {
     const id = randomUUID();
     this.games.set(id, {
       id: id,
       players: [],
-      score: [0,0],
+      score: [0, 0],
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -25,7 +42,7 @@ export class GameService {
     const availableGames = Array.from(this.games.values()).filter(
       (game) => game.players.length < 2,
     );
-    return availableGames[0].id;
+    return availableGames[0];
   }
 
   getActiveGames() {
@@ -45,12 +62,18 @@ export class GameService {
     return 'This action deletes a game';
   }
 
-  saveGame(id: string) {  
+  saveGame(id: string) {
     const game = this.games.get(id);
     this.prisma.match.create({
       data: {
-        winner: game.score[0] > game.score[1] ? game.players[0].id : game.players[1].id,
-        loser: game.score[0] > game.score[1] ? game.players[1].id : game.players[0].id,
+        winner:
+          game.score[0] > game.score[1]
+            ? game.players[0].id
+            : game.players[1].id,
+        loser:
+          game.score[0] > game.score[1]
+            ? game.players[1].id
+            : game.players[0].id,
         score: game.score.sort().toString(),
       },
     });
