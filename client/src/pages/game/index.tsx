@@ -16,7 +16,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
         withCredentials: true,
       })
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
       });
   }
   return (
