@@ -3,8 +3,13 @@ CREATE TABLE "players" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
-    "avatar" TEXT,
+    "avatar" TEXT NOT NULL DEFAULT 'default.png',
+    "wallpaper" TEXT NOT NULL DEFAULT 'wallpaper.png',
     "joinAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "password" TEXT NOT NULL,
+    "firstname" TEXT NOT NULL,
+    "lastname" TEXT NOT NULL,
+    "coins" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
 
     CONSTRAINT "players_pkey" PRIMARY KEY ("id")
@@ -63,14 +68,14 @@ CREATE TABLE "Titles" (
 );
 
 -- CreateTable
-CREATE TABLE "Matchs" (
+CREATE TABLE "Match" (
     "id" SERIAL NOT NULL,
     "winner" INTEGER NOT NULL,
     "loser" INTEGER NOT NULL,
-    "scoor" TEXT NOT NULL,
+    "score" TEXT NOT NULL,
     "playerAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Matchs_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Match_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -106,6 +111,12 @@ CREATE TABLE "Ban" (
     "reason" TEXT NOT NULL,
 
     CONSTRAINT "Ban_pkey" PRIMARY KEY ("channelId")
+);
+
+-- CreateTable
+CREATE TABLE "InvalidToken" (
+    "token" TEXT NOT NULL,
+    "ExpireDate" TIMESTAMP(3) NOT NULL
 );
 
 -- CreateTable
@@ -154,6 +165,9 @@ CREATE UNIQUE INDEX "Achivement_name_key" ON "Achivement"("name");
 CREATE UNIQUE INDEX "Titles_name_key" ON "Titles"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "InvalidToken_token_key" ON "InvalidToken"("token");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_friends_AB_unique" ON "_friends"("A", "B");
 
 -- CreateIndex
@@ -193,10 +207,10 @@ ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_statusId_fkey"
 ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_achivId_fkey" FOREIGN KEY ("achivId") REFERENCES "Achivement"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Matchs" ADD CONSTRAINT "Matchs_winner_fkey" FOREIGN KEY ("winner") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Match" ADD CONSTRAINT "Match_winner_fkey" FOREIGN KEY ("winner") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Matchs" ADD CONSTRAINT "Matchs_loser_fkey" FOREIGN KEY ("loser") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Match" ADD CONSTRAINT "Match_loser_fkey" FOREIGN KEY ("loser") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Chat" ADD CONSTRAINT "Chat_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;
