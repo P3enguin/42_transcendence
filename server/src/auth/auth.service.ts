@@ -63,7 +63,7 @@ export class AuthService {
             // secure: true, 
             maxAge: 1000 * 60 * 15 // expires after 15 min
           });   
-          res.redirect(process.env.SESSION_AUTH_REDIRECTION);
+          res.redirect(process.env.FRONTEND_HOST + "/login");
         }
         else
         {
@@ -73,7 +73,7 @@ export class AuthService {
             // secure: true,
             maxAge: 1000 * 60 * 60 // expires after 1 hour, to change and check later hh 
           });
-          res.redirect(process.env.FULL_AUTH_REDIRECTION);
+          res.redirect(process.env.FRONTEND_HOST + "/profile");
         }
     }
     catch(e) {
@@ -165,7 +165,7 @@ export class AuthService {
     }
     catch (err)
     {
-      
+      console.log(err);
       res.status(401).json({error : err});
     }
 

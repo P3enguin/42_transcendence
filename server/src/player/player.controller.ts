@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req, Patch } from '@nestjs/common';
+import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req,Res, Query, Patch } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from 'src/auth/guard';
 import { PlayerService } from './player.service';
@@ -6,8 +6,13 @@ import { GetPlayer } from 'src/auth/decorator';
 import { diskStorage } from 'multer';
 import { extname } from  'path';
 import { v4 as uuidv4 } from 'uuid';
-import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { query, Request,Response } from 'express';
+
+interface queryParam {
+	 nickname : string,
+}
+
 
 @UseGuards(JwtGuard)
 @Controller('players')
@@ -23,10 +28,33 @@ export class PlayerController {
 		return req.body.jwtDecoded;
 	}
 	
-	@Post('profile')
+
+	@Get('data')
+	getData(@Req() req:Request, @Query() query:queryParam,@Res() res:Response) {
+		if (query.nickname)
+			return this.playerService.getDataNickname(query.nickname as string,res)
+		else
+			return this.playerService.getDataID(req.body.jwtDecoded.sub as number,res)
+	}
+
+	@Post('data')
+	changeData(@Req() req:Request, @Res() res:Response)
+	{
+		console.log(req.body);
+		return this.playerService.changeData(req.body,res)
+	}
+
+	@Post('password')
+	changePassword(@Req() req:Request, @Res() res:Response)
+	{
+		console.log(req.body);
+		return this.playerService.changePassowrd(req.body,res)
+	}
+
+	@Post('avatar')
 	@UseInterceptors(FileInterceptor('file',
 		{storage: diskStorage({
-		destination: process.env.PROFILE_UPLOADS_PATH,
+		destination: process.cwd() + "/uploads/avatars/",
 		filename: (req, file, cb) => {
 			const randomName = uuidv4();
 			 cb(null, `${randomName}${extname(file.originalname)}`)
@@ -42,7 +70,7 @@ export class PlayerController {
 	@Post('wallpaper')
 	@UseInterceptors(FileInterceptor('file',
 		{storage: diskStorage({
-		destination: process.env.WALLPAPER_UPLOADS_PATH,
+		destination: process.cwd() + "/uploads/wallpapers/",
 		filename: (req, file, cb) => {
 			const randomName = uuidv4();
 			cb(null, `${randomName}${extname(file.originalname)}`)
@@ -74,4 +102,19 @@ export class PlayerController {
 	GetBlockedFriends(@Req() req: Request) {
 		return this.playerService.GetBlockedFriends(req);
 	}
+	@Get('avatar')
+	GetProfileImage(@Query() query,@Res() res:Response)
+	{
+		const fileName = query.pfp;
+		return res.sendFile(process.cwd() + "/uploads/avatars/"  + fileName);
+	}
+
+	@Get('wallpaper')
+	GetWallPaperImage(@Query() query,@Res() res:Response)
+	{
+		const fileName = query.wp;
+		return res.sendFile(process.cwd() + "/uploads/wallpapers/" + fileName);
+	}
+
+
 }

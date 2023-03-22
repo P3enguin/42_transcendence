@@ -15,6 +15,6 @@ export interface statObj {
 }
 
 export interface validFunc {
-    (e:React.FocusEvent<HTMLInputElement, Element>) : void;
+    (e:React.ChangeEvent<HTMLInputElement>) : void;
   }
   

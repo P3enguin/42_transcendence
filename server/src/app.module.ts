@@ -12,6 +12,7 @@ import { AchivementModule } from './achivement/achivement.module';
 import { TitleModule } from './title/title.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ChatModule } from './chat/chat.module';
     StatusModule,
     TitleModule,
     ChatModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
