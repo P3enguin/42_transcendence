@@ -96,6 +96,7 @@ export async function getServerSideProps({ req }: any) {
           },
         });
         const data = resp.data;
+        console.log(data);
         return {
           props: {
             data,

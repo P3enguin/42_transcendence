@@ -4,7 +4,15 @@ import { useEffect } from "react";
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket;
-let players = new Map<number, string>();
+interface player {
+  nickname: string;
+  firstname: string;
+  lastname: string;
+  coins: number;
+  avatar: string;
+  wallpaper: string;
+  joinDate: string;
+}
 
 //use the chat : 
 function Chat({ jwt_token }: { jwt_token: string }) {
@@ -15,8 +23,6 @@ function Chat({ jwt_token }: { jwt_token: string }) {
       },
     });
     socket.on('connect', () => {
-      players.set(1,"Naahio");
-      console.log(players.get(1));
       socket.emit('message', { username: 'test', message: 'hello' });
     });
     return () => {
@@ -42,22 +48,42 @@ function Chat({ jwt_token }: { jwt_token: string }) {
   );
 }
 export async function getServerSideProps({ req }: any) {
-  const jwt_token: string = req.cookies["jwt_token"];
-  // console.log(jwt_token);
+  const jwt_token = req.cookies['jwt_token'];
+
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
-      return {
-        // modify this to return anything you want before your page load
-        props: {
-          jwt_token: jwt_token,
-        },
-      };
+      try {
+        const resp = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
+          {
+            headers: {
+              Cookie: req.headers.cookie,
+            },
+          },
+        );
+        const data = await res.json();
+        console.log({data});
+        return {
+          props: {
+            data,
+            jwt_token: jwt_token,
+          },
+        };
+      } catch (error: any) {
+        console.error(error.message);
+        return {
+          props: {
+            data: [],
+            jwt_token: jwt_token,
+          },
+        };
+      }
     }
   }
   return {
     redirect: {
-      destination: "/",
+      destination: '/',
       permanent: true,
     },
   };

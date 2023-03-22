@@ -4,7 +4,12 @@ import {
     OnGatewayInit,
     OnGatewayConnection 
         } from '@nestjs/websockets';
+
 import { Server } from 'socket.io';
+import { JwtGuard } from 'src/auth/guard';
+
+let players = new Map<number, string>();
+
 
 @WebSocketGateway({
   namespace: 'chat',
@@ -12,16 +17,11 @@ import { Server } from 'socket.io';
     origin: '*',
   },
 })
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
+export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  afterInit(server: Server) {
-    console.log('WebSocket server initialized');
-  }
-
   handleConnection(client: any, ...args: any[]) {
-    console.log(`Client connected: ${client.id}`);
-    this.server.emit('message', 'Welcome to the chat room!');
+    const player = this.;
   }
 }
