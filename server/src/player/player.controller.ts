@@ -27,11 +27,25 @@ export class PlayerController {
 	
 
 	@Get('data')
-	getData(@Req() req:Request,@Query() query:queryParam, @Res() res:Response){
+	getData(@Req() req:Request, @Query() query:queryParam,@Res() res:Response) {
 		if (query.nickname)
-			return this.playerService.getDataForProfile(query.nickname as string,res)
+			return this.playerService.getDataNickname(query.nickname as string,res)
 		else
-			return this.playerService.getDataForProfile(req.body.jwtDecoded.nickname as string,res)
+			return this.playerService.getDataID(req.body.jwtDecoded.sub as number,res)
+	}
+
+	@Post('data')
+	changeData(@Req() req:Request, @Res() res:Response)
+	{
+		console.log(req.body);
+		return this.playerService.changeData(req.body,res)
+	}
+
+	@Post('password')
+	changePassword(@Req() req:Request, @Res() res:Response)
+	{
+		console.log(req.body);
+		return this.playerService.changePassowrd(req.body,res)
 	}
 
 	@Post('avatar')
@@ -79,4 +93,6 @@ export class PlayerController {
 		const fileName = query.wp;
 		return res.sendFile(process.cwd() + "/uploads/wallpapers/" + fileName);
 	}
+
+
 }
