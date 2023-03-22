@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
-const playGame = ({ jwt_token, params }: any) => {
+const playGame = ({ jwt_token, data }: any) => {
   useEffect(() => {
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
@@ -22,7 +22,9 @@ const playGame = ({ jwt_token, params }: any) => {
       socket.disconnect();
     };
   }, []);
-  return <div>playGame {params.id}</div>;
+  console.log('data', data);
+
+  return <div>playGame {data}</div>;
 };
 
 export async function getServerSideProps({
@@ -37,10 +39,22 @@ export async function getServerSideProps({
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
+      let data: string = '';
+      try {
+        const resp = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game/${params.id}`, {
+          headers: {
+            Cookie: req.headers.cookie,
+          },
+        });
+        data = resp.data;
+      } catch (e: any) {
+        console.error(e.message);
+        data = e.response.data;
+      }
       return {
         props: {
-          params,
-          jwt_token: jwt_token,
+          data,
+          jwt_token,
         },
       };
     }

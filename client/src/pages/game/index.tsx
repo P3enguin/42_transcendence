@@ -3,21 +3,20 @@ import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
+  const router = useRouter();
   const [gametype, setGametype] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-  function joinMatchmaking(gametype: string) {
-    console.log(gametype);
-    axios
-      .get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/game/join', {
-        withCredentials: true,
-      })
-      .then((res) => {
-        console.log(res.data);
-      });
+  async function joinMatchmaking(gametype: string) {
+    const res = await axios.get(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/game/join',
+      { withCredentials: true },
+    );
+    router.push('/game/' + res.data);
   }
   return (
     <>
