@@ -119,7 +119,7 @@ export class PlayerService {
   async updatePFP(req: Request, fileName: string) {
     const token = req.cookies['jwt_token'];
     /* not necessary , we already using auth guard
-			 but protection is good , Highly recommended */
+			 but protection is good , Highly recommended hh*/
     try {
       const secret = process.env.JWT_SECRET;
       const decoded = this.jwt.verify(token, { secret });
