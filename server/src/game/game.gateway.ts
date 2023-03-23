@@ -17,6 +17,8 @@ import {
   SocketData,
 } from './inteface';
 import { JwtGuard } from 'src/auth/guard';
+import { GetPlayer } from './decorator/get-player.decorator';
+import { Player } from '@prisma/client';
 
 @WebSocketGateway({
   namespace: 'game',
@@ -32,11 +34,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     InterServerEvents,
     SocketData
   >;
-  constructor(private gameService: GameService) {}
-  handleConnection(client: Socket) {
-    // console.log(client.handshake.auth);
-
+  constructor(private gameService: GameService, private jwt: JwtGuard) {}
+  async handleConnection(client: Socket) {
+    client.handshake.query.user = JSON.stringify(
+      await this.jwt.verifyToken(client.handshake.auth.token),
+    );
     console.log('client connected:', client.id);
+    client.emit('connected', 'Hello world!');
   }
   handleDisconnect(client: Socket) {
     console.log('client disconnected:', client.id);
@@ -44,9 +48,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   handleMessage(
+    @GetPlayer() player: Player,
     @ConnectedSocket() client: Socket,
     @MessageBody() data: SocketData,
   ): string {
+    console.log(player);
     console.log('message:', data.username);
     return 'Hello world!';
   }
