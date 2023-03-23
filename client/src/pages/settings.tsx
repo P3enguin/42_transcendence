@@ -453,15 +453,18 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    const data = await res.json();
-    return {
-      // modify this to return anything you want before your page load
-      props: {
-        nickname: data.player.nickname,
-        firstname: data.player.firstname,
-        lastname: data.player.lastname,
-      },
-    };
+    if (res.ok)
+    {
+        const data = await res.json();
+        return {
+          // modify this to return anything you want before your page load
+          props: {
+            nickname: data.player.nickname,
+            firstname: data.player.firstname,
+            lastname: data.player.lastname,
+          },
+        };
+    }
   }
   return {
     redirect: {

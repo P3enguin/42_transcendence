@@ -177,7 +177,7 @@ export class AuthService {
     nickname: string,
   ): Promise<{ access_token: string }> {
     const payload = {
-      sub: playerId,
+      id: playerId,
       nickname,
     };
     const secret = this.config.get('JWT_SECRET');

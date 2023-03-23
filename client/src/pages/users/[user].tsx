@@ -301,7 +301,6 @@ export async function getServerSideProps({ params, req }: any) {
       month: 'long',
       day: 'numeric',
     };
-    console.log(data);
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );

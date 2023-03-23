@@ -105,29 +105,31 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    const data = await res.json();
-
-    const timeFormat: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    console.log(data);
-    const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
-      new Date(data.player.joinAt),
-    );
-    return {
-      // modify this to return anything you want before your page load
-      props: {
-        nickname: data.player.nickname,
-        firstname: data.player.firstname,
-        lastname: data.player.lastname,
-        coins: data.player.coins,
-        avatar: data.player.avatar,
-        wallpaper: data.player.wallpaper,
-        joinDate: date,
-      },
-    };
+    if (res.ok)
+    {
+      const data = await res.json();
+  
+      const timeFormat: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
+        new Date(data.player.joinAt),
+      );
+      return {
+        // modify this to return anything you want before your page load
+        props: {
+          nickname: data.player.nickname,
+          firstname: data.player.firstname,
+          lastname: data.player.lastname,
+          coins: data.player.coins,
+          avatar: data.player.avatar,
+          wallpaper: data.player.wallpaper,
+          joinDate: date,
+        },
+      };
+    }
   }
   return {
     redirect: {
