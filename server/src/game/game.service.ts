@@ -1,51 +1,63 @@
 import { Injectable } from '@nestjs/common';
-import { Game, Player } from './interfaces';
+import { Game, GameType, Player } from './interfaces';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GameService {
   games = new Map<string, Game>();
+  players = new Map<string, Player>();
 
   constructor(private prisma: PrismaService) {}
 
-  joinGame(player: Player) {
-    const game = this.getAvailableGame();
+  joinGame(player: Player, gametype: GameType) {
+    const game = this.getAvailableGame(gametype);
     if (game) {
       game.players.push(player);
+      this.players.set(player.nickname, player);
       return game.id;
     } else {
-      const id = this.createGame();
-      this.games.get(id).players.push(player);
-      return id;
+      const game = this.createGame(gametype);
+      game.players.push(player);
+      return game.id;
     }
   }
 
-  getGame(id: string) {
-    const game = this.games.get(id);
+  createGame(gametype: GameType) {
+    const game = new Game(gametype);
+    this.games.set(game.id, game);
     return game;
   }
 
-  createGame() {
-    const id = randomUUID();
-    this.games.set(id, {
-      id: id,
-      players: [],
-      score: [0, 0],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    return id;
-  }
-
-  getAvailableGame() {
+  getAvailableGame(gametype: GameType) {
     const availableGames = Array.from(this.games.values()).filter(
-      (game) => game.players.length < 2,
+      (game) => game.players.length < 2 && game.type === gametype,
     );
     return availableGames[0];
   }
 
-  getActiveGames() {
+  getMyGame(id: string, nickname: string) {
+    const game = this.games.get(id);
+    if (game) {
+      if (
+        game.players[0].nickname === nickname ||
+        (game.players[1] && game.players[1].nickname === nickname)
+      ) {
+        return game;
+      }
+    }
+    return null;
+  }
+
+  getActiveGame(id: string) {
+    const game = this.games.get(id);
+    if (game && game.players.length === 2) {
+      return game;
+    }
+    return null;
+  }
+
+  getLiveGames() {
     const activeGames = Array.from(this.games.values()).filter(
       (game) => game.players.length === 2,
     );
@@ -67,14 +79,14 @@ export class GameService {
     this.prisma.match.create({
       data: {
         winner:
-          game.score[0] > game.score[1]
+          game.players[0].score > game.players[1].score
             ? game.players[0].id
             : game.players[1].id,
         loser:
-          game.score[0] > game.score[1]
-            ? game.players[1].id
-            : game.players[0].id,
-        score: game.score.sort().toString(),
+          game.players[0].score < game.players[1].score
+            ? game.players[0].id
+            : game.players[1].id,
+        score: [game.players[0].score, game.players[1].score].sort().toString(),
       },
     });
   }

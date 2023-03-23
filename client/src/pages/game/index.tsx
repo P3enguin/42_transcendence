@@ -14,7 +14,12 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
   async function joinMatchmaking(gametype: string) {
     const res = await axios.get(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/game/join',
-      { withCredentials: true },
+      {
+        withCredentials: true,
+        params: {
+          gametype: gametype,
+        },
+      },
     );
     router.push('/game/' + res.data);
   }
@@ -59,7 +64,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
                   id="normal"
                   name="type"
                   onChange={() => {
-                    setGametype('normal');
+                    setGametype('NORMAL');
                     setIsButtonDisabled(false);
                   }}
                 />
@@ -73,7 +78,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
                   id="ranked"
                   name="type"
                   onChange={() => {
-                    setGametype('ranked');
+                    setGametype('RANKED');
                     setIsButtonDisabled(false);
                   }}
                 />
