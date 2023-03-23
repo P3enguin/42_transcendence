@@ -14,7 +14,7 @@ const playGame = ({ jwt_token, data }: any) => {
         token: jwt_token,
       },
     });
-    socket.on('connect', () => {
+    socket.on('connected', () => {
       console.log('connected');
       socket.emit('message', { username: 'test', message: 'hello' });
     });
@@ -41,11 +41,14 @@ export async function getServerSideProps({
     if (res.ok) {
       let data: string = '';
       try {
-        const resp = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game/${params.id}`, {
-          headers: {
-            Cookie: req.headers.cookie,
+        const resp = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/game/${params.id}`,
+          {
+            headers: {
+              Cookie: req.headers.cookie,
+            },
           },
-        });
+        );
         data = resp.data;
       } catch (e: any) {
         console.error(e.message);
