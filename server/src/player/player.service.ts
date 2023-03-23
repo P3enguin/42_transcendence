@@ -75,7 +75,7 @@ export class PlayerService {
     try {
       await this.prisma.player.update({
         where: {
-          id: data.jwtDecoded.id,
+          id: data.user.id,
         },
         data: {
           nickname: data.nickname,
@@ -104,7 +104,7 @@ export class PlayerService {
       console.log(hash);
       await this.prisma.player.update({
         where: {
-          id: data.jwtDecoded.id,
+          id: data.user.id,
         },
         data: {
           password: hash,
