@@ -7,24 +7,29 @@ import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
-const playGame = ({ jwt_token, data }: any) => {
+const playGame = ({ jwt_token, res, params }: any) => {
   useEffect(() => {
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
+    socket = io(`${process.env .NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },
     });
-    socket.on('connected', () => {
-      console.log('connected');
-      socket.emit('message', { username: 'test', message: 'hello' });
-    });
+    if (res === '0ki') {
+      socket.on('connected', () => {
+        console.log('connected');
+        socket.emit('joinGame', { gameId: params.id });
+        socket.on('joined', (data: any) => {
+          console.log(data);
+        });
+      });
+    }
     return () => {
       socket.disconnect();
     };
   }, []);
-  console.log('data', data);
+  console.log('res', res);
 
-  return <div>playGame {data}</div>;
+  return <div>playGame {res}</div>;
 };
 
 export async function getServerSideProps({
@@ -56,7 +61,8 @@ export async function getServerSideProps({
       }
       return {
         props: {
-          data,
+          params,
+          res: data,
           jwt_token,
         },
       };

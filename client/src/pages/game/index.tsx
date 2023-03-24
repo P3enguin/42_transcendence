@@ -88,7 +88,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
               </div>
             </div>
             <button
-              className="m-auto mt-5 w-[200px] rounded-xl bg-[#0097E2] p-1"
+              className="m-auto mt-9 w-[200px] rounded-xl bg-[#0097E2] p-1"
               onClick={(e) => {
                 e.preventDefault();
                 joinMatchmaking(gametype);
@@ -103,8 +103,11 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
             <h2 className="m-2 text-lg font-bold md:text-2xl">
               START TRAINING
             </h2>
-            <div className="mb-11"></div>
-            <button className="m-auto w-[200px] rounded-xl bg-[#0097E2] p-1 ">
+            <div className="felx m-auto mb-0 flex-row self-center">
+              You don’t know how things are going? <br />
+              Don’t worry, you can always train and play with our AI.
+            </div>
+            <button className="m-auto mt-5 w-[200px] rounded-xl bg-[#0097E2] p-1">
               PLAY WITH AI
             </button>
           </div>
