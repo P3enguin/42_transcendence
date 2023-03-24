@@ -1,12 +1,14 @@
 import Layout from "@/components/layout/layout";
 import { verifyToken } from "@/components/VerifyToken";
+import Head from "next/head";
 
 function Chat({ jwt_token }: { jwt_token: string }) {
   return (
     <>
-      <head>
+      <Head>
         <title>Ponginator | Chat</title>
-      </head>
+      </Head>
+      <div>Chat still empty ;(</div>
     </>
   );
 }

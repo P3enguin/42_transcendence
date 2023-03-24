@@ -1,12 +1,13 @@
 import Layout from "@/components/layout/layout";
 import { verifyToken } from "@/components/VerifyToken";
+import Head from "next/head";
 
 function HomePlayer({ jwt_token }: { jwt_token: string }) {
   return (
     <>
-      <head>
+      <Head>
         <title>Ponginator | Home</title>
-      </head>
+      </Head>
       <div>Hello world</div>
     </>
   );
