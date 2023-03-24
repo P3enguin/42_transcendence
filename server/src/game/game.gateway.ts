@@ -40,20 +40,34 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.jwt.verifyToken(client.handshake.auth.token),
     );
     console.log('client connected:', client.id);
-    client.emit('connected', 'Hello world!');
-  }
-  handleDisconnect(client: Socket) {
-    console.log('client disconnected:', client.id);
+    this.server.to(client.id).emit('connected', 'Hello world!');
   }
 
-  @SubscribeMessage('message')
+  handleDisconnect(client: Socket) {
+    const player = JSON.parse(client.handshake.query.user as string) as Player;
+    const gameId = client.handshake.query.gameId;
+    console.log('client disconnected:', client.id);
+    console.log(client.rooms, client.id); 
+    this.gameService.removePlayerFromGame(gameId as string, player.nickname);
+  }
+  
+
+  @SubscribeMessage('joinGame')
   handleMessage(
     @GetPlayer() player: Player,
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: SocketData,
+    @MessageBody() data: any,
   ): string {
-    console.log(player);
-    console.log('message:', data.username);
+    const game = this.gameService.getGameById(data.gameId);
+    if (game) {
+      client.handshake.query.gameId = data.gameId;
+      this.gameService.playerConnect(game.id, client.id, player.nickname);
+      client.join(game.id);
+      this.server
+      .to(game.id)
+      .emit('joined', `${player.nickname} has joined this game!`);
+      console.log(client.rooms);
+    } else console.log('no game');
     return 'Hello world!';
   }
 }

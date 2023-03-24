@@ -5,7 +5,7 @@ export class Player {
   score: number | null;
   id: number;
   nickname: string;
-  socket?: Socket;
+  socket?: string;
   constructor(id: number, nickname: string) {
     this.id = id;
     this.nickname = nickname;
@@ -16,6 +16,7 @@ export class Player {
 export enum GameType {
   'RANKED',
   'NORMAL',
+  'INVITE',
 }
 export class Game {
   id: string;

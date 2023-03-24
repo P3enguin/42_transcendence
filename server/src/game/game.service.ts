@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Game, GameType, Player } from './interfaces';
 import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class GameService {
@@ -30,9 +31,10 @@ export class GameService {
   }
 
   getAvailableGame(gametype: GameType) {
-    const availableGames = Array.from(this.games.values()).filter(
-      (game) => game.players.length < 2 && game.type === gametype,
-    );
+    const availableGames = Array.from(this.games.values()).filter((game) => {
+      if (game)
+        return game.players.length < 2 && game.type === gametype;
+    });
     return availableGames[0];
   }
 
@@ -47,6 +49,23 @@ export class GameService {
       }
     }
     return null;
+  }
+
+  removePlayerFromGame(id: string, nickname: string) {
+    const game = this.games.get(id);
+    if (game) {
+      if (game.players[0].nickname === nickname) {
+        game.players[0] = null;
+      } else if (game.players[1].nickname === nickname) {
+        game.players[1] = null;
+      }
+      if (game.players[0] == null && game.players[1] == null) {
+        console.log('deleting game');
+        this.games.delete(id);
+        return;
+      }
+    }
+    this.games.set(id, game);
   }
 
   getActiveGame(id: string) {
@@ -67,6 +86,19 @@ export class GameService {
   getGameById(id: string) {
     const game = this.games.get(id);
     return game;
+  }
+
+  playerConnect(id: string, socket: string, nickname: string) {
+    const game = this.games.get(id);
+    if (game) {
+      if (game.players[0].nickname === nickname) {
+        game.players[0].socket = socket;
+      } else if (game.players[1].nickname === nickname) {
+        game.players[1].socket = socket;
+      }
+    }
+
+    this.games.set(id, game);
   }
 
   deleteGame(id: string) {
