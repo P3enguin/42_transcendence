@@ -2,7 +2,6 @@ import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req,Res, Q
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtGuard } from 'src/auth/guard';
 import { PlayerService } from './player.service';
-import { GetPlayer } from 'src/auth/decorator';
 import { diskStorage } from 'multer';
 import { extname } from  'path';
 import { v4 as uuidv4 } from 'uuid';
