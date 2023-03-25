@@ -34,7 +34,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   >;
   constructor(private gameService: GameService) {}
   handleConnection(client: Socket) {
-    console.log(client.handshake.auth);
+    // console.log(client.handshake.auth);
 
     console.log('client connected:', client.id);
   }

@@ -68,14 +68,14 @@ CREATE TABLE "Titles" (
 );
 
 -- CreateTable
-CREATE TABLE "Matchs" (
+CREATE TABLE "Match" (
     "id" SERIAL NOT NULL,
     "winner" INTEGER NOT NULL,
     "loser" INTEGER NOT NULL,
-    "scoor" TEXT NOT NULL,
+    "score" TEXT NOT NULL,
     "playerAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "Matchs_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Match_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -207,10 +207,10 @@ ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_statusId_fkey"
 ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_achivId_fkey" FOREIGN KEY ("achivId") REFERENCES "Achivement"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Matchs" ADD CONSTRAINT "Matchs_winner_fkey" FOREIGN KEY ("winner") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Match" ADD CONSTRAINT "Match_winner_fkey" FOREIGN KEY ("winner") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Matchs" ADD CONSTRAINT "Matchs_loser_fkey" FOREIGN KEY ("loser") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Match" ADD CONSTRAINT "Match_loser_fkey" FOREIGN KEY ("loser") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Chat" ADD CONSTRAINT "Chat_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;

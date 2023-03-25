@@ -17,7 +17,7 @@ interface player {
   avatar: string;
   wallpaper: string;
   joinAt: Date;
-  exist? : boolean
+  exist?: boolean;
 }
 
 function UserProfile({
@@ -38,7 +38,7 @@ function UserProfile({
     const fetchPFP = async () => {
       setLoading(true);
       const res = await fetch(
-        'http://e2r7p6.1337.ma:8000/players/avatar?' +
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar?' +
           new URLSearchParams({ pfp: avatar }),
         {
           credentials: 'include',
@@ -54,7 +54,7 @@ function UserProfile({
 
     const fetchWp = async () => {
       const res = await fetch(
-        'http://e2r7p6.1337.ma:8000/players/wallpaper?' +
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper?' +
           new URLSearchParams({ wp: wallpaper }),
         {
           credentials: 'include',
@@ -73,7 +73,9 @@ function UserProfile({
   }, []);
 
   if (!exist)
-    return <p className='text-xl  text-red-600 mt-[400px]'>Player does not exist!</p>
+    return (
+      <p className="mt-[400px]  text-xl text-red-600">Player does not exist!</p>
+    );
   if (isLoading) return <p>Loading...</p>;
   if (!isLoading && exist) {
     return (
@@ -142,14 +144,13 @@ function UserProfile({
                   {'MEMBER SINCE: ' + joinAt}
                 </span>
                 <strong
-                id="titleUser"
-                className="  hidden  text-sm
+                  id="titleUser"
+                  className="  hidden  text-sm
                    text-white outline-none focus:border-black  
                  xl:flex"
-              >
-                the title
-              </strong>
-      
+                >
+                  the title
+                </strong>
               </div>
             </div>
             {/* player state  */}
@@ -300,7 +301,6 @@ export async function getServerSideProps({ params, req }: any) {
       month: 'long',
       day: 'numeric',
     };
-    console.log(data);
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );
@@ -314,7 +314,7 @@ export async function getServerSideProps({ params, req }: any) {
         avatar: data.player.avatar,
         wallpaper: data.player.wallpaper,
         joinAt: date,
-        exist:true,
+        exist: true,
       },
     };
   }

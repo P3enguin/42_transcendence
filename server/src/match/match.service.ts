@@ -12,11 +12,11 @@ export class MatchService {
 		// 	dto,
 		// })
 		try{
-			const match = await this.prisma.matchs.create({
+			const match = await this.prisma.match.create({
 				data: {
 					winner: dto.winner,
 					loser: dto.loser,
-					scoor: dto.scoor,
+					score: dto.scoor,
 					...dto,
 				},
 				include: {
