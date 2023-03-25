@@ -1,0 +1,7 @@
+.online::-webkit-scrollbar {
+    display: none;
+}
+
+.online {
+    color: brown;
+}

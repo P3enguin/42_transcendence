@@ -46,8 +46,8 @@ export class AuthController {
 
   @Get('verifytoken')
   @UseGuards(JwtGuard)
-  verifyToken(@Req() req:Request,@Res() res:Response){
-    return res.status(200).json(req.body.jwtDecoded);
+  verifyToken(@Req() req: Request, @Res() res: Response) {
+    return res.status(200).json(req.body.user);
   }
 
   @Get('verifysession')

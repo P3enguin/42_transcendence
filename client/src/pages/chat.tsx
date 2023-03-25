@@ -2,6 +2,7 @@ import Layout from "@/components/layout/layout";
 import { verifyToken } from "@/components/VerifyToken";
 import { useEffect } from "react";
 import { io, Socket } from 'socket.io-client';
+import styles from "../styles/Chat.module.css";
 
 let socket: Socket;
 interface player {
@@ -31,28 +32,33 @@ function Chat({ jwt_token, data }: { jwt_token: string,  data: any}) {
   }, []);
   return (
     <>
-      <div className="flex h-[700px] w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20 md:h-[80%]">
-        <div className="flex justify-between  flex-row w-11/12 h-1/7">
-          <div className="flex w-5/12 items-center" >
-           <h2 className="text-lg font-bold md:text-2xl w-1/3">
-            Chat Room</h2>
+      <div className="m-5 flex min-h-[700px] min-w-[1200px] flex-row rounded-2xl border border-neutral-300 sm:m-20 md:h-[80%]">
+        <div className="flex-[1_1_0%] border-r-[2px] h-[100%] flex-col">
+         <div className="flex h-[5%] border-b items-center pl-5">Chat Room</div>
+    
+         <div className="flex h-[15%] w-[100%] flex-col pl-5">
+          <div>Online Now</div>
+          <div className="flex w-[90%] flex-row snap-x overflow-hidden">
+          <img className="h-12 w-12 rounded-full" src={data.avatar} alt="Avatar" />
+             
           </div>
-          <div className="h-0/3 border "></div>
-          <div className="flex item-end w-8/12  items-center"></div>
+         </div>
+         <div className="flex h-[80%] flex-col pl-5">
+          <div>
+            Recent Chat
+          </div>
+          <div className="m-3 mb-10 flex w-[170px] flex-col items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 p-5" >
+                <img className="h-12 w-12 rounded-full" src={data.avatar} alt="Avatar" />
+                <h3>{data.nickname}</h3>
+              </div>
+
+         </div>
         </div>
         
-        <div className="flex  flex-row w-12/12 border"></div>
     
-        <div className="flex justify-between  flex-row w-11/12 h-4/6"> 
-          <div className="flex flex-start w-5/12 items-center" >
-            <div > <h4>Online Now</h4> </div>
-            <div className="flex flex-nowrap">
+        <div className="flex-[2_2_0%] justify-between "> 
+          <div className="flex h-[5%] border-b items-center pl-5"></div>
 
-            </div>
-          
-          </div>
-          <div className="h-0/3 border "></div>
-          <div className="flex item-end w-8/12  items-center "></div>
         </div>
       </div>
     </>
@@ -74,6 +80,7 @@ export async function getServerSideProps({ req }: any) {
           },
         );
         const data = await res.json();
+        console.log(data);
         return {
           props: {
             data,
