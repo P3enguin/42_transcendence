@@ -1,3 +1,5 @@
+import Board from '@/components/game/Board';
+import Pong from '@/components/game/Pong';
 import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
@@ -9,7 +11,7 @@ let socket: Socket;
 
 const playGame = ({ jwt_token, res, params }: any) => {
   useEffect(() => {
-    socket = io(`${process.env .NEXT_PUBLIC_BACKEND_HOST}/game`, {
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },
@@ -29,7 +31,12 @@ const playGame = ({ jwt_token, res, params }: any) => {
   }, []);
   console.log('res', res);
 
-  return <div>playGame {res}</div>;
+  return (
+    <div className="felx felx-row w-[100%] h-[100%]">
+      <div>playGame {res}</div>
+      <Pong />
+    </div>
+  );
 };
 
 export async function getServerSideProps({
