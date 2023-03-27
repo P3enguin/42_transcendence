@@ -43,7 +43,7 @@ const playGame = ({ jwt_token, res, params }: any) => {
         ref={gameRef}
       >
         <div>playGame {res}</div>
-        <Pong gameRef={gameRef} />
+        {res === '0ki' && <Pong gameRef={gameRef} socket={socket} />}
       </div>
     </>
   );

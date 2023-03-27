@@ -2,8 +2,14 @@ import React, { useRef } from 'react';
 import Board from './Board';
 import Paddle from './Paddle';
 import Ball from './Ball';
+import { Socket } from 'socket.io-client';
 
-const Pong = ({ gameRef }: any) => {
+interface PongProps {
+  gameRef: React.RefObject<HTMLDivElement>;
+  socket: Socket;
+}
+
+const Pong = ({ gameRef, socket }: PongProps) => {
   return (
     <Board parentRef={gameRef}>
       <Paddle position="top" />

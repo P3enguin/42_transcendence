@@ -29,7 +29,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
         <title>Ponginator | Start Game</title>
       </Head>
 
-      <div className="m-5 flex min-h-[700px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20 md:h-[80%]">
+      <div className="m-5 flex min-h-[850px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20 md:h-[70%]">
         <div className="flex h-1/2 flex-col p-5 md:h-2/3">
           <h2 className="m-2 text-lg font-bold md:text-2xl">
             INVITE YOUR ONLINE FRIENDS TO PLAY:
