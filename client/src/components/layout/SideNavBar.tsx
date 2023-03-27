@@ -16,7 +16,9 @@ function SideNavBar({ children }: LayoutProps) {
     { path: '/home', index: 0 },
     { path: '/chat', index: 1 },
     { path: '/game', index: 2 },
+    { path: '/game/[id]', index: 2 },
     { path: '/profile', index: 3 },
+    { path: '/users/[id]', index: 3 },
     { path: '/settings', index: 4 },
   ];
 
@@ -25,7 +27,7 @@ function SideNavBar({ children }: LayoutProps) {
   function toggleSideBar() {
     setVisible(!isVisible);
   }
-  
+
   // to fix later
   useEffect(() => {
     const hanldeResize = () => {
@@ -44,6 +46,7 @@ function SideNavBar({ children }: LayoutProps) {
 
   // Handle the color of the icon based on the page we are in
   useEffect(() => {
+    console.log(router.pathname);
     pages.forEach((page) => {
       if (page.path == router.pathname) setSvgIndex(page.index);
     });
