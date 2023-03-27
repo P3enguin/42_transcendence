@@ -5,11 +5,13 @@ import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
 const playGame = ({ jwt_token, res, params }: any) => {
+  const gameRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
@@ -32,10 +34,18 @@ const playGame = ({ jwt_token, res, params }: any) => {
   console.log('res', res);
 
   return (
-    <div className="felx felx-row w-[100%] h-[100%]">
-      <div>playGame {res}</div>
-      <Pong />
-    </div>
+    <>
+      <Head>
+        <title>Ponginator | Play Game</title>
+      </Head>
+      <div
+        className="flex h-full w-full flex-col items-center justify-around border"
+        ref={gameRef}
+      >
+        <div>playGame {res}</div>
+        <Pong gameRef={gameRef} />
+      </div>
+    </>
   );
 };
 
