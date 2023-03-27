@@ -44,7 +44,7 @@ function SideBar({
         id="userSideBar"
         className={` hidden h-full w-16 shrink-0 flex-col
               items-center  justify-between gap-6 rounded-br-3xl border
-              border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:flex min-h-[900px]`}
+              border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:flex min-h-[700px]`}
       >
         <div className="flex h-1/3 flex-col items-center justify-around">
           <Link
@@ -166,7 +166,7 @@ function SideBar({
           </motion.aside>
         )}
       </AnimatePresence>
-      <div className={`${isMobile && isVisible ? "flex h-full w-full absolute": "hidden"} z-10`} 
+      <div className={`${isMobile && isVisible ? "flex h-[calc(100%-64px)] w-full absolute": "hidden"} z-10`} 
             onClick={toggleSideBar} >
             </div>
       <motion.div
