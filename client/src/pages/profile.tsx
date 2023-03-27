@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import ProfileDisplay from '@/components/profile/ProfileDisplay';
 import ProfileStats from '@/components/profile/ProfileStats';
+import Head from 'next/head';
 
 interface player {
   nickname: string;
@@ -72,9 +73,9 @@ function PlayerProfile({
   if (!isLoading) {
     return (
       <>
-        <head>
+        <Head>
           <title>Ponginator | Profile</title>
-        </head>
+        </Head>
         <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
           <ProfileDisplay
             wp={pictures.wp}
