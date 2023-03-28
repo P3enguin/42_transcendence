@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 
 interface paddleProps {
   boardRef?: React.RefObject<HTMLDivElement>;
-  position: 'top' | 'bottom';
+  position: { x: number; y: number };
 }
 
 const Paddle = ({ boardRef, position }: paddleProps) => {
   const [paddleOffset, setPaddleOffset] = useState<number>(0);
+  const [paddleX, setPaddleX] = useState<number>(0);
   const paddleRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -17,6 +18,8 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
         paddleRef.current.style.height =
           paddleRef.current.offsetWidth / 5 + 'px';
         setPaddleOffset(paddleRef.current.offsetHeight / 1.5);
+        // setPaddleX((boardRef.current?.offsetWidth * position.x) / 700);
+        setPaddleX((position.x * 100) / 700);
       }
     };
     resizePaddle();
@@ -25,13 +28,12 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
     return () => {
       window.removeEventListener('resize', resizePaddle);
     };
-  }, []);
+  }, [boardRef, position]);
 
-const paddleStyle = {
-  top: position === 'top' ? paddleOffset + 'px' : undefined,
-  bottom: position === 'bottom' ? paddleOffset +'px' : undefined,
-  left: position === 'top' ? '60%' : '30%',
-};
+  const paddleStyle = {
+    top: position.y === 1 ? paddleOffset : undefined,
+    bottom: position.y === -1 ? paddleOffset : undefined,
+  };
   return (
     <div
       ref={paddleRef}
@@ -39,7 +41,8 @@ const paddleStyle = {
       style={{
         backgroundImage: "url('../game/Paddle.svg')",
         backgroundSize: '100%',
-        ...paddleStyle
+        left: paddleX + '%',
+        ...paddleStyle,
       }}
     ></div>
   );

@@ -46,7 +46,6 @@ function SideNavBar({ children }: LayoutProps) {
 
   // Handle the color of the icon based on the page we are in
   useEffect(() => {
-    console.log(router.pathname);
     pages.forEach((page) => {
       if (page.path == router.pathname) setSvgIndex(page.index);
     });
