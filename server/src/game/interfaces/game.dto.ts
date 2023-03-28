@@ -2,14 +2,15 @@ import { randomUUID } from 'crypto';
 import { Socket } from 'socket.io';
 
 export class Player {
-  score: number | null;
+  score: number;
   id: number;
   nickname: string;
-  socket?: string;
+  socketId: string;
   constructor(id: number, nickname: string) {
     this.id = id;
     this.nickname = nickname;
     this.score = 0;
+    this.socketId = null;
   }
 }
 
@@ -22,7 +23,7 @@ export class Game {
   id: string;
   players: [Player?, Player?];
   type: GameType;
-  viewer: Player[];
+  spectator: Player[];
   createdAt: Date;
   updatedAt: Date;
 

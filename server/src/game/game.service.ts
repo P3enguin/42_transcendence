@@ -32,21 +32,15 @@ export class GameService {
 
   getAvailableGame(gametype: GameType) {
     const availableGames = Array.from(this.games.values()).filter((game) => {
-      if (game)
-        return game.players.length < 2 && game.type === gametype;
+      if (game) return game.players.length < 2 && game.type === gametype;
     });
     return availableGames[0];
   }
 
   getMyGame(id: string, nickname: string) {
     const game = this.games.get(id);
-    if (game) {
-      if (
-        game.players[0].nickname === nickname ||
-        (game.players[1] && game.players[1].nickname === nickname)
-      ) {
-        return game;
-      }
+    if (game && game.players.find((player) => player.nickname === nickname)) {
+      return game;
     }
     return null;
   }
@@ -54,9 +48,9 @@ export class GameService {
   removePlayerFromGame(id: string, nickname: string) {
     const game = this.games.get(id);
     if (game) {
-      if (game.players[0].nickname === nickname) {
+      if (game.players[0] && game.players[0].nickname === nickname) {
         game.players[0] = null;
-      } else if (game.players[1].nickname === nickname) {
+      } else if (game.players[1] && game.players[1].nickname === nickname) {
         game.players[1] = null;
       }
       if (game.players[0] == null && game.players[1] == null) {
@@ -91,13 +85,12 @@ export class GameService {
   playerConnect(id: string, socket: string, nickname: string) {
     const game = this.games.get(id);
     if (game) {
-      if (game.players[0].nickname === nickname) {
-        game.players[0].socket = socket;
-      } else if (game.players[1].nickname === nickname) {
-        game.players[1].socket = socket;
+      if (game.players[0] && game.players[0].nickname === nickname) {
+        game.players[0].socketId = socket;
+      } else if (game.players[1] && game.players[1].nickname === nickname) {
+        game.players[1].socketId = socket;
       }
     }
-
     this.games.set(id, game);
   }
 

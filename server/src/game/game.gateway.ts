@@ -47,10 +47,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const player = JSON.parse(client.handshake.query.user as string) as Player;
     const gameId = client.handshake.query.gameId;
     console.log('client disconnected:', client.id);
-    console.log(client.rooms, client.id); 
+    console.log(client.rooms, client.id);
     this.gameService.removePlayerFromGame(gameId as string, player.nickname);
   }
-  
 
   @SubscribeMessage('joinGame')
   handleMessage(
@@ -64,10 +63,20 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.gameService.playerConnect(game.id, client.id, player.nickname);
       client.join(game.id);
       this.server
-      .to(game.id)
-      .emit('joined', `${player.nickname} has joined this game!`);
-      console.log(client.rooms);
+        .to(game.id)
+        .emit('joined', `${player.nickname} has joined this game!`);
+      if (game.players[0].nickname && game.players[0].nickname === player.nickname)
+        this.server.to(client.id).emit('startGame', { position: 'top' });
+      else if (game.players[1].nickname && game.players[1].nickname === player.nickname)
+        this.server.to(client.id).emit('startGame', { position: 'bottom' });
+      else
+        this.server.to(client.id).emit('startGame', { position: 'spectator' });
     } else console.log('no game');
     return 'Hello world!';
+  }
+
+  @SubscribeMessage('move')
+  handleMove(@GetPlayer() player: Player, @MessageBody() data: any) {
+    console.log('move', data);
   }
 }
