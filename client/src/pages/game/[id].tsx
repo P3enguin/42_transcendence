@@ -5,17 +5,21 @@ import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
 const playGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
+  const [Position, setPosition] = useState<'top' | 'bottom' | 'spectator'>(
+    'spectator',
+  );
 
   useEffect(() => {
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
-      auth: {
-        token: jwt_token,
+    if (params.id !== 'training') {
+      socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
+        auth: {
+          token: jwt_token,
       },
     });
     if (res === '0ki') {
@@ -23,13 +27,20 @@ const playGame = ({ jwt_token, res, params }: any) => {
         console.log('connected');
         socket.emit('joinGame', { gameId: params.id });
         socket.on('joined', (data: any) => {
-          console.log(data);
+          console.log('data: ', data);
         });
+        socket.on(
+          'startGame',
+          ({ position }: { position: 'top' | 'bottom' | 'spectator' }) => {
+            setPosition(position);
+          },
+        );
       });
     }
     return () => {
       socket.disconnect();
     };
+  }
   }, []);
   console.log('res', res);
 
@@ -39,11 +50,11 @@ const playGame = ({ jwt_token, res, params }: any) => {
         <title>Ponginator | Play Game</title>
       </Head>
       <div
-        className="flex h-full w-full flex-col items-center justify-around border"
+        className="flex h-full w-full flex-col items-center justify-around"
         ref={gameRef}
       >
         <div>playGame {res}</div>
-        {res === '0ki' && <Pong gameRef={gameRef} socket={socket} />}
+        {socket && <Pong gameRef={gameRef} socket={socket} position={Position} />}
       </div>
     </>
   );
