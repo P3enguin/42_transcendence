@@ -30,4 +30,17 @@ export class TitleService {
 		}
 		return "Done";
 	}
+	// async asignTitle(statusId: number){
+	// 	const titles = await this.prisma.titles.findMany({});
+
+	// 	for (let title of titles)	{
+    //   // console.log({"achivId": achv.id,})
+    //   await this.prisma.achivement_status.create({
+    //     data: {
+    //       achivId: achv.id,
+    //       statusId: statusId,
+    //     },
+    //   });
+    // }
+	// }
 }

@@ -66,9 +66,11 @@ function PlayerProfile({
     };
     if (pictures.pfp != avatar) fetchPFP();
     if (pictures.wp != wallpaper) fetchWp();
+    
     setLoading(false);
   }, []);
-
+  
+  console.log(pictures.pfp);
   if (isLoading) return <p>Loading...</p>;
   if (!isLoading) {
     return (
@@ -108,7 +110,6 @@ export async function getServerSideProps({ req }: any) {
       month: 'long',
       day: 'numeric',
     };
-    console.log(data);
     const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
       new Date(data.player.joinAt));
     return {

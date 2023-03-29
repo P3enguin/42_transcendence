@@ -27,7 +27,10 @@ export class PlayerService {
 					avatar:true,
 					wallpaper:true,
 					joinAt:true,
+					friends:true,
+					block:true,
 				}
+				
 			})
 			return res.status(200).json({player});
 		}
@@ -55,6 +58,8 @@ export class PlayerService {
 					avatar:true,
 					wallpaper:true,
 					joinAt:true,
+					friends:true,
+					block:true,
 				}
 			})
 			return res.status(200).json({player});
@@ -183,14 +188,12 @@ export class PlayerService {
 	
 	async AddFriend(req: Request, friendId: number) {
 		const player = this.Get_Player(req);
-		console.log({
-			player,
-		})
+		console.log (player);
 		const check_friend  = await this.prisma.player.findUnique({
 			where: {
 			  id: player.sub,
 			},
-			select: {
+			include: {
 			  friends: {
 				select: {
 				  id: true,
@@ -203,9 +206,10 @@ export class PlayerService {
 			  }
 			},
 		  });
-		if (!check_friend.friends.some(f => f.id === friendId))
+		  console.log(check_friend);
+		if (!check_friend.friends.some(f => f.id === friendId) && !check_friend.block.some(f => f.id === friendId))
 		{
-			this.prisma.player.update({
+			await this.prisma.player.update({
 				where: {
 					id: player.sub,
 				},
@@ -245,7 +249,7 @@ export class PlayerService {
 //-----------------------------------{ Block }-----------------------------------\\
 //-----------------------------------{ block a friends }
 
-async BlockFriend(req: Request, friendId: number) {
+	async BlockFriend(req: Request, friendId: number) {
 		const player = this.Get_Player(req);
 		const check_friend  = await this.prisma.player.findUnique({
 			where: {

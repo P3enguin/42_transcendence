@@ -106,6 +106,7 @@ export class AuthService {
         },
       });
       await  this.achiv.asignAchiv(player.statusId);
+      // await  this.title.asign(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,

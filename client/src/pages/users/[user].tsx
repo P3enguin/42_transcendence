@@ -38,7 +38,7 @@ function UserProfile({
     const fetchPFP = async () => {
       setLoading(true);
       const res = await fetch(
-        'http://e2r7p6.1337.ma:8000/players/avatar?' +
+        process.env.NEXT_PUBLIC_BACKEND_HOST+'/players/avatar?' +
           new URLSearchParams({ pfp: avatar }),
         {
           credentials: 'include',
@@ -54,7 +54,7 @@ function UserProfile({
 
     const fetchWp = async () => {
       const res = await fetch(
-        'http://e2r7p6.1337.ma:8000/players/wallpaper?' +
+        process.env.NEXT_PUBLIC_BACKEND_HOST+'/players/wallpaper?' +
           new URLSearchParams({ wp: wallpaper }),
         {
           credentials: 'include',
