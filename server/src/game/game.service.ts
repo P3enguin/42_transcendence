@@ -48,12 +48,8 @@ export class GameService {
   removePlayerFromGame(id: string, nickname: string) {
     const game = this.games.get(id);
     if (game) {
-      if (game.players[0] && game.players[0].nickname === nickname) {
-        game.players[0] = null;
-      } else if (game.players[1] && game.players[1].nickname === nickname) {
-        game.players[1] = null;
-      }
-      if (game.players[0] == null && game.players[1] == null) {
+      game.removePlayer(nickname);
+      if (!game.players.length) {
         console.log('deleting game');
         this.games.delete(id);
         return;
@@ -64,7 +60,7 @@ export class GameService {
 
   getActiveGame(id: string) {
     const game = this.games.get(id);
-    if (game && game.players.length === 2) {
+    if (game && game.isFull()) {
       return game;
     }
     return null;

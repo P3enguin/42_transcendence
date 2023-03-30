@@ -9,17 +9,14 @@ import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
-const playGame = ({ jwt_token, res, params }: any) => {
+const PlayGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
-  const [Position, setPosition] = useState<'top' | 'bottom' | 'spectator'>(
-    'spectator',
-  );
+  const [Position, setPosition] = useState('');
 
   useEffect(() => {
-    if (params.id !== 'training') {
-      socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
-        auth: {
-          token: jwt_token,
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
+      auth: {
+        token: jwt_token,
       },
     });
     if (res === '0ki') {
@@ -27,22 +24,18 @@ const playGame = ({ jwt_token, res, params }: any) => {
         console.log('connected');
         socket.emit('joinGame', { gameId: params.id });
         socket.on('joined', (data: any) => {
-          console.log('data: ', data);
+          console.log('joined: ', data);
         });
-        socket.on(
-          'startGame',
-          ({ position }: { position: 'top' | 'bottom' | 'spectator' }) => {
-            setPosition(position);
-          },
-        );
+        socket.on('startGame', ({ position }: any) => {
+          console.log('startGame', position);
+          setPosition(position);
+        });
       });
     }
     return () => {
       socket.disconnect();
     };
-  }
-  }, []);
-  console.log('res', res);
+  }, [jwt_token, params, res]);
 
   return (
     <>
@@ -53,8 +46,10 @@ const playGame = ({ jwt_token, res, params }: any) => {
         className="flex h-full w-full flex-col items-center justify-around"
         ref={gameRef}
       >
-        <div>playGame {res}</div>
-        {socket && <Pong gameRef={gameRef} socket={socket} position={Position} />}
+        <div>PlayGame {res}</div>
+        {Position && (
+          <Pong gameRef={gameRef} socket={socket} position={Position} />
+        )}
       </div>
     </>
   );
@@ -104,8 +99,8 @@ export async function getServerSideProps({
   };
 }
 
-playGame.getLayout = function getLayout(page: React.ReactNode) {
+PlayGame.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout>{page}</Layout>;
 };
 
-export default playGame;
+export default PlayGame;

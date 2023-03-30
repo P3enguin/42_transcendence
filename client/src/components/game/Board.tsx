@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 
 interface BoardProps {
+  position: string;
   parentRef: React.RefObject<HTMLDivElement>;
   boardRef: React.RefObject<HTMLDivElement>;
   children: ReactNode;
@@ -15,13 +16,13 @@ interface BoardProps {
 }
 
 const Board = ({
+  position,
   children,
   parentRef,
   boardRef,
   mouseHandler,
   touchHandler,
 }: BoardProps) => {
-
   useEffect(() => {
     const resizeBoard = () => {
       if (boardRef.current && parentRef.current) {
@@ -38,14 +39,12 @@ const Board = ({
         }
       }
     };
-
     resizeBoard();
     window.addEventListener('resize', resizeBoard);
-
     return () => {
       window.removeEventListener('resize', resizeBoard);
     };
-  }, []);
+  }, [boardRef, parentRef]);
 
   return (
     <div
@@ -56,6 +55,7 @@ const Board = ({
       style={{
         backgroundImage: "url('../game/GameBoard.svg')",
         backgroundSize: '100%',
+        rotate: position === 'Top' ? '180deg' : '0deg',
       }}
     >
       {React.Children.map(children, (child) => {

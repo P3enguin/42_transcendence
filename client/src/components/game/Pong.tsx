@@ -13,7 +13,7 @@ import { Socket } from 'socket.io-client';
 interface PongProps {
   gameRef: React.RefObject<HTMLDivElement>;
   socket: Socket;
-  position: 'top' | 'bottom' | 'spectator';
+  position: string;
 }
 
 const Pong = ({ gameRef, socket, position }: PongProps) => {
@@ -22,30 +22,36 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
   const [Paddle1Position, setPaddle1Position] = useState({ x: 525, y: 1 });
   const [Paddle2Position, setPaddle2Position] = useState({ x: 175, y: -1 });
 
+  socket.on('move it', ({ position, x }: any) => {
+    if (position === 'Top') {
+      setPaddle1Position({ x, y: 1 });
+    } else {
+      setPaddle2Position({ x, y: -1 });
+    }
+  });
+
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
-    if (boardRef.current) {
+    if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
-      const X = (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth;
-      socket.emit('move', { x: X });
-      console.log('move it move it');
+      const x = (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth;
+      socket.emit('move', { x, position });
     }
   };
 
   const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
-    if (boardRef.current) {
+    if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
-      const X = (700 * (e.touches[0].clientX - rec.left)) / boardRef.current.offsetWidth;
-      if (X < 0 || X > 700) return;
-      socket.emit('move', { x: X });
-      console.log('touch it touch it');
+      const x =
+        (700 * (e.touches[0].clientX - rec.left)) /
+        boardRef.current.offsetWidth;
+      if (x < 0 || x > 700) return;
+      socket.emit('move', { x, position });
     }
   };
 
-  useEffect(() => {
-    return () => {};
-  }, [position]);
   return (
     <Board
+      position={position}
       parentRef={gameRef}
       boardRef={boardRef}
       mouseHandler={handleMouseMove}

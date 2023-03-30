@@ -33,6 +33,7 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
   const paddleStyle = {
     top: position.y === 1 ? paddleOffset : undefined,
     bottom: position.y === -1 ? paddleOffset : undefined,
+    left: position.y === 1 ? 100 - paddleX + '%' : paddleX + '%',
   };
   return (
     <div
@@ -41,7 +42,6 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
       style={{
         backgroundImage: "url('../game/Paddle.svg')",
         backgroundSize: '100%',
-        left: paddleX + '%',
         ...paddleStyle,
       }}
     ></div>
