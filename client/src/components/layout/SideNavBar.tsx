@@ -6,6 +6,8 @@ import NavBar from '../home/NavBar';
 import React from 'react';
 import Router from 'next/router';
 import { LayoutProps } from './layout';
+import { Socket, io } from 'socket.io-client';
+let socket: Socket;
 
 function SideNavBar({ children }: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
@@ -27,6 +29,22 @@ function SideNavBar({ children }: LayoutProps) {
   function toggleSideBar() {
     setVisible(!isVisible);
   }
+
+  useEffect(() => {
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/player`, {
+      auth: {
+        // token: jwt_token,
+      },
+    });
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  // socket emmit everytime route cahnges
+  useEffect(() => {
+    socket.emit('route', router.pathname);
+  }, [router.pathname]);
 
   // to fix later
   useEffect(() => {
@@ -81,10 +99,16 @@ function SideNavBar({ children }: LayoutProps) {
         isVisible={isVisible}
         svgIndex={svgIndex}
         handleLogOut={handleLogOut}
-        children={children}
         isMobile={isMobile}
         toggleSideBar={toggleSideBar}
-      />
+      >
+        {/* pass the socket to children */}
+        {React.Children.map(children, (child) => {
+          return React.cloneElement(child as React.ReactElement, {
+            ws: socket,
+          });
+        })}
+      </SideBar>
     </div>
   );
 }
