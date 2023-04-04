@@ -62,6 +62,7 @@ export class PlayerService {
           avatar: true,
           wallpaper: true,
           joinAt: true,
+          Is2FAEnabled:true
         },
       });
       return res.status(200).json({ player });

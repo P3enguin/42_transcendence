@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { statObj } from '@/components/profile/Interface';
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ModalQRcode from '@/components/modal/Modals';
+import { ModalActivate2FA } from '@/components/modal/Modals';
 import {
   FirstNameInput,
   LastNameInput,
@@ -25,9 +25,10 @@ interface propsData {
   firstname: string;
   lastname: string;
   nickname: string;
+  Is2FAEnabled?: boolean;
 }
 
-function settings({ firstname, lastname, nickname }: propsData) {
+function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [error, setError] = useState(false);
   const [successPass, setSuccesPass] = useState(false);
   const [successSave, setSuccess] = useState(false);
@@ -44,8 +45,19 @@ function settings({ firstname, lastname, nickname }: propsData) {
   const [isEnabled, setEnabled] = useState(false);
   const [isEnabledSecond, setEnabledSecond] = useState(false);
 
-  const [qrPath,setQrPath] = useState("");
-  const [isOpen,setIsOpen] = useState(false);
+  const [qrPath, setQrPath] = useState('');
+  const [isOpen, setIsOpen] = useState([false,false,false]);
+  const [activated, setActivated] = useState(Is2FAEnabled);
+
+  function toggleOppen(index : number) {
+      const newState = isOpen.map((item,i) =>{ 
+        if (i == index)
+          return !item;
+        return item;
+      })
+      setIsOpen(newState);
+  }
+
   async function handlePasswordUpdate(event: any) {
     event.preventDefault();
 
@@ -324,8 +336,12 @@ function settings({ firstname, lastname, nickname }: propsData) {
       },
     );
     const data = await res.json();
-    setQrPath(data.qrcode)
-    setIsOpen(true);
+    if (res.ok) {
+      setQrPath(data.qrcode);
+      toggleOppen(0);
+    } else {
+      // handling erroś
+    }
     console.log(data);
     // if (res.ok) {
     //   const data = await res.json();
@@ -335,11 +351,18 @@ function settings({ firstname, lastname, nickname }: propsData) {
     //   consoel
     // }
   }
+  async function deactivate2FA(event: React.MouseEvent<HTMLButtonElement>) {}
 
   return (
     <>
-
-      {isOpen && <ModalQRcode qrPath={qrPath}  setIsOpen={setIsOpen}/>}
+      {isOpen[0] && (
+        <ModalActivate2FA
+          qrPath={qrPath}
+          toggleOppen={toggleOppen}
+          activated={activated}
+          setActivated={setActivated}
+        />
+      )}
       <AnimatePresence>
         {error && (
           <motion.div
@@ -456,15 +479,28 @@ function settings({ firstname, lastname, nickname }: propsData) {
             </div>
           </div>
         </form>
-        <button
-          className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
+        {!activated && (
+          <button
+            className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
                   px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
                   md:text-base
                   `}
-          onClick={activate2FA}
-        >
-          Activate 2FA
-        </button>
+            onClick={activate2FA}
+          >
+            Activate 2FA
+          </button>
+        )}
+        {activated && (
+          <button
+            className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
+                    px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
+                    md:text-base
+                    `}
+            onClick={deactivate2FA}
+          >
+            DEACTIVATE 2FA
+          </button>
+        )}
       </div>
     </>
   );
@@ -489,6 +525,7 @@ export async function getServerSideProps({ req }: any) {
           nickname: data.player.nickname,
           firstname: data.player.firstname,
           lastname: data.player.lastname,
+          Is2FAEnabled: data.player.Is2FAEnabled,
         },
       };
     }

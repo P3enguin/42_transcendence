@@ -75,4 +75,11 @@ export class AuthController {
   {
     return this.authService.confirm2FA(req.body.user,req.body.token,res);
   }
+
+  @Post('deactivate2FA')
+  @UseGuards(JwtGuard)
+  deactivate2FA(@Req() req:Request,@Res() res:Response)
+  {
+    
+  }
 }

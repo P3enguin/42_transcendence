@@ -270,7 +270,7 @@ export class AuthService {
           }
         })
         const secret : string = player.Secret2FA;
-        if ( authenticator.verify({token,secret}))
+        if (authenticator.verify({token,secret}))
         {
           await this.prisma.player.update({
             where : {
@@ -289,6 +289,39 @@ export class AuthService {
       catch (error)
       {
         return res.status(400).json({error : "An error has occured"})
+      }
+  }
+
+  async deactivate2FA(user : any,password : string ,res : Response){
+      try {
+        const player = await this.prisma.player.findUnique({
+          where : {
+            id : user.id
+          },
+          select:
+          {
+            password: true
+          }
+        })
+        if (await argon2.verify(player.password,password))
+        {
+           await this.prisma.player.update({
+           where : {
+            id : user.id,
+           },
+           data : {
+              Is2FAEnabled:false,
+              Secret2FA:"",
+           }
+           })
+           return res.status(200).json({success : "successfully deactivated 2FA"})
+        }
+        else {
+          throw new ForbiddenException('Password incorrect');
+        }
+      }
+      catch (error) {
+          res.status(403).json({error: error });
       }
   }
 }
