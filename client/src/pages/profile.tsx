@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import ProfileDisplay from '@/components/profile/ProfileDisplay';
 import ProfileStats from '@/components/profile/ProfileStats';
 
-
 interface player {
   nickname: string;
   firstname: string;
@@ -74,18 +73,23 @@ function PlayerProfile({
   if (isLoading) return <p>Loading...</p>;
   if (!isLoading) {
     return (
-      <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
-        <ProfileDisplay
-          wp={pictures.wp}
-          pfp={pictures.pfp}
-          titles={titles}
-          fullname={firstname + ' ' + lastname}
-          nickname={nickname}
-          joinDate={joinDate}
-          coins={coins}
-        />
-        <ProfileStats />
-      </div>
+      <>
+        <head>
+          <title>Ponginator | Profile</title>
+        </head>
+        <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
+          <ProfileDisplay
+            wp={pictures.wp}
+            pfp={pictures.pfp}
+            titles={titles}
+            fullname={firstname + ' ' + lastname}
+            nickname={nickname}
+            joinDate={joinDate}
+            coins={coins}
+          />
+          <ProfileStats />
+        </div>
+      </>
     );
   }
 }
@@ -103,27 +107,31 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    const data = await res.json();
-
-    const timeFormat: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
-      new Date(data.player.joinAt));
-    return {
-      // modify this to return anything you want before your page load
-      props: {
-        nickname: data.player.nickname,
-        firstname: data.player.firstname,
-        lastname: data.player.lastname,
-        coins: data.player.coins,
-        avatar: data.player.avatar,
-        wallpaper: data.player.wallpaper,
-        joinDate: date,
-      },
-    };
+    if (res.ok)
+    {
+      const data = await res.json();
+  
+      const timeFormat: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
+        new Date(data.player.joinAt),
+      );
+      return {
+        // modify this to return anything you want before your page load
+        props: {
+          nickname: data.player.nickname,
+          firstname: data.player.firstname,
+          lastname: data.player.lastname,
+          coins: data.player.coins,
+          avatar: data.player.avatar,
+          wallpaper: data.player.wallpaper,
+          joinDate: date,
+        },
+      };
+    }
   }
   return {
     redirect: {

@@ -1,5 +1,6 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { ChatService } from './chat.service';
+import { GetPlayer } from 'src/auth/decorator';
 
 @Controller('chat')
 export class ChatController {
@@ -20,8 +21,11 @@ export class ChatController {
 	}
 
 	@Get('privateMessages')
-	GetPrivMessage(friendId: number)
+	GetPrivMessage(@GetPlayer() player, friendId: number)
 	{
+		console.log({
+			player,
+		})
 		return this.chatService.GetPrivMessage(friendId);
 	}
 
@@ -29,5 +33,11 @@ export class ChatController {
 	GetChannelMessage(channelId: number)
 	{
 		return this.chatService.GetChannelMessage(channelId);
+	}
+
+	@Post('joinPrivateMessage')
+	JoinPrivateChat()
+	{
+		
 	}
 }
