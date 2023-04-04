@@ -14,7 +14,7 @@ export class TitleService {
 
 		for (const item of jsonData) {
 			try{
-				const achiv = await this.prisma.titles.create({
+				const title = await this.prisma.titles.create({
 					data: {
 						name:			item.name,
 						requirement:	item.requirement,
@@ -25,22 +25,21 @@ export class TitleService {
 
 			}catch(error)
 			{
-				// console.log("titles");
+				console.log("error");
 			}
 		}
 		return "Done";
 	}
-	// async asignTitle(statusId: number){
-	// 	const titles = await this.prisma.titles.findMany({});
+	async assignTitle(statusId: number){
+		const titles = await this.prisma.titles.findMany({});
 
-	// 	for (let title of titles)	{
-    //   // console.log({"achivId": achv.id,})
-    //   await this.prisma.achivement_status.create({
-    //     data: {
-    //       achivId: achv.id,
-    //       statusId: statusId,
-    //     },
-    //   });
-    // }
-	// }
+		for (let title of titles)	{
+			await this.prisma.titles_status.create({
+				data: {
+				titleId: title.id,
+				statusId: statusId,
+				},
+			});
+    	}
+	}
 }

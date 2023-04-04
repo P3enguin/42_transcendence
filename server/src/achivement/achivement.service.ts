@@ -15,7 +15,7 @@ export class AchivementService {
 
 		for (const item of jsonData) {
 			try{
-				const achiv = await this.prisma.achivement.create({
+				await this.prisma.achivement.create({
 					data: {
 						name:			item.name,
 						icon:			item.icon,
@@ -31,18 +31,17 @@ export class AchivementService {
 		return jsonData;
 	}
 
-	async asignAchiv(statusId: number){
+	async assignAchiv(statusId: number){
 		const achiv = await this.prisma.achivement.findMany({});
 
 		for (let achv of achiv)	{
-      // console.log({"achivId": achv.id,})
-      await this.prisma.achivement_status.create({
-        data: {
-          achivId: achv.id,
-          statusId: statusId,
-        },
-      });
-    }
+      		await this.prisma.achivement_status.create({
+			data: {
+			achivId: achv.id,
+			statusId: statusId,
+			},
+		});
+    	}
 	}
 
 }

@@ -52,7 +52,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
         <div className="flex h-full w-full flex-col  md:h-1/3 md:flex-row">
           <div className="flex h-full flex-col rounded-2xl p-5 md:w-[50%]">
             <h2 className="m-2 text-lg font-bold md:text-2xl">START A GAME</h2>
-            <div className="felx m-auto mb-0 flex-row self-center">
+            <div className="flex m-auto mb-0 flex-row self-center">
               <div className="mr-6 inline-flex items-center self-center whitespace-nowrap">
                 <input
                   type="radio"

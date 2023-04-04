@@ -32,6 +32,7 @@ export class AuthService {
     private config: ConfigService,
     private achiv: AchivementService,
     private title: TitleService,
+    // private rank: RankService,
   ) {}
   
   async checkUser( user:playerStrat,res:Response) {
@@ -90,6 +91,7 @@ export class AuthService {
     try {
       await this.achiv.fillAvhievememt();
       await this.title.fillTitles();
+      // await this.ra
       const hash = await argon2.hash(dto.password);
       const player = await this.prisma.player.create({
         data: {
@@ -105,8 +107,8 @@ export class AuthService {
           },
         },
       });
-      await  this.achiv.asignAchiv(player.statusId);
-      // await  this.title.asign(player.statusId);
+      await  this.achiv.assignAchiv(player.statusId);
+      await  this.title.assignTitle(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
