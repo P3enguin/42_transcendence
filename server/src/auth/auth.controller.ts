@@ -80,6 +80,6 @@ export class AuthController {
   @UseGuards(JwtGuard)
   deactivate2FA(@Req() req:Request,@Res() res:Response)
   {
-    
+    return this.authService.deactivate2FA(req.body.user,req.body.password,res);
   }
 }

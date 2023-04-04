@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { statObj } from '@/components/profile/Interface';
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ModalActivate2FA } from '@/components/modal/Modals';
+import { ModalActivate2FA,ModalDeactivate2FA } from '@/components/modal/Modals';
 import {
   FirstNameInput,
   LastNameInput,
@@ -46,16 +46,15 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [isEnabledSecond, setEnabledSecond] = useState(false);
 
   const [qrPath, setQrPath] = useState('');
-  const [isOpen, setIsOpen] = useState([false,false,false]);
+  const [isOpen, setIsOpen] = useState([false, false, false]);
   const [activated, setActivated] = useState(Is2FAEnabled);
 
-  function toggleOppen(index : number) {
-      const newState = isOpen.map((item,i) =>{ 
-        if (i == index)
-          return !item;
-        return item;
-      })
-      setIsOpen(newState);
+  function toggleOpen(index: number) {
+    const newState = isOpen.map((item, i) => {
+      if (i == index) return !item;
+      return item;
+    });
+    setIsOpen(newState);
   }
 
   async function handlePasswordUpdate(event: any) {
@@ -338,7 +337,7 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     const data = await res.json();
     if (res.ok) {
       setQrPath(data.qrcode);
-      toggleOppen(0);
+      toggleOpen(0);
     } else {
       // handling erroś
     }
@@ -351,18 +350,26 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     //   consoel
     // }
   }
-  async function deactivate2FA(event: React.MouseEvent<HTMLButtonElement>) {}
+  function deactivate2FA(event: React.MouseEvent<HTMLButtonElement>) {
+      event.preventDefault();
+      toggleOpen(1);
+  }
 
   return (
     <>
       {isOpen[0] && (
         <ModalActivate2FA
           qrPath={qrPath}
-          toggleOppen={toggleOppen}
+          toggleOpen={toggleOpen}
           activated={activated}
           setActivated={setActivated}
         />
       )}
+      {
+        isOpen[1] && <ModalDeactivate2FA toggleOpen={toggleOpen}
+        activated={activated}
+        setActivated={setActivated}/>
+      }
       <AnimatePresence>
         {error && (
           <motion.div
