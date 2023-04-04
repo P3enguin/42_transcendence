@@ -1,5 +1,4 @@
-import { randomUUID } from 'crypto';
-import { Socket } from 'socket.io';
+import { generate as generateID } from 'shortid';
 
 export class Player {
   score: number;
@@ -28,7 +27,7 @@ export class Game {
   updatedAt: Date;
 
   constructor(gameType: GameType) {
-    this.id = randomUUID();
+    this.id = generateID();
     this.players = [];
     this.spectator = [];
     this.type = gameType;

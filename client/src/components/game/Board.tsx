@@ -51,7 +51,7 @@ const Board = ({
       onMouseMove={mouseHandler}
       onTouchMove={touchHandler}
       ref={boardRef}
-      className="relative bg-center bg-no-repeat"
+      className="relative bg-center bg-no-repeat border"
       style={{
         backgroundImage: "url('../game/GameBoard.svg')",
         backgroundSize: '100%',
