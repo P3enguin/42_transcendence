@@ -7,7 +7,9 @@ import { ConfigService } from '@nestjs/config';
 import { AchivementService } from 'src/achivement/achivement.service';
 import { TitleService } from 'src/title/title.service';
 import { Request, Response } from 'express';
+import { authenticator } from 'otplib';
 import * as argon2 from 'argon2';
+import {toDataURL} from 'qrcode';
 
 interface playerStrat {
   email: string;
@@ -17,6 +19,8 @@ interface playerStrat {
   coins: number;
   accessToken: string;
 }
+
+
 
 @Injectable()
 export class AuthService {
@@ -85,6 +89,7 @@ export class AuthService {
           lastname: dto.lastname,
           password: hash,
           coins: dto.coins,
+          Secret2FA: "",
           status: {
             create: {},
           },
@@ -208,5 +213,82 @@ export class AuthService {
       console.log(err);
       return res.status(401).json({ error: err });
     }
+  }
+
+  // to changle later with a user inteface 
+  async enable2FA(user:any,res:Response)
+  {
+    const secret = authenticator.generateSecret();
+    try {
+
+        // check if the user already has 2FA enable
+        const player = await this.prisma.player.findUnique({
+          where :{
+            id : user.id,
+          },
+          select : {
+            Is2FAEnabled : true,
+          }
+        })
+        if (player.Is2FAEnabled)
+          return res.status(401).json({error : 'You have already activated 2FA !'});
+
+        await this.prisma.player.update({
+          where : {
+            id : user.id
+          },
+          data : {
+            Secret2FA: secret,
+          }
+        })
+        const otpauth = authenticator.keyuri(user.id,'ft_transcendence',secret);
+        toDataURL(otpauth,(err,imageUrl) => {
+          if (err)
+          {
+            console.log('Error while generating QR');
+            return res.status(500).json({error : 'Error while generating QR'});
+          }
+          console.log(imageUrl);
+          return res.status(200).json({qrcode:imageUrl});
+        })
+    }
+    catch(error)
+    {
+      console.log(error);
+      return res.status(400).json({error : 'An error has occured'});
+    }
+  }
+
+  async confirm2FA(user : any,token: string,res:Response) {
+      try {
+        const player = await this.prisma.player.findUnique({
+          where : {
+            id : user.id,
+          },
+          select : {
+            Secret2FA : true,
+          }
+        })
+        const secret : string = player.Secret2FA;
+        if ( authenticator.verify({token,secret}))
+        {
+          await this.prisma.player.update({
+            where : {
+              id : user.id
+            },
+            data : {
+                Is2FAEnabled : true,
+            }
+          })
+          res.status(200).json({success : "Successfully added 2FA"})
+        }
+        else {
+          res.status(403).json({error : "Invalid Token"})
+        }
+      }
+      catch (error)
+      {
+        return res.status(400).json({error : "An error has occured"})
+      }
   }
 }

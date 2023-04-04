@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { statObj } from '@/components/profile/Interface';
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ModalQRcode from '@/components/modal/Modals';
 import {
   FirstNameInput,
   LastNameInput,
@@ -43,6 +44,8 @@ function settings({ firstname, lastname, nickname }: propsData) {
   const [isEnabled, setEnabled] = useState(false);
   const [isEnabledSecond, setEnabledSecond] = useState(false);
 
+  const [qrPath,setQrPath] = useState("");
+  const [isOpen,setIsOpen] = useState(false);
   async function handlePasswordUpdate(event: any) {
     event.preventDefault();
 
@@ -311,8 +314,32 @@ function settings({ firstname, lastname, nickname }: propsData) {
     }
   }
 
+  async function activate2FA(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/enable2FA',
+      {
+        credentials: 'include',
+      },
+    );
+    const data = await res.json();
+    setQrPath(data.qrcode)
+    setIsOpen(true);
+    console.log(data);
+    // if (res.ok) {
+    //   const data = await res.json();
+    //   console.log(data);
+    // }
+    // else {
+    //   consoel
+    // }
+  }
+
   return (
     <>
+
+      {isOpen && <ModalQRcode qrPath={qrPath}  setIsOpen={setIsOpen}/>}
       <AnimatePresence>
         {error && (
           <motion.div
@@ -434,6 +461,7 @@ function settings({ firstname, lastname, nickname }: propsData) {
                   px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
                   md:text-base
                   `}
+          onClick={activate2FA}
         >
           Activate 2FA
         </button>
@@ -453,17 +481,16 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    if (res.ok)
-    {
-        const data = await res.json();
-        return {
-          // modify this to return anything you want before your page load
-          props: {
-            nickname: data.player.nickname,
-            firstname: data.player.firstname,
-            lastname: data.player.lastname,
-          },
-        };
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        // modify this to return anything you want before your page load
+        props: {
+          nickname: data.player.nickname,
+          firstname: data.player.firstname,
+          lastname: data.player.lastname,
+        },
+      };
     }
   }
   return {

@@ -62,4 +62,17 @@ export class AuthController {
   logout(@Req() req: Request, @Res() res: Response) {
     return this.authService.logout(req, res);
   }
+
+  @Get('enable2FA')
+  @UseGuards(JwtGuard)
+  enable2FA(@Req() req:Request,@Res() res:Response){
+    return this.authService.enable2FA(req.body.user,res);
+  }
+  
+  @Post('confirm2FA')
+  @UseGuards(JwtGuard)
+  confirm2FA(@Req() req:Request,@Res() res:Response)
+  {
+    return this.authService.confirm2FA(req.body.user,req.body.token,res);
+  }
 }

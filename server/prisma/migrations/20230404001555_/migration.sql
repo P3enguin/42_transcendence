@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "players" ADD COLUMN     "Is2FAEnabled" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "Secret2FA" TEXT NOT NULL DEFAULT '';
