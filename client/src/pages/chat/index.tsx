@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import Layout from '@/components/layout/layout';
+import { verifyToken } from '@/components/VerifyToken';
 import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 
 let socket: Socket;
 //use the chat :
@@ -15,7 +17,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
       setLoading(true);
       const res = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_HOST+'/players/avatar?' +
-          new URLSearchParams({ pfp: data.player.avatar }),
+          new URLSearchParams({ pfp: data.avatar }),
         {
           credentials: 'include',
         },
@@ -28,7 +30,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
         ...{ pfp: url, wp: pictures.wp },
       }));
     };
-    if (pictures.pfp != data.player.avatar) fetchPFP();
+    if (pictures.pfp != data.avatar) fetchPFP();
     setLoading(false);
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
       auth: {
@@ -56,17 +58,17 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
           <div className="flex h-[15%] w-[100%] flex-col pl-5 pr-5">
               <div >Online Now</div>
             <div className="scroll-hide flex w-[90%] space-x-1 flex-row overflow-hidden overflow-x-auto scrollbar-hide ">
-              {
-                data.player.friends.map((friend: any, index: any) =>(
-                  <Link key={index} href={`/users/${friend.nickname}`}>
+              {/* {
+                data.player.friends.map((friend: any, index: any) =>( */}
+                  {/* <Link key={index} href={`/users/${friend.nickname}`}> */}
                     <img
                       className="h-16 w-16 cursor-pointer rounded-full border"
                       src={pictures.pfp}
                       // src="blob:http://localhost:3000/6f8615dd-585e-4aae-9b34-8be16ec4f495"
                       alt="Avatar"/>
-                  </Link>
-                )
-                )}
+                  {/* </Link> */}
+                {/* )
+                )} */}
                 
             </div>
             <div className="flex flex-wrap justify-center overflow-y-auto sm:justify-start ">
@@ -91,7 +93,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
                         alt="Avatar"
                         />
                       <div className="flex flex-col self-center  whitespace-nowrap overflow-x-hidden">
-                        <Link href={`/users/${data.player.nickname}`}><h3>{data.player.nickname}</h3></Link>
+                        <Link href={`/users/${data.nickname}`}><h3>{data.nickname}</h3></Link>
                       <div className="flex text-xs text-green-300 ">
                         how are you today? wanna hangout ?
                       </div>
@@ -174,23 +176,31 @@ export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
 
   if (jwt_token) {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
-      {
-        headers: {
-          Cookie: req.headers.cookie,
-        },
-      },
-    );
-    const data = await res.json();
+    const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
-      return {
-        // modify this to return anything you want before your page load
-        props: {
-          data,
-          jwt_token: jwt_token,
-        },
-      };
+      try {
+        const resp = await axios.get('http://localhost:4444/online', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwt_token}`,
+          },
+        });
+        const data = resp.data;
+        return {
+          props: {
+            data,
+            jwt_token: jwt_token,
+          },
+        };
+      } catch (error: any) {
+        console.error(error.message);
+        return {
+          props: {
+            data: [],
+            jwt_token: jwt_token,
+          },
+        };
+      }
     }
   }
   return {
