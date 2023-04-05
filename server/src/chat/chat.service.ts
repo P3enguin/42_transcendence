@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Player } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -21,8 +22,9 @@ export class ChatService {
         return ('SendPublicMessage');
     }
     
-    GetPrivMessage(friendId: number)
+    GetPrivMessage(player: Player, friendId: number)
     {
+        console.log("getting",player);
         return ('GetPrivMessage');
     }
     
@@ -30,5 +32,5 @@ export class ChatService {
     {
         return ('GetChannelMessage');
     }
-
+ 
 }
