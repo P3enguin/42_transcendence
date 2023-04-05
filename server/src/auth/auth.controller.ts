@@ -11,7 +11,7 @@ import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthDto, singDTO } from './dto';
-import { JwtSessionGuard, JwtGuard } from 'src/auth/guard';
+import { JwtSessionGuard, JwtGuard, Jwt2FAGuard } from 'src/auth/guard';
 
 @Controller('auth')
 export class AuthController {
@@ -51,7 +51,13 @@ export class AuthController {
   verifySession(@Req() req: Request, @Res() res: Response) {
     return res.status(200).json(req.body.user);
   }
-
+  // same as verifyToken and verifysession
+  @Get('token2FA')
+  @UseGuards(Jwt2FAGuard)
+  verify2FASession(@Req() req: Request, @Res() res: Response)
+  {
+    return res.status(200).json(req.body.user);
+  }
   // @Get('user')
   // getUser(@Query() query: {email: string}):object {
   //    return this.authService.getUser(query.email);
@@ -81,5 +87,12 @@ export class AuthController {
   deactivate2FA(@Req() req:Request,@Res() res:Response)
   {
     return this.authService.deactivate2FA(req.body.user,req.body.password,res);
+  }
+
+  @Post('verify2FA')
+  @UseGuards(Jwt2FAGuard)
+  verify2FA(@Req() req:Request,@Res() res:Response)
+  {
+    return this.authService.verify2FA(req.body.user,req.body.token,res);
   }
 }

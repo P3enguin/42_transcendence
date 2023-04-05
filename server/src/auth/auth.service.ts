@@ -20,8 +20,6 @@ interface playerStrat {
   accessToken: string;
 }
 
-
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -43,11 +41,12 @@ export class AuthService {
           nickname: true,
           email: true,
           avatar: true,
+          Is2FAEnabled: true,
         },
       });
-      // the player not exist : create a short-live jwt and redirect to complete the profile
+      // The player does not exist: create a short-live jwt and redirect to complete the profile
       if (!player) {
-        const secret = process.env.JWT_SECRET;
+        const secret = process.env.JWT_SESSION;
         const jwtSession = await this.jwt.signAsync(user, {
           expiresIn: '15m',
           secret: secret,
@@ -58,6 +57,23 @@ export class AuthService {
           maxAge: 1000 * 60 * 15, // expires after 15 min
         });
         res.redirect(process.env.FRONTEND_HOST + '/login');
+
+        // Player exists and has 2FA enabled : create a short-live jwt signed with different key and redirect to /verify
+      } else if (player.Is2FAEnabled) {
+        const secret = process.env.JWT_2FA;
+        const payload = {
+          id : player.id
+        }
+        const jwt2FA = await this.jwt.signAsync(payload, {
+          expiresIn: '15m',
+          secret: secret,
+        });
+        res.status(200).cookie('jwt_2FA', jwt2FA, {
+          httpOnly: true,
+          // secure: true,
+          maxAge: 1000 * 60 * 15, // expires after 15 min
+        });
+        res.redirect(process.env.FRONTEND_HOST + '/verify');
       } else {
         const jwtToken = await this.signToken(player.id, player.nickname);
         res.cookie('jwt_token', jwtToken.access_token, {
@@ -128,17 +144,34 @@ export class AuthService {
           id: true,
           password: true,
           nickname: true,
+          Is2FAEnabled: true,
         },
       });
       if (!player) throw new ForbiddenException('Nickname Not found');
       if (await argon2.verify(player.password, dto.password)) {
-        const token = await this.signToken(player.id, player.nickname);
-        res.cookie('jwt_token', token.access_token, {
-          httpOnly: true,
-          // secure: true,
-          maxAge: 1000 * 60 * 60,
-        });
-        res.status(200).send({ success: true });
+        if (player.Is2FAEnabled)
+        {
+          const secret = process.env.JWT_2FA;
+          const jwt2FA = await this.jwt.signAsync(player, {
+            expiresIn: '15m',
+            secret: secret,
+          });
+          res.status(200).cookie('jwt_2FA', jwt2FA, {
+            httpOnly: true,
+            // secure: true,
+            maxAge: 1000 * 60 * 15, // expires after 15 min
+          });
+          res.redirect(process.env.FRONTEND_HOST + '/verify');
+        }
+        else {
+          const token = await this.signToken(player.id, player.nickname);
+          res.cookie('jwt_token', token.access_token, {
+            httpOnly: true,
+            // secure: true,
+            maxAge: 1000 * 60 * 60,
+          });
+          res.status(200).send({ success: true });
+        }
       } else {
         throw new ForbiddenException('Password Incorrect');
       }
@@ -267,23 +300,24 @@ export class AuthService {
           },
           select : {
             Secret2FA : true,
+            Is2FAEnabled:true,
           }
         })
         const secret : string = player.Secret2FA;
         if (authenticator.verify({token,secret}))
         {
-          await this.prisma.player.update({
-            where : {
-              id : user.id
-            },
-            data : {
-                Is2FAEnabled : true,
-            }
-          })
-          res.status(200).json({success : "Successfully added 2FA"})
+            await this.prisma.player.update({
+              where : {
+                id : user.id
+              },
+              data : {
+                  Is2FAEnabled : true,
+              }
+            })
+          res.status(200).json({success : "Successfully"})
         }
         else {
-          res.status(403).json({error : "Invalid Token"})
+          res.status(400).json({error : "Invalid Token"})
         }
       }
       catch (error)
@@ -324,4 +358,38 @@ export class AuthService {
           res.status(403).json({error: error });
       }
   }
+
+  async verify2FA(user : any,token: string,res:Response) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where : {
+          id : user.id,
+        },
+        select : {
+          id:true,
+          nickname:true,
+          Secret2FA : true,
+          Is2FAEnabled:true,
+        }
+      })
+      const secret : string = player.Secret2FA;
+      if (authenticator.verify({token,secret}))
+      {
+        const token = await this.signToken(player.id, player.nickname);
+          res.cookie('jwt_token', token.access_token, {
+            httpOnly: true,
+            // secure: true,
+            maxAge: 1000 * 60 * 60,
+          });
+          res.status(200).send({ success: true });
+      }
+      else {
+        res.status(400).json({error : "Invalid Token"})
+      }
+    }
+    catch (error)
+    {
+      return res.status(400).json({error : "An error has occured"})
+    }
+}
 }

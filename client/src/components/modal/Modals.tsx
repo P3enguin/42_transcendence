@@ -30,7 +30,7 @@ function ModalActivate2FA({
     );
     if (res.ok) {
       setActivated(true);
-    } else if (res.status === 403) {
+    } else if (res.status === 400) {
       const span = document.getElementById('input2FASpan');
       if (span) span.innerHTML = 'The numbers you entered are invalid !';
     }
@@ -157,7 +157,8 @@ function ModalDeactivate2FA({
       },
     );
     if (res.ok) {
-      setActivated(true);
+      console.log("wp");
+      setActivated(false);
     } else if (res.status === 403) {
     
       const result = await res.json();
