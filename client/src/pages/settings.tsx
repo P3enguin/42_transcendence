@@ -1,16 +1,19 @@
 import Layout from '@/components/layout/layout';
 import { useState } from 'react';
-import { statObj } from '@/components/profile/Interface';
+import { statObj } from '@/components/tools/Interface';
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ModalActivate2FA,ModalDeactivate2FA } from '@/components/modal/Modals';
+import {
+  ModalActivate2FA,
+  ModalDeactivate2FA,
+} from '@/components/modal/Modals';
 import {
   FirstNameInput,
   LastNameInput,
   NickNameInput,
   PasswordInput,
   RePasswordInput,
-} from '@/components/profile/Inputs';
+} from '@/components/Input/Inputs';
 
 import {
   isBetween,
@@ -351,8 +354,8 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     // }
   }
   function deactivate2FA(event: React.MouseEvent<HTMLButtonElement>) {
-      event.preventDefault();
-      toggleOpen(1);
+    event.preventDefault();
+    toggleOpen(1);
   }
 
   return (
@@ -365,11 +368,13 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
           setActivated={setActivated}
         />
       )}
-      {
-        isOpen[1] && <ModalDeactivate2FA toggleOpen={toggleOpen}
-        activated={activated}
-        setActivated={setActivated}/>
-      }
+      {isOpen[1] && (
+        <ModalDeactivate2FA
+          toggleOpen={toggleOpen}
+          activated={activated}
+          setActivated={setActivated}
+        />
+      )}
       <AnimatePresence>
         {error && (
           <motion.div

@@ -29,7 +29,11 @@ function Login() {
       credentials: 'include',
     });
     if (response.ok) {
-      Router.push('/profile');
+      const data = await response.json();
+      if (data.Is2FAenabled)
+        Router.push('/verify')
+      else
+        Router.push('/profile');
     } else {
       const err = await response.json();
       const span = document.getElementById('error-span');

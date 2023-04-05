@@ -7,13 +7,13 @@ import {
   SvgShapingMethod,
 } from '../icons/Icons';
 import Router from 'next/router';
-import { data, statObj } from './Interface';
+import { data, statObj } from '../tools/Interface';
 import {
   FirstNameInput,
   LastNameInput,
   NickNameInput,
   PasswordInput,
-} from './Inputs';
+} from '../Input/Inputs';
 import {
   isBetween,
   isValidName,

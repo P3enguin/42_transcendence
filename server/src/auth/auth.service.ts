@@ -161,7 +161,7 @@ export class AuthService {
             // secure: true,
             maxAge: 1000 * 60 * 15, // expires after 15 min
           });
-          res.redirect(process.env.FRONTEND_HOST + '/verify');
+          return res.json({Is2FAenabled:true});
         }
         else {
           const token = await this.signToken(player.id, player.nickname);
@@ -170,7 +170,7 @@ export class AuthService {
             // secure: true,
             maxAge: 1000 * 60 * 60,
           });
-          res.status(200).send({ success: true });
+          res.status(200).send({ Is2FAenabled: false });
         }
       } else {
         throw new ForbiddenException('Password Incorrect');
@@ -281,7 +281,6 @@ export class AuthService {
             console.log('Error while generating QR');
             return res.status(500).json({error : 'Error while generating QR'});
           }
-          console.log(imageUrl);
           return res.status(200).json({qrcode:imageUrl});
         })
     }

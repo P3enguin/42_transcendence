@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
-import { useState } from 'react';
+import { OTPInput } from '@/components/Input/Inputs';
+import { verifyOTP } from '../tools/functions';
 interface QrCodeProps {
   qrPath?: string;
   activated: boolean | undefined;
@@ -7,33 +8,15 @@ interface QrCodeProps {
   setActivated: Dispatch<SetStateAction<boolean | undefined>>;
 }
 
-
 function ModalActivate2FA({
   qrPath,
   toggleOpen,
   activated,
   setActivated,
 }: QrCodeProps) {
-  async function confirm2FA(event: any) {
+  async function verify(event: any) {
     event.preventDefault();
-    const token = event.target.input2FA.value;
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/confirm2FA',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          token: token,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      },
-    );
-    if (res.ok) {
-      setActivated(true);
-    } else if (res.status === 400) {
-      const span = document.getElementById('input2FASpan');
-      if (span) span.innerHTML = 'The numbers you entered are invalid !';
-    }
+    if (await verifyOTP(event, '/auth/confirm2FA')) setActivated(true);
   }
 
   return (
@@ -81,22 +64,11 @@ function ModalActivate2FA({
                 Then Enter the 6 digits found in your Google Authenticator app
                 below 👇
               </p>
-              <form onSubmit={confirm2FA}>
+              <form onSubmit={verify}>
                 <div className=" mb-6">
-                  <input
-                    type="input"
-                    name="input2FA"
-                    id="input2FA"
-                    className={` 
-                    'border-gray-300'
-                    peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3 text-center text-xs text-black
-                  focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
-                    placeholder="6-digits"
-                  />
-
+                  <OTPInput />
                   <span
-                    id="input2FASpan"
+                    id="errorSpan"
                     className="justify-even ml-4 mt-2 flex text-center text-xs text-red-700 md:text-sm"
                   ></span>
                 </div>
@@ -140,10 +112,8 @@ function ModalDeactivate2FA({
   activated,
   setActivated,
 }: QrCodeProps) {
-
   async function deactivate2FA(event: any) {
     event.preventDefault();
-    console.log("hh");
     const password = event.target.password2FA.value;
     const res = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/deactivate2FA',
@@ -157,10 +127,8 @@ function ModalDeactivate2FA({
       },
     );
     if (res.ok) {
-      console.log("wp");
       setActivated(false);
     } else if (res.status === 403) {
-    
       const result = await res.json();
       console.log(result);
       const span = document.getElementById('password2FASpan');
