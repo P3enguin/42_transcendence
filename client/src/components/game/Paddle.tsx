@@ -18,7 +18,6 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
         paddleRef.current.style.height =
           paddleRef.current.offsetWidth / 5 + 'px';
         setPaddleOffset(paddleRef.current.offsetHeight / 1.5);
-        // setPaddleX((boardRef.current?.offsetWidth * position.x) / 700);
         setPaddleX((position.x * 100) / 700);
       }
     };

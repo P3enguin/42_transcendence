@@ -11,32 +11,62 @@ import {
 
 const PongAi = ({ gameRef }: { gameRef: React.RefObject<HTMLDivElement> }) => {
   const boardRef = useRef<HTMLDivElement>(null);
-  const [ballPosition, setBallPosition] = useState({ x: 90, y: 10 });
+  const ballRef = useRef<HTMLDivElement>(null);
+  const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
   const [ballVelocity, setBallVelocity] = useState({ x: -1, y: 1 });
   const [Paddle1Position, setPaddle1Position] = useState({ x: 525, y: 1 });
   const [Paddle2Position, setPaddle2Position] = useState({ x: 175, y: -1 });
 
-  const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {};
+  const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
+    if (boardRef.current) {
+      const mousePosition = e.pageX - boardRef.current.offsetLeft;
+      if (mousePosition > 0 && mousePosition < 700) {
+        setPaddle2Position((prev) => ({ x: mousePosition, y: prev.y }));
+      }
+    }
+  };
 
   const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {};
+
+  const checkWallCollision = () => {
+    if (ballRef.current && boardRef.current) {
+      if (
+        ballPosition.x < 0 ||
+        ballPosition.x + ballRef.current?.offsetWidth >= 700
+      ) {
+        ballVelocity.x = -ballVelocity.x;
+        setBallVelocity((prev) => ({ x: -prev.x, y: prev.y }));
+      }
+      if (
+        ballPosition.y < 0 ||
+        ballPosition.y + ballRef.current?.offsetHeight >= 980
+      ) {
+        ballVelocity.y = -ballVelocity.y;
+        setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
+      }
+      if (
+        ballPosition.x + ballRef.current?.offsetWidth >= Paddle2Position.x &&
+        ballPosition.x <= Paddle2Position.x + 100 &&
+        ballPosition.y + ballRef.current?.offsetHeight >= 980
+      ) {
+        ballVelocity.y = -ballVelocity.y;
+        setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
+      }
+    }
+  };
+
   useEffect(() => {
-      const interval = setInterval(() => {
-        console.log(boardRef.current?.offsetWidth, ballPosition.x);
-        if (ballPosition.x < 0 || ballPosition.x > boardRef.current?.offsetWidth) {
-          ballVelocity.x = -ballVelocity.x;
-          setBallVelocity((prev) => ({ x: -prev.x, y: prev.y }));
-        }
-        if (ballPosition.y < 0 || ballPosition.y > boardRef.current?.offsetHeight) {
-          ballVelocity.y = -ballVelocity.y;
-          setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
-        }
+    const interval = setInterval(() => {
+      if (ballRef.current) {
+        checkWallCollision();
         ballPosition.x += ballVelocity.x;
         ballPosition.y += ballVelocity.y;
         setBallPosition((prev) => ({
           x: prev.x + ballVelocity.x,
           y: prev.y + ballVelocity.y,
         }));
-    }, 1000/30);
+      }
+    }, 1);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -49,9 +79,9 @@ const PongAi = ({ gameRef }: { gameRef: React.RefObject<HTMLDivElement> }) => {
       mouseHandler={handleMouseMove}
       touchHandler={handleTouchMove}
     >
-      <Paddle position={Paddle1Position} />
-      <Ball position={ballPosition} type="ai"/>
-      <Paddle position={Paddle2Position} />
+      <Paddle position={Paddle1Position} /*Top paddle*/ />
+      <Ball position={ballPosition} ballRef={ballRef} />
+      <Paddle position={Paddle2Position} /*Bottom paddle*/ />
     </Board>
   );
 };
