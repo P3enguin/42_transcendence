@@ -27,7 +27,8 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
     return () => {
       window.removeEventListener('resize', resizePaddle);
     };
-  }, [boardRef, position]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardRef?.current, position]);
 
   const paddleStyle = {
     top: position.y === 1 ? paddleOffset : undefined,

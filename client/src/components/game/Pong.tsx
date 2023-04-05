@@ -18,6 +18,8 @@ interface PongProps {
 
 const Pong = ({ gameRef, socket, position }: PongProps) => {
   const boardRef = useRef<HTMLDivElement>(null);
+  const ballRef = useRef<HTMLDivElement>(null);
+
   const [ballPosition, setBallPosition] = useState({ x: 300, y: 100 });
   const [Paddle1Position, setPaddle1Position] = useState({ x: 525, y: 1 });
   const [Paddle2Position, setPaddle2Position] = useState({ x: 175, y: -1 });
@@ -58,7 +60,7 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
       touchHandler={handleTouchMove}
     >
       <Paddle position={Paddle1Position} />
-      <Ball position={ballPosition} />
+      <Ball position={ballPosition} ballRef={ballRef} />
       <Paddle position={Paddle2Position} />
     </Board>
   );
