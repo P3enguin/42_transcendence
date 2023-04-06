@@ -119,7 +119,7 @@ function ProfileDisplay({
                 initial={{opacity:0}}
                 animate={{opacity:1}}
                 exit={{opacity:0}}
-            className={`relative -mb-12 w-[300px] rounded border
+            className={`absolute -mb-12 w-[300px] rounded border
               border-red-400 bg-red-600 px-4 py-3 text-center }`}
           >
             <strong id="err-profile" className="font-bold">
@@ -133,7 +133,7 @@ function ProfileDisplay({
               initial={{opacity:0}}
               animate={{opacity:1}}
               exit={{opacity:0}}
-          className={`relative -mb-12 w-[300px] rounded border
+          className={`absolute -mb-12 w-[300px] rounded border
             border-red-400 bg-red-600 px-4 py-3 text-center }`}
         >
           <strong id="err-profile" className="font-bold">
@@ -148,7 +148,7 @@ function ProfileDisplay({
             animate={{opacity:1}}
             exit={{opacity:0}}
 
-            className={`  -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
+            className={`absolute  -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
             px-4  py-3 text-center text-teal-900 shadow-md `}
           >
             <strong id="succ-profile" className="font-bold">

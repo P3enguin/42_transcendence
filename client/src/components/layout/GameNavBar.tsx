@@ -39,7 +39,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               rounded-tr-3xl rounded-bl-3xl"
       >
         <Link className="" href="/home">
-          <Image
+          <img
             className=""
             src="/logo.svg"
             alt="logo"

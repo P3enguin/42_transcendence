@@ -30,47 +30,47 @@ function UserProfile({
   joinAt,
   exist,
 }: player) {
-  const [pictures, changePictures] = useState({ pfp: '', wp: '' });
-  const [isLoading, setLoading] = useState(true);
+  // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
+  const [isLoading, setLoading] = useState(false);
   const list = ['hh', 'hh2', 'hh3'];
 
-  useEffect(() => {
-    const fetchPFP = async () => {
-      setLoading(true);
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar?' +
-          new URLSearchParams({ pfp: avatar }),
-        {
-          credentials: 'include',
-        },
-      );
-      const pfp = await res.blob();
-      const url = URL.createObjectURL(pfp);
-      changePictures((pictures) => ({
-        ...pictures,
-        ...{ pfp: url, wp: pictures.wp },
-      }));
-    };
+  // useEffect(() => {
+  //   const fetchPFP = async () => {
+  //     setLoading(true);
+  //     const res = await fetch(
+  //       process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar?' +
+  //         new URLSearchParams({ pfp: avatar }),
+  //       {
+  //         credentials: 'include',
+  //       },
+  //     );
+  //     const pfp = await res.blob();
+  //     const url = URL.createObjectURL(pfp);
+  //     changePictures((pictures) => ({
+  //       ...pictures,
+  //       ...{ pfp: url, wp: pictures.wp },
+  //     }));
+  //   };
 
-    const fetchWp = async () => {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper?' +
-          new URLSearchParams({ wp: wallpaper }),
-        {
-          credentials: 'include',
-        },
-      );
-      const wp = await res.blob();
-      const url = URL.createObjectURL(wp);
-      changePictures((pictures) => ({
-        ...pictures,
-        ...{ pfp: pictures.pfp, wp: url },
-      }));
-    };
-    if (exist && pictures.pfp != avatar) fetchPFP();
-    if (exist && pictures.wp != wallpaper) fetchWp();
-    setLoading(false);
-  }, []);
+  //   const fetchWp = async () => {
+  //     const res = await fetch(
+  //       process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper?' +
+  //         new URLSearchParams({ wp: wallpaper }),
+  //       {
+  //         credentials: 'include',
+  //       },
+  //     );
+  //     const wp = await res.blob();
+  //     const url = URL.createObjectURL(wp);
+  //     changePictures((pictures) => ({
+  //       ...pictures,
+  //       ...{ pfp: pictures.pfp, wp: url },
+  //     }));
+  //   };
+  //   if (exist && pictures.pfp != avatar) fetchPFP();
+  //   if (exist && pictures.wp != wallpaper) fetchWp();
+  //   setLoading(false);
+  // }, []);
 
   if (!exist)
     return (
@@ -84,8 +84,9 @@ function UserProfile({
           className="mt-[20px] flex w-11/12 flex-col justify-center
           rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:mt-[100px] xl:w-[1000px]"
         >
+       
           <img
-            src={pictures.wp}
+            src={process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper }
             alt="wallpaper"
             id="wallpaper-holder"
             className=" h-[160px]  min-h-[80px] w-full 
@@ -105,7 +106,7 @@ function UserProfile({
                 {/* image  */}
                 <div className="-mt-[120px] flex xl:-mt-[150px]">
                   <img
-                    src={pictures.pfp}
+                    src={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' +  avatar }
                     alt="pfp"
                     id="pfp-holder"
                     className="pfp absolute h-[130px] w-[120px] 

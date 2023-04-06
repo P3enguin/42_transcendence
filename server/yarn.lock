@@ -824,6 +824,13 @@
     jsonc-parser "3.2.0"
     pluralize "8.0.0"
 
+"@nestjs/serve-static@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/serve-static/-/serve-static-3.0.1.tgz#d7d736b47171923d9e87262e19cc58ade8f4ba56"
+  integrity sha512-i766UJPYOqvQ2BbRKh0/+Mmq5NkJnmKcShjWV1i5qpXyeM0KDZTn0n7g7ykWq/3LbQgjpMzrhYtGv35GX7GVQw==
+  dependencies:
+    path-to-regexp "0.2.5"
+
 "@nestjs/testing@^9.0.0":
   version "9.3.9"
   resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-9.3.9.tgz#f09a5df30cb1725a06f9fddd666543bbeb87eb35"
@@ -1309,6 +1316,9 @@
   version "5.54.1"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/scope-manager/-/scope-manager-5.54.1.tgz#6d864b4915741c608a58ce9912edf5a02bb58735"
   integrity sha512-zWKuGliXxvuxyM71UA/EcPxaviw39dB2504LqAmFDjmkpO8qNLHcmzlh6pbHs1h/7YQ9bnsO8CCcYCSA8sykUg==
+  dependencies:
+    "@typescript-eslint/types" "5.54.1"
+    "@typescript-eslint/visitor-keys" "5.54.1"
 
 "@typescript-eslint/type-utils@5.54.1":
   version "5.54.1"
@@ -5111,6 +5121,11 @@ path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
   integrity sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==
+
+path-to-regexp@0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.2.5.tgz#0b426991e387fc4c675de23557f358715eb66fb0"
+  integrity sha512-l6qtdDPIkmAmzEO6egquYDfqQGPMRNGjYtrU13HAXb3YSRrt7HSb1sJY0pKp6o2bAa86tSB6iwaW2JbthPKr7Q==
 
 path-to-regexp@3.2.0:
   version "3.2.0"
