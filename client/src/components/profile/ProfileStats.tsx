@@ -5,6 +5,8 @@ import {
     RankingIcon,
   } from '@/components/icons/Icons';
 
+import FriendStats from './States/Friends';
+
 function ProfileStats() {
     return (  <div
         className="flex  w-11/12 flex-col justify-center rounded-3xl 
@@ -59,7 +61,9 @@ function ProfileStats() {
             </span>
           </button>
         </div>
-        <div className=" flex h-[200px] overflow-auto md:h-[400px] "></div>
+        <div className=" h-[200px]  overflow-y-scroll md:h-[400px] ">
+          <FriendStats/>
+        </div>
       </div>);
 }
 
