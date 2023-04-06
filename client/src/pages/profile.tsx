@@ -85,6 +85,8 @@ function PlayerProfile({
             nickname={nickname}
             joinDate={joinDate}
             coins={coins}
+            exp={1800}
+            MaxExp={2500}
           />
           <ProfileStats />
         </div>

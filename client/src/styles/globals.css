@@ -45,6 +45,12 @@ html {
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
+.level {
+  background-color: #2C3B7C; /*color of the main-background*/
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+
 .error {
   border-color: red;
 }
@@ -62,33 +68,40 @@ html {
   transform: translate(100px, 700px) rotate(-90deg);
 }
 .progress .track {
-  stroke: rgb(56, 71, 83);
+  stroke: #2C3B7C;
 }
 .progress .fill {
   stroke: rgb(255, 255, 255);
   stroke-linecap: round;
   stroke-dasharray: 2160;
-  stroke-dashoffset: 600;
+  stroke-dashoffset: 0;
   transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill {
-  stroke: rgb(104, 214, 198);
+  stroke: url(#MyGradient)
 }
-.progress.green .fill {
-  stroke: rgb(186, 223, 172);
+
+.progress .track2,
+.progress .fill2 {
+  fill: rgba(0, 0, 0, 0);
+  stroke-width: 20;
+  transform: translate(100px, 700px) rotate(-90deg);
 }
-.progress .value,
-.progress .text {
-  font-family: 'Open Sans';
-  fill: rgb(255, 255, 255);
-  text-anchor: middle;
+.progress .track2 {
+  stroke: rgb(54, 71, 83);
 }
-.progress .value {
-  font-size: 180px;
+.progress .fill2{
+  stroke: rgb(255, 255, 255);
+  stroke-linecap: round;
+  stroke-dasharray: 2160;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s;
 }
-.progress .text {
-  font-size: 120px;
+.progress.blue .fill2 {
+  stroke: url(#MyGradient2)
 }
+
+
 
 @media only screen and (min-device-width: 640px) {
   button:hover .friend-icon {
