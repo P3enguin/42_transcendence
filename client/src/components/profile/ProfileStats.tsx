@@ -6,6 +6,7 @@ import {
   } from '@/components/icons/Icons';
 
 import FriendStats from './States/Friends';
+import AchievementStats from './States/Achievement';
 
 function ProfileStats() {
     return (  <div
@@ -62,7 +63,9 @@ function ProfileStats() {
           </button>
         </div>
         <div className=" h-[200px]  overflow-y-scroll md:h-[400px] ">
-          <FriendStats/>
+          {/* <FriendStats/> */}    
+          <AchievementStats/>
+
         </div>
       </div>);
 }

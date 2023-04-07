@@ -74,7 +74,7 @@ html {
   stroke: rgb(255, 255, 255);
   stroke-linecap: round;
   stroke-dasharray: 2160;
-  stroke-dashoffset: 0;
+  stroke-dashoffset: 2160;
   transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill {
