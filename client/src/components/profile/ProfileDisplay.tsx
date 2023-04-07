@@ -30,11 +30,10 @@ function ProfileDisplay({
   const [errorSize, setErrorSize] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  async function handleWpChange(event: any) {
-    // const divErr = document.getElementById('err-profile');
-    if (event.target.files[0]) {
-      if (event.target.files[0].size > 1024 * 1024 * 2) {
-        // if (divErr) divErr.innerHTML = 'File must be 2MB Large!';
+  async function handleWpChange(event: React.ChangeEvent) {
+    const wallpaper = (event.target as HTMLInputElement).files?.[0];
+    if (wallpaper) {
+      if (wallpaper.size > 1024 * 1024 * 2) {
         setErrorSize(true);
         setTimeout(() => {
           setErrorSize(false);
@@ -42,9 +41,8 @@ function ProfileDisplay({
         return;
       }
 
-      const pfpImg = event.target.files[0];
       let formData = new FormData();
-      formData.append('file', pfpImg);
+      formData.append('file', wallpaper);
       const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
 
       const resp = await fetch(url, {
@@ -57,15 +55,12 @@ function ProfileDisplay({
           'wallpaper-holder',
         ) as HTMLImageElement;
         if (wp) window.URL.revokeObjectURL(pfp.src);
-        pfp.src = window.URL.createObjectURL(event.target.files[0]);
-        // const div = document.getElementById('succ-profile');
-        // if (div) div.innerHTML = 'Wallpaper Updated successfully!';
+        pfp.src = window.URL.createObjectURL(wallpaper);
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
       } else {
-        // if (divErr) divErr.innerHTML = 'An Error Has Occured!';
         setError(true);
         setTimeout(() => {
           setError(false);
@@ -74,9 +69,10 @@ function ProfileDisplay({
     }
   }
 
-  async function handlePfpChange(event: any) {
-    if (event.target.files[0]) {
-      if (event.target.files[0].size > 1024 * 1024 * 2) {
+  async function handlePfpChange(event: React.ChangeEvent) {
+    const avatar = (event.target as HTMLInputElement).files?.[0];
+    if (avatar) {
+      if (avatar.size > 1024 * 1024 * 2) {
         // if (divErr) divErr.innerHTML = 'File must be 2MB Large!';
         setErrorSize(true);
         setTimeout(() => {
@@ -85,9 +81,8 @@ function ProfileDisplay({
         return;
       }
 
-      const pfpImg = event.target.files[0];
       let formData = new FormData();
-      formData.append('file', pfpImg);
+      formData.append('file', avatar);
       const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
 
       const resp = await fetch(url, {
@@ -98,15 +93,12 @@ function ProfileDisplay({
       if (resp.ok) {
         const pfp = document.getElementById('pfp-holder') as HTMLImageElement;
         if (wp) window.URL.revokeObjectURL(pfp.src);
-        pfp.src = window.URL.createObjectURL(event.target.files[0]);
-        // const div = document.getElementById('succ-profile');
-        // if (div) div.innerHTML = 'Wallpaper Updated successfully!';
+        pfp.src = window.URL.createObjectURL(avatar);
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
       } else {
-        // if (divErr) divErr.innerHTML = 'An Error Has Occured!';
         setError(true);
         setTimeout(() => {
           setError(false);
@@ -234,8 +226,8 @@ function ProfileDisplay({
                       x2="100%"
                       y2="100%"
                     >
-                      <stop offset="0%" stop-color="#0097e2" />
-                      <stop offset="100%" stop-color="#01fd91" />
+                      <stop offset="0%" stopColor="#0097e2" />
+                      <stop offset="100%" stopColor="#01fd91" />
                     </linearGradient>
                   </defs>
                   <path
@@ -296,8 +288,8 @@ function ProfileDisplay({
                       x2="100%"
                       y2="100%"
                     >
-                      <stop offset="0%" stop-color="#01fd91" />
-                      <stop offset="100%" stop-color="#0097e2" />
+                      <stop offset="0%" stopColor="#01fd91" />
+                      <stop offset="100%" stopColor="#0097e2" />
                     </linearGradient>
                   </defs>
                   <path

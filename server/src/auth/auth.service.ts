@@ -10,15 +10,7 @@ import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import * as argon2 from 'argon2';
 import {toDataURL} from 'qrcode';
-
-interface playerStrat {
-  email: string;
-  firstName: string;
-  lastName: string;
-  picture: string;
-  coins: number;
-  accessToken: string;
-}
+import { playerStrat,UserToken } from './Interfaces/Interface';
 
 @Injectable()
 export class AuthService {
@@ -249,7 +241,7 @@ export class AuthService {
   }
 
   // to changle later with a user inteface 
-  async enable2FA(user:any,res:Response)
+  async enable2FA(user:UserToken,res:Response)
   {
     const secret = authenticator.generateSecret();
     try {
@@ -274,7 +266,7 @@ export class AuthService {
             Secret2FA: secret,
           }
         })
-        const otpauth = authenticator.keyuri(user.id,'ft_transcendence',secret);
+        const otpauth = authenticator.keyuri(user.id.toString(),'ft_transcendence',secret);
         toDataURL(otpauth,(err,imageUrl) => {
           if (err)
           {

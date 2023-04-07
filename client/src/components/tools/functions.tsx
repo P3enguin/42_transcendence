@@ -1,12 +1,13 @@
 
-export async function verifyOTP(event: any, api: string) {
+export async function verifyOTP(event: React.FormEvent, api: string) {
   const span = document.getElementById('errorSpan');
-  const nbr1 = event.target.numb1.value;
-  const nbr2 = event.target.numb2.value;
-  const nbr3 = event.target.numb3.value;
-  const nbr4 = event.target.numb4.value;
-  const nbr5 = event.target.numb5.value;
-  const nbr6 = event.target.numb6.value;
+
+  const nbr1 = (document.getElementById('numb1') as HTMLInputElement).value;
+  const nbr2 = (document.getElementById('numb2') as HTMLInputElement).value;
+  const nbr3 = (document.getElementById('numb3') as HTMLInputElement).value;
+  const nbr4 = (document.getElementById('numb4') as HTMLInputElement).value;
+  const nbr5 = (document.getElementById('numb5') as HTMLInputElement).value;
+  const nbr6 = (document.getElementById('numb6') as HTMLInputElement).value;
 
   if (!nbr1 || !nbr2 || !nbr3 || !nbr4 || !nbr5 || !nbr6) {
     if (span) span.innerHTML = 'Please enter all the digits !';

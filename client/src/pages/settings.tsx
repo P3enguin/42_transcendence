@@ -60,67 +60,79 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     setIsOpen(newState);
   }
 
-  async function handlePasswordUpdate(event: any) {
+  async function handlePasswordUpdate(event: React.FormEvent) {
     event.preventDefault();
 
-    const data = {
-      password: event.target.password.value,
-    };
-    const updateURL: string =
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
-
-    const response = await fetch(updateURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.status == 201) {
-      setSuccesPass(true);
-      setTimeout(() => {
-        setSuccesPass(false);
-      }, 3000);
-    } else if (response.status == 400) {
-      const err = await response.json();
-      setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-    }
-  }
-
-  async function handleDataSave(event: any) {
-    event.preventDefault();
-
-    const data: propsData = {
-      nickname: event.target.nickname.value,
-      firstname: event.target.firstname.value,
-      lastname: event.target.lastname.value,
-    };
-    const updateURL: string =
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
-
-    const response = await fetch(updateURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.status == 201) {
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-    } else if (response.status == 400) {
-      const err = await response.json();
-      if (err.error === 'Nickname already exist') {
-        const span = document.getElementById('nickspan');
-        updateField(2, { valid: false, touched: false }, span, err.error);
-      } else {
+    const password = (document.getElementById("password") as HTMLInputElement).value;
+    if (password)
+    {
+      const data = {
+        password: password,
+      };
+      const updateURL: string =
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
+  
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.status == 201) {
+        setSuccesPass(true);
+        setTimeout(() => {
+          setSuccesPass(false);
+        }, 3000);
+      } else if (response.status == 400) {
+        const err = await response.json();
         setError(true);
         setTimeout(() => {
           setError(false);
         }, 3000);
+      }
+    }
+  }
+
+  async function handleDataSave(event: React.FormEvent) {
+    event.preventDefault();
+
+    const nickname = (document.getElementById('nickname') as HTMLInputElement)
+      .value;
+    const firstname = (document.getElementById('firstname') as HTMLInputElement)
+      .value;
+    const lastname = (document.getElementById('lastname') as HTMLInputElement)
+      .value;
+    if (nickname && firstname && lastname) {
+      const data: propsData = {
+        nickname: nickname,
+        firstname: firstname,
+        lastname: lastname,
+      };
+      const updateURL: string =
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
+
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.status == 201) {
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 3000);
+      } else if (response.status == 400) {
+        const err = await response.json();
+        if (err.error === 'Nickname already exist') {
+          const span = document.getElementById('nickspan');
+          updateField(2, { valid: false, touched: false }, span, err.error);
+        } else {
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
       }
     }
   }

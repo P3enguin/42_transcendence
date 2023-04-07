@@ -5,18 +5,7 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Player } from '@prisma/client';
-
-interface jwtData {
-  decoded: any;
-  authorized: boolean;
-}
-
-interface user extends Player {
-  jwt?: {
-    exp: number;
-    iat: number;
-  };
-}
+import { jwtData,user } from '../Interfaces/Interface';
 
 @Injectable()
 export class JwtSessionGuard extends AuthGuard('jwt_session') {

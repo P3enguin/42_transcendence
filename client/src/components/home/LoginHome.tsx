@@ -15,12 +15,16 @@ function Login() {
     { text: 'gg', status: false },
   ]);
 
-  async function handleSubmit(event: any) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const nickInput = document.getElementById("nickname") as HTMLInputElement;
+    const passInput = document.getElementById("password") as HTMLInputElement;
+
     const data: data = {
-      nickname: event.target.nickname.value,
-      password: event.target.password.value,
+      nickname: nickInput.value,
+      password: passInput.value,
     };
+  
     const url: string = process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/signin';
     const response = await fetch(url, {
       method: 'POST',

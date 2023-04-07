@@ -36,67 +36,86 @@ function UpdateProfile({
   image: string;
   coins: number;
 }) {
-  async function handleSubmit(event: any) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
-    const data: data = {
-      nickname: event.target.nickname.value,
-      email: email,
-      password: event.target.password.value,
-      firstname: event.target.firstname.value,
-      lastname: event.target.lastname.value,
-      coins: coins,
-    };
-    const singupURL: string =
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/signup';
+    const nickname = (document.getElementById('nickname') as HTMLInputElement)
+      .value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    const firstname = (document.getElementById('firstname') as HTMLInputElement)
+      .value;
+    const lastname = (document.getElementById('lastname') as HTMLInputElement)
+      .value;
+    if (nickname && password && firstName && lastName) {
+      const data: data = {
+        nickname: nickname,
+        email: email,
+        password: password,
+        firstname: firstname,
+        lastname: lastname,
+        coins: coins,
+      };
+      const singupURL: string =
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/signup';
 
-    const response = await fetch(singupURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.status == 201) {
-      if (uploads.pfp) {
-        const pfpImg = event.target.pfp.files[0];
-        let formData = new FormData();
-        formData.append('file', pfpImg);
+      const response = await fetch(singupURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.status == 201) {
+        if (uploads.pfp) {
+          const avatar = (document.getElementById('pfp') as HTMLInputElement)
+            .files?.[0];
+          if (avatar) {
+            let formData = new FormData();
+            formData.append('file', avatar);
 
-        const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
+            const url =
+              process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
 
-        const resp = await fetch(url, {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        });
-      }
-      if (uploads.wp) {
-        const pfpImg = event.target.wallpaper.files[0];
-        let formData = new FormData();
-        formData.append('file', pfpImg);
-        const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
+            const resp = await fetch(url, {
+              method: 'POST',
+              body: formData,
+              credentials: 'include',
+            });
+          }
+        }
+        if (uploads.wp) {
+          const wallpaper = (
+            document.getElementById('wallpaper') as HTMLInputElement
+          ).files?.[0];
+          if (wallpaper) {
+            let formData = new FormData();
+            formData.append('file', wallpaper);
+            const url =
+              process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
 
-        const resp = await fetch(url, {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        });
-      }
-      Router.push('/profile');
-    } else if (response.status == 401) {
-      const err = await response.json();
-      if (err.error === 'Nickname already exist') {
-        const span = document.getElementById('nickspan');
-        updateField(
-          2,
-          { valid: false, touched: state[2].touched },
-          span,
-          err.error,
-        );
-      } else {
-        const span = document.getElementById('wp-span');
-        // to check later ,
-        if (span) span.innerHTML = err;
+            const resp = await fetch(url, {
+              method: 'POST',
+              body: formData,
+              credentials: 'include',
+            });
+          }
+        }
+        Router.push('/profile');
+      } else if (response.status == 401) {
+        const err = await response.json();
+        if (err.error === 'Nickname already exist') {
+          const span = document.getElementById('nickspan');
+          updateField(
+            2,
+            { valid: false, touched: state[2].touched },
+            span,
+            err.error,
+          );
+        } else {
+          const span = document.getElementById('wp-span');
+          // to check later ,
+          if (span) span.innerHTML = err;
+        }
       }
     }
   }
@@ -254,10 +273,11 @@ function UpdateProfile({
     }
   }
 
-  function handlePfpChange(event: any) {
+  function handlePfpChange(event: React.ChangeEvent) {
     const span = document.getElementById('pfp-span');
-    if (event.target.files[0]) {
-      if (event.target.files[0].size > 1024 * 1024 * 2) {
+    const avatar = (event.target as HTMLInputElement).files?.[0];
+    if (avatar) {
+      if (avatar.size > 1024 * 1024 * 2) {
         updateField(
           5,
           { valid: false, touched: false },
@@ -268,7 +288,7 @@ function UpdateProfile({
       }
       const pfp = document.getElementById('pfp-holder') as HTMLImageElement;
       if (uploads.pfp) window.URL.revokeObjectURL(pfp.src);
-      pfp.src = window.URL.createObjectURL(event.target.files[0]);
+      pfp.src = window.URL.createObjectURL(avatar);
       handleImage((item) => ({
         ...item,
         ...{ pfp: true, wp: uploads.wp },
@@ -277,10 +297,11 @@ function UpdateProfile({
     }
   }
 
-  function handleWpChange(event: any) {
+  function handleWpChange(event: React.ChangeEvent) {
     const span = document.getElementById('wp-span');
-    if (event.target.files[0]) {
-      if (event.target.files[0].size > 1024 * 1024 * 2) {
+    const wallpaper = (event.target as HTMLInputElement).files?.[0];
+    if (wallpaper) {
+      if (wallpaper.size > 1024 * 1024 * 2) {
         updateField(
           4,
           { valid: false, touched: false },
@@ -293,7 +314,7 @@ function UpdateProfile({
         'wallpaper-holder',
       ) as HTMLImageElement;
       if (uploads.wp) window.URL.revokeObjectURL(pfp.src);
-      pfp.src = window.URL.createObjectURL(event.target.files[0]);
+      pfp.src = window.URL.createObjectURL(wallpaper);
       handleImage((item) => ({
         ...item,
         ...{ pfp: uploads.pfp, wp: true },

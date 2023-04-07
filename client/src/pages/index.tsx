@@ -17,7 +17,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
   const [animate, setAnimation] = useState({ rotate: 0 });
   const [join, setJoin] = useState(false);
 
-  function handleClick(e: any, index: number) {
+  function handleClick(e: React.MouseEvent, index: number) {
     e.preventDefault();
     setJoin(false);
     const updatedState = state.map((item, i) => {
@@ -30,7 +30,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
     setState(updatedState);
   }
 
-  function handleJoin(e: any) {
+  function handleJoin(e: React.MouseEvent) {
     const updatedState = state.map((item, i) => {
       item.current = false;
       return item;

@@ -12,6 +12,8 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthDto, singDTO } from './dto';
 import { JwtSessionGuard, JwtGuard, Jwt2FAGuard } from 'src/auth/guard';
+import { playerStrat } from './Interfaces/Interface';
+
 
 @Controller('auth')
 export class AuthController {
@@ -19,14 +21,14 @@ export class AuthController {
 
   @Get('42-callback')
   @UseGuards(AuthGuard('42'))
-  async Auth42(@Req() req: any, @Res() res: Response) {
-    return this.authService.checkUser(req.user, res);
+  async Auth42(@Req() req: Request, @Res() res: Response) {
+    return this.authService.checkUser(req.user as playerStrat, res);
   }
 
   @Get('google-callback')
   @UseGuards(AuthGuard('google'))
-  async AuthGoogle(@Req() req: any, @Res() res: Response) {
-    return this.authService.checkUser(req.user, res);
+  async AuthGoogle(@Req() req: Request, @Res() res: Response) {
+    return this.authService.checkUser(req.user as playerStrat, res);
   }
 
   @Post('signup')

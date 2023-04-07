@@ -14,7 +14,7 @@ function ModalActivate2FA({
   activated,
   setActivated,
 }: QrCodeProps) {
-  async function verify(event: any) {
+  async function verify(event: React.FormEvent) {
     event.preventDefault();
     if (await verifyOTP(event, '/auth/confirm2FA')) setActivated(true);
   }
@@ -112,9 +112,9 @@ function ModalDeactivate2FA({
   activated,
   setActivated,
 }: QrCodeProps) {
-  async function deactivate2FA(event: any) {
+  async function deactivate2FA(event: React.FormEvent) {
     event.preventDefault();
-    const password = event.target.password2FA.value;
+    const password = (document.getElementById('password2FA') as HTMLInputElement).value;
     const res = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/deactivate2FA',
       {

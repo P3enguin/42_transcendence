@@ -4,7 +4,7 @@ import { OTPInput } from '@/components/Input/Inputs';
 import { verifyOTP } from '@/components/tools/functions';
 
 function Verify2fa() {
-  async function verify(event: any) {
+  async function verify(event: React.FormEvent) {
     event.preventDefault();
     if (await verifyOTP(event,"/auth/verify2FA"))
       Router.push('/profile');
