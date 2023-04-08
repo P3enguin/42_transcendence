@@ -1,9 +1,11 @@
 import { Props } from "@headlessui/react/dist/types";
 import { AnimateSharedLayout, motion } from "framer-motion";
 
-export interface handleFunc {}
+export interface handleFunc {
+  handleJoin: (event:React.MouseEvent) => void
+}
 
-function HomeText({ handleJoin }: any) {
+function HomeText({ handleJoin }: handleFunc) {
   return (
     <div className="text-center xl:text-left w-auto xl:w-1/4 css ">
       <motion.div

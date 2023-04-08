@@ -17,7 +17,8 @@ model Player {
   password          String
   firstname         String
   lastname          String
-
+  Is2FAEnabled      Boolean   @default(false)
+  Secret2FA         String    @default("")
   coins             Int
 
   friends           Player[]  @relation("friends") // <- Friend List

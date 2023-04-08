@@ -13,8 +13,14 @@ import { AchivementModule } from './achivement/achivement.module';
 import { TitleModule } from './title/title.module';
 import { GameModule } from './game/game.module';
 
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

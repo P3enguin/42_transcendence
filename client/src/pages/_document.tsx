@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        <link rel="icon" href="/favicon.ico"></link>
         <link
           href="https://fonts.googleapis.com/css?family=Baloo"
           rel="stylesheet"
