@@ -33,3 +33,8 @@ export interface user extends Player {
     iat: number;
   };
 }
+
+
+export interface Token2FAQuery  {
+  token : string;
+}

@@ -6,14 +6,15 @@ import {
   UseGuards,
   Req,
   Res,
+  Patch,
+  Query,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthDto, singDTO } from './dto';
 import { JwtSessionGuard, JwtGuard, Jwt2FAGuard } from 'src/auth/guard';
-import { playerStrat } from './Interfaces/Interface';
-
+import { playerStrat, Token2FAQuery } from './Interfaces/Interface';
 
 @Controller('auth')
 export class AuthController {
@@ -56,8 +57,7 @@ export class AuthController {
   // same as verifyToken and verifysession
   @Get('token2FA')
   @UseGuards(Jwt2FAGuard)
-  verify2FASession(@Req() req: Request, @Res() res: Response)
-  {
+  verify2FASession(@Req() req: Request, @Res() res: Response) {
     return res.status(200).json(req.body.user);
   }
   // @Get('user')
@@ -73,28 +73,33 @@ export class AuthController {
 
   @Get('enable2FA')
   @UseGuards(JwtGuard)
-  enable2FA(@Req() req:Request,@Res() res:Response){
-    return this.authService.enable2FA(req.body.user,res);
-  }
-  
-  @Post('confirm2FA')
-  @UseGuards(JwtGuard)
-  confirm2FA(@Req() req:Request,@Res() res:Response)
-  {
-    return this.authService.confirm2FA(req.body.user,req.body.token,res);
+  enable2FA(@Req() req: Request, @Res() res: Response) {
+    return this.authService.enable2FA(req.body.user, res);
   }
 
-  @Post('deactivate2FA')
+  @Patch('confirm2FA')
   @UseGuards(JwtGuard)
-  deactivate2FA(@Req() req:Request,@Res() res:Response)
-  {
-    return this.authService.deactivate2FA(req.body.user,req.body.password,res);
+  confirm2FA(@Req() req: Request, @Res() res: Response) {
+    return this.authService.confirm2FA(req.body.user, req.body.token, res);
   }
 
-  @Post('verify2FA')
+  @Patch('deactivate2FA')
+  @UseGuards(JwtGuard)
+  deactivate2FA(@Req() req: Request, @Res() res: Response) {
+    return this.authService.deactivate2FA(
+      req.body.user,
+      req.body.password,
+      res,
+    );
+  }
+
+  @Get('verify2FA')
   @UseGuards(Jwt2FAGuard)
-  verify2FA(@Req() req:Request,@Res() res:Response)
-  {
-    return this.authService.verify2FA(req.body.user,req.body.token,res);
+  verify2FA(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: Token2FAQuery,
+  ) {
+    return this.authService.verify2FA(req.body.user, res, query.token);
   }
 }
