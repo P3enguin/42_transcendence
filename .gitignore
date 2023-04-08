@@ -61,9 +61,6 @@
 **/!.vscode/launch.json
 **/!.vscode/extensions.json
 
-.vscode
-.history
-todo
 todo
 **/uploads/avatars/*
 **/uploads/wallpapers/*

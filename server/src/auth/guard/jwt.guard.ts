@@ -31,7 +31,6 @@ export class JwtSessionGuard extends AuthGuard('jwt_session') {
     const res: Response = context.switchToHttp().getResponse();
 
     const data: jwtData = this.verifySession(req);
-
     if (data.authorized) {
       req.body.user = { jwtDecoded: data.decoded };
       return true;

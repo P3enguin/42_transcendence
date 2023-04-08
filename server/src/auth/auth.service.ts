@@ -9,8 +9,8 @@ import { TitleService } from 'src/title/title.service';
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import * as argon2 from 'argon2';
-import {toDataURL} from 'qrcode';
-import { playerStrat,UserToken } from './Interfaces/Interface';
+import { toDataURL } from 'qrcode';
+import { playerStrat, UserToken } from './Interfaces/Interface';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +20,8 @@ export class AuthService {
     private config: ConfigService,
     private achiv: AchivementService,
     private title: TitleService,
-    // private rank: RankService,
-  ) {}
+  ) // private rank: RankService,
+  {}
 
   async checkUser(user: playerStrat, res: Response) {
     try {
@@ -55,8 +55,8 @@ export class AuthService {
       } else if (player.Is2FAEnabled) {
         const secret = process.env.JWT_2FA;
         const payload = {
-          id : player.id
-        }
+          id: player.id,
+        };
         const jwt2FA = await this.jwt.signAsync(payload, {
           expiresIn: '15m',
           secret: secret,
@@ -99,14 +99,14 @@ export class AuthService {
           lastname: dto.lastname,
           password: hash,
           coins: dto.coins,
-          Secret2FA: "",
+          Secret2FA: '',
           status: {
             create: {},
           },
         },
       });
-      await  this.achiv.assignAchiv(player.statusId);
-      await  this.title.assignTitle(player.statusId);
+      await this.achiv.assignAchiv(player.statusId);
+      await this.title.assignTitle(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
@@ -144,8 +144,7 @@ export class AuthService {
       });
       if (!player) throw new ForbiddenException('Nickname Not found');
       if (await argon2.verify(player.password, dto.password)) {
-        if (player.Is2FAEnabled)
-        {
+        if (player.Is2FAEnabled) {
           const secret = process.env.JWT_2FA;
           const jwt2FA = await this.jwt.signAsync(player, {
             expiresIn: '15m',
@@ -156,9 +155,8 @@ export class AuthService {
             // secure: true,
             maxAge: 1000 * 60 * 15, // expires after 15 min
           });
-          return res.json({Is2FAenabled:true});
-        }
-        else {
+          return res.json({ Is2FAenabled: true });
+        } else {
           const token = await this.signToken(player.id, player.nickname);
           res.cookie('jwt_token', token.access_token, {
             httpOnly: true,
@@ -171,7 +169,7 @@ export class AuthService {
         throw new ForbiddenException('Password Incorrect');
       }
     } catch (err) {
-        res.status(401).json({ error: err });
+      res.status(401).json({ error: err });
     }
   }
 
@@ -213,147 +211,138 @@ export class AuthService {
     }
   }
 
-  // to changle later with a user inteface 
-  async enable2FA(user:UserToken,res:Response)
-  {
+  // to changle later with a user inteface
+  async enable2FA(user: UserToken, res: Response) {
     const secret = authenticator.generateSecret();
     try {
+      // check if the user already has 2FA enable
+      const player = await this.prisma.player.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          Is2FAEnabled: true,
+        },
+      });
+      if (player.Is2FAEnabled)
+        return res
+          .status(401)
+          .json({ error: 'You have already activated 2FA !' });
 
-        // check if the user already has 2FA enable
-        const player = await this.prisma.player.findUnique({
-          where :{
-            id : user.id,
-          },
-          select : {
-            Is2FAEnabled : true,
-          }
-        })
-        if (player.Is2FAEnabled)
-          return res.status(401).json({error : 'You have already activated 2FA !'});
-
-        await this.prisma.player.update({
-          where : {
-            id : user.id
-          },
-          data : {
-            Secret2FA: secret,
-          }
-        })
-        const otpauth = authenticator.keyuri(user.id.toString(),'ft_transcendence',secret);
-        toDataURL(otpauth,(err,imageUrl) => {
-          if (err)
-          {
-            console.log('Error while generating QR');
-            return res.status(500).json({error : 'Error while generating QR'});
-          }
-          return res.status(200).json({qrcode:imageUrl});
-        })
-    }
-    catch(error)
-    {
+      await this.prisma.player.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          Secret2FA: secret,
+        },
+      });
+      const otpauth = authenticator.keyuri(
+        user.id.toString(),
+        'ft_transcendence',
+        secret,
+      );
+      toDataURL(otpauth, (err, imageUrl) => {
+        if (err) {
+          console.log('Error while generating QR');
+          return res.status(500).json({ error: 'Error while generating QR' });
+        }
+        return res.status(200).json({ qrcode: imageUrl });
+      });
+    } catch (error) {
       console.log(error);
-      return res.status(400).json({error : 'An error has occured'});
+      return res.status(400).json({ error: 'An error has occured' });
     }
   }
 
-  async confirm2FA(user : UserToken,token: string,res:Response) {
-      try {
-        const player = await this.prisma.player.findUnique({
-          where : {
-            id : user.id,
-          },
-          select : {
-            Secret2FA : true,
-            Is2FAEnabled:true,
-          }
-        })
-        const secret : string = player.Secret2FA;
-        if (authenticator.verify({token,secret}))
-        {
-            await this.prisma.player.update({
-              where : {
-                id : user.id
-              },
-              data : {
-                  Is2FAEnabled : true,
-              }
-            })
-          res.status(200).json({success : "Successfully"})
-        }
-        else {
-          res.status(400).json({error : "Invalid Token"})
-        }
-      }
-      catch (error)
-      {
-        return res.status(400).json({error : "An error has occured"})
-      }
-  }
-
-  async deactivate2FA(user : UserToken,password : string ,res : Response){
-      try {
-        const player = await this.prisma.player.findUnique({
-          where : {
-            id : user.id
-          },
-          select:
-          {
-            password: true
-          }
-        })
-        if (await argon2.verify(player.password,password))
-        {
-           await this.prisma.player.update({
-           where : {
-            id : user.id,
-           },
-           data : {
-              Is2FAEnabled:false,
-              Secret2FA:"",
-           }
-           })
-           return res.status(200).json({success : "successfully deactivated 2FA"})
-        }
-        else {
-          throw new ForbiddenException('Password incorrect');
-        }
-      }
-      catch (error) {
-          res.status(403).json({error: error });
-      }
-  }
-
-  async verify2FA(user : UserToken,token: string,res:Response) {
+  async confirm2FA(user: UserToken, token: string, res: Response) {
     try {
       const player = await this.prisma.player.findUnique({
-        where : {
-          id : user.id,
+        where: {
+          id: user.id,
         },
-        select : {
-          id:true,
-          nickname:true,
-          Secret2FA : true,
-          Is2FAEnabled:true,
-        }
-      })
-      const secret : string = player.Secret2FA;
-      if (authenticator.verify({token,secret}))
-      {
+        select: {
+          Secret2FA: true,
+          Is2FAEnabled: true,
+        },
+      });
+      const secret: string = player.Secret2FA;
+      if (authenticator.verify({ token, secret })) {
+        await this.prisma.player.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            Is2FAEnabled: true,
+          },
+        });
+        res.status(200).json({ success: 'Successfully' });
+      } else {
+        res.status(400).json({ error: 'Invalid Token' });
+      }
+    } catch (error) {
+      return res.status(400).json({ error: 'An error has occured' });
+    }
+  }
+
+  async deactivate2FA(user: UserToken, password: string, res: Response) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          password: true,
+        },
+      });
+      if (await argon2.verify(player.password, password)) {
+        await this.prisma.player.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            Is2FAEnabled: false,
+            Secret2FA: '',
+          },
+        });
+        return res
+          .status(200)
+          .json({ success: 'successfully deactivated 2FA' });
+      } else {
+        throw new ForbiddenException('Password incorrect');
+      }
+    } catch (error) {
+      res.status(403).json({ error: error });
+    }
+  }
+
+  async verify2FA(user: UserToken, res: Response, token: string) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          id: true,
+          nickname: true,
+          Secret2FA: true,
+          Is2FAEnabled: true,
+        },
+      });
+      const secret: string = player.Secret2FA;
+      if (authenticator.verify({ token, secret })) {
         const token = await this.signToken(player.id, player.nickname);
-          res.cookie('jwt_token', token.access_token, {
-            httpOnly: true,
-            // secure: true,
-            maxAge: 1000 * 60 * 60,
-          });
-          res.status(200).send({ success: true });
+        res.cookie('jwt_token', token.access_token, {
+          httpOnly: true,
+          // secure: true,
+          maxAge: 1000 * 60 * 60,
+        });
+        res.status(200).send({ success: true });
+      } else {
+        res.status(400).json({ error: 'Invalid Token' });
       }
-      else {
-        res.status(400).json({error : "Invalid Token"})
-      }
+    } catch (error) {
+      return res.status(400).json({ error: 'An error has occured' });
     }
-    catch (error)
-    {
-      return res.status(400).json({error : "An error has occured"})
-    }
-}
+  }
 }
