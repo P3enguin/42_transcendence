@@ -67,28 +67,26 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
   
   return (
     <>
-     
       <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
-      <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r">
-          <div className="flex h-[5%] items-center border-b pl-5 w-[100%] hover:bg-sky-700 cursor-pointer">
+      <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r ">
+          <div className="flex h-[8%] items-center sm:border-b pl-5 w-[100%]">
             Chat Room
           </div>
 
           {showRecentChat && <OnlineNow player={data.nickname} avatar={pictures.pfp} />}
-          <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
-            <div className="flex flex-row justify-between border-t pt-1">
-            <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
-            <div className="md:hidden cursor-pointer text-green-300" onClick={handleConversationClick}>Start New</div>
+          <div className="flex h-[92%] sm:h-[95%] flex-col p-1 sm:p-5 sm:pt-0">
+            <div className="flex flex-row justify-between border-t pt-1 h-[5%]">
+              <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
+              <div className="md:hidden cursor-pointer text-green-300" onClick={handleConversationClick}>message</div>
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
             {showRecentChat && <RecentChat avatar={pictures.pfp} player={data.nickname} /> }
-            {showConversation && <Conversation />}
+            {showConversation && <Conversation player={data.nickname} avatar={pictures.pfp} />}
             </div>
           </div>
         </div>
-        <div className="hidden md:flex w-full justify-between flex-col ">
-          <div className="flex h-[5%] w-full items-center border-b "></div>
-          { <Conversation />}
+        <div className="hidden md:flex w-full justify-between flex-col h-full">
+          { <Conversation player={data.nickname} avatar={pictures.pfp} />}
         </div>
       </div>
     </>

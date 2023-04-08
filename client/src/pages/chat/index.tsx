@@ -69,7 +69,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
      
       <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
       <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r">
-          <div className="flex h-[5%] items-center border-b pl-5 w-[100%] hover:bg-sky-700 cursor-pointer">
+          <div className="flex h-[5%] items-center border-b pl-5 w-[100%]">
             Chat Room
           </div>
 
@@ -81,13 +81,13 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
             {showRecentChat && <RecentChat avatar={pictures.pfp} player={data.nickname} /> }
-            {showStartNew && <Conversation nickname={data.nickname} />}
+            {showStartNew && <StartNew/>}
             </div>
           </div>
         </div>
         <div className="hidden md:flex w-full justify-between flex-col ">
           <div className="flex h-[5%] w-full items-center border-b "></div>
-          { <Conversation nickname={data.nickname} />}
+          { <StartNew />}
         </div>
       </div>
     </>
@@ -100,9 +100,7 @@ export async function getServerSideProps({ req }: any) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
       try {
-        console.log("here")
         const data = await res.json();
-        console.log("data  ", {data});
         return {
           props: {
             data,

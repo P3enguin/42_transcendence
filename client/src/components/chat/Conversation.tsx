@@ -1,80 +1,44 @@
 import React from "react";
-import axios from "axios";
-import { useRouter } from "next/router";
+import Image from 'next/image';
+import { SendIcon, SettingIcon } from "../icons/Icons";
 
-function Conversation (nickname: any) {
-  const router = useRouter();
-  async function talk(nickname: any) {
-        const res = await axios.get(
-          process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/privateMessages',
-          {
-            withCredentials: true,
-            params: {
-              nickname: nickname,
-            },
-          },
-        );
-        router.push('/chat/' + res.data);
-      }
+function Conversation ({nickname, avatar}: any) {
     return(
-        <div className="flex flex-col w-[100%] h-[95%] border-t m-auto">
-            <div className="sm:items-center lg:flex w-[100%]
-                  h-[30%] text-3xl text-center lg:text-start">
-              <div className=" lg:m-5 flex h-[15%] w-[100%] flex-col  self-end">Select a Chat or <br/>
-                  Start a New:</div>
+      <div className="flex w-full h-full justify-between flex-col ">
+        <div className="flex h-[8%] w-full items-center sm:border-b justify-between p-2">
+        <div className="flex flex-row items-center justify-between w-full px-3 py-2 mt-3 sm:mt-0">
+          <div className="flex items-center">
+            <div className="flex items-center ">
+              <Image className="rounded-full border"
+                src={avatar} alt="avatar" width={45} height={45} />
+              <h3 className="ml-2">{nickname} Naahio </h3>
             </div>
-            <div className="flex h-full w-full flex-col lg:flex-row ">
-              <div className="sm:flex sm:items-center lg:flex m-auto mb-0 flex-col self-center h-[85%] w-[70%] ">
-                <div className="sm:h-[2%] lg:flex flex-col h-[10%] w-[90%] ">
-                  <h2 className="flex text-xl">Channel : </h2>
-                  <input
-                    type="text"
-                    name="channel"
-                    id="channel"
-                    className="border-white w-[90%] peer block w-full appearance-none
-                      rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm
-                        text-white focus:border-blue-600 focus:outline-none "
-                    placeholder="channel name"
-                    required
-                  />
-                <button
-                  name="create"
-                  disabled
-                  className="border-white m-auto mt-2 peer block appearance-none sm:mt-20
-                  rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-s w-[50%] sm:w-[100px]
-                  w-[50%] text-white focus:border-blue-600 focus:outline-none focus:ring-0 bg-blue-500 lg:mt-60 lg:ml-20"
-                  >
-                  Create
-                </button>
-                  </div>
-              </div>
-              <div className="flex m-auto mb-0 flex-row self-center h-[85%] w-[70%]">
-                <div className="flex flex-col h-[10%] w-[90%]">
-                  <h2 className="flex text-xl whitespace-nowrap ">Direct Message :</h2>
-                  <div className="sm:flex flex-col relative flex items-center justify-center ">
+          </div>
+          <div>
+            <button className="p-1">
+              <SettingIcon />
+            </button>
+          </div>
+        </div>
+        </div>
+          <div className="flex flex-col w-[100%] h-[95%]
+            items-center justify-end ">
+              <div className="sm:flex flex-col relative  w-[90%] mb-2 items-center ">
                   <input type="text" name="nickname" id="nickname"
-                    className=" border-white w-[90%]
+                    className=" border-white w-[70%]
                     peer block w-full appearance-none rounded-full border-2 bg-transparent
                     py-2.5 px-3  text-xs sm:text-sm 
                     text-white focus:border-blue-600 focus:outline-none focus:ring-0 overflow-hidden"
-                    placeholder="player" required/>
-                    <button 
-                      type="submit"
-                      className="lg:right-0 lg:top-0 lg:absolute border-white peer block appearance-none mt-2
-                            rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm w-[50%] sm:w-[100px]
-                             text-white focus:border-blue-600 focus:outline-none focus:ring-0 bg-blue-500 sm:m-5 lg:m-0" 
-                             onClick={(event)=>{
-                              event.preventDefault();
-                              talk(nickname);
-                             }}
-                             >
-                      start
+                    placeholder="Message . . ." required/>
+                    <button  type="submit" 
+                      className=" right-0 top-0 absolute  peer block appearance-none mt-2
+                      rounded-full bg-transparent py-1 sm:py-1.5 px-12 text-xs sm:text-sm w-[50%] sx:w-[100px]
+                      focus:outline-none focus:ring-0 bg-blue-500  m-0 /">
+                            <SendIcon />
                     </button>
-                  </div>
-                </div>
               </div>
-              </div>
-              </div>
+        </div>
+      </div>
     );
 }
 

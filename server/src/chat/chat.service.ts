@@ -22,15 +22,21 @@ export class ChatService {
         return ('SendPublicMessage');
     }
     
-    GetPrivMessage(player: Player, friendId: number)
+    GetPrivMessage(player: Player, friendId: any)
     {
-        console.log("getting",player);
-        return ('GetPrivMessage');
+        return ('7oet_d9Z');
     }
     
     GetChannelMessage(channelId: number)
     {
         return ('GetChannelMessage');
     }
- 
+    
+    GetChatById(id: string) {
+
+    }
+
+    GetChat(player: Player) {
+
+    }
 }

@@ -1,9 +1,8 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetPlayer } from 'src/auth/decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { Request, Response } from 'express';
 import { Player } from '@prisma/client';
-import { Response } from 'express';
 
 @Controller('chat')
 export class ChatController {
@@ -24,15 +23,27 @@ export class ChatController {
 	}
 
 	@Get('privateMessages')
-	GetPrivMessage(@GetPlayer() player, friendId: number)
+	GetPrivMessage(@GetPlayer() player: Player, @Req() req: Request, @Res() res: Response)
 	{
-		return this.chatService.GetPrivMessage(player, friendId);
+		return this.chatService.GetPrivMessage(player, req.query.friendId);
 	}
 
 	@Get('channelMessages')
 	GetChannelMessage(channelId: number)
 	{
 		return this.chatService.GetChannelMessage(channelId);
+	}
+
+	@Get('messages')
+	GetChatById(id: string)
+	{
+		return this.chatService.GetChatById(id);
+	}
+
+	@Get('allChat')
+	GetChat(@GetPlayer() player: Player)
+	{
+		
 	}
 
 }
