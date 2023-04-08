@@ -13,7 +13,7 @@ interface pageState {
   animation: object;
 }
 
-function classNames(...classes: any) {
+function classNames(...classes: Array<string>) {
   return classes.filter(Boolean).join(" ");
 }
 

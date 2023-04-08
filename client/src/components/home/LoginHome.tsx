@@ -9,31 +9,51 @@ interface data {
   password: string;
 }
 
+interface SignInInterface {
+  Is2FAenabled?: boolean;
+}
+
 function Login() {
   const [text, changeText] = useState([
     { text: 'Sign In', status: true },
     { text: 'gg', status: false },
   ]);
 
-  async function handleSubmit(event: any) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    const nickInput = document.getElementById('nickname') as HTMLInputElement;
+    const passInput = document.getElementById('password') as HTMLInputElement;
+
     const data: data = {
-      nickname: event.target.nickname.value,
-      password: event.target.password.value,
+      nickname: nickInput.value,
+      password: passInput.value,
     };
+
     const url: string = process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/signin';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.ok) {
-      Router.push('/profile');
-    } else {
-      const err = await response.json();
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = (await response.json()) as SignInInterface;
+        if (data.Is2FAenabled) Router.push('/verify');
+        else Router.push('/profile');
+      } else if (!response.ok) {
+        const err = await response.json();
+        if (err.error.message)
+          throw new Error(err.error.message);
+        else
+          throw new Error("An unexprected error occured");
+      }
+    } catch (err) {
+      console.log(err);
       const span = document.getElementById('error-span');
-      if (span) span.innerHTML = err.error.message;
+      if (err instanceof Error) {
+        if (span) span.innerHTML = err.message;
+      } 
     }
   }
 

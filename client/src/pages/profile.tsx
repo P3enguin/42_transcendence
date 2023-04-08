@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import ProfileDisplay from '@/components/profile/ProfileDisplay';
 import ProfileStats from '@/components/profile/ProfileStats';
+import Head from 'next/head';
 
 interface player {
   nickname: string;
@@ -23,69 +24,29 @@ function PlayerProfile({
   wallpaper,
   joinDate,
 }: player) {
-  const [pictures, changePictures] = useState({ pfp: '', wp: '' });
-  const [isLoading, setLoading] = useState(true);
+  // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
+  const [isLoading, setLoading] = useState(false);
   const titles = ['hh', 'hh2', 'hh3'];
 
-  // fetching profile picture and wallpaper picture at first render
-  useEffect(() => {
-    const fetchPFP = async () => {
-      setLoading(true);
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST +
-          '/players/avatar?' +
-          new URLSearchParams({ pfp: avatar }),
-        {
-          credentials: 'include',
-        },
-      );
-      const pfp = await res.blob();
-      const url = URL.createObjectURL(pfp);
-      changePictures((pictures) => ({
-        ...pictures,
-        ...{ pfp: url, wp: pictures.wp },
-      }));
-    };
-
-    const fetchWp = async () => {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST +
-          '/players/wallpaper?' +
-          new URLSearchParams({ wp: wallpaper }),
-        {
-          credentials: 'include',
-        },
-      );
-      const wp = await res.blob();
-      const url = URL.createObjectURL(wp);
-      changePictures((pictures) => ({
-        ...pictures,
-        ...{ pfp: pictures.pfp, wp: url },
-      }));
-    };
-    if (pictures.pfp != avatar) fetchPFP();
-    if (pictures.wp != wallpaper) fetchWp();
-    
-    setLoading(false);
-  }, []);
-  
-  console.log(pictures.pfp);
   if (isLoading) return <p>Loading...</p>;
   if (!isLoading) {
     return (
       <>
-        <head>
+        <Head>
           <title>Ponginator | Profile</title>
-        </head>
+        </Head>
         <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
           <ProfileDisplay
-            wp={pictures.wp}
-            pfp={pictures.pfp}
+            wp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper }
+            pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' +   avatar }
             titles={titles}
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}
             coins={coins}
+            exp={1800}
+            MaxExp={2500}
+            userProfile={true}
           />
           <ProfileStats />
         </div>

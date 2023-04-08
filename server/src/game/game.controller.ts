@@ -13,27 +13,38 @@ import { Request, Response } from 'express';
 import { GameService } from './game.service';
 import { JwtGuard } from 'src/auth/guard';
 import { GetPlayer } from 'src/auth/decorator';
-import { Player } from '@prisma/client';
+import { Player as PlayerDB } from '@prisma/client';
+import { GameType, Player } from './interfaces';
 
+@UseGuards(JwtGuard)
 @Controller('game')
 export class GameController {
   constructor(private gameService: GameService) {}
 
   @Get('join')
-  @UseGuards(JwtGuard)
-  joinGame(@GetPlayer() player: Player, @Res() res: Response) {
-    const id = this.gameService.joinGame({
-      id: player.id,
-      nickname: player.nickname,
-    });
+  joinGame(
+    @GetPlayer() player: PlayerDB,
+    @Res() res: Response,
+    @Query('gametype') gametype: GameType,
+  ) {
+    const id = this.gameService.joinGame(
+      new Player(player.id, player.nickname),
+      gametype,
+    );
     return res.status(200).json(id);
   }
 
   @Get(':id')
-  getGame(@Req() req: Request, @Param('id') gameId, @Res() res: Response) {
-    if (this.gameService.getGame(gameId)) {
+  getGame(
+    @GetPlayer('nickname') player: string,
+    @Param('id') gameId: string,
+    @Res() res: Response,
+  ) {
+    if (this.gameService.getActiveGame(gameId)) {
+      return res.status(200).json('0ki');
+    } else if (this.gameService.getMyGame(gameId, player)) {
       return res.status(200).json('0ki');
     }
-    return res.status(400).json('Bad request');
+    return res.status(400).json('N0 game :P');
   }
 }

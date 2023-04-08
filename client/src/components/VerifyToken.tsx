@@ -21,3 +21,15 @@ export async function verifySession(cookie: string): Promise<Response> {
     },
   );
 }
+
+export async function verify2FAToken(cookie: string): Promise<Response> {
+  return await fetch(
+    process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/token2FA',
+    {
+      method: 'GET',
+      headers: {
+        Cookie: cookie,
+      },
+    },
+  );
+}

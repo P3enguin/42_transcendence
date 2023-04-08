@@ -11,7 +11,9 @@ import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthDto, singDTO } from './dto';
-import { JwtSessionGuard, JwtGuard } from 'src/auth/guard';
+import { JwtSessionGuard, JwtGuard, Jwt2FAGuard } from 'src/auth/guard';
+import { playerStrat } from './Interfaces/Interface';
+
 
 @Controller('auth')
 export class AuthController {
@@ -19,14 +21,14 @@ export class AuthController {
 
   @Get('42-callback')
   @UseGuards(AuthGuard('42'))
-  async Auth42(@Req() req: any, @Res() res: Response) {
-    return this.authService.checkUser(req.user, res);
+  async Auth42(@Req() req: Request, @Res() res: Response) {
+    return this.authService.checkUser(req.user as playerStrat, res);
   }
 
   @Get('google-callback')
   @UseGuards(AuthGuard('google'))
-  async AuthGoogle(@Req() req: any, @Res() res: Response) {
-    return this.authService.checkUser(req.user, res);
+  async AuthGoogle(@Req() req: Request, @Res() res: Response) {
+    return this.authService.checkUser(req.user as playerStrat, res);
   }
 
   @Post('signup')
@@ -51,7 +53,13 @@ export class AuthController {
   verifySession(@Req() req: Request, @Res() res: Response) {
     return res.status(200).json(req.body.user);
   }
-
+  // same as verifyToken and verifysession
+  @Get('token2FA')
+  @UseGuards(Jwt2FAGuard)
+  verify2FASession(@Req() req: Request, @Res() res: Response)
+  {
+    return res.status(200).json(req.body.user);
+  }
   // @Get('user')
   // getUser(@Query() query: {email: string}):object {
   //    return this.authService.getUser(query.email);
@@ -61,5 +69,32 @@ export class AuthController {
   @UseGuards(JwtGuard)
   logout(@Req() req: Request, @Res() res: Response) {
     return this.authService.logout(req, res);
+  }
+
+  @Get('enable2FA')
+  @UseGuards(JwtGuard)
+  enable2FA(@Req() req:Request,@Res() res:Response){
+    return this.authService.enable2FA(req.body.user,res);
+  }
+  
+  @Post('confirm2FA')
+  @UseGuards(JwtGuard)
+  confirm2FA(@Req() req:Request,@Res() res:Response)
+  {
+    return this.authService.confirm2FA(req.body.user,req.body.token,res);
+  }
+
+  @Post('deactivate2FA')
+  @UseGuards(JwtGuard)
+  deactivate2FA(@Req() req:Request,@Res() res:Response)
+  {
+    return this.authService.deactivate2FA(req.body.user,req.body.password,res);
+  }
+
+  @Post('verify2FA')
+  @UseGuards(Jwt2FAGuard)
+  verify2FA(@Req() req:Request,@Res() res:Response)
+  {
+    return this.authService.verify2FA(req.body.user,req.body.token,res);
   }
 }

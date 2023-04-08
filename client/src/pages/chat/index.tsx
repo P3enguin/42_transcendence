@@ -31,25 +31,6 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
   };
 
   useEffect(() => {
-    const fetchPFP = async () => {
-      setLoading(true);
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST+'/players/avatar?' +
-          new URLSearchParams({ pfp: data.avatar }),
-        {
-          credentials: 'include',
-        },
-      );
-      const pfp = await res.blob();
-      const url = URL.createObjectURL(pfp);
-
-      changePictures((pictures) => ({
-        ...pictures,
-        ...{ pfp: url, wp: pictures.wp },
-      }));
-    };
-    if (pictures.pfp != data.avatar) fetchPFP();
-    setLoading(false);
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
       auth: {
         token: jwt_token,
@@ -63,7 +44,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
     };
     
   }, []);
-  
+
   return (
     <>
      
@@ -72,8 +53,12 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
           <div className="flex h-[5%] items-center border-b pl-5 w-[100%]">
             Chat Room
           </div>
+          {
+            data.friends.map((friend: any, key: any) => {
+              (showRecentChat && <OnlineNow player={friend.nickname} avatar={friend.avatar} key={key} />)
+            })
+          }
 
-          {showRecentChat && <OnlineNow player={data.nickname} avatar={pictures.pfp} />}
           <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
             <div className="flex flex-row justify-between border-t pt-1">
             <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>

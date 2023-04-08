@@ -1,15 +1,19 @@
 import Layout from '@/components/layout/layout';
 import { useState } from 'react';
-import { statObj } from '@/components/profile/Interface';
+import { statObj } from '@/components/tools/Interface';
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ModalActivate2FA,
+  ModalDeactivate2FA,
+} from '@/components/modal/Modals';
 import {
   FirstNameInput,
   LastNameInput,
   NickNameInput,
   PasswordInput,
   RePasswordInput,
-} from '@/components/profile/Inputs';
+} from '@/components/Input/Inputs';
 
 import {
   isBetween,
@@ -24,9 +28,10 @@ interface propsData {
   firstname: string;
   lastname: string;
   nickname: string;
+  Is2FAEnabled?: boolean;
 }
 
-function settings({ firstname, lastname, nickname }: propsData) {
+function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [error, setError] = useState(false);
   const [successPass, setSuccesPass] = useState(false);
   const [successSave, setSuccess] = useState(false);
@@ -43,67 +48,93 @@ function settings({ firstname, lastname, nickname }: propsData) {
   const [isEnabled, setEnabled] = useState(false);
   const [isEnabledSecond, setEnabledSecond] = useState(false);
 
-  async function handlePasswordUpdate(event: any) {
-    event.preventDefault();
+  const [qrPath, setQrPath] = useState('');
+  const [isOpen, setIsOpen] = useState([false, false, false]);
+  const [activated, setActivated] = useState(Is2FAEnabled);
 
-    const data = {
-      password: event.target.password.value,
-    };
-    const updateURL: string =
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
-
-    const response = await fetch(updateURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
+  function toggleOpen(index: number) {
+    const newState = isOpen.map((item, i) => {
+      if (i == index) return !item;
+      return item;
     });
-    if (response.status == 201) {
-      setSuccesPass(true);
-      setTimeout(() => {
-        setSuccesPass(false);
-      }, 3000);
-    } else if (response.status == 400) {
-      const err = await response.json();
-      setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-    }
+    setIsOpen(newState);
   }
 
-  async function handleDataSave(event: any) {
+  async function handlePasswordUpdate(event: React.FormEvent) {
     event.preventDefault();
 
-    const data: propsData = {
-      nickname: event.target.nickname.value,
-      firstname: event.target.firstname.value,
-      lastname: event.target.lastname.value,
-    };
-    const updateURL: string =
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    if (password) {
+      const data = {
+        password: password,
+      };
+      const updateURL: string =
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
 
-    const response = await fetch(updateURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.status == 201) {
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-    } else if (response.status == 400) {
-      const err = await response.json();
-      if (err.error === 'Nickname already exist') {
-        const span = document.getElementById('nickspan');
-        updateField(2, { valid: false, touched: false }, span, err.error);
-      } else {
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.status == 201) {
+        setSuccesPass(true);
+        setTimeout(() => {
+          setSuccesPass(false);
+        }, 3000);
+      } else if (response.status == 400) {
+        const err = await response.json();
         setError(true);
         setTimeout(() => {
           setError(false);
         }, 3000);
+      }
+    }
+  }
+
+  async function handleDataSave(event: React.FormEvent) {
+    event.preventDefault();
+
+    const nickname = (document.getElementById('nickname') as HTMLInputElement)
+      .value;
+    const firstname = (document.getElementById('firstname') as HTMLInputElement)
+      .value;
+    const lastname = (document.getElementById('lastname') as HTMLInputElement)
+      .value;
+    if (nickname && firstname && lastname) {
+      const data: propsData = {
+        nickname: nickname,
+        firstname: firstname,
+        lastname: lastname,
+      };
+      const updateURL: string =
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
+
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.status == 201) {
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 3000);
+      } else if (response.status == 400) {
+        const err = await response.json();
+        if (err.error === 'Nickname already exist') {
+          const span = document.getElementById('nickspan');
+          const newArr = mutateArray(2,{ valid: false, touched: false },state);
+          updateState(newArr);
+          printError(span, err.error);
+        } else {
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
       }
     }
   }
@@ -130,160 +161,129 @@ function settings({ firstname, lastname, nickname }: propsData) {
     else setEnabledSecond(false);
   }),
     [statePass];
-  function updateField(
+
+  function mutateArray(
     index: number,
     val: statObj,
-    span: HTMLElement | null,
-    error: string,
-  ) {
-    const newState = state.map((elem, i) => {
+    array: statObj[],
+  ): statObj[] {
+    const newArr = array.map((elem, i) => {
       if (i == index) return val;
       else return elem;
     });
-    updateState(newState);
-    if (span) span.innerHTML = error;
+    return newArr;
   }
 
-  function updateFieldSec(
-    index: number,
-    val: statObj,
-    span: HTMLElement | null,
-    error: string,
-  ) {
-    const newState = statePass.map((elem, i) => {
-      if (i == index) return val;
-      else return elem;
-    });
-    updateStatePass(newState);
+  function printError(span: HTMLElement | null, error: string) {
     if (span) span.innerHTML = error;
   }
 
   function validFirstName(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = state;
     const first_name: string = event.target.value;
     const span = document.getElementById('fnspan');
     var touched = state[0].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    if (isEmpty(first_name)) {
-      updateField(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'First name cannot be empty!',
-      );
+    
+    newState = mutateArray(0, { valid: false, touched: touched }, newState);
+    if (first_name === firstname)
+    newState = mutateArray(0, { valid: false, touched: false }, newState);
+    else if (isEmpty(first_name)) {
+      printError(span, 'First name cannot be empty!');
     } else if (isTooLong(first_name)) {
-      updateField(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'Input is too long!',
-      );
+      printError(span, 'Input is too long!');
     } else if (!isValidName(first_name)) {
-      updateField(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'first name contains forbidden characters!',
-      );
+      printError(span, 'first name contains forbidden characters!');
     } else {
-      updateField(0, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(0,{ valid: true, touched: touched }, newState);
     }
+    updateState(newState);
   }
 
   function validLastName(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = state;
     const last_name: string = event.target.value;
     const span = document.getElementById('lnspan');
     var touched = state[1].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    if (isEmpty(last_name)) {
-      updateField(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Last name cannot be empty!',
-      );
+    newState = mutateArray(1, { valid: false, touched: touched }, newState);
+    if (last_name === lastname)
+      newState = mutateArray(1, { valid: false, touched: false }, newState);
+    else if (isEmpty(last_name)) {
+      printError(span, 'Last name cannot be empty!');
     } else if (isTooLong(last_name)) {
-      updateField(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Input is too long!',
-      );
+      printError(span, 'Input is too long!');
     } else if (!isValidName(last_name)) {
-      updateField(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Last name contains forbidden characters!',
-      );
+      printError(span, 'Last name contains forbidden characters!');
     } else {
-      updateField(1, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(1, { valid: true, touched: touched }, newState);
     }
+    updateState(newState);
   }
 
   function validNickName(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = state;
     const nick_name: string = event.target.value;
     const span = document.getElementById('nickspan');
     var touched = state[2].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    if (isEmpty(nick_name)) {
-      updateField(
-        2,
-        { valid: false, touched: touched },
-        span,
-        'Nickname cannot be empty!',
-      );
+    newState = mutateArray(2, { valid: false, touched: touched }, newState);
+    if (nick_name === nickname)
+      newState = mutateArray(2, { valid: false, touched: false }, newState);
+    else if (isEmpty(nick_name)) {
+      printError(span, 'Nickname cannot be empty!');
     } else if (!isBetween(nick_name, 3, 15)) {
-      updateField(
-        2,
-        { valid: false, touched: touched },
-        span,
-        'Nickname should be (3-20) character long!',
-      );
+      printError(span, 'Nickname should be (3-20) character long!');
     } else if (!isClear(nick_name)) {
-      updateField(
-        2,
-        { valid: false, touched: touched },
-        span,
-        'Nickname contains forbidden characters!',
-      );
+      printError(span, 'Nickname contains forbidden characters!');
     } else {
-      updateField(2, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(2, { valid: true, touched: touched }, newState);
     }
+    updateState(newState);
+
   }
 
   function validPassword(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = statePass;
     const password: string = event.target.value;
     const span = document.getElementById('pwdspan');
+    const RePassSpan = document.getElementById('repwdspan');
     var touched = statePass[0].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
+    RePassSpan!.innerHTML = '';
     if (isEmpty(password)) {
-      updateFieldSec(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'Password cannot be empty!',
-      );
+      newState = mutateArray(0, { valid: false, touched: false }, newState);
+      newState = mutateArray(1, { valid: false, touched: false }, newState);
     } else if (!isStrong(password)) {
-      updateFieldSec(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'Password is too weak!',
-      );
+      (newState = mutateArray(0, { valid: false, touched: touched }, newState)),
+        printError(span, 'Password is too weak!');
     } else {
-      updateFieldSec(0, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(0, { valid: true, touched: true }, newState);
+      const Repass = (document.getElementById('repassword') as HTMLInputElement)
+        .value;
+      if (Repass) {
+        if (password !== Repass) {
+          const span = document.getElementById('repwdspan');
+          newState = mutateArray(1, { valid: false, touched: true }, newState);
+          printError(RePassSpan, 'passwords are not identicals!');
+        } else {
+          newState = mutateArray(1, { valid: true, touched: true }, newState);
+        }
+      }
     }
+    updateStatePass(newState);
   }
 
   function validRePassword(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = statePass;
     const RePassword: string = event.target.value;
     const password = document.getElementById('password') as HTMLInputElement;
 
@@ -293,26 +293,63 @@ function settings({ firstname, lastname, nickname }: propsData) {
 
     span!.innerHTML = '';
     if (isEmpty(RePassword)) {
-      updateFieldSec(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Confirm your password!',
-      );
+      newState = mutateArray(1, { valid: false, touched: false }, newState);
     } else if (password.value !== RePassword) {
-      updateFieldSec(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'passwords are not identicals!',
-      );
+      newState = mutateArray(1, { valid: false, touched: touched }, newState);
+      printError(span, 'passwords are not identicals!');
     } else {
-      updateFieldSec(1, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(1, { valid: true, touched: touched }, newState);
     }
+    updateStatePass(newState);
+  }
+
+  async function activate2FA(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/enable2FA',
+      {
+        credentials: 'include',
+      },
+    );
+    const data = await res.json();
+    if (res.ok) {
+      setQrPath(data.qrcode);
+      toggleOpen(0);
+    } else {
+      // handling erroś
+    }
+    console.log(data);
+    // if (res.ok) {
+    //   const data = await res.json();
+    //   console.log(data);
+    // }
+    // else {
+    //   consoel
+    // }
+  }
+  function deactivate2FA(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    toggleOpen(1);
   }
 
   return (
     <>
+      {isOpen[0] && (
+        <ModalActivate2FA
+          qrPath={qrPath}
+          toggleOpen={toggleOpen}
+          activated={activated}
+          setActivated={setActivated}
+        />
+      )}
+      {isOpen[1] && (
+        <ModalDeactivate2FA
+          toggleOpen={toggleOpen}
+          activated={activated}
+          setActivated={setActivated}
+        />
+      )}
       <AnimatePresence>
         {error && (
           <motion.div
@@ -429,14 +466,28 @@ function settings({ firstname, lastname, nickname }: propsData) {
             </div>
           </div>
         </form>
-        <button
-          className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
+        {!activated && (
+          <button
+            className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
                   px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
                   md:text-base
                   `}
-        >
-          Activate 2FA
-        </button>
+            onClick={activate2FA}
+          >
+            Activate 2FA
+          </button>
+        )}
+        {activated && (
+          <button
+            className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
+                    px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
+                    md:text-base
+                    `}
+            onClick={deactivate2FA}
+          >
+            DEACTIVATE 2FA
+          </button>
+        )}
       </div>
     </>
   );
@@ -453,17 +504,17 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    if (res.ok)
-    {
-        const data = await res.json();
-        return {
-          // modify this to return anything you want before your page load
-          props: {
-            nickname: data.player.nickname,
-            firstname: data.player.firstname,
-            lastname: data.player.lastname,
-          },
-        };
+    if (res.ok) {
+      const data = await res.json();
+      return {
+        // modify this to return anything you want before your page load
+        props: {
+          nickname: data.player.nickname,
+          firstname: data.player.firstname,
+          lastname: data.player.lastname,
+          Is2FAEnabled: data.player.Is2FAEnabled,
+        },
+      };
     }
   }
   return {

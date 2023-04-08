@@ -33,7 +33,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
         <title>Ponginator | Start Game</title>
       </Head>
 
-      <div className="m-5 flex min-h-[600px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300 sm:m-20  md:h-[70%]">
+      <div className="m-5 sm:m-20 flex min-h-[600px] max-w-[1500px] flex-col rounded-2xl border border-neutral-300  md:h-[70%]">
         <div className="flex h-2/5 flex-col p-5 md:h-1/2">
           <h2 className="m-2 text-lg font-bold md:text-2xl">
             INVITE YOUR ONLINE FRIENDS TO PLAY:
@@ -111,10 +111,7 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
               You don’t know how things are going? <br />
               Don’t worry, you can always train and play with our AI.
             </div>
-            <button
-              className="m-auto mt-1 w-[200px] rounded-xl bg-[#0097E2] p-1"
-              onClick={playWithAI}
-            >
+            <button className="m-auto mt-1 w-[200px] rounded-xl bg-[#0097E2] p-1">
               PLAY WITH AI
             </button>
           </div>

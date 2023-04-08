@@ -8,6 +8,7 @@ import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
 import { query, Request,Response } from 'express';
+import { GetPlayer } from 'src/auth/decorator';
 
 interface queryParam {
   nickname: string;
@@ -49,8 +50,8 @@ export class PlayerController {
 //------------------------------{ Friend }----------------------------------
 
 	@Patch('AddFriend')
-	AddFriend(@Req() req: Request, friendId: number){
-		return this.playerService.AddFriend(req, 2);
+	AddFriend(@GetPlayer() player ,@Req() req: Request, friendId: number){
+		return this.playerService.AddFriend(player, req, 2);
 	}
 	
 	@Get('friends')

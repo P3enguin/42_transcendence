@@ -6,7 +6,7 @@ function LogoutIcon() {
       viewBox="0 0 27 27"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="fill-[#8BD9FF] hover:fill-red-700 ease-in duration-200 cursor-pointer"
+      className="cursor-pointer fill-[#8BD9FF] duration-200 ease-in hover:fill-red-700"
     >
       <path
         opacity="0.4"
@@ -20,7 +20,7 @@ function LogoutIcon() {
 function SideBarIcon() {
   return (
     <svg
-      className="w-6 h-6 "
+      className="h-6 w-6 "
       aria-hidden="true"
       fill="currentColor"
       viewBox="0 0 20 20"
@@ -66,8 +66,8 @@ function HomeIcon({ svgIndex }: { svgIndex: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`${
-        svgIndex == 0 ? "fill-[#01FD91]" : "fill-[#8BD9FF] hover:fill-[#0097E2]"
-      }  ease-in duration-200`}
+        svgIndex == 0 ? 'fill-[#01FD91]' : 'fill-[#8BD9FF] hover:fill-[#0097E2]'
+      }  duration-200 ease-in`}
     >
       <path d="M9.9656 28.1732V23.5729C9.96558 22.4071 10.9135 21.4601 12.0877 21.4527H16.3989C17.5783 21.4527 18.5344 22.4019 18.5344 23.5729V28.1598C18.5344 29.1709 19.356 29.9926 20.3744 30H23.3157C24.6895 30.0035 26.0081 29.4642 26.9808 28.5011C27.9534 27.5379 28.5 26.2301 28.5 24.8663V11.7988C28.5 10.6971 28.0081 9.65207 27.1569 8.94525L17.1645 1.0114C15.4178 -0.376316 12.9231 -0.331488 11.2281 1.11808L1.45052 8.94525C0.559111 9.63123 0.0263284 10.6793 0 11.7988V24.853C0 27.6956 2.32107 30 5.18426 30H8.05844C8.54876 30.0035 9.02023 29.8126 9.36821 29.4696C9.71619 29.1267 9.91189 28.66 9.91187 28.1732H9.9656Z" />
     </svg>
@@ -83,8 +83,8 @@ function ChatIcon({ svgIndex }: { svgIndex: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`${
-        svgIndex == 1 ? "fill-[#01FD91]" : "fill-[#8BD9FF] hover:fill-[#0097E2]"
-      }  ease-in duration-200`}
+        svgIndex == 1 ? 'fill-[#01FD91]' : 'fill-[#8BD9FF] hover:fill-[#0097E2]'
+      }  duration-200 ease-in`}
     >
       <path
         opacity="0.4"
@@ -104,8 +104,8 @@ function GameIcon({ svgIndex }: { svgIndex: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`${
-        svgIndex == 2 ? "fill-[#01FD91]" : "fill-[#8BD9FF] hover:fill-[#0097E2]"
-      }  ease-in duration-200`}
+        svgIndex == 2 ? 'fill-[#01FD91]' : 'fill-[#8BD9FF] hover:fill-[#0097E2]'
+      }  duration-200 ease-in`}
     >
       <path
         opacity="0.4"
@@ -124,8 +124,8 @@ function ProfileIcon({ svgIndex }: { svgIndex: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`${
-        svgIndex == 3 ? "fill-[#01FD91]" : "fill-[#8BD9FF] hover:fill-[#0097E2]"
-      }  ease-in duration-200`}
+        svgIndex == 3 ? 'fill-[#01FD91]' : 'fill-[#8BD9FF] hover:fill-[#0097E2]'
+      }  duration-200 ease-in`}
     >
       <path d="M11.9955 19.7623C5.526 19.7623 0 20.7823 0 24.8623C0 28.9438 5.4915 29.9998 11.9955 29.9998C18.465 29.9998 23.991 28.9813 23.991 24.8998C23.991 20.8183 18.501 19.7623 11.9955 19.7623Z" />
       <path
@@ -145,8 +145,8 @@ function SettingsIcon({ svgIndex }: { svgIndex: number }) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`${
-        svgIndex == 4 ? "fill-[#01FD91]" : "fill-[#8BD9FF] hover:fill-[#0097E2]"
-      }  ease-in duration-200`}
+        svgIndex == 4 ? 'fill-[#01FD91]' : 'fill-[#8BD9FF] hover:fill-[#0097E2]'
+      }  duration-200 ease-in`}
     >
       <path d="M14.2681 19.245C11.8614 19.245 9.91455 17.37 9.91455 15.015C9.91455 12.66 11.8614 10.77 14.2681 10.77C16.6748 10.77 18.5756 12.66 18.5756 15.015C18.5756 17.37 16.6748 19.245 14.2681 19.245Z" />
       <path
@@ -165,8 +165,8 @@ function EditIconProfile() {
       viewBox="0 0 30 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="rounded   bg-opacity-50 h-1/4  bg-[#8BD9FF] 
-                       hover:bg-[#357550] fill-[#9CD8FB] hover:fill-[#70F89B]  w-[17px]"
+      className="h-1/4   w-[17px] rounded  bg-[#8BD9FF] 
+                       bg-opacity-50 fill-[#9CD8FB] hover:bg-[#357550]  hover:fill-[#70F89B]"
     >
       <path d="M22.5818 12.5963L12.7527 22.4743C12.2415 22.9719 11.5697 23.2499 10.8686 23.2499H7.43644C7.24657 23.2499 7.07131 23.1768 6.93987 23.0451C6.80842 22.9134 6.75 22.7377 6.75 22.5475L6.83763 19.0792C6.85224 18.3914 7.12973 17.7475 7.6117 17.2646L14.5783 10.2841C14.6951 10.167 14.8996 10.167 15.0164 10.2841L17.4598 12.7177C17.6205 12.8773 17.8542 12.9812 18.1025 12.9812C18.6429 12.9812 19.0664 12.5421 19.0664 12.0153C19.0664 11.7519 18.9642 11.5177 18.8035 11.3421C18.7597 11.2836 16.4331 8.96701 16.4331 8.96701C16.2871 8.82067 16.2871 8.57189 16.4331 8.42555L17.4117 7.43043C18.3172 6.52311 19.7777 6.52311 20.6832 7.43043L22.5818 9.33287C23.4727 10.2255 23.4727 11.689 22.5818 12.5963Z" />
     </svg>
@@ -181,8 +181,8 @@ function EditIconWallpaper() {
       viewBox="0 0 30 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="rounded   bg-opacity-50  bg-[#8BD9FF] 
-                hover:bg-[#357550] fill-[#9CD8FB] hover:fill-[#70F89B]  w-5 h-5"
+      className="h-5   w-5  rounded 
+                bg-[#8BD9FF] bg-opacity-50 fill-[#9CD8FB]  hover:bg-[#357550] hover:fill-[#70F89B]"
     >
       <path d="M22.5818 12.5963L12.7527 22.4743C12.2415 22.9719 11.5697 23.2499 10.8686 23.2499H7.43644C7.24657 23.2499 7.07131 23.1768 6.93987 23.0451C6.80842 22.9134 6.75 22.7377 6.75 22.5475L6.83763 19.0792C6.85224 18.3914 7.12973 17.7475 7.6117 17.2646L14.5783 10.2841C14.6951 10.167 14.8996 10.167 15.0164 10.2841L17.4598 12.7177C17.6205 12.8773 17.8542 12.9812 18.1025 12.9812C18.6429 12.9812 19.0664 12.5421 19.0664 12.0153C19.0664 11.7519 18.9642 11.5177 18.8035 11.3421C18.7597 11.2836 16.4331 8.96701 16.4331 8.96701C16.2871 8.82067 16.2871 8.57189 16.4331 8.42555L17.4117 7.43043C18.3172 6.52311 19.7777 6.52311 20.6832 7.43043L22.5818 9.33287C23.4727 10.2255 23.4727 11.689 22.5818 12.5963Z" />
     </svg>
@@ -192,7 +192,7 @@ function EditIconWallpaper() {
 function SvgShapingMethod() {
   return (
     <svg
-      style={{ visibility: "hidden", position: "absolute" }}
+      style={{ visibility: 'hidden', position: 'absolute' }}
       width="0"
       height="0"
       xmlns="http://www.w3.org/2000/svg"
@@ -233,7 +233,7 @@ function FriendIcon() {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="friend-icon fill-[#8BD9FF] ease-in duration-200"
+      className="friend-icon fill-[#8BD9FF] duration-200 ease-in"
     >
       <path
         opacity="0.4"
@@ -252,7 +252,7 @@ function AchievementIcon() {
       viewBox="0 0 94 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="friend-icon fill-[#8BD9FF] ease-in duration-200"
+      className="friend-icon fill-[#8BD9FF] duration-200 ease-in"
     >
       <path d="M48.3 8.11205L49.62 10.7521C49.8 11.1121 50.28 11.472 50.68 11.532L53.07 11.9321C54.6 12.192 54.96 13.2921 53.86 14.3921L52 16.2521C51.69 16.5621 51.51 17.1721 51.61 17.6121L52.14 19.9221C52.56 21.7421 51.59 22.4521 49.98 21.5021L47.74 20.1721C47.33 19.9321 46.67 19.9321 46.26 20.1721L44.02 21.5021C42.41 22.4521 41.44 21.7421 41.86 19.9221L42.39 17.6121C42.49 17.182 42.31 16.5721 42 16.2521L40.14 14.3921C39.04 13.2921 39.4 12.1821 40.93 11.9321L43.32 11.532C43.72 11.462 44.2 11.1121 44.38 10.7521L45.7 8.11205C46.41 6.68205 47.59 6.68205 48.3 8.11205Z" />
       <path
@@ -271,7 +271,7 @@ function MatchHistoryIcon() {
       viewBox="0 0 94 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="friend-icon fill-[#8BD9FF] ease-in duration-200"
+      className="friend-icon fill-[#8BD9FF] duration-200 ease-in"
     >
       <path
         opacity="0.4"
@@ -290,7 +290,7 @@ function RankingIcon() {
       viewBox="0 0 94 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="friend-icon fill-[#8BD9FF] ease-in duration-200"
+      className="friend-icon fill-[#8BD9FF] duration-200 ease-in"
     >
       <path
         opacity="0.4"
@@ -319,8 +319,33 @@ function SettingIcon() {
     <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path opacity="0.4" d="M15.4999 28.4166C22.6338 28.4166 28.4166 22.6338 28.4166 15.4999C28.4166 8.36604 22.6338 2.58325 15.4999 2.58325C8.36604 2.58325 2.58325 8.36604 2.58325 15.4999C2.58325 22.6338 8.36604 28.4166 15.4999 28.4166Z" fill="white"/>
       <path d="M15.5001 16.7916C14.7767 16.7916 14.2084 16.2103 14.2084 15.4999C14.2084 14.7895 14.7897 14.2083 15.5001 14.2083C16.2105 14.2083 16.7917 14.7895 16.7917 15.4999C16.7917 16.2103 16.2234 16.7916 15.5001 16.7916ZM20.6667 16.7916C19.9434 16.7916 19.3751 16.2103 19.3751 15.4999C19.3751 14.7895 19.9563 14.2083 20.6667 14.2083C21.3772 14.2083 21.9584 14.7895 21.9584 15.4999C21.9584 16.2103 21.3901 16.7916 20.6667 16.7916ZM10.3334 16.7916C9.61008 16.7916 9.04175 16.2103 9.04175 15.4999C9.04175 14.7895 9.623 14.2083 10.3334 14.2083C11.0438 14.2083 11.6251 14.7895 11.6251 15.4999C11.6251 16.2103 11.0567 16.7916 10.3334 16.7916Z" fill="white"/>
-    </svg>
+    </svg>);
+}
 
+function AvatarLevelCounter({id,track,fill,cssProps}:{id:string,track:string,fill:string,cssProps:string}) {
+  return (
+    <svg
+      className={cssProps}
+      x="0px"
+      y="0px"
+      viewBox="0 0 776 628"
+    >
+      <defs>
+        <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#01fd91" />
+          <stop offset="100%" stopColor="#0097e2" />
+        </linearGradient>
+      </defs>
+      <path
+        className={track}
+        d="M689.793 276.77C702.297 298.428 702.297 325.112 689.793 346.77L550.207 588.54C537.703 610.198 514.594 623.54 489.585 623.54H210.415C185.406 623.54 162.297 610.198 149.793 588.54L10.2071 346.77C-2.2971 325.112 -2.29708 298.428 10.2072 276.77L149.793 35.0001C162.297 13.3419 185.406 0 210.415 0H489.585C514.594 0 537.703 13.342 550.207 35.0001L689.793 276.77Z"
+      ></path>
+
+      <path
+        className={fill}
+        d="M 702 319 C 702.297 298.428 702.297 325.112 689.793 346.77 L 550.207 588.54 C 537.703 610.198 514.594 623.54 489.585 623.54 H 210.415 C 185.406 623.54 162.297 610.198 149.793 588.54 L 10.2071 346.77 C -2.2971 325.112 -2.2971 298.428 10.2072 276.77 L 149.793 35.0001 C 162.297 13.3419 185.406 0 210.415 0 H 489.585 C 514.594 0 537.703 13.342 550.207 35.0001 L 703 312 Z"
+      ></path>
+    </svg>
   );
 }
 
@@ -343,4 +368,5 @@ export {
   AchievementIcon,
   MatchHistoryIcon,
   RankingIcon,
+  AvatarLevelCounter,
 };

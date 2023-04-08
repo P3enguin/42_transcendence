@@ -56,12 +56,11 @@ export class PlayerService {
 	}
 	//-----------------------------------{ Add a fried }
 	
-	async AddFriend(req: Request, friendId: number) {
-		const player = this.Get_Player(req);
+	async AddFriend(player: Player, req: Request, friendId: number) {
 		console.log (player);
 		const check_friend  = await this.prisma.player.findUnique({
 			where: {
-			  id: player.sub,
+			  id: player.id,
 			},
 			include: {
 			  friends: {
@@ -81,7 +80,7 @@ export class PlayerService {
 		{
 			await this.prisma.player.update({
 				where: {
-					id: player.sub,
+					id: player.id,
 				},
 				data:{
 					friends: {
@@ -190,6 +189,7 @@ export class PlayerService {
           avatar: true,
           wallpaper: true,
           joinAt: true,
+          Is2FAEnabled:true
         },
       });
       return res.status(200).json({ player });

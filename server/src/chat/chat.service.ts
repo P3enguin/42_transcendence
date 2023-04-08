@@ -37,6 +37,10 @@ export class ChatService {
     }
 
     GetChat(player: Player) {
+            
+    }
 
+    CreateRoom() {
+        
     }
 }

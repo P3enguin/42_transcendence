@@ -9,6 +9,8 @@ CREATE TABLE "players" (
     "password" TEXT NOT NULL,
     "firstname" TEXT NOT NULL,
     "lastname" TEXT NOT NULL,
+    "Is2FAEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "Secret2FA" TEXT NOT NULL DEFAULT '',
     "coins" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
 
