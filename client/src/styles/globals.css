@@ -78,7 +78,7 @@ html {
   transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill {
-  stroke: url(#MyGradient)
+  stroke: url(#GradientCounter)
 }
 
 .progress .track2,
@@ -98,7 +98,7 @@ html {
   transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill2 {
-  stroke: url(#MyGradient2)
+  stroke: url(#GradientLevel)
 }
 
 

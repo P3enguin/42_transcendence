@@ -9,14 +9,23 @@ export interface playerStrat {
     accessToken: string;
   }
 
+export interface decodedTokenInterface {
+  id: number,
+  nickname: string,
+  iat: number,
+  xp: number ,
+}
+
 export interface UserToken {
   id : number;
+  email : string;
 }
 
 export interface jwtData {
-  decoded: any;
+  decoded: decodedTokenInterface;
   authorized: boolean;
 }
+
 
 export interface user extends Player {
   jwt?: {

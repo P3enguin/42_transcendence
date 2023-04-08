@@ -65,11 +65,11 @@ function ModalActivate2FA({
                 below 👇
               </p>
               <form onSubmit={verify}>
-                <div className=" mb-6">
+                <div className="mb-6 flex flex-col items-center">
                   <OTPInput />
                   <span
                     id="errorSpan"
-                    className="justify-even ml-4 mt-2 flex text-center text-xs text-red-700 md:text-sm"
+                    className="mt-2 flex text-center text-xs text-red-700 md:text-sm"
                   ></span>
                 </div>
                 {/* <!-- Modal footer --> */}
@@ -114,25 +114,35 @@ function ModalDeactivate2FA({
 }: QrCodeProps) {
   async function deactivate2FA(event: React.FormEvent) {
     event.preventDefault();
-    const password = (document.getElementById('password2FA') as HTMLInputElement).value;
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/deactivate2FA',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          password: password,
-        }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      },
-    );
-    if (res.ok) {
-      setActivated(false);
-    } else if (res.status === 403) {
-      const result = await res.json();
-      console.log(result);
+    const password = (
+      document.getElementById('password2FA') as HTMLInputElement
+    ).value;
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/deactivate2FA',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            password: password,
+          }),
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        },
+      );
+      if (res.ok) {
+        setActivated(false);
+      } else {
+        const result = await res.json();
+        if (result.error.message) throw new Error(result.error.message);
+        else throw new Error('An unexpected Error has occured');
+      }
+    } catch (error) {
       const span = document.getElementById('password2FASpan');
-      if (span) span.innerHTML = result.error.message;
+      if (error instanceof Error) {
+        if (span) span.innerHTML = error.message;
+      } else {
+        if (span) span.innerHTML = 'Unexpected Error';
+      }
     }
   }
 

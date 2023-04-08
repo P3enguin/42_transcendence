@@ -62,10 +62,9 @@ function ProfileStats() {
             </span>
           </button>
         </div>
-        <div className=" h-[200px]  overflow-y-scroll md:h-[400px] ">
-          {/* <FriendStats/> */}    
-          <AchievementStats/>
-
+        <div className=" h-[200px]  overflow-y-auto md:h-[400px] ">
+          <FriendStats/>    
+          {/* <AchievementStats/> */}
         </div>
       </div>);
 }

@@ -168,39 +168,9 @@ export class AuthService {
         throw new ForbiddenException('Password Incorrect');
       }
     } catch (err) {
-      console.log(err);
-      res.status(401).json({ error: err });
+        res.status(401).json({ error: err });
     }
   }
-
-  // async getUser(userEmail: string){
-  //   var user :object;
-  //   try {
-  //       user = await this.prisma.player.findUnique({
-  //           where : {
-  //               email: userEmail,
-  //           },
-  //           select : {
-  //               nickname: true,
-  //               email: true,
-  //               firstname:true,
-  //               lastname:true,
-  //           }
-  //       })
-  //   }
-  //   catch(e) {
-  //       console.log(e);
-  //       if (e instanceof PrismaClientKnownRequestError) {
-  //           console.log(`code : ${e.code} , message : ${e.message}`);
-  //       }
-  //   }
-  //   if (!user)
-  //       return {
-  //           nickname: null,
-  //           error:"Error user not found"
-  //       }
-  //   return user;
-  // }
 
   async signToken(
     playerId: number,
@@ -283,7 +253,7 @@ export class AuthService {
     }
   }
 
-  async confirm2FA(user : any,token: string,res:Response) {
+  async confirm2FA(user : UserToken,token: string,res:Response) {
       try {
         const player = await this.prisma.player.findUnique({
           where : {
@@ -317,7 +287,7 @@ export class AuthService {
       }
   }
 
-  async deactivate2FA(user : any,password : string ,res : Response){
+  async deactivate2FA(user : UserToken,password : string ,res : Response){
       try {
         const player = await this.prisma.player.findUnique({
           where : {
@@ -350,7 +320,7 @@ export class AuthService {
       }
   }
 
-  async verify2FA(user : any,token: string,res:Response) {
+  async verify2FA(user : UserToken,token: string,res:Response) {
     try {
       const player = await this.prisma.player.findUnique({
         where : {

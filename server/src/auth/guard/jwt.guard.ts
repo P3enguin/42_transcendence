@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Player } from '@prisma/client';
-import { jwtData,user } from '../Interfaces/Interface';
+import { jwtData,user,decodedTokenInterface } from '../Interfaces/Interface';
 
 @Injectable()
 export class JwtSessionGuard extends AuthGuard('jwt_session') {
@@ -18,7 +18,7 @@ export class JwtSessionGuard extends AuthGuard('jwt_session') {
     if (!token) return { decoded: null, authorized: false };
     const secret: string = process.env.JWT_SESSION;
     try {
-      const decoded: object = this.jwt.verify(token, { secret });
+      const decoded: decodedTokenInterface = this.jwt.verify(token, { secret });
       return { decoded: decoded, authorized: true };
     } catch (err) {
       return { decoded: null, authorized: true };
@@ -55,7 +55,7 @@ export class JwtGuard extends AuthGuard('jwt_token') {
         where: { token },
       });
       if (isInvalidToken) throw new Error('Error: invalid token');
-      const decoded: object = this.jwt.verify(token, { secret });
+      const decoded: decodedTokenInterface = this.jwt.verify(token, { secret });
       const user: user = await this.prisma.player.findUnique({
         where: {
           id: decoded['id'],
@@ -99,7 +99,7 @@ export class JwtGuard extends AuthGuard('jwt_token') {
           where: { token },
         });
         if (isInvalidToken) throw new Error('Error: invalid token');
-        const decoded: object = this.jwt.verify(token, { secret });
+        const decoded: decodedTokenInterface = this.jwt.verify(token, { secret });
         console.log(decoded);
         const user: user = await this.prisma.player.findUnique({
           where: {
