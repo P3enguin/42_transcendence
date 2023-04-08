@@ -268,86 +268,82 @@ export function RePasswordInput({
 }
 
 export function OTPInput() {
-  function autoTab(field1: string, len: number, field2: string) {
-    if (
-      (document.getElementById(field1) as HTMLInputElement).value.length == len
-    ) {
-      (document.getElementById(field2) as HTMLInputElement).focus();
+  const array = [1, 2, 3, 4, 5, 6];
+  // function handleChange(event: React.ChangeEvent<HTMLInputElement>, field: number) {
+  //   const value = event.target.value;
+  //   const elem = document.getElementById(field.toString()) as HTMLInputElement;
+  //   if (elem.value  && elem.value !== "")
+  //   {
+  //     console.log("hh1");
+  //     const next = document.getElementById((field + 1).toString()) as HTMLInputElement;
+  //     if (next)
+  //       next.focus();
+  //   }
+  // }
+
+  // function handleKeyUp(event :React.KeyboardEvent , field:number)
+  // {
+  //   const elem = document.getElementById(field.toString()) as HTMLInputElement;
+  //   const prev = document.getElementById((field - 1).toString()) as HTMLInputElement;
+  //   const next = document.getElementById((field + 1).toString()) as HTMLInputElement;
+
+  //   if (elem)
+  //   {
+  //     console.log(event.metaKey);
+  //     if (event.key === "Backspace" || event.key === "ArrowLeft")
+  //       prev?.focus();
+  //     else if (event.key === "ArrowRight")
+  //       next?.focus();
+  //     else {
+        
+  //     }
+  //   }
+  // }
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>, field: number) {
+    const value = event.target.value;
+    const elem = document.getElementById(field.toString()) as HTMLInputElement;
+    if (elem.value && elem.value !== "") {
+      const next = document.getElementById((field + 1).toString()) as HTMLInputElement;
+      if (next) next.focus();
     }
   }
-  function handleKeyUp(field1: string, len: number, field2: string) {
-    return function handleAutoTab() {
-      autoTab(field1, len, field2);
-    };
+  
+  function handleKeyUp(event: React.KeyboardEvent, field: number) {
+    const elem = document.getElementById(field.toString()) as HTMLInputElement;
+    const prev = document.getElementById((field - 1).toString()) as HTMLInputElement;
+    const next = document.getElementById((field + 1).toString()) as HTMLInputElement;
+  
+    if (elem) {
+      if (event.key === "Backspace" || event.key === "ArrowLeft") {
+        if (elem.value === "") prev?.focus();
+      } else if (event.key === "ArrowRight") {
+        if (elem.value === "" || elem.selectionStart === elem.value.length) next?.focus();
+      } else if (event.key.match(/[0-9]/)) {
+        if (elem.value !== "") next?.focus();
+      } else {
+        event.preventDefault();
+      }
+    }
   }
-
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-row items-center justify-between gap-2 text-black">
-      <div className="h-16 w-16 ">
-        <input
-          className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-lg outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
-          type="text"
-          pattern="[0-9]"
-          maxLength={1}
-          name="numb1"
-          id="numb1"
-          onKeyUp={handleKeyUp('numb1', 1, 'numb2')}
-        />
-      </div>
-      <div className="h-16 w-16 ">
-        <input
-          className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-lg outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
-          type="text"
-          pattern="[0-9]"
-          maxLength={1}
-          name="numb2"
-          id="numb2"
-          onKeyUp={handleKeyUp('numb2', 1, 'numb3')}
-        />
-      </div>
-      <div className="h-16 w-16 ">
-        <input
-          className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-lg outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
-          type="text"
-          pattern="[0-9]"
-          maxLength={1}
-          name="numb3"
-          id="numb3"
-          onKeyUp={handleKeyUp('numb3', 1, 'numb4')}
-        />
-      </div>
-      <div className="h-16 w-16 ">
-        <input
-          className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-lg outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
-          type="text"
-          pattern="[0-9]"
-          maxLength={1}
-          name="numb4"
-          id="numb4"
-          onKeyUp={handleKeyUp('numb4', 1, 'numb5')}
-        />
-      </div>
-      <div className="h-16 w-16 ">
-        <input
-          className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-lg outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
-          type="text"
-          pattern="[0-9]"
-          maxLength={1}
-          name="numb5"
-          id="numb5"
-          onKeyUp={handleKeyUp('numb5', 1, 'numb6')}
-        />
-      </div>
-      <div className="h-16 w-16 ">
-        <input
-          className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-lg outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
-          type="text"
-          pattern="[0-9]"
-          maxLength={1}
-          name="numb6"
-          id="numb6"
-        />
-      </div>
+    <div className="mx-auto flex w-[340px] sm:w-full  flex-row items-center justify-between gap-2 text-black">
+      {array.map((value) => {
+        return (
+          <div key={value} className="h-[50px] sm:h-16 w-16 ">
+            <input
+              className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center sm:text-lg text-sm outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
+              type="text"
+              maxLength={1}
+              pattern="[0-9]"
+              name={value.toString()}
+              id={value.toString()}
+              onChange={(e) => handleChange(e, value)}
+              onKeyUp={(e) => handleKeyUp(e, value)}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }

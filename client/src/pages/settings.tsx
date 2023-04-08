@@ -63,15 +63,15 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   async function handlePasswordUpdate(event: React.FormEvent) {
     event.preventDefault();
 
-    const password = (document.getElementById("password") as HTMLInputElement).value;
-    if (password)
-    {
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    if (password) {
       const data = {
         password: password,
       };
       const updateURL: string =
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
-  
+
       const response = await fetch(updateURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -126,7 +126,9 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         const err = await response.json();
         if (err.error === 'Nickname already exist') {
           const span = document.getElementById('nickspan');
-          updateField(2, { valid: false, touched: false }, span, err.error);
+          const newArr = mutateArray(2,{ valid: false, touched: false },state);
+          updateState(newArr);
+          printError(span, err.error);
         } else {
           setError(true);
           setTimeout(() => {
@@ -159,160 +161,129 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     else setEnabledSecond(false);
   }),
     [statePass];
-  function updateField(
+
+  function mutateArray(
     index: number,
     val: statObj,
-    span: HTMLElement | null,
-    error: string,
-  ) {
-    const newState = state.map((elem, i) => {
+    array: statObj[],
+  ): statObj[] {
+    const newArr = array.map((elem, i) => {
       if (i == index) return val;
       else return elem;
     });
-    updateState(newState);
-    if (span) span.innerHTML = error;
+    return newArr;
   }
 
-  function updateFieldSec(
-    index: number,
-    val: statObj,
-    span: HTMLElement | null,
-    error: string,
-  ) {
-    const newState = statePass.map((elem, i) => {
-      if (i == index) return val;
-      else return elem;
-    });
-    updateStatePass(newState);
+  function printError(span: HTMLElement | null, error: string) {
     if (span) span.innerHTML = error;
   }
 
   function validFirstName(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = state;
     const first_name: string = event.target.value;
     const span = document.getElementById('fnspan');
     var touched = state[0].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    if (isEmpty(first_name)) {
-      updateField(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'First name cannot be empty!',
-      );
+    
+    newState = mutateArray(0, { valid: false, touched: touched }, newState);
+    if (first_name === firstname)
+    newState = mutateArray(0, { valid: false, touched: false }, newState);
+    else if (isEmpty(first_name)) {
+      printError(span, 'First name cannot be empty!');
     } else if (isTooLong(first_name)) {
-      updateField(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'Input is too long!',
-      );
+      printError(span, 'Input is too long!');
     } else if (!isValidName(first_name)) {
-      updateField(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'first name contains forbidden characters!',
-      );
+      printError(span, 'first name contains forbidden characters!');
     } else {
-      updateField(0, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(0,{ valid: true, touched: touched }, newState);
     }
+    updateState(newState);
   }
 
   function validLastName(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = state;
     const last_name: string = event.target.value;
     const span = document.getElementById('lnspan');
     var touched = state[1].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    if (isEmpty(last_name)) {
-      updateField(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Last name cannot be empty!',
-      );
+    newState = mutateArray(1, { valid: false, touched: touched }, newState);
+    if (last_name === lastname)
+      newState = mutateArray(1, { valid: false, touched: false }, newState);
+    else if (isEmpty(last_name)) {
+      printError(span, 'Last name cannot be empty!');
     } else if (isTooLong(last_name)) {
-      updateField(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Input is too long!',
-      );
+      printError(span, 'Input is too long!');
     } else if (!isValidName(last_name)) {
-      updateField(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Last name contains forbidden characters!',
-      );
+      printError(span, 'Last name contains forbidden characters!');
     } else {
-      updateField(1, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(1, { valid: true, touched: touched }, newState);
     }
+    updateState(newState);
   }
 
   function validNickName(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = state;
     const nick_name: string = event.target.value;
     const span = document.getElementById('nickspan');
     var touched = state[2].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    if (isEmpty(nick_name)) {
-      updateField(
-        2,
-        { valid: false, touched: touched },
-        span,
-        'Nickname cannot be empty!',
-      );
+    newState = mutateArray(2, { valid: false, touched: touched }, newState);
+    if (nick_name === nickname)
+      newState = mutateArray(2, { valid: false, touched: false }, newState);
+    else if (isEmpty(nick_name)) {
+      printError(span, 'Nickname cannot be empty!');
     } else if (!isBetween(nick_name, 3, 15)) {
-      updateField(
-        2,
-        { valid: false, touched: touched },
-        span,
-        'Nickname should be (3-20) character long!',
-      );
+      printError(span, 'Nickname should be (3-20) character long!');
     } else if (!isClear(nick_name)) {
-      updateField(
-        2,
-        { valid: false, touched: touched },
-        span,
-        'Nickname contains forbidden characters!',
-      );
+      printError(span, 'Nickname contains forbidden characters!');
     } else {
-      updateField(2, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(2, { valid: true, touched: touched }, newState);
     }
+    updateState(newState);
+
   }
 
   function validPassword(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = statePass;
     const password: string = event.target.value;
     const span = document.getElementById('pwdspan');
+    const RePassSpan = document.getElementById('repwdspan');
     var touched = statePass[0].touched;
     if (!touched) touched = true;
 
     span!.innerHTML = '';
+    RePassSpan!.innerHTML = '';
     if (isEmpty(password)) {
-      updateFieldSec(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'Password cannot be empty!',
-      );
+      newState = mutateArray(0, { valid: false, touched: false }, newState);
+      newState = mutateArray(1, { valid: false, touched: false }, newState);
     } else if (!isStrong(password)) {
-      updateFieldSec(
-        0,
-        { valid: false, touched: touched },
-        span,
-        'Password is too weak!',
-      );
+      (newState = mutateArray(0, { valid: false, touched: touched }, newState)),
+        printError(span, 'Password is too weak!');
     } else {
-      updateFieldSec(0, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(0, { valid: true, touched: true }, newState);
+      const Repass = (document.getElementById('repassword') as HTMLInputElement)
+        .value;
+      if (Repass) {
+        if (password !== Repass) {
+          const span = document.getElementById('repwdspan');
+          newState = mutateArray(1, { valid: false, touched: true }, newState);
+          printError(RePassSpan, 'passwords are not identicals!');
+        } else {
+          newState = mutateArray(1, { valid: true, touched: true }, newState);
+        }
+      }
     }
+    updateStatePass(newState);
   }
 
   function validRePassword(event: React.ChangeEvent<HTMLInputElement>) {
+    let newState = statePass;
     const RePassword: string = event.target.value;
     const password = document.getElementById('password') as HTMLInputElement;
 
@@ -322,22 +293,14 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
 
     span!.innerHTML = '';
     if (isEmpty(RePassword)) {
-      updateFieldSec(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'Confirm your password!',
-      );
+      newState = mutateArray(1, { valid: false, touched: false }, newState);
     } else if (password.value !== RePassword) {
-      updateFieldSec(
-        1,
-        { valid: false, touched: touched },
-        span,
-        'passwords are not identicals!',
-      );
+      newState = mutateArray(1, { valid: false, touched: touched }, newState);
+      printError(span, 'passwords are not identicals!');
     } else {
-      updateFieldSec(1, { valid: true, touched: touched }, null, '');
+      newState = mutateArray(1, { valid: true, touched: touched }, newState);
     }
+    updateStatePass(newState);
   }
 
   async function activate2FA(event: React.MouseEvent<HTMLButtonElement>) {
