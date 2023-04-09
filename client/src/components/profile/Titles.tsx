@@ -1,24 +1,14 @@
-
-function TitlesComp({titles,cssProps}:{titles:Array<string>,cssProps:string}) {
-    return (  <select
-        id="title"
-        className={cssProps}
-      >
-        <option
-          value="select a title"
-          defaultValue={'select a title'}
-          disabled
-          id="titles"
-          hidden
-        >
-          select a title
+function TitlesComp({ titles, cssProps }: { titles: string[], cssProps: string }) {
+  return (
+    <select id="title" className={cssProps}>
+      <option value="">Select a title</option>
+      {titles.map((title, index) => (
+        <option key={index} value={title}>
+          {title}
         </option>
-        {titles.map((elem, index) => (
-          <option key={index} value={elem}>
-            {elem}
-          </option>
-        ))}
-      </select> );
+      ))}
+    </select>
+  );
 }
 
 export default TitlesComp;

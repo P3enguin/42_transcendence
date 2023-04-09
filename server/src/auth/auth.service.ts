@@ -4,13 +4,14 @@ import { AuthDto, singDTO } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { AchivementService } from 'src/achivement/achivement.service';
-import { TitleService } from 'src/title/title.service';
 import { Request, Response } from 'express';
 import { authenticator } from 'otplib';
 import * as argon2 from 'argon2';
 import { toDataURL } from 'qrcode';
 import { playerStrat, UserToken } from './Interfaces/Interface';
+import { AchivementService } from 'src/achivement/achivement.service';
+import { TitleService } from 'src/title/title.service';
+import { RankService } from 'src/rank/rank.service';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +21,8 @@ export class AuthService {
     private config: ConfigService,
     private achiv: AchivementService,
     private title: TitleService,
-  ) // private rank: RankService,
-  {}
+    private rank: RankService,
+  ) {}
 
   async checkUser(user: playerStrat, res: Response) {
     try {
@@ -87,9 +88,6 @@ export class AuthService {
   async signup(req: Request, res: Response, dto: AuthDto) {
     const secret: string = process.env.JWT_SECRET;
     try {
-      await this.achiv.fillAvhievememt();
-      await this.title.fillTitles();
-      // await this.ra
       const hash = await argon2.hash(dto.password);
       const player = await this.prisma.player.create({
         data: {
@@ -107,6 +105,7 @@ export class AuthService {
       });
       await this.achiv.assignAchiv(player.statusId);
       await this.title.assignTitle(player.statusId);
+      await this.rank.assignRanks(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
@@ -125,6 +124,7 @@ export class AuthService {
         }
       }
       // error handling for invalid session token
+      console.log(e);
       return res.status(401).send(JSON.stringify({ error: error }));
     }
   }

@@ -80,7 +80,6 @@ function ProfileDisplay({
     const avatar = (event.target as HTMLInputElement).files?.[0];
     if (avatar) {
       if (avatar.size > 1024 * 1024 * 2) {
-        // if (divErr) divErr.innerHTML = 'File must be 2MB Large!';
         setErrorSize(true);
         setTimeout(() => {
           setErrorSize(false);
@@ -174,7 +173,6 @@ function ProfileDisplay({
             src={wp}
             alt="wallpaper"
             id="wallpaper-holder"
-
             className="h-[160px] min-h-[80px] w-full 
             min-w-[200px] rounded-t-3xl sm:h-[220px] xl:h-[250px] "
           />

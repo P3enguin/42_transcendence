@@ -36,13 +36,13 @@ export class PlayerController {
     else return this.playerService.getDataID(req.body.user.id as number, res);
   }
 
-  @Post('data')
+  @Patch('data')
   changeData(@Req() req: Request, @Res() res: Response) {
     console.log(req.body);
     return this.playerService.changeData(req.body, res);
   }
 
-  @Post('password')
+  @Patch('password')
   changePassword(@Req() req: Request, @Res() res: Response) {
     console.log(req.body);
     return this.playerService.changePassowrd(req.body, res);
