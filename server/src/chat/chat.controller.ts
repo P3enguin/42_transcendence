@@ -46,4 +46,8 @@ export class ChatController {
 		
 	}
 
+	@Post('CreateRoom')
+    CreateRoom(@Req() req: Request, @Res() res: Response) {
+        console.log(req.query);  
+    }
 }

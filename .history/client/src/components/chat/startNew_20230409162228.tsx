@@ -1,25 +1,17 @@
 import axios from "axios";
-import { useRouter } from 'next/router';
+import React from "react";
 
 function StartNew() {
-  const router = useRouter();
-
-  const room = {
-    name  :string,
-    Topic :string,
-    Key   :string,
-    memberLimit: number,
-    stats :      string,
-    IsChannel: true,
-    adminId: string,
-  }
 
   async function createRoom() {
-    const res = await axios.post(
+    const res = await axios(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
-      room,
-    );
-      router.push(/chat/ + res.data);
+      {
+        methode: Post,
+
+        }
+      }
+    )
   }
 
     return (

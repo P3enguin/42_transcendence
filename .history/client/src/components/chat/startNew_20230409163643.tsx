@@ -11,7 +11,8 @@ function StartNew() {
     memberLimit: number,
     stats :      string,
     IsChannel: true,
-    adminId: string,
+    adminId Int?
+  
   }
 
   async function createRoom() {

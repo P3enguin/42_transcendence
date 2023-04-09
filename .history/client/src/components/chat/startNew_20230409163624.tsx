@@ -5,13 +5,16 @@ function StartNew() {
   const router = useRouter();
 
   const room = {
-    name  :string,
-    Topic :string,
-    Key   :string,
+    name  :String,
+    Topic :String,
+    Key   :String,
     memberLimit: number,
-    stats :      string,
-    IsChannel: true,
-    adminId: string,
+    stats :      String,
+  
+    IsChannel:
+  
+    adminId Int?
+  
   }
 
   async function createRoom() {

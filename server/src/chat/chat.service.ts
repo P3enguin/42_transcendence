@@ -42,6 +42,6 @@ export class ChatService {
     }
 
     CreateRoom(@Req() req: Request, @Res() res: Response) {
-        
+        console.log(req.query);  
     }
 }
