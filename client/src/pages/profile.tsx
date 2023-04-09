@@ -48,7 +48,7 @@ function PlayerProfile({
             MaxExp={2500}
             userProfile={true}
           />
-          <ProfileStats />
+          <ProfileStats nickname={nickname}  userProfile={true}/>
         </div>
       </>
     );

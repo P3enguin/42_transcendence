@@ -80,7 +80,7 @@ model Ranks {
 
   status    Ranks_status[]
 
-  name      String
+  name      String @unique()
   points    Int
   avatar    String?
 }
@@ -98,9 +98,9 @@ model Ranks_status {
   @@id([rankId, statusId])
 }
 model Titles {
-  id Int @id @default(autoincrement())
+  id          Int @id @default(autoincrement())
 
-  status   Titles_status[]
+  status      Titles_status[]
 
   name        String @unique()
   description String
