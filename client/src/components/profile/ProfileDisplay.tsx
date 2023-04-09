@@ -174,8 +174,9 @@ function ProfileDisplay({
             src={wp}
             alt="wallpaper"
             id="wallpaper-holder"
+
             className="h-[160px] min-h-[80px] w-full 
-            min-w-[200px] rounded-t-3xl sm:h-[220px] xl:h-[250px]"
+            min-w-[200px] rounded-t-3xl sm:h-[220px] xl:h-[250px] "
           />
           {userProfile && (
             <label

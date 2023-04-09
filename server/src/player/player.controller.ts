@@ -14,6 +14,7 @@ interface queryParam {
   nickname: string;
 }
 
+
 @UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
@@ -55,8 +56,8 @@ export class PlayerController {
 	}
 	
 	@Get('friends')
-	GetFriends(@Req() req: Request) {
-		return this.playerService.GetFriends(req);
+	GetFriends(@Req() req: Request,@Res() res:Response,@Query() query : queryParam) {
+		return this.playerService.GetFriends(req,res,query.nickname);
 	}
 	@Patch('block')
 	BlockFriend(@Req() req: Request, friendId: number) {

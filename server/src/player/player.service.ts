@@ -7,6 +7,8 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { Response } from 'express';
 import { AuthDto } from 'src/prisma/dto';
 import * as argon2 from 'argon2';
+import * as fs from 'fs';
+
 @Injectable()
 export class PlayerService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
@@ -35,145 +37,150 @@ export class PlayerService {
     }
   }
 
-	//-----------------------------------{ FRIEND }-----------------------------------\\
-	
-	Get_Player(req: Request) {
-		const token = req.cookies["jwt_token"];
-		try {
-			const secret = process.env.JWT_SECRET;
-			const decoded = this.jwt.verify(token,{secret});
-			const player = this.prisma.player.findUnique({
-				where: {
-					id: decoded.sub,
-				},
-			});
-			return decoded;
-		}
-		catch (err)
-		{
-			console.log (err);
-		}
-	}
-	//-----------------------------------{ Add a fried }
-	
-	async AddFriend(player: Player, req: Request, friendId: number) {
-		console.log (player);
-		const check_friend  = await this.prisma.player.findUnique({
-			where: {
-			  id: player.id,
-			},
-			include: {
-			  friends: {
-				select: {
-				  id: true,
-				},
-			  },
-			  block: {
-				select: {
-					id: true,
-				}
-			  }
-			},
-		  });
-		  console.log(check_friend);
-		if (!check_friend.friends.some(f => f.id === friendId) && !check_friend.block.some(f => f.id === friendId))
-		{
-			await this.prisma.player.update({
-				where: {
-					id: player.id,
-				},
-				data:{
-					friends: {
-						connect: {
-							id: friendId,
-						},
-					},
-				},
-			});
-			console.log("Friend added !", friendId);
-			return "Friend added successfully"
-		}
-		else
-		{
-			console.log(friendId,"exist !");
-			return "Friend already exist !";
-		}
+  //-----------------------------------{ FRIEND }-----------------------------------\\
 
-	}
+  Get_Player(req: Request) {
+    const token = req.cookies['jwt_token'];
+    try {
+      const secret = process.env.JWT_SECRET;
+      const decoded = this.jwt.verify(token, { secret });
+      const player = this.prisma.player.findUnique({
+        where: {
+          id: decoded.sub,
+        },
+      });
+      return decoded;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  //-----------------------------------{ Add a fried }
 
-	//-----------------------------------{ get the list if all friends }
-	
-	async GetFriends(req: Request) {
-		const player = this.Get_Player(req);
-		const FriendList =  await this.prisma.player.findUnique({
-			where: {
-				id: player.sub,
-		},
-		include: {
-			friends: true,
-		},
-	});
-	return FriendList;
-}
-//-----------------------------------{ Block }-----------------------------------\\
-//-----------------------------------{ block a friends }
+  async AddFriend(player: Player, req: Request, friendId: number) {
+    console.log(player);
+    const check_friend = await this.prisma.player.findUnique({
+      where: {
+        id: player.id,
+      },
+      include: {
+        friends: {
+          select: {
+            id: true,
+          },
+        },
+        block: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    console.log(check_friend);
+    if (
+      !check_friend.friends.some((f) => f.id === friendId) &&
+      !check_friend.block.some((f) => f.id === friendId)
+    ) {
+      await this.prisma.player.update({
+        where: {
+          id: player.id,
+        },
+        data: {
+          friends: {
+            connect: {
+              id: friendId,
+            },
+          },
+        },
+      });
+      console.log('Friend added !', friendId);
+      return 'Friend added successfully';
+    } else {
+      console.log(friendId, 'exist !');
+      return 'Friend already exist !';
+    }
+  }
 
-	async BlockFriend(req: Request, friendId: number) {
-		const player = this.Get_Player(req);
-		const check_friend  = await this.prisma.player.findUnique({
-			where: {
-			  id: player.sub,
-			},
-			select: {
-			  friends: {
-				select: {
-				  id: true,
-				},
-			  },
-			},
-		  });
-		if (check_friend.friends.some(f => f.id === friendId)){
-			try {
-				await this.prisma.player.update({
-					where: {
-						id:player.sub,
-					},
-					data:{
-						friends: {
-							disconnect: {
-								id: friendId,
-							},
-						},
-						block: {
-							connect:{
-								id: friendId,
-							}
-						},
-					},
-				});
-			}catch (err){
-				console.log("friend doesn't exist!", err);
-			}
-			return" friend Blocked";
-		}
-		else
-			return("friend doesn't exist!");
+  //-----------------------------------{ get the list if all friends }
 
-	}
-		
-	async GetBlockedFriends(req: Request) {
-	const player = this.Get_Player(req);
-	const BlockedList =  await this.prisma.player.findUnique({
-				where: {
-					id: player.sub,
-			},
-			include: {
-				block: true,
-			},
-		});
-		return BlockedList;
-	}
-		//-----------------------------------{  }
+  async GetFriends(req: Request,res:Response,nickname:string) {
+    // const player = this.Get_Player(req);
+    try {
+      const FriendList = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname
+        },
+        include: {
+          friends: true,
+        },
+      });
+      return res.status(200).json(FriendList.friends);
+    }
+    catch (error)
+    {
+      if (error instanceof PrismaClientKnownRequestError)
+      {
+        console.log(error.message);
+        return res.status(400).json({error : error.message});
+      }
+      return res.status(400).json({error : "Unexpected error has occurred"});
+    }
+  }
+  //-----------------------------------{ Block }-----------------------------------\\
+  //-----------------------------------{ block a friends }
+
+  async BlockFriend(req: Request, friendId: number) {
+    const player = this.Get_Player(req);
+    const check_friend = await this.prisma.player.findUnique({
+      where: {
+        id: player.sub,
+      },
+      select: {
+        friends: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (check_friend.friends.some((f) => f.id === friendId)) {
+      try {
+        await this.prisma.player.update({
+          where: {
+            id: player.sub,
+          },
+          data: {
+            friends: {
+              disconnect: {
+                id: friendId,
+              },
+            },
+            block: {
+              connect: {
+                id: friendId,
+              },
+            },
+          },
+        });
+      } catch (err) {
+        console.log("friend doesn't exist!", err);
+      }
+      return ' friend Blocked';
+    } else return "friend doesn't exist!";
+  }
+
+  async GetBlockedFriends(req: Request) {
+    const player = this.Get_Player(req);
+    const BlockedList = await this.prisma.player.findUnique({
+      where: {
+        id: player.sub,
+      },
+      include: {
+        block: true,
+      },
+    });
+    return BlockedList;
+  }
+  //-----------------------------------{  }
   async getDataID(id: number, res: Response) {
     try {
       const player = await this.prisma.player.findUnique({
@@ -189,7 +196,7 @@ export class PlayerService {
           avatar: true,
           wallpaper: true,
           joinAt: true,
-          Is2FAEnabled:true
+          Is2FAEnabled: true,
         },
       });
       return res.status(200).json({ player });
@@ -251,6 +258,22 @@ export class PlayerService {
     try {
       const secret = process.env.JWT_SECRET;
       const decoded = this.jwt.verify(token, { secret });
+      const player =  await this.prisma.player.findUnique({
+        where: {
+          id: decoded.id,
+        },
+        select: {
+          avatar : true,
+        }
+      });
+      if (player.avatar != "default.png")
+      {
+        fs.unlink(process.cwd() + '/uploads/avatars/' + player.avatar, (error) => {
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
       await this.prisma.player.update({
         where: {
           id: decoded.id,
@@ -269,6 +292,22 @@ export class PlayerService {
     try {
       const secret = process.env.JWT_SECRET;
       const decoded = this.jwt.verify(token, { secret });
+      const player =  await this.prisma.player.findUnique({
+        where: {
+          id: decoded.id,
+        },
+        select: {
+          wallpaper : true,
+        }
+      });
+      if (player.wallpaper != "wallpaper.png")
+      {
+        fs.unlink(process.cwd() + '/uploads/wallpapers/' + player.wallpaper, (error) => {
+          if (error) {
+            console.log(error);
+          }
+        });
+      }
       await this.prisma.player.update({
         where: {
           id: decoded.id,
