@@ -55,7 +55,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
           </div>
           {
             data.friends.map((friend: any, key: any) => {
-              (showRecentChat && <OnlineNow player={friend.nickname} avatar={friend.avatar} key={key} />)
+              showRecentChat && <OnlineNow player={friend.nickname} avatar={friend.avatar} key={key} />
             })
           }
 

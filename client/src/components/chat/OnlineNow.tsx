@@ -23,8 +23,8 @@ function OnlineNow ({player, avatar, key}: any)
   // };
   // if (pictures.pfp != avatar) fetchPFP();
   // setLoading(false);
-  const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/"+ avatar;
-  console.log(player);
+  const picture = "localhost:8000/avatars/"+ avatar;
+  console.log("online friend: ");
   
     return (
         <div className="flex h-[15%] w-[100%] flex-col pl-5 pr-5">
