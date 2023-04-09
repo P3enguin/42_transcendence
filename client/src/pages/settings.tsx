@@ -73,7 +73,7 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
 
       const response = await fetch(updateURL, {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         credentials: 'include',
@@ -112,7 +112,7 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
 
       const response = await fetch(updateURL, {
-        method: 'POST',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
         credentials: 'include',

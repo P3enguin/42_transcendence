@@ -14,6 +14,7 @@ interface queryParam {
   nickname: string;
 }
 
+
 @UseGuards(JwtGuard)
 @Controller('players')
 export class PlayerController {
@@ -35,13 +36,13 @@ export class PlayerController {
     else return this.playerService.getDataID(req.body.user.id as number, res);
   }
 
-  @Post('data')
+  @Patch('data')
   changeData(@Req() req: Request, @Res() res: Response) {
     console.log(req.body);
     return this.playerService.changeData(req.body, res);
   }
 
-  @Post('password')
+  @Patch('password')
   changePassword(@Req() req: Request, @Res() res: Response) {
     console.log(req.body);
     return this.playerService.changePassowrd(req.body, res);
@@ -55,8 +56,8 @@ export class PlayerController {
 	}
 	
 	@Get('friends')
-	GetFriends(@Req() req: Request) {
-		return this.playerService.GetFriends(req);
+	GetFriends(@Req() req: Request,@Res() res:Response,@Query() query : queryParam) {
+		return this.playerService.GetFriends(req,res,query.nickname);
 	}
 	@Patch('block')
 	BlockFriend(@Req() req: Request, friendId: number) {

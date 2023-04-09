@@ -6,7 +6,7 @@ import { verifyOTP } from '@/components/tools/functions';
 function Verify2fa() {
   async function verify(event: React.FormEvent) {
     event.preventDefault();
-    if (await verifyOTP(event,"/auth/verify2FA"))
+    if (await verifyOTP(event,"/auth/verify2FA","GET"))
       Router.push('/profile');
   }
 

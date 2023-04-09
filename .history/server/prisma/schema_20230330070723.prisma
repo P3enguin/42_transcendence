@@ -1,0 +1,165 @@
+import { Status } from "../../.history/server/prisma/schema_20230330070510"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  nickname          String    @unique
+  avatar            String    @default("default.png")
+  wallpaper         String    @default("wallpaper.png")
+  joinAt            DateTime  @default(now())
+  password          String
+  firstname         String
+  lastname          String
+
+  coins             Int
+
+  friends           Player[]  @relation("friends") // <- Friend List
+  friendsRelation   Player[]  @relation("friends")
+
+  block             Player[]  @relation("block") // <- Blocked Friend
+  blockedsRelation  Player[]  @relation("block")
+
+  statusId          Int       @unique()
+  status            Status    @relation(fields: [statusId], references: [id])
+
+  wins              Matchs[]  @relation(name: "wins")
+  loss              Matchs[]  @relation(name: "loss")
+
+  rooms             Room[]
+
+  @@map("players")
+}
+
+model Status {
+  id          Int     @id @default(autoincrement())
+
+  player    Player?  
+
+  level       Int     @default(0)
+
+  achivement  Achivement_status[]
+  title       Titles_status[]
+  rank        Ranks[]
+}
+
+model Achivement {
+  id          Int @id @default(autoincrement())
+
+  status      Achivement_status[]
+
+  name        String @unique()
+  icon        String
+  requirement String?
+  description String
+  effect      String
+}
+
+model Achivement_status {
+  status  Status          @relation(fields: [statusId], references: [id])
+  statusId  Int
+  achivement  Achivement  @relation(fields: [achivId], references: [id])
+  achivId   Int
+  
+  locked      Boolean     @default(true)
+  progress    Int         @default(0)
+
+  @@id([statusId, achivId])
+}
+
+model Ranks {
+  id        Int @id @default(autoincrement())
+
+  status    Status[]
+
+  name      String
+  points    Int
+  avatar    String?
+}
+
+model Titles {
+  id Int @id @default(autoincrement())
+
+  status   Status[]
+
+  name        String @unique()
+  description String
+  requirement String // <-- ******************************** --> \\
+  effect      String
+}
+
+model Titles_status {
+  status      Status @relation(fields: [statusId], references: [id])
+  statusId    Int
+  titles      Titles  @relation(fields: [titleId], references: [id])
+  titleId     Int
+
+  
+
+  occupied    Boolean @default(false)
+}
+
+model Matchs {
+  id        Int @id @default(autoincrement())
+
+  winner    Int
+  winnerId  Player  @relation(fields: [winner], references: [id], name: "wins")
+  loser     Int
+  loserId   Player  @relation(fields: [loser], references: [id], name: "loss") 
+
+  scoor     String
+  playerAt  DateTime @default(now())
+}
+ 
+model Room {
+  channelId   Int     @id @default(autoincrement())
+  name        String?
+  Topic       String?
+  Key         String?
+  memberLimit Int     @default(2)
+  stats       String?
+
+  IsChannel Boolean   @default(false)
+
+  adminId Int?
+
+  member Player[]
+  chats  Chat[]
+  bans   Ban[]
+
+  avatar String   @default("#")
+}
+
+model Chat {
+  MsgId Int         @id @default(autoincrement())
+
+  sender Int
+  message String
+  sendAt  DateTime  @default(now())
+
+  roomId Int
+  room   Room       @relation(fields: [roomId], references: [channelId])
+}
+
+model Ban {
+  channelId Int  @id @default(autoincrement())
+  channel   Room @relation(fields: [channelId], references: [channelId])
+
+  playerId Int
+  reason   String
+}
+
+model InvalidToken {
+
+  token String @unique
+  ExpireDate DateTime
+
+}

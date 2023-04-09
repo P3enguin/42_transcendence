@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
     FriendIcon,
     AchievementIcon,
@@ -8,7 +10,10 @@ import {
 import FriendStats from './States/Friends';
 import AchievementStats from './States/Achievement';
 
-function ProfileStats() {
+
+function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolean}) {
+  const [selected,setSelected] = useState(-1);
+
     return (  <div
         className="flex  w-11/12 flex-col justify-center rounded-3xl 
         bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
@@ -22,9 +27,11 @@ function ProfileStats() {
                      justify-center  border-2 border-t-0 
                      border-l-0 border-b-0 border-gray-100 
                      border-opacity-70 transition-all"
+            onClick={() => setSelected(0)}
           >
-            <FriendIcon />
-            <span className="friend-text invisible absolute opacity-0 transition-all">
+            <FriendIcon selected={selected} />
+            <span className={`${selected != 0 ? "friend-text invisible absolute opacity-0 transition-all" :
+                          "visible text-[#70F89B] absolute"}`}>
               Friends
             </span>
           </button>
@@ -32,10 +39,12 @@ function ProfileStats() {
             className="flex h-[60px] w-1/4 items-center 
                      justify-center  border-2 
                       border-t-0 border-l-0 border-b-0 border-gray-100 
-                      border-opacity-70 transition-all "
+                      border-opacity-70 transition-all"
+            onClick={() => setSelected(1)}
           >
-            <AchievementIcon />
-            <span className="friend-text invisible absolute opacity-0 transition-all ">
+            <AchievementIcon selected={selected}/>
+            <span className={`${selected != 1 ? "friend-text invisible absolute opacity-0 transition-all" :
+                          "visible text-[#70F89B] absolute"}`}>
               Achievement
             </span>
           </button>
@@ -44,9 +53,11 @@ function ProfileStats() {
                       justify-center  border-2 border-t-0 
                       border-l-0 border-b-0  border-gray-100 
                       border-opacity-70 transition-all"
+            onClick={() => setSelected(2)}
           >
-            <MatchHistoryIcon />
-            <span className="friend-text invisible absolute text-xs opacity-0 transition-all">
+            <MatchHistoryIcon selected={selected}/>
+            <span className={`text-xs ${selected != 2 ? "friend-text invisible absolute opacity-0 transition-all" :
+                          "visible text-[#70F89B] absolute"}`}>
               Match History
             </span>
           </button>
@@ -55,16 +66,20 @@ function ProfileStats() {
                     justify-center border-2  border-t-0 
                     border-r-0 border-l-0 border-b-0  border-gray-100 
                     border-opacity-70 transition-all "
+            onClick={() => setSelected(3)}
           >
-            <RankingIcon />
-            <span className="friend-text invisible absolute opacity-0 transition-all">
+            <RankingIcon selected={selected}/>
+            <span className={`${selected != 3 ? "friend-text invisible absolute opacity-0 transition-all" :
+                          "visible text-[#70F89B] absolute"}`}>
               Ranking
             </span>
           </button>
         </div>
         <div className=" h-[200px]  overflow-y-auto md:h-[400px] ">
-          <FriendStats/>    
-          {/* <AchievementStats/> */}
+          {
+            selected == 0 ?  <FriendStats nickname={nickname} userProfile={userProfile}/>  :  selected == 1 ? <AchievementStats/> : <div></div>
+          }
+          
         </div>
       </div>);
 }

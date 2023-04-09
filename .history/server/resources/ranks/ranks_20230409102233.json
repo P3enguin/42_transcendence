@@ -1,0 +1,107 @@
+[{
+        "id": "1",
+        "name": "UnRanked",
+        "points": "0",
+        "avatar": "none"
+    },
+    {
+        "id": "2",
+        "name": "Iron",
+        "points": "0",
+        "avatar": "server/uploads/ranks/Iron.png"
+    },
+    {
+        "id": "3",
+        "name": "Bronze",
+        "points": "0",
+        "avatar": "server/uploads/ranks/Bronze.png"
+    },
+    {
+        "id": "4",
+        <<
+        << << < HEAD "name": "Silver ",
+        ===
+        === =
+        "name": "Silver",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/Silver.png"
+    },
+    {
+        "id": "5",
+        <<
+        << << < HEAD "name": "Gold ",
+        ===
+        === =
+        "name": "Gold",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/Gold.png"
+    },
+    {
+        "id": "6",
+        <<
+        << << < HEAD "name": "Platinum ",
+        ===
+        === =
+        "name": "Platinum",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/Platinum.png"
+    },
+    {
+        "id": "7",
+        <<
+        << << < HEAD "name": "Diamond ",
+        ===
+        === =
+        "name": "Diamond",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/Diamond.png"
+    },
+    {
+        "id": "8",
+        <<
+        << << < HEAD "name": "Amethyst ",
+        ===
+        === =
+        "name": "Amethyst",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/Amethyst.png"
+    },
+    {
+        "id": "9",
+        <<
+        << << < HEAD "name": "RedStar ",
+        ===
+        === =
+        "name": "RedStar",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/RedStar.png"
+    },
+    {
+        "id": "10",
+        <<
+        << << < HEAD "name": "Master ",
+        ===
+        === =
+        "name": "Master",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/Master.png"
+    },
+    {
+        "id": "11",
+        <<
+        << << < HEAD "name": "King ",
+        ===
+        === =
+        "name": "King",
+        >>>
+        >>> > origin / dev "points": "0",
+        "avatar": "server/uploads/ranks/King.png"
+    }
+]
