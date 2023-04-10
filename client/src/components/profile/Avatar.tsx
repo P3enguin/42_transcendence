@@ -1,12 +1,14 @@
 import { EditIconProfile } from '../icons/Icons';
 import { AvatarLevelCounter } from '../icons/Icons';
+import { AddFriendIcon } from '../icons/Icons';
+
 interface AvataProps {
   pfp: string;
   EditIcon: boolean;
   id: string;
-  track:string;
-  fill:string;
-  cssProps:string;
+  track: string;
+  fill: string;
+  cssProps: string;
   handlePfpChange?: (event: React.ChangeEvent) => Promise<void>;
 }
 
@@ -34,7 +36,7 @@ function AvatarProfileComp({
         <>
           <label
             htmlFor="pfp"
-            className="absolute  z-20  mt-14  ml-28  cursor-pointer xl:mt-[70px] xl:ml-[130px]"
+            className="absolute z-20  mt-14  ml-28  cursor-pointer xl:mt-[70px] xl:ml-[130px]"
           >
             <EditIconProfile />
           </label>
@@ -48,7 +50,12 @@ function AvatarProfileComp({
           />
         </>
       )}
-      <AvatarLevelCounter id={id} track={track} fill={fill} cssProps={cssProps}/>
+      <AvatarLevelCounter
+        id={id}
+        track={track}
+        fill={fill}
+        cssProps={cssProps}
+      />
     </div>
   );
 }

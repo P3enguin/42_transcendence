@@ -15,7 +15,7 @@ function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolea
   const [selected,setSelected] = useState(-1);
 
     return (  <div
-        className="flex  w-11/12 flex-col justify-center rounded-3xl 
+        className="flex h-[400px] w-11/12 flex-col  rounded-3xl 
         bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
       >
         <div
@@ -23,8 +23,8 @@ function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolea
                 border-gray-100 border-opacity-70 p-2 text-sm text-[#8BD9FF]"
         >
           <button
-            className="flex  h-[60px] w-1/4 items-center 
-                     justify-center  border-2 border-t-0 
+            className="relative flex h-[60px] w-1/4 items-center 
+                     justify-center border-2 border-t-0 
                      border-l-0 border-b-0 border-gray-100 
                      border-opacity-70 transition-all"
             onClick={() => setSelected(0)}
@@ -36,7 +36,7 @@ function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolea
             </span>
           </button>
           <button
-            className="flex h-[60px] w-1/4 items-center 
+            className="relative flex h-[60px] w-1/4 items-center 
                      justify-center  border-2 
                       border-t-0 border-l-0 border-b-0 border-gray-100 
                       border-opacity-70 transition-all"
@@ -49,7 +49,7 @@ function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolea
             </span>
           </button>
           <button
-            className="flex h-[60px] w-1/4 items-center 
+            className="relative flex h-[60px] w-1/4 items-center 
                       justify-center  border-2 border-t-0 
                       border-l-0 border-b-0  border-gray-100 
                       border-opacity-70 transition-all"
@@ -62,7 +62,7 @@ function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolea
             </span>
           </button>
           <button
-            className="flex h-[60px] w-1/4 items-center 
+            className="relative flex h-[60px] w-1/4 items-center 
                     justify-center border-2  border-t-0 
                     border-r-0 border-l-0 border-b-0  border-gray-100 
                     border-opacity-70 transition-all "
@@ -75,7 +75,7 @@ function ProfileStats({nickname,userProfile}:{nickname:string,userProfile:boolea
             </span>
           </button>
         </div>
-        <div className=" h-[200px]  overflow-y-auto md:h-[400px] ">
+        <div className=" overflow-y-auto  min-h-[300px] h-[400px]">
           {
             selected == 0 ?  <FriendStats nickname={nickname} userProfile={userProfile}/>  :  selected == 1 ? <AchievementStats/> : <div></div>
           }

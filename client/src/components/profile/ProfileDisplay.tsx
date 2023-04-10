@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import AvatarProfileComp from './Avatar';
-import { AvatarLevelCounter } from '../icons/Icons';
+import { AvatarLevelCounter, AddFriendIcon } from '../icons/Icons';
 import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
 interface profileProps {
@@ -165,15 +165,15 @@ function ProfileDisplay({
         )}
       </AnimatePresence>
       <div
-        className="mt-[20px] flex w-11/12 flex-col justify-center
-        rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:mt-[100px] xl:w-[1000px]"
+        className="relative mt-[20px] flex w-11/12 flex-col justify-center
+        rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
       >
         <div className="flex justify-end">
           <img
             src={wp}
             alt="wallpaper"
             id="wallpaper-holder"
-            className="h-[160px] min-h-[80px] w-full 
+            className=" h-[160px] min-h-[80px] w-full 
             min-w-[200px] rounded-t-3xl sm:h-[220px] xl:h-[250px] "
           />
           {userProfile && (
@@ -193,8 +193,8 @@ function ProfileDisplay({
           accept="image/*"
           onChange={handleWpChange}
         />
-        <div className="mb-5 flex flex-col items-center xl:flex-row">
-          <div className="flex w-full items-start justify-center  xl:w-1/3 ">
+        <div className="relative mb-5 flex flex-col items-center xl:flex-row">
+          <div className="flex w-full items-start  justify-center xl:w-1/3 ">
             {userProfile ? (
               <TitlesComp
                 titles={titles}
@@ -257,19 +257,26 @@ function ProfileDisplay({
                   />
                 </>
               ) : (
-                <div className="flex flex-col gap-[43px] ">
-                  <span className="text-[7px] text-gray-400 ">
-                    {'MEMBER SINCE: ' + joinDate}
-                  </span>
-                  <strong
-                    id="titleUser"
-                    className="  hidden  text-sm
-                   text-white outline-none focus:border-black  
-                 xl:flex"
-                  >
-                    the title
-                  </strong>
-                </div>
+                <>
+                  <div className="flex flex-col gap-[43px] ">
+                    <span className="text-[7px] text-gray-400 ">
+                      {'MEMBER SINCE: ' + joinDate}
+                    </span>
+                    <div className='flex flex-row gap-1 justify-between'>
+                      <strong
+                        id="titleUser"
+                        className="  hidden  text-sm
+                      text-white outline-none focus:border-black  
+                      xl:flex"
+                      >
+                        the title 
+                      </strong>
+                      <button type="button" className=" flex  gap-1 left-20 text-white bg-[#102272]
+                        hover:bg-[#0e1949]  font-medium rounded-lg 
+                        text-xs px-2 py-1 focus:outline-none">Add friend <AddFriendIcon/></button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>
