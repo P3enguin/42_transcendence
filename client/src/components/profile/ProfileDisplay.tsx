@@ -9,7 +9,6 @@ import PlayerProgress from './States/Progress';
 interface profileProps {
   wp: string;
   pfp: string;
-  titles: Array<string>;
   defaultTitle?: string;
   fullname: string;
   nickname: string;
@@ -23,8 +22,6 @@ interface profileProps {
 function ProfileDisplay({
   wp,
   pfp,
-  titles,
-  defaultTitle,
   fullname,
   nickname,
   joinDate,
@@ -36,6 +33,8 @@ function ProfileDisplay({
   const [error, setError] = useState(false);
   const [errorSize, setErrorSize] = useState(false);
   const [success, setSuccess] = useState(false);
+
+
 
   async function handleWpChange(event: React.ChangeEvent) {
     const wallpaper = (event.target as HTMLInputElement).files?.[0];
@@ -197,7 +196,6 @@ function ProfileDisplay({
           <div className="flex w-full items-start  justify-center xl:w-1/3 ">
             {userProfile ? (
               <TitlesComp
-                titles={titles}
                 cssProps="rounded-lg border-white bg-[#2C3B7C] p-1  text-[6px] leading-3
                 text-white outline-none focus:border-black focus:outline-none  
                 focus:ring-black sm:text-[10px]  xl:hidden"
@@ -250,7 +248,6 @@ function ProfileDisplay({
                     {'MEMBER SINCE: ' + joinDate}
                   </span>
                   <TitlesComp
-                    titles={titles}
                     cssProps="hidden rounded-lg border-white bg-[#2C3B7C] p-1 text-[10px] 
                   leading-3 text-white outline-none focus:border-black  
                   focus:outline-none focus:ring-black xl:flex"

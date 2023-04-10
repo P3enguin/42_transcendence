@@ -97,6 +97,7 @@ model Ranks_status {
 
   @@id([rankId, statusId])
 }
+
 model Titles {
   id          Int @id @default(autoincrement())
 

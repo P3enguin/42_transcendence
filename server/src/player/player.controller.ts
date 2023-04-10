@@ -14,6 +14,10 @@ interface queryParam {
   nickname: string;
 }
 
+interface queryTitleParam {
+  title: string;
+}
+
 
 @UseGuards(JwtGuard)
 @Controller('players')
@@ -24,6 +28,8 @@ export class PlayerController {
   getMe(@Req() req: Request) {
     return req.body.user;
   }
+
+  //-------------------{ Fetching and Changing Data }-------------------------
 
   @Get('data')
   getData(
@@ -48,6 +54,21 @@ export class PlayerController {
     return this.playerService.changePassowrd(req.body, res);
   }
 
+
+//------------------------------{ Titles }----------------------------------
+
+@Get('title')
+getCurrentTitle(@Res() res:Response,@Query() query : queryParam)
+{
+  return this.playerService.getCurrentTitle(res,query.nickname);
+}
+
+@Patch('title')
+updateCurrentTitle(@Req() req:Request,@Res() res:Response,@Query() query : queryTitleParam)
+{
+  return this.playerService.updateCurrentTitle(req.user,res,query.title);
+}
+
 //------------------------------{ Friend }----------------------------------
 
 	@Patch('AddFriend')
@@ -67,6 +88,8 @@ export class PlayerController {
 	GetBlockedFriends(@Req() req: Request) {
 		return this.playerService.GetBlockedFriends(req);
 	}
+
+//------------------------------{ Avatar and Wallpaper }----------------------------------
 
   @Post('avatar')
   @UseInterceptors(
