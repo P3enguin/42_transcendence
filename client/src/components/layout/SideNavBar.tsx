@@ -84,7 +84,7 @@ function SideNavBar({ children }: LayoutProps) {
   }
 
   return (
-    <div className="h-screen">
+    <div className="w-full h-full relative ">
       {/* navbar */}
       <GameNavBar
         toggleSideBar={toggleSideBar}

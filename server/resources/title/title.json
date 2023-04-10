@@ -87,5 +87,11 @@
         "description": "reach Gold rank",
         "requirement": "reach Gold rank",
         "effect": "non"
+    },
+    {
+        "name": "Noob",
+        "description": "Welcome to the Game!",
+        "requirement": "Join the Ponginator game",
+        "effect": "non"
     }
 ]

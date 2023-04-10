@@ -225,7 +225,7 @@ function CloseButtonIcon() {
   );
 }
 
-function FriendIcon({ selected}: { selected: number }) {
+function FriendIcon({ selected }: { selected: number }) {
   return (
     <svg
       width="24"
@@ -236,7 +236,7 @@ function FriendIcon({ selected}: { selected: number }) {
       className={`${
         selected != 0
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'sm:translate-x-[-3.4rem] sm:translate-y-0 translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in'
+          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path
@@ -259,7 +259,7 @@ function AchievementIcon({ selected }: { selected: number }) {
       className={`${
         selected != 1
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'sm:translate-x-[-3.4rem] sm:translate-y-0 translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in'
+          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path d="M48.3 8.11205L49.62 10.7521C49.8 11.1121 50.28 11.472 50.68 11.532L53.07 11.9321C54.6 12.192 54.96 13.2921 53.86 14.3921L52 16.2521C51.69 16.5621 51.51 17.1721 51.61 17.6121L52.14 19.9221C52.56 21.7421 51.59 22.4521 49.98 21.5021L47.74 20.1721C47.33 19.9321 46.67 19.9321 46.26 20.1721L44.02 21.5021C42.41 22.4521 41.44 21.7421 41.86 19.9221L42.39 17.6121C42.49 17.182 42.31 16.5721 42 16.2521L40.14 14.3921C39.04 13.2921 39.4 12.1821 40.93 11.9321L43.32 11.532C43.72 11.462 44.2 11.1121 44.38 10.7521L45.7 8.11205C46.41 6.68205 47.59 6.68205 48.3 8.11205Z" />
@@ -282,7 +282,7 @@ function MatchHistoryIcon({ selected }: { selected: number }) {
       className={`${
         selected != 2
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'sm:translate-x-[-3.4rem] sm:translate-y-0 translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in'
+          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path
@@ -305,7 +305,7 @@ function RankingIcon({ selected }: { selected: number }) {
       className={`${
         selected != 3
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'sm:translate-x-[-3.4rem] sm:translate-y-0 translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in'
+          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path
@@ -397,6 +397,27 @@ function AvatarLevelCounter({
   );
 }
 
+function AddFriendIcon() {
+  return (
+    <svg
+      width="800px"
+      height="800px"
+      viewBox="0 0 64 64"
+      xmlns="http://www.w3.org/2000/svg"
+      strokeWidth="3"
+      stroke="#000000"
+      fill="none"
+      className="w-[20px] h-[20px] fill-[#8BD9FF]  "
+    >
+      <circle cx="29.22" cy="16.28" r="11.14" />
+      <path d="M41.32,35.69c-2.69-1.95-8.34-3.25-12.1-3.25h0A22.55,22.55,0,0,0,6.67,55h29.9" />
+      <circle cx="45.38" cy="46.92" r="11.94" />
+      <line x1="45.98" y1="39.8" x2="45.98" y2="53.8" />
+      <line x1="38.98" y1="46.8" x2="52.98" y2="46.8" />
+    </svg>
+  );
+}
+
 export {
   SettingIcon,
   SendIcon,
@@ -417,4 +438,5 @@ export {
   MatchHistoryIcon,
   RankingIcon,
   AvatarLevelCounter,
+  AddFriendIcon,
 };

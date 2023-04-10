@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { LayoutProps } from "./layout";
 import { AnimatePresence } from "framer-motion";
@@ -38,15 +38,17 @@ function SideBar({
 }) {
   
   return (
-    <div className="flex h-[calc(100%-64px)] flex-row">
+    <div className="flex h-[calc(100vh-64px)] min-h-0 flex-row ">
       {/* For normal page */}
+      <div className="h-full flex flex-col ">
+
       <motion.aside
         id="userSideBar"
-        className={` hidden h-full w-16 shrink-0 flex-col
+        className={`hidden h-full w-16  flex-col
               items-center  justify-between gap-6 rounded-br-3xl border
-              border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:flex min-h-[700px]`}
+              border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:flex overflow-auto scrollbar-hide`}
       >
-        <div className="flex h-1/3 flex-col items-center justify-around">
+        <div className="flex h-auto flex-col items-center justify-around gap-10">
           <Link
             className="mt-2 flex h-12 w-12 items-center justify-center "
             href="/home"
@@ -97,6 +99,7 @@ function SideBar({
           </div>
         </div>
       </motion.aside>
+      </div>
       {/* For Mobile Pages */}
       <AnimatePresence>
         {isVisible  && (
@@ -106,14 +109,14 @@ function SideBar({
             exit={{ x: '-100%' }}
             transition={{ type: 'Tween' }}
             id="userSideBar"
-            className={` flex-col items-center w-16 h-[calc(100%-64px)]  justify-between
-              border  rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
-              to-[#28346C] gap-6 border-t-0 sm:hidden flex shrink-0 absolute z-20 min-h-[700px] `}
+            className={` flex-col items-center w-16  h-[calc(100vh-64px)] justify-between
+              border rounded-bl-3xl border-[#0097E2] bg-gradient-to-t from-[#141E4A]
+              to-[#28346C] gap-6 border-t-0 sm:hidden flex  absolute z-20 overflow-auto scrollbar-hide`}
             // className={` flex h-full w-16 shrink-0 flex-col
             //   items-center  justify-between gap-6 rounded-bl-3xl border
             //   border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:hidden`}
           >
-            <div className="flex h-1/3 flex-col items-center justify-around">
+            <div className="flex h-auto flex-col items-center justify-around gap-10">
               <Link
                 className="mt-2 flex h-12 w-12 items-center justify-center "
                 href="/home"
@@ -174,7 +177,7 @@ function SideBar({
           opacity: (isMobile && isVisible) ? 0.1 : 1,
         }}
         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-        className="w-full flex justify-center"
+        className="w-full flex justify-center h-full overflow-scroll scrollbar-hide"
       >
         {children}
       </motion.div>
