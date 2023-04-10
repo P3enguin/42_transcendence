@@ -31,7 +31,7 @@ interface propsData {
   Is2FAEnabled?: boolean;
 }
 
-function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
+function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [error, setError] = useState(false);
   const [successPass, setSuccesPass] = useState(false);
   const [successSave, setSuccess] = useState(false);
@@ -126,7 +126,11 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         const err = await response.json();
         if (err.error === 'Nickname already exist') {
           const span = document.getElementById('nickspan');
-          const newArr = mutateArray(2,{ valid: false, touched: false },state);
+          const newArr = mutateArray(
+            2,
+            { valid: false, touched: false },
+            state,
+          );
           updateState(newArr);
           printError(span, err.error);
         } else {
@@ -186,10 +190,10 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    
+
     newState = mutateArray(0, { valid: false, touched: touched }, newState);
     if (first_name === firstname)
-    newState = mutateArray(0, { valid: false, touched: false }, newState);
+      newState = mutateArray(0, { valid: false, touched: false }, newState);
     else if (isEmpty(first_name)) {
       printError(span, 'First name cannot be empty!');
     } else if (isTooLong(first_name)) {
@@ -197,7 +201,7 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     } else if (!isValidName(first_name)) {
       printError(span, 'first name contains forbidden characters!');
     } else {
-      newState = mutateArray(0,{ valid: true, touched: touched }, newState);
+      newState = mutateArray(0, { valid: true, touched: touched }, newState);
     }
     updateState(newState);
   }
@@ -246,7 +250,6 @@ function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       newState = mutateArray(2, { valid: true, touched: touched }, newState);
     }
     updateState(newState);
-
   }
 
   function validPassword(event: React.ChangeEvent<HTMLInputElement>) {
@@ -525,8 +528,8 @@ export async function getServerSideProps({ req }: any) {
   };
 }
 
-settings.getLayout = function getLayout(page: React.ReactNode) {
+Settings.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout>{page}</Layout>;
 };
 
-export default settings;
+export default Settings;

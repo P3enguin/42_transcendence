@@ -379,4 +379,27 @@ export class PlayerService {
       return res.status(400).json({ error: 'An Error has occured' });
     }
   }
+
+  //----------------------------------{Search}-----------------------------------
+  async getDataSearch( res: Response, searchParam : string) {
+    // Only fetching Users for the moment 
+    try {
+      const data = await this.prisma.player.findMany({
+        where : {
+          nickname: {
+            contains: searchParam,
+          }
+        },
+        select : {
+          nickname : true,
+          avatar : true,
+        }
+      })
+      return res.status(200).json({players : data});
+    }catch (error) {
+      return res.status(400).json({ error : "An Error has occurred"});
+    }
+  }
+
+
 }
