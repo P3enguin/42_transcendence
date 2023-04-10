@@ -33,8 +33,8 @@ function StartNew(data: any) {
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
       room,
     ).then(res => {
-        console.log("======>",res.data);
-      router.push(/chat/ + res.data)})
+        console.log("======>",res.data.data);
+      router.push(/chat/ + res.data.data)})
     .catch(err => console.log(err));
   }
 

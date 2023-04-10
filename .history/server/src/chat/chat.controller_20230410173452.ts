@@ -47,7 +47,7 @@ export class ChatController {
 	}
 
 	@Post('CreateRoom')
-    CreateRoom(@GetPlayer() player: Player, @Req() req: Request, @Res() res: Response) {
+    CreateRoom(@GetPlayer player: Player, @Req() req: Request, @Res() res: Response) {
 		const room = req.body;
         const roomId = this.chatService.CreateRoom(player, room);
 		res.status(200).json(roomId);

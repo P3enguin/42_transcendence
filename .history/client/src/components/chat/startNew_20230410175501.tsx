@@ -18,8 +18,7 @@ function StartNew(data: any) {
     const [statsEntered, setStatEntered] = useState(false);
     const [privateEntered, setPrivateEntered] = useState(false);
 
-      async function createRoom(event : React.FormEvent)  {
-        event.preventDefault();
+      async function createRoom(event : React.) {
       const room = {
         name,
         topic,

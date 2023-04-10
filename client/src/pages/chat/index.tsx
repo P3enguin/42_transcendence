@@ -14,6 +14,7 @@ import Conversation from '@/components/chat/Conversation';
 let socket: Socket;
 //use the chat :
 function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
+
   const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(true);
 
@@ -47,16 +48,13 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
 
   return (
     <>
-     
       <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
       <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r">
           <div className="flex h-[5%] items-center border-b pl-5 w-[100%]">
             Chat Room
           </div>
           {
-            data.friends.map((friend: any, key: any) => {
-              showRecentChat && <OnlineNow player={friend.nickname} avatar={friend.avatar} key={key} />
-            })
+            showRecentChat && <OnlineNow player={data.friends} />
           }
 
           <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
@@ -65,8 +63,8 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
             <div className="md:hidden cursor-pointer text-green-300" onClick={handleStartNewClick}>Start New</div>
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
-            {showRecentChat && <RecentChat avatar={pictures.pfp} player={data.nickname} /> }
-            {showStartNew && <StartNew/>}
+            {showRecentChat && <RecentChat avatar={data.avatar} player={data.nickname} /> }
+            {showStartNew && <StartNew data={data} />}
             </div>
           </div>
         </div>
@@ -86,6 +84,8 @@ export async function getServerSideProps({ req }: any) {
     if (res.ok) {
       try {
         const data = await res.json();
+        console.log("player: ",data);
+        
         return {
           props: {
             data,
@@ -94,12 +94,6 @@ export async function getServerSideProps({ req }: any) {
         };
       } catch (error: any) {
         console.error(error.message);
-        return {
-          props: {
-            data: [],
-            jwt_token: jwt_token,
-          },
-        };
       }
     }
   }

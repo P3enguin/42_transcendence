@@ -34,7 +34,7 @@ function StartNew(data: any) {
       room,
     ).then(res => {
         console.log("======>",res.data);
-      router.push(/chat/ + res.data)})
+      router.push(/chat/ + res.data.data)})
     .catch(err => console.log(err));
   }
 

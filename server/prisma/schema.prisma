@@ -132,25 +132,26 @@ model Match {
 }
 
 model Room {
-  channelId   Int     @id
+  id          Int     @id @default(autoincrement())
+  channelId   String  
   name        String?
   Topic       String?
   Key         String?
   memberLimit Int     @default(2)
   stats       String?
 
-  IsChannel Boolean   @default(false)
+  IsChannel   Boolean @default(false)
 
-  IsRead  Boolean @default(false)
-  Isseen  Int @default(0)
+  IsRead      Boolean @default(false)
+  Isseen      Int     @default(0)
 
-  adminId Int?
+  adminId     Int[]
 
-  member Player[]
-  chats  Chat[]
-  bans   Ban[]
+  member      Player[]
+  chats       Chat[]
+  bans        Ban[]
 
-  avatar String   @default("#")
+  avatar String       @default("#")
 }
 
 model Chat {
@@ -161,12 +162,12 @@ model Chat {
   sendAt  DateTime  @default(now())
 
   roomId Int
-  room   Room       @relation(fields: [roomId], references: [channelId])
+  room   Room       @relation(fields: [roomId], references: [id])
 }
 
 model Ban {
-  channelId Int  @id @default(autoincrement())
-  channel   Room @relation(fields: [channelId], references: [channelId])
+  channelId Int  @id
+  channel   Room @relation(fields: [channelId], references: [id])
 
   playerId Int
   reason   String

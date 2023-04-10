@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
@@ -18,6 +17,8 @@ function RecentChat({avatar, player, friendId }: any)
         );
         router.push('/chat/' + res.data);
       }
+
+  const picture = process.env.NEXT_PUBLIC_BACKEND_HOST +"/avatars/" +  avatar;
     return (
         <div className="flex justify-between p-2 md:p-0 md:justify-around
             space-x-2 md:space-x-5 h-[70px] w-[100%] md:w-[300px] cursor-pointer 
@@ -28,9 +29,9 @@ function RecentChat({avatar, player, friendId }: any)
             }
             >
                 <div className="w-[72%] flex flex-row space-x-2">
-                <Image
+                <img
                     className="h-10 w-10 sm:h-12 sm:w-12 rounded-full  self-center" 
-                   src={avatar} alt="Avatar" width={10} height={10}/>
+                   src={picture} alt="Avatar" width={10} height={10}/>
                 <div className="flex flex-col self-center  whitespace-nowrap overflow-x-hidden">
                 <Link  href={`/users/${player}`}><h3>{player}</h3></Link>
                 <div className="flex text-xs text-green-300 ">

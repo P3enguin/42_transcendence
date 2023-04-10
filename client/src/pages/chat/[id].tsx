@@ -32,25 +32,6 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
   };
 
   useEffect(() => {
-    const fetchPFP = async () => {
-      setLoading(true);
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST+'/players/avatar?' +
-          new URLSearchParams({ pfp: data.avatar }),
-        {
-          credentials: 'include',
-        },
-      );
-      const pfp = await res.blob();
-      const url = URL.createObjectURL(pfp);
-
-      changePictures((pictures) => ({
-        ...pictures,
-        ...{ pfp: url, wp: pictures.wp },
-      }));
-    };
-    if (pictures.pfp != data.avatar) fetchPFP();
-    setLoading(false);
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
       auth: {
         token: jwt_token,
@@ -73,20 +54,22 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
             Chat Room
           </div>
 
-          {showRecentChat && <OnlineNow player={data.nickname} avatar={pictures.pfp} />}
+          {
+            showRecentChat && <OnlineNow player={data.friends} />
+          }
           <div className="flex h-[92%] sm:h-[95%] flex-col p-1 sm:p-5 sm:pt-0">
             <div className="flex flex-row justify-between border-t pt-1 h-[5%]">
               <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
               <div className="md:hidden cursor-pointer text-green-300" onClick={handleConversationClick}>message</div>
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
-            {showRecentChat && <RecentChat avatar={pictures.pfp} player={data.nickname} /> }
-            {showConversation && <Conversation player={data.nickname} avatar={pictures.pfp} />}
+            {showRecentChat && <RecentChat avatar={data.avatar} player={data.nickname} /> }
+            {showConversation && <Conversation player={data.nickname} avatar={data.avatar} />}
             </div>
           </div>
         </div>
         <div className="hidden md:flex w-full justify-between flex-col h-full">
-          { <Conversation player={data.nickname} avatar={pictures.pfp} />}
+          { <Conversation player={data.nickname} avatar={data.avatar} />}
         </div>
       </div>
     </>

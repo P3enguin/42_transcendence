@@ -18,8 +18,7 @@ function StartNew(data: any) {
     const [statsEntered, setStatEntered] = useState(false);
     const [privateEntered, setPrivateEntered] = useState(false);
 
-      async function createRoom(event : React.FormEvent)  {
-        event.preventDefault();
+      async function createRoom() {
       const room = {
         name,
         topic,
@@ -33,7 +32,7 @@ function StartNew(data: any) {
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
       room,
     ).then(res => {
-        console.log("======>",res.data);
+        console.log(res.data);
       router.push(/chat/ + res.data)})
     .catch(err => console.log(err));
   }
@@ -120,7 +119,7 @@ function StartNew(data: any) {
                           onChange={(e) => {
                             setKey(e.target.value)
                             }} />
-                        )}{
+                        )}{}
                           statsEntered &&
                         (<input
                           type="text"
@@ -130,8 +129,9 @@ function StartNew(data: any) {
                           rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm
                           text-white focus:border-blue-600 focus:outline-none "
                           placeholder="channel Topic"
+                      
                           onChange={(e) => {
-                            setTopic(e.target.value);
+                            setKey(e.target.value)
                             }} />
                         )}
                       <button
@@ -139,7 +139,6 @@ function StartNew(data: any) {
                       className="border-white m-auto mt-2 peer  appearance-none sm:mt-20 block
                       rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-s w-[50%] sm:w-[100px]
                         w-[50%] text-white focus:border-blue-600 focus:outline-none focus:ring-0 bg-blue-500 lg:mt-60 lg:ml-20"
-                        
                         >
                         Create
                       </button>

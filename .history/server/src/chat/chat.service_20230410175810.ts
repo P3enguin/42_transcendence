@@ -44,7 +44,6 @@ export class ChatService {
     async CreateRoom(player: Player, room: any) {
         const shortid = require('shortid');
         const roomId  = shortid.generate();
-        console.log({room});
         try {
          await this.prisma.room.create({
           data: {
@@ -62,7 +61,7 @@ export class ChatService {
         return roomId; 
         }catch(e){
             console.log("error while creating new room");
-            return "no Room";
+            return null;
             }
             
         // return "not even closed";
