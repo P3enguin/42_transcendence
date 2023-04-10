@@ -2,6 +2,7 @@ import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import Player from '@/components/profile/Player';
 interface players {
   nickname: string;
   avatar: string;
@@ -15,6 +16,7 @@ function Search() {
   useEffect(() => {
     async function getPLayers(param: string) {
       try {
+        setLoading(true);
         const response = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_HOST +
             '/players/search?' +
@@ -23,15 +25,12 @@ function Search() {
             credentials: 'include',
           },
         );
-        console.log(response.status)
         if (!response.ok) {
           const err = await response.json();
           if (err.error.message) throw new Error(err.error.message);
           else throw new Error('An unexprected error occured');
         } else if (response.ok) {
-            console.log("im here");
-          const data = (await response.json());
-          console.log(data);
+          const data = await response.json();
           setPlayers(data.players);
         }
       } catch (error) {
@@ -43,10 +42,9 @@ function Search() {
       }
     }
 
-    if (router.query.search)
-     getPLayers(router.query.search as string);
+    if (router.query.search) getPLayers(router.query.search as string);
     setLoading(false);
-  },[router.query]);
+  }, [router.query]);
 
   return (
     <div
@@ -54,13 +52,25 @@ function Search() {
   gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
     >
       <h1 className="text-center">Search for Players or Channels</h1>
-      {isloading ? (
-        <div>Fetching data...</div>
-      ) : (
-        players!.map((player, index) => {
-          return <div key={index}>{player.nickname}</div>;
-        })
-      )}
+      <div className="flex h-1/2 gap-10 min-h-[233px] w-full flex-wrap justify-center overflow-scroll p-6 scrollbar-hide sm:gap-10 ">
+        {isloading ? (
+          <div>Fetching data...</div>
+        ) : (
+          players!.map((player, index) => (
+            <div key={index} className='w-[150px]'>
+              <Player
+                nickname={player.nickname}
+                avatar={
+                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  '/avatars/' +
+                  player.avatar
+                }
+                userProfile={false}
+              />
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 }
