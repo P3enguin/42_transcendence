@@ -56,29 +56,29 @@ export class PlayerService {
   }
   //-----------------------------------{ Add a fried }-----------------------------
 
-  async AddFriend(player: Player, req: Request, friendId: number) {
-    console.log(player);
+  async AddFriend(player: Player, nickname: string) {
     const check_friend = await this.prisma.player.findUnique({
+
       where: {
         id: player.id,
       },
       include: {
         friends: {
           select: {
-            id: true,
+            nickname: true,
           },
         },
         block: {
           select: {
-            id: true,
+            nickname: true,
           },
         },
       },
     });
     console.log(check_friend);
     if (
-      !check_friend.friends.some((f) => f.id === friendId) &&
-      !check_friend.block.some((f) => f.id === friendId)
+      !check_friend.friends.some((f) => f.nickname === nickname) &&
+      !check_friend.block.some((f) => f.nickname === nickname)
     ) {
       await this.prisma.player.update({
         where: {
@@ -87,15 +87,15 @@ export class PlayerService {
         data: {
           friends: {
             connect: {
-              id: friendId,
+              nickname: nickname,
             },
           },
         },
       });
-      console.log('Friend added !', friendId);
+      console.log('Friend added !', nickname);
       return 'Friend added successfully';
     } else {
-      console.log(friendId, 'exist !');
+      console.log(nickname, 'exist !');
       return 'Friend already exist !';
     }
   }
@@ -379,4 +379,27 @@ export class PlayerService {
       return res.status(400).json({ error: 'An Error has occured' });
     }
   }
+
+  //----------------------------------{Search}-----------------------------------
+  async getDataSearch( res: Response, searchParam : string) {
+    // Only fetching Users for the moment 
+    try {
+      const data = await this.prisma.player.findMany({
+        where : {
+          nickname: {
+            contains: searchParam,
+          }
+        },
+        select : {
+          nickname : true,
+          avatar : true,
+        }
+      })
+      return res.status(200).json({players : data});
+    }catch (error) {
+      return res.status(400).json({ error : "An Error has occurred"});
+    }
+  }
+
+
 }

@@ -1,4 +1,15 @@
-import { Controller, Get, UseGuards,Post,UploadedFile,UseInterceptors,Req,Res, Query, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+  Req,
+  Res,
+  Query,
+  Patch,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
@@ -7,7 +18,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { JwtService } from '@nestjs/jwt';
-import { query, Request,Response } from 'express';
+import { query, Request, Response } from 'express';
 import { GetPlayer } from 'src/auth/decorator';
 
 interface queryParam {
@@ -18,6 +29,9 @@ interface queryTitleParam {
   title: string;
 }
 
+interface querySearchParam {
+  search: string;
+}
 
 @UseGuards(JwtGuard)
 @Controller('players')
@@ -54,42 +68,48 @@ export class PlayerController {
     return this.playerService.changePassowrd(req.body, res);
   }
 
+  //------------------------------{ Titles }----------------------------------
 
-//------------------------------{ Titles }----------------------------------
+  @Get('title')
+  getCurrentTitle(@Res() res: Response, @Query() query: queryParam) {
+    return this.playerService.getCurrentTitle(res, query.nickname);
+  }
 
-@Get('title')
-getCurrentTitle(@Res() res:Response,@Query() query : queryParam)
-{
-  return this.playerService.getCurrentTitle(res,query.nickname);
-}
+  @Patch('title')
+  updateCurrentTitle(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: queryTitleParam,
+  ) {
+    return this.playerService.updateCurrentTitle(req.user, res, query.title);
+  }
 
-@Patch('title')
-updateCurrentTitle(@Req() req:Request,@Res() res:Response,@Query() query : queryTitleParam)
-{
-  return this.playerService.updateCurrentTitle(req.user,res,query.title);
-}
+  //------------------------------{ Friend }----------------------------------
 
-//------------------------------{ Friend }----------------------------------
+  @Patch('AddFriend')
+  AddFriend(@GetPlayer() player, @Req() req: Request) {
+    console.log(req.body)
+    return this.playerService.AddFriend(player, req.body.friend);
+  }
 
-	@Patch('AddFriend')
-	AddFriend(@GetPlayer() player ,@Req() req: Request, friendId: number){
-		return this.playerService.AddFriend(player, req, 2);
-	}
-	
-	@Get('friends')
-	GetFriends(@Req() req: Request,@Res() res:Response,@Query() query : queryParam) {
-		return this.playerService.GetFriends(req,res,query.nickname);
-	}
-	@Patch('block')
-	BlockFriend(@Req() req: Request, friendId: number) {
-		return this.playerService.BlockFriend(req, 2);
-	}
-	@Get('blocked')
-	GetBlockedFriends(@Req() req: Request) {
-		return this.playerService.GetBlockedFriends(req);
-	}
+  @Get('friends')
+  GetFriends(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query() query: queryParam,
+  ) {
+    return this.playerService.GetFriends(req, res, query.nickname);
+  }
+  @Patch('block')
+  BlockFriend(@Req() req: Request, friendId: number) {
+    return this.playerService.BlockFriend(req, 2);
+  }
+  @Get('blocked')
+  GetBlockedFriends(@Req() req: Request) {
+    return this.playerService.GetBlockedFriends(req);
+  }
 
-//------------------------------{ Avatar and Wallpaper }----------------------------------
+  //------------------------------{ Avatar and Wallpaper }----------------------------------
 
   @Post('avatar')
   @UseInterceptors(
@@ -145,5 +165,12 @@ updateCurrentTitle(@Req() req:Request,@Res() res:Response,@Query() query : query
   GetWallPaperImage(@Query() query, @Res() res: Response) {
     const fileName = query.wp;
     return res.sendFile(process.cwd() + '/uploads/wallpapers/' + fileName);
+  }
+
+  //----------------------------------{Serching}------------------------------
+
+  @Get('search')
+  getDataSearch(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getDataSearch(res,query.search)
   }
 }
