@@ -87,8 +87,9 @@ export class PlayerController {
   //------------------------------{ Friend }----------------------------------
 
   @Patch('AddFriend')
-  AddFriend(@GetPlayer() player, @Req() req: Request, friendId: number) {
-    return this.playerService.AddFriend(player, req, 2);
+  AddFriend(@GetPlayer() player, @Req() req: Request) {
+    console.log(req.body)
+    return this.playerService.AddFriend(player, req.body.friend);
   }
 
   @Get('friends')
