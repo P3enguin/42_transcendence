@@ -2,6 +2,9 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
+import { AchivementService } from 'src/achivement/achivement.service';
+import { TitleService } from 'src/title/title.service';
+import { RankService } from 'src/rank/rank.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -10,6 +13,15 @@ async function bootstrap() {
       credentials: true,
     },
   });
+
+  const achiv = app.get<AchivementService>(AchivementService);
+  const title = app.get<TitleService>(TitleService);
+  const rank = app.get<RankService>(RankService);
+
+  await achiv.fillAvhievememt();
+  await title.fillTitles();
+  await rank.fillRanks();
+
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -18,4 +30,5 @@ async function bootstrap() {
   );
   await app.listen(8000);
 }
-bootstrap();
+
+bootstrap()

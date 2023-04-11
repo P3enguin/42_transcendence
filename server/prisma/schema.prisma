@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,7 +18,8 @@ model Player {
   password          String
   firstname         String
   lastname          String
-
+  Is2FAEnabled      Boolean   @default(false)
+  Secret2FA         String    @default("")
   coins             Int
 
   friends           Player[]  @relation("friends") // <- Friend List
@@ -40,13 +42,13 @@ model Player {
 model Status {
   id          Int     @id @default(autoincrement())
 
-  player    Player?  
+  player    Player?
 
   level       Int     @default(0)
 
   achivement  Achivement_status[]
-  title       Titles[]
-  rank        Ranks[]
+  title       Titles_status[]
+  rank        Ranks_status[]
 }
 
 model Achivement {
@@ -76,23 +78,46 @@ model Achivement_status {
 model Ranks {
   id        Int @id @default(autoincrement())
 
-  status    Status[]
+  status    Ranks_status[]
 
-  name      String
+  name      String @unique()
   points    Int
   avatar    String?
 }
 
-model Titles {
-  id Int @id @default(autoincrement())
+model Ranks_status {
+  ranks           Ranks @relation(fields: [rankId], references: [id])
+  rankId          Int
+  status          Status  @relation(fields: [statusId], references: [id])
+  statusId        Int
 
-  status   Status[]
+  current_points  Int @default(0)
+  win_streak      Int @default(0)
+  loss_streak     Int @default(0)
+
+  @@id([rankId, statusId])
+}
+
+model Titles {
+  id          Int @id @default(autoincrement())
+
+  status      Titles_status[]
 
   name        String @unique()
   description String
   requirement String // <-- ******************************** --> \\
   effect      String
+}
+
+model Titles_status {
+  status      Status @relation(fields: [statusId], references: [id])
+  statusId    Int
+  titles      Titles  @relation(fields: [titleId], references: [id])
+  titleId     Int
+
   occupied    Boolean @default(false)
+
+  @@id([statusId, titleId])
 }
 
 model Match {
@@ -116,6 +141,9 @@ model Room {
   stats       String?
 
   IsChannel Boolean   @default(false)
+
+  IsRead  Boolean @default(false)
+  Isseen  Int @default(0)
 
   adminId Int?
 

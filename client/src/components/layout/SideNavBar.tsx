@@ -75,18 +75,16 @@ function SideNavBar({ children }: LayoutProps) {
     e.preventDefault();
 
     const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/logout';
-
     const resp = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
     });
-
     if (resp.status === 201) Router.push('/');
   }
 
   return (
-    <div className="h-screen">
+    <div className="w-full h-full relative ">
       {/* navbar */}
       <GameNavBar
         toggleSideBar={toggleSideBar}

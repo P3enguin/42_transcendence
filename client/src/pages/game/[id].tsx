@@ -14,7 +14,7 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
   const [Position, setPosition] = useState('');
 
   useEffect(() => {
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
+    socket = io(`${process.env .NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },

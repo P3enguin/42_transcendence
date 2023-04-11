@@ -42,6 +42,7 @@ export async function getServerSideProps(context: any) {
       };
     }
     const result = await response.json();
+    console.log(result);
     return {
       props: {
         email: result.jwtDecoded.email,

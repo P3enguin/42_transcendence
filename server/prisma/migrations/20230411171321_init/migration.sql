@@ -9,6 +9,8 @@ CREATE TABLE "players" (
     "password" TEXT NOT NULL,
     "firstname" TEXT NOT NULL,
     "lastname" TEXT NOT NULL,
+    "Is2FAEnabled" BOOLEAN NOT NULL DEFAULT false,
+    "Secret2FA" TEXT NOT NULL DEFAULT '',
     "coins" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
 
@@ -56,15 +58,34 @@ CREATE TABLE "Ranks" (
 );
 
 -- CreateTable
+CREATE TABLE "Ranks_status" (
+    "rankId" INTEGER NOT NULL,
+    "statusId" INTEGER NOT NULL,
+    "current_points" INTEGER NOT NULL DEFAULT 0,
+    "win_streak" INTEGER NOT NULL DEFAULT 0,
+    "loss_streak" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Ranks_status_pkey" PRIMARY KEY ("rankId","statusId")
+);
+
+-- CreateTable
 CREATE TABLE "Titles" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "requirement" TEXT NOT NULL,
     "effect" TEXT NOT NULL,
-    "occupied" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Titles_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Titles_status" (
+    "statusId" INTEGER NOT NULL,
+    "titleId" INTEGER NOT NULL,
+    "occupied" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Titles_status_pkey" PRIMARY KEY ("statusId","titleId")
 );
 
 -- CreateTable
@@ -87,6 +108,8 @@ CREATE TABLE "Room" (
     "memberLimit" INTEGER NOT NULL DEFAULT 2,
     "stats" TEXT,
     "IsChannel" BOOLEAN NOT NULL DEFAULT false,
+    "IsRead" BOOLEAN NOT NULL DEFAULT false,
+    "Isseen" INTEGER NOT NULL DEFAULT 0,
     "adminId" INTEGER,
     "avatar" TEXT NOT NULL DEFAULT '#',
 
@@ -137,18 +160,6 @@ CREATE TABLE "_PlayerToRoom" (
     "B" INTEGER NOT NULL
 );
 
--- CreateTable
-CREATE TABLE "_StatusToTitles" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_RanksToStatus" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "players_email_key" ON "players"("email");
 
@@ -160,6 +171,9 @@ CREATE UNIQUE INDEX "players_statusId_key" ON "players"("statusId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Achivement_name_key" ON "Achivement"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Ranks_name_key" ON "Ranks"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Titles_name_key" ON "Titles"("name");
@@ -185,18 +199,6 @@ CREATE UNIQUE INDEX "_PlayerToRoom_AB_unique" ON "_PlayerToRoom"("A", "B");
 -- CreateIndex
 CREATE INDEX "_PlayerToRoom_B_index" ON "_PlayerToRoom"("B");
 
--- CreateIndex
-CREATE UNIQUE INDEX "_StatusToTitles_AB_unique" ON "_StatusToTitles"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_StatusToTitles_B_index" ON "_StatusToTitles"("B");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_RanksToStatus_AB_unique" ON "_RanksToStatus"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_RanksToStatus_B_index" ON "_RanksToStatus"("B");
-
 -- AddForeignKey
 ALTER TABLE "players" ADD CONSTRAINT "players_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -205,6 +207,18 @@ ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_statusId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_achivId_fkey" FOREIGN KEY ("achivId") REFERENCES "Achivement"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Ranks_status" ADD CONSTRAINT "Ranks_status_rankId_fkey" FOREIGN KEY ("rankId") REFERENCES "Ranks"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Ranks_status" ADD CONSTRAINT "Ranks_status_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Titles_status" ADD CONSTRAINT "Titles_status_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Titles_status" ADD CONSTRAINT "Titles_status_titleId_fkey" FOREIGN KEY ("titleId") REFERENCES "Titles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Match" ADD CONSTRAINT "Match_winner_fkey" FOREIGN KEY ("winner") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -235,15 +249,3 @@ ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_A_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_B_fkey" FOREIGN KEY ("B") REFERENCES "Room"("channelId") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_StatusToTitles" ADD CONSTRAINT "_StatusToTitles_A_fkey" FOREIGN KEY ("A") REFERENCES "Status"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_StatusToTitles" ADD CONSTRAINT "_StatusToTitles_B_fkey" FOREIGN KEY ("B") REFERENCES "Titles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_RanksToStatus" ADD CONSTRAINT "_RanksToStatus_A_fkey" FOREIGN KEY ("A") REFERENCES "Ranks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_RanksToStatus" ADD CONSTRAINT "_RanksToStatus_B_fkey" FOREIGN KEY ("B") REFERENCES "Status"("id") ON DELETE CASCADE ON UPDATE CASCADE;
