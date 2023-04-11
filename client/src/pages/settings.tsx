@@ -24,6 +24,9 @@ import {
   isStrong,
 } from '@/components/profile/ValidationFuncs';
 
+import Error from '@/components/profile/Reply/Error';
+import Success from '@/components/profile/Reply/Success';
+
 interface propsData {
   firstname: string;
   lastname: string;
@@ -33,8 +36,8 @@ interface propsData {
 
 function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [error, setError] = useState(false);
-  const [successPass, setSuccesPass] = useState(false);
-  const [successSave, setSuccess] = useState(false);
+  const [reply, setreply] = useState('');
+  const [succes, setSuccess] = useState(false);
 
   const [state, updateState] = useState([
     { valid: true, touched: false },
@@ -79,12 +82,14 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         credentials: 'include',
       });
       if (response.status == 201) {
-        setSuccesPass(true);
+        setreply('Password Changed !');
+        setSuccess(true);
         setTimeout(() => {
-          setSuccesPass(false);
+          setSuccess(false);
         }, 3000);
       } else if (response.status == 400) {
         const err = await response.json();
+        setreply('An Error has Occurred!');
         setError(true);
         setTimeout(() => {
           setError(false);
@@ -118,6 +123,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         credentials: 'include',
       });
       if (response.status == 201) {
+        setreply('Data has been Changed !');
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
@@ -134,6 +140,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
           updateState(newArr);
           printError(span, err.error);
         } else {
+          setreply('An Error has Occurred!');
           setError(true);
           setTimeout(() => {
             setError(false);
@@ -354,45 +361,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         />
       )}
       <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={` absolute  -mb-12 w-[300px] rounded
-              border border-red-400 bg-red-600 px-4 py-3 text-center`}
-          >
-            <strong id="err-profile" className="font-bold">
-              An Error has occurred!
-            </strong>
-          </motion.div>
-        )}
-        {successSave && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={` absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
-            px-4  py-3 text-center text-teal-900 shadow-md `}
-          >
-            <strong id="succ-profile" className="font-bold">
-              Updated Successfully!
-            </strong>
-          </motion.div>
-        )}
-        {successPass && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={` absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
-            px-4  py-3 text-center text-teal-900 shadow-md `}
-          >
-            <strong id="succ-profile" className="font-bold">
-              Password Change Successfully
-            </strong>
-          </motion.div>
-        )}
+        {error && <Error reply={reply} />}
+        {succes && <Success reply={reply} />}
       </AnimatePresence>
       <div
         className="mt-[40px] flex h-[750px] w-11/12 flex-col
