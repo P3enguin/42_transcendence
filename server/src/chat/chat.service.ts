@@ -61,10 +61,13 @@ export class ChatService {
         console.log("room created");
         return roomId; 
         }catch(e){
-            console.log("error while creating new room");
+            console.log("error while creating new room",e);
             return "no Room";
             }
             
         // return "not even closed";
+        }
+        removeFromChat(nickname : string) {
+            return "removed From Chat";
         }
 }

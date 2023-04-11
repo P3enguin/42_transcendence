@@ -54,31 +54,31 @@ export class PlayerService {
       console.log(err);
     }
   }
-  //-----------------------------------{ Add a fried }
+  //-----------------------------------{ Add a fried }-----------------------------
 
-  async AddFriend(player: Player, req: Request, friendId: number) {
-    console.log(player);
+  async AddFriend(player: Player, nickname: string) {
     const check_friend = await this.prisma.player.findUnique({
+
       where: {
         id: player.id,
       },
       include: {
         friends: {
           select: {
-            id: true,
+            nickname: true,
           },
         },
         block: {
           select: {
-            id: true,
+            nickname: true,
           },
         },
       },
     });
     console.log(check_friend);
     if (
-      !check_friend.friends.some((f) => f.id === friendId) &&
-      !check_friend.block.some((f) => f.id === friendId)
+      !check_friend.friends.some((f) => f.nickname === nickname) &&
+      !check_friend.block.some((f) => f.nickname === nickname)
     ) {
       await this.prisma.player.update({
         where: {
@@ -87,42 +87,39 @@ export class PlayerService {
         data: {
           friends: {
             connect: {
-              id: friendId,
+              nickname: nickname,
             },
           },
         },
       });
-      console.log('Friend added !', friendId);
+      console.log('Friend added !', nickname);
       return 'Friend added successfully';
     } else {
-      console.log(friendId, 'exist !');
+      console.log(nickname, 'exist !');
       return 'Friend already exist !';
     }
   }
 
   //-----------------------------------{ get the list if all friends }
 
-  async GetFriends(req: Request,res:Response,nickname:string) {
+  async GetFriends(req: Request, res: Response, nickname: string) {
     // const player = this.Get_Player(req);
     try {
       const FriendList = await this.prisma.player.findUnique({
         where: {
-          nickname: nickname
+          nickname: nickname,
         },
         include: {
           friends: true,
         },
       });
       return res.status(200).json(FriendList.friends);
-    }
-    catch (error)
-    {
-      if (error instanceof PrismaClientKnownRequestError)
-      {
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
         console.log(error.message);
-        return res.status(400).json({error : error.message});
+        return res.status(400).json({ error: error.message });
       }
-      return res.status(400).json({error : "Unexpected error has occurred"});
+      return res.status(400).json({ error: 'Unexpected error has occurred' });
     }
   }
   //-----------------------------------{ Block }-----------------------------------\\
@@ -180,7 +177,8 @@ export class PlayerService {
     });
     return BlockedList;
   }
-  //-----------------------------------{  }
+
+  //-----------------------{ Fetching and changing Data }----------------------
   async getDataID(id: number, res: Response) {
     try {
       const player = await this.prisma.player.findUnique({
@@ -258,21 +256,23 @@ export class PlayerService {
     try {
       const secret = process.env.JWT_SECRET;
       const decoded = this.jwt.verify(token, { secret });
-      const player =  await this.prisma.player.findUnique({
+      const player = await this.prisma.player.findUnique({
         where: {
           id: decoded.id,
         },
         select: {
-          avatar : true,
-        }
+          avatar: true,
+        },
       });
-      if (player.avatar != "default.png")
-      {
-        fs.unlink(process.cwd() + '/uploads/avatars/' + player.avatar, (error) => {
-          if (error) {
-            console.log(error);
-          }
-        });
+      if (player.avatar != 'default.png') {
+        fs.unlink(
+          process.cwd() + '/uploads/avatars/' + player.avatar,
+          (error) => {
+            if (error) {
+              console.log(error);
+            }
+          },
+        );
       }
       await this.prisma.player.update({
         where: {
@@ -292,21 +292,23 @@ export class PlayerService {
     try {
       const secret = process.env.JWT_SECRET;
       const decoded = this.jwt.verify(token, { secret });
-      const player =  await this.prisma.player.findUnique({
+      const player = await this.prisma.player.findUnique({
         where: {
           id: decoded.id,
         },
         select: {
-          wallpaper : true,
-        }
+          wallpaper: true,
+        },
       });
-      if (player.wallpaper != "wallpaper.png")
-      {
-        fs.unlink(process.cwd() + '/uploads/wallpapers/' + player.wallpaper, (error) => {
-          if (error) {
-            console.log(error);
-          }
-        });
+      if (player.wallpaper != 'wallpaper.png') {
+        fs.unlink(
+          process.cwd() + '/uploads/wallpapers/' + player.wallpaper,
+          (error) => {
+            if (error) {
+              console.log(error);
+            }
+          },
+        );
       }
       await this.prisma.player.update({
         where: {
@@ -320,4 +322,84 @@ export class PlayerService {
       console.log(err);
     }
   }
+  //----------------------------------{Titles}-----------------------------------
+
+  // get the current title
+  async getCurrentTitle(res: Response, nickname: string) {
+    try {
+      const occupiedTitle = await this.prisma.titles_status.findFirst({
+        where: {
+          status: {
+            player: {
+              nickname: nickname,
+            },
+          },
+          occupied: true,
+        },
+        select: {
+          titles: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+      return res.status(200).json({ currentTitle: occupiedTitle.titles.name });
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occured' });
+    }
+  }
+
+  // update Current Title
+  async updateCurrentTitle(user: any, res: Response, titleName: string) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          id: user.id,
+        },
+        select: {
+          statusId: true,
+        },
+      });
+
+      const title = await this.prisma.titles.findUnique({
+        where: { name: titleName },
+        select: { id: true },
+      });
+
+      const occupiedTitle = await this.prisma.titles_status.update({
+        where: {
+          statusId_titleId: { statusId: player.statusId, titleId: title.id },
+        },
+        data: { occupied: true },
+      });
+
+      return res.status(200).json({ message: 'Title updated' });
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occured' });
+    }
+  }
+
+  //----------------------------------{Search}-----------------------------------
+  async getDataSearch( res: Response, searchParam : string) {
+    // Only fetching Users for the moment 
+    try {
+      const data = await this.prisma.player.findMany({
+        where : {
+          nickname: {
+            contains: searchParam,
+          }
+        },
+        select : {
+          nickname : true,
+          avatar : true,
+        }
+      })
+      return res.status(200).json({players : data});
+    }catch (error) {
+      return res.status(400).json({ error : "An Error has occurred"});
+    }
+  }
+
+
 }

@@ -6,7 +6,6 @@
 
 html {
   min-width: 300px;
-  min-height: 750px;
   background: rgb(44, 59, 124);
   background: linear-gradient(
     90deg,
@@ -115,7 +114,7 @@ button:hover .friend-icon {
   transform: translate(-3.4rem, 0);
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 640px) {
   button:hover .friend-icon {
     fill: #0097e2; /* Change to the color you want */
     transform: translate(0, -1.7rem);

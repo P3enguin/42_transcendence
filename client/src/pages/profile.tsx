@@ -26,7 +26,6 @@ function PlayerProfile({
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(false);
-  const titles = ['hh', 'hh2', 'hh3'];
 
   if (isLoading) return <p>Loading...</p>;
   if (!isLoading) {
@@ -39,7 +38,6 @@ function PlayerProfile({
           <ProfileDisplay
             wp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper }
             pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' +   avatar }
-            titles={titles}
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}

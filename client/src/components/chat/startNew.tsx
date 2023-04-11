@@ -2,6 +2,7 @@ import axios from "axios";
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
+
 function StartNew(data: any) {
   const router = useRouter();
 
@@ -10,7 +11,7 @@ function StartNew(data: any) {
     const [topic, setTopic] = useState('');
     const [key, setKey] = useState('');
     const [memberLimit, setMemberLimit] = useState(50);
-    const [stats, setStats] = useState('');
+    const [stats, setStats] = useState('public');
     const [isChannel, setIsChannel] = useState(true);
     const [adminId, setAdminId] = useState(data.id);
 
@@ -39,14 +40,14 @@ function StartNew(data: any) {
   }
 
     return (
-        <div className="flex flex-col w-[100%] h-[95%] border-t m-auto">
+        <div className="flex flex-col w-[100%] h-[95%] border-t">
             <div className="sm:items-center lg:flex w-[100%]
-                  h-[30%] text-3xl text-center lg:text-start">
+                  h-[30%] text-3xl text-center lg:text-start self-center">
               <div className=" lg:m-5 flex h-[15%] w-[100%] flex-col  self-end">Select a Chat or <br/>
                   Start a New:</div>
             </div>
-            <div className="flex h-full w-full flex-col lg:flex-row ">
-              <div className="sm:flex sm:items-center lg:flex m-auto mb-0 flex-col self-center h-[85%] w-[70%] ">
+            <div className="flex h-full w-full flex-col lg:flex-row p-2">
+              <div className="sm:flex sm:self-center lg:flex mb-0 flex-col  self-center h-[85%] w-[70%] ">
                 <div className="sm:h-[2%] lg:flex flex-col h-[10%] w-[90%] ">
                   <h2 className="flex text-xl">Channel : </h2>
                   <form onSubmit={createRoom}>
@@ -71,7 +72,7 @@ function StartNew(data: any) {
                             type="radio"
                             id="public"
                             name="type"
-                            onChange={(e) => {setStats(e.target.value)
+                            onChange={(e) => {setStats('public')
                             setStatEntered(e.target.value !== '');}}
                             />
                           <label htmlFor="normal" className="m-1 whitespace-nowrap">
@@ -82,9 +83,9 @@ function StartNew(data: any) {
                         <input
                             type="radio"
                             id="private"
-                            name="type"
+                            name="private"
                             onChange={(e) => {
-                              setStats(e.target.value)
+                              setStats('private')
                               setStatEntered(e.target.value !== '')
                               setPrivateEntered(e.target.value !== '');
                           }}
@@ -96,9 +97,9 @@ function StartNew(data: any) {
                           <div className="inline-flex items-center  whitespace-nowrap">
                         <input
                             type="radio"
-                            id="normal"
-                            name="type"
-                            onChange={(e) => {setStats(e.target.value)
+                            id="secret"
+                            name="secret"
+                            onChange={(e) => {setStats('secret')
                             setStatEntered(e.target.value !== '');}}
                           />
                           <label htmlFor="normal" className="m-1 whitespace-nowrap">
@@ -147,7 +148,7 @@ function StartNew(data: any) {
                   </div>
               </div>
 
-              {!nameEntered && (<div className="flex m-auto mb-0 flex-row self-center h-[85%] w-[70%]">
+              {!nameEntered && (<div className="flex m-auto flex-row self-center h-[85%] w-[70%] ">
                 <div className="flex flex-col h-[10%] w-[90%]">
                   <h2 className="flex text-xl whitespace-nowrap ">Direct Message :</h2>
                   <div className="sm:flex flex-col relative flex items-center justify-center ">
@@ -162,7 +163,6 @@ function StartNew(data: any) {
                       className="lg:right-0 lg:top-0 lg:absolute border-white peer block appearance-none mt-2
                             rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm w-[50%] sm:w-[100px]
                              text-white focus:border-blue-600 focus:outline-none focus:ring-0 bg-blue-500 sm:m-5 lg:m-0"
-                             
                              >
                       start
                     </button>

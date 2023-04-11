@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import AvatarProfileComp from './Avatar';
-import { AvatarLevelCounter } from '../icons/Icons';
+import { AvatarLevelCounter, AddFriendIcon } from '../icons/Icons';
 import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
+import Success from './Reply/Success';
+import Error from './Reply/Error';
 interface profileProps {
   wp: string;
   pfp: string;
-  titles: Array<string>;
   defaultTitle?: string;
   fullname: string;
   nickname: string;
@@ -23,8 +24,6 @@ interface profileProps {
 function ProfileDisplay({
   wp,
   pfp,
-  titles,
-  defaultTitle,
   fullname,
   nickname,
   joinDate,
@@ -34,16 +33,44 @@ function ProfileDisplay({
   userProfile,
 }: profileProps) {
   const [error, setError] = useState(false);
-  const [errorSize, setErrorSize] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [reply, setreply] = useState('');
+
+  async function SendFriendRequest(event: React.MouseEvent) {
+    event.preventDefault();
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/AddFriend',
+      {
+        method: 'PATCH',
+        body: JSON.stringify({ friend: nickname }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      },
+    );
+    if (response.ok) {
+      setreply('Friend Request Sent !');
+      setSuccess(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+      return;
+    } else {
+      setreply('Failed to send Friend Request');
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  }
 
   async function handleWpChange(event: React.ChangeEvent) {
     const wallpaper = (event.target as HTMLInputElement).files?.[0];
     if (wallpaper) {
       if (wallpaper.size > 1024 * 1024 * 2) {
-        setErrorSize(true);
+        setreply('Image size is over 2mb !');
+        setError(true);
         setTimeout(() => {
-          setErrorSize(false);
+          setError(false);
         }, 3000);
         return;
       }
@@ -63,11 +90,13 @@ function ProfileDisplay({
         ) as HTMLImageElement;
         if (wp) window.URL.revokeObjectURL(pfp.src);
         pfp.src = window.URL.createObjectURL(wallpaper);
+        setreply('Wallpaper updated!');
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
       } else {
+        setreply('Failed to upload!');
         setError(true);
         setTimeout(() => {
           setError(false);
@@ -80,9 +109,10 @@ function ProfileDisplay({
     const avatar = (event.target as HTMLInputElement).files?.[0];
     if (avatar) {
       if (avatar.size > 1024 * 1024 * 2) {
-        setErrorSize(true);
+        setreply('Image size is over 2mb !');
+        setError(true);
         setTimeout(() => {
-          setErrorSize(false);
+          setError(false);
         }, 3000);
         return;
       }
@@ -101,10 +131,12 @@ function ProfileDisplay({
         if (wp) window.URL.revokeObjectURL(pfp.src);
         pfp.src = window.URL.createObjectURL(avatar);
         setSuccess(true);
+        setreply('Avatar updated !');
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
       } else {
+        setreply('Failed to upload!');
         setError(true);
         setTimeout(() => {
           setError(false);
@@ -124,56 +156,19 @@ function ProfileDisplay({
   return (
     <>
       <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`absolute -mb-12 w-[300px] rounded
-            border border-red-400 bg-red-600 px-4 py-3 text-center`}
-          >
-            <strong id="err-profile" className="font-bold">
-              An Error has occurred!
-            </strong>
-          </motion.div>
-        )}
-        {errorSize && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`absolute -mb-12 w-[300px] rounded
-            border border-red-400 bg-red-600 px-4 py-3 text-center`}
-          >
-            <strong id="err-profile" className="font-bold">
-              Image size must be 2mb!
-            </strong>
-          </motion.div>
-        )}
-        {success && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={`absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
-            px-4  py-3 text-center text-teal-900 shadow-md `}
-          >
-            <strong id="succ-profile" className="font-bold">
-              Updated Successfully!
-            </strong>
-          </motion.div>
-        )}
+        {error && <Error reply={reply} />}
+        {success && <Success reply={reply} />}
       </AnimatePresence>
       <div
-        className="mt-[20px] flex w-11/12 flex-col justify-center
-        rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:mt-[100px] xl:w-[1000px]"
+        className="relative mt-[20px] flex w-11/12 flex-col justify-center
+        rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
       >
         <div className="flex justify-end">
           <img
             src={wp}
             alt="wallpaper"
             id="wallpaper-holder"
-            className="h-[160px] min-h-[80px] w-full 
+            className=" h-[160px] min-h-[80px] w-full 
             min-w-[200px] rounded-t-3xl sm:h-[220px] xl:h-[250px] "
           />
           {userProfile && (
@@ -193,11 +188,10 @@ function ProfileDisplay({
           accept="image/*"
           onChange={handleWpChange}
         />
-        <div className="mb-5 flex flex-col items-center xl:flex-row">
-          <div className="flex w-full items-start justify-center  xl:w-1/3 ">
+        <div className="relative mb-5 flex flex-col items-center xl:flex-row">
+          <div className="flex w-full items-start  justify-center xl:w-1/3 ">
             {userProfile ? (
               <TitlesComp
-                titles={titles}
                 cssProps="rounded-lg border-white bg-[#2C3B7C] p-1  text-[6px] leading-3
                 text-white outline-none focus:border-black focus:outline-none  
                 focus:ring-black sm:text-[10px]  xl:hidden"
@@ -250,26 +244,38 @@ function ProfileDisplay({
                     {'MEMBER SINCE: ' + joinDate}
                   </span>
                   <TitlesComp
-                    titles={titles}
                     cssProps="hidden rounded-lg border-white bg-[#2C3B7C] p-1 text-[10px] 
                   leading-3 text-white outline-none focus:border-black  
                   focus:outline-none focus:ring-black xl:flex"
                   />
                 </>
               ) : (
-                <div className="flex flex-col gap-[43px] ">
-                  <span className="text-[7px] text-gray-400 ">
-                    {'MEMBER SINCE: ' + joinDate}
-                  </span>
-                  <strong
-                    id="titleUser"
-                    className="  hidden  text-sm
-                   text-white outline-none focus:border-black  
-                 xl:flex"
-                  >
-                    the title
-                  </strong>
-                </div>
+                <>
+                  <div className="flex flex-col gap-[43px] ">
+                    <span className="text-[7px] text-gray-400 ">
+                      {'MEMBER SINCE: ' + joinDate}
+                    </span>
+                    <div className="flex flex-row justify-between gap-1">
+                      <strong
+                        id="titleUser"
+                        className="  hidden  text-sm
+                      text-white outline-none focus:border-black  
+                      xl:flex"
+                      >
+                        the title
+                      </strong>
+                      <button
+                        onClick={SendFriendRequest}
+                        type="button"
+                        className=" left-20  flex gap-1 rounded-lg bg-[#102272]
+                        px-2  py-1 text-xs 
+                        font-medium text-white hover:bg-[#0e1949] focus:outline-none"
+                      >
+                        Add friend <AddFriendIcon />
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
           </div>

@@ -10,6 +10,7 @@ import axios from 'axios';
 import Conversation from '@/components/chat/Conversation';
 import OnlineNow from '@/components/chat/OnlineNow';
 import RecentChat from '@/components/chat/recent_chat';
+import Link from 'next/link';
 
 let socket: Socket;
 //use the chat :
@@ -51,7 +52,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
       <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
       <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r ">
           <div className="flex h-[8%] items-center sm:border-b pl-5 w-[100%]">
-            Chat Room
+          <Link href={`/chat`}>Chat Room </Link>
           </div>
 
           {

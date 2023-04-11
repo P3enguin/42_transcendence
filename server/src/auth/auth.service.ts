@@ -105,6 +105,26 @@ export class AuthService {
       });
       await this.achiv.assignAchiv(player.statusId);
       await this.title.assignTitle(player.statusId);
+      await this.prisma.status.update({
+        where: {
+          id: player.statusId,
+        },
+        data: {
+          title: {
+            update: {
+              where: {
+                statusId_titleId: {
+                  statusId: player.statusId,
+                  titleId: 16,
+                },
+              },
+              data: {
+                occupied: true,
+              },
+            },
+          },
+        },
+      });
       await this.rank.assignRanks(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {

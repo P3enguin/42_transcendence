@@ -51,7 +51,6 @@ function UserProfile({
               process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper
             }
             pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
-            titles={titles}
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}
