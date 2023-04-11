@@ -31,7 +31,7 @@ interface propsData {
   Is2FAEnabled?: boolean;
 }
 
-function settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
+function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [error, setError] = useState(false);
   const [successPass, setSuccesPass] = useState(false);
   const [successSave, setSuccess] = useState(false);
@@ -525,8 +525,8 @@ export async function getServerSideProps({ req }: any) {
   };
 }
 
-settings.getLayout = function getLayout(page: React.ReactNode) {
+Settings.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout>{page}</Layout>;
 };
 
-export default settings;
+export default Settings;

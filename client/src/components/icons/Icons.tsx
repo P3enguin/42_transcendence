@@ -407,7 +407,7 @@ function AddFriendIcon() {
       strokeWidth="3"
       stroke="#000000"
       fill="none"
-      className="w-[20px] h-[20px] fill-[#8BD9FF]  "
+      className="h-[20px] w-[20px] fill-[#8BD9FF]  "
     >
       <circle cx="29.22" cy="16.28" r="11.14" />
       <path d="M41.32,35.69c-2.69-1.95-8.34-3.25-12.1-3.25h0A22.55,22.55,0,0,0,6.67,55h29.9" />

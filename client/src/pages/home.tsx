@@ -1,3 +1,4 @@
+import DiscoverChannels from "@/components/home/DiscoverChannels";
 import Layout from "@/components/layout/layout";
 import { verifyToken } from "@/components/VerifyToken";
 import Head from "next/head";
@@ -8,7 +9,7 @@ function HomePlayer({ jwt_token }: { jwt_token: string }) {
       <Head>
         <title>Ponginator | Home</title>
       </Head>
-      <div>Hello world</div>
+      <DiscoverChannels />
     </>
   );
 }
