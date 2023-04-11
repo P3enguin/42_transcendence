@@ -3,7 +3,7 @@ import ChannelHome from './ChannelHome';
 
 function DiscoverChannels() {
   return (
-    <div className="absolute mt-10 mb-auto w-[85%] rounded-[20px] border border-white">
+    <div className="mt-[55px] w-[90%] rounded-[20px] border border-white">
       <div className="flex pl-4 pt-4">
         <Image
           src="discoverChannels.svg"
