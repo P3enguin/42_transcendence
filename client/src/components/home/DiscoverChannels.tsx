@@ -19,6 +19,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -26,6 +27,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -33,6 +35,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -40,6 +43,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -47,6 +51,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -54,6 +59,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -61,6 +67,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -68,6 +75,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -75,6 +83,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
         <li className="p-2">
@@ -82,6 +91,7 @@ function DiscoverChannels() {
             icon="/game.png"
             name="#Ponginators"
             memberCount={1337}
+            channelLink="/chat/id"
           />
         </li>
       </ul>

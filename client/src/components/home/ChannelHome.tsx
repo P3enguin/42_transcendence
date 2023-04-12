@@ -1,14 +1,19 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Channel {
   icon: string;
   name: string;
   memberCount: number;
+  channelLink: string;
 }
 
-function ChannelHome({ icon, name, memberCount }: Channel) {
+function ChannelHome({ icon, name, memberCount, channelLink }: Channel) {
   return (
-    <div className="inline flex h-[90px] w-[125px] flex-col items-center rounded-[20px] bg-[#88d9ff99] p-2">
+    <Link
+      href={channelLink}
+      className="inline flex h-[90px] w-[125px] flex-col items-center rounded-[20px] bg-[#88d9ff99] p-2"
+    >
       <Image
         src={icon}
         alt="channel"
@@ -20,7 +25,7 @@ function ChannelHome({ icon, name, memberCount }: Channel) {
         {name}
       </div>
       <small className="text-[7px] text-gray-300">{memberCount} members</small>
-    </div>
+    </Link>
   );
 }
 
