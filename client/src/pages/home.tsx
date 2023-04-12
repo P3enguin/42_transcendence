@@ -1,6 +1,6 @@
 import DiscoverChannels from '@/components/home/DiscoverChannels';
 import LiveGames from '@/components/home/LiveGames';
-// import Leaderboard from '@/components/home/Leaderboard';
+import Leaderboard from '@/components/home/Leaderboard';
 import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import Head from 'next/head';
@@ -15,7 +15,7 @@ function HomePlayer({ jwt_token }: { jwt_token: string }) {
         <DiscoverChannels />
         <div className="flex w-[90%] flex-row flex-wrap gap-[65px] xl:flex-nowrap">
           <LiveGames />
-          {/* <Leaderboard /> */}
+          <Leaderboard />
         </div>
       </div>
     </>
