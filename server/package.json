@@ -8,7 +8,7 @@
     "scripts": {
         "api:dev": "json-server --watch db.json --port 4444",
         "db:dev:migrate": "prisma migrate dev --name init",
-        "prisma:dev:deploy": "prisma migrate reset -y",
+        "prisma:dev:deploy": "prisma migrate reset",
         "db:up": "docker-compose -f ../docker-compose.yml up -d ",
         "db:down": "docker-compose -f ../docker-compose.yml down",
         "db:restart": "npm run db:down && npm run db:up && sleep 1 && npm run prisma:dev:migrate",
