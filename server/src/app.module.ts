@@ -12,6 +12,7 @@ import { AchivementModule } from './achivement/achivement.module';
 import { TitleModule } from './title/title.module';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
+import { RoomModule } from './room/room.module';
 import { GameModule } from './game/game.module';
 
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -33,6 +34,7 @@ import { join } from 'path';
     StatusModule,
     TitleModule,
     ChatModule,
+    RoomModule,
     GameModule,
   ],
   controllers: [AppController],

@@ -24,7 +24,9 @@ function ChannelHome({ icon, name, memberCount, channelLink }: Channel) {
       <div className="w-full truncate text-center text-[15px] font-semibold">
         {name}
       </div>
-      <small className="text-[7px] text-gray-300">{memberCount} members</small>
+      <small className="text-[7px] text-gray-300">
+        {memberCount} member{memberCount > 1 ?? 's'}
+      </small>
     </Link>
   );
 }
