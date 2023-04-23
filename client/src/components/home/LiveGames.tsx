@@ -1,6 +1,6 @@
 import LiveGame from './LiveGame';
 
-function LiveGames() {
+export default function LiveGames() {
   return (
     <div className="w-full rounded-[20px] border border-white">
       <div className="flex items-center pl-4 pt-4">
@@ -74,5 +74,3 @@ function LiveGames() {
     </div>
   );
 }
-
-export default LiveGames;

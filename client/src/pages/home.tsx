@@ -2,7 +2,6 @@ import DiscoverChannels from '@/components/home/DiscoverChannels';
 import LiveGames from '@/components/home/LiveGames';
 import Leaderboard from '@/components/home/Leaderboard';
 import Layout from '@/components/layout/layout';
-import { verifyToken } from '@/components/VerifyToken';
 import Head from 'next/head';
 
 interface Rooms {
@@ -21,9 +20,9 @@ function HomePlayer({ rooms }: { rooms: Rooms[] }) {
       <Head>
         <title>Ponginator | Home</title>
       </Head>
-      <div className="flex w-full flex-col items-center gap-[65px]">
+      <div className="my-[55px] flex w-full flex-col items-center gap-[65px]">
         <DiscoverChannels rooms={rooms} />
-        <div className="flex w-[90%] flex-row flex-wrap gap-[65px] xl:flex-nowrap">
+        <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap">
           <LiveGames />
           <Leaderboard />
         </div>

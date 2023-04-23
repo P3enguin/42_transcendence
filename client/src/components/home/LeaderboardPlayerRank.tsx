@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-function LeaderboardPlayerRank({
+export default function LeaderboardPlayerRank({
   nickname,
   avatar,
   rank,
@@ -26,5 +26,3 @@ function LeaderboardPlayerRank({
     </div>
   );
 }
-
-export default LeaderboardPlayerRank;

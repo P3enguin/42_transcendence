@@ -8,7 +8,12 @@ interface Channel {
   channelLink: string;
 }
 
-function ChannelHome({ icon, name, memberCount, channelLink }: Channel) {
+export default function ChannelHome({
+  icon,
+  name,
+  memberCount,
+  channelLink,
+}: Channel) {
   return (
     <Link
       href={channelLink}
@@ -30,5 +35,3 @@ function ChannelHome({ icon, name, memberCount, channelLink }: Channel) {
     </Link>
   );
 }
-
-export default ChannelHome;

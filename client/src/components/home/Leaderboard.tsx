@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import LeaderboardPlayerRank from './LeaderboardPlayerRank';
 
-function Leaderboard() {
+export default function Leaderboard() {
   return (
     <div className="w-full rounded-[20px] border border-white">
       <div className="flex items-center pl-4 pt-4">
@@ -38,5 +38,3 @@ function Leaderboard() {
     </div>
   );
 }
-
-export default Leaderboard;

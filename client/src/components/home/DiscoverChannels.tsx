@@ -11,9 +11,9 @@ interface Rooms {
   avatar: string;
 }
 
-function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
+export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
   return (
-    <div className="mt-[55px] w-[90%] rounded-[20px] border border-white">
+    <div className="w-[90%] rounded-[20px] border border-white">
       <div className="flex pl-4 pt-4">
         <Image
           src="discoverChannels.svg"
@@ -26,13 +26,13 @@ function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
       <ul className="flex overflow-x-auto whitespace-nowrap py-4 px-9">
         {rooms.length == 0 && (
           <div className="flex h-[90px] w-full items-center justify-center">
-            <p>No channels hh</p>
+            <p>No channels</p>
           </div>
         )}
         {rooms.map((room) => (
           <li key={room.name} className="p-2">
             <ChannelHome
-              icon={room.avatar}
+              icon={'/' + room.avatar}
               name={room.name}
               memberCount={room.memberCount}
               channelLink={`/chat/${room.channelId}`}
@@ -43,5 +43,3 @@ function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
     </div>
   );
 }
-
-export default DiscoverChannels;

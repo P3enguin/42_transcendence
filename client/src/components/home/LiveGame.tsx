@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-function LiveGame({
+export default function LiveGame({
   nickname1,
   avatar1,
   nickname2,
@@ -43,5 +43,3 @@ function LiveGame({
     </div>
   );
 }
-
-export default LiveGame;
