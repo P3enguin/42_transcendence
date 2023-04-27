@@ -21,10 +21,10 @@ function ModalActivate2FA({
 
   return (
     <div
-      className="absolute top-0 right-0  left-0  z-20  flex h-[calc(100%-1rem)] 
+      className="absolute top-0 right-0  left-0  z-20  flex h-full 
                w-full items-center justify-center bg-gray-500  bg-opacity-75 p-4 transition-opacity md:inset-0 md:h-full"
     >
-      <div className="relative h-full w-full max-w-2xl md:mb-[400px] md:h-auto">
+      <div className="relative h-full w-full max-w-2xl  md:h-auto">
         {/* <!-- Modal content --> */}
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700 ">
           {/* <!-- Modal header --> */}
