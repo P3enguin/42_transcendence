@@ -6,8 +6,8 @@ import AvatarProfileComp from './Avatar';
 import { AvatarLevelCounter, AddFriendIcon } from '../icons/Icons';
 import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
-import Success from './Reply/Success';
-import Error from './Reply/Error';
+import Success from '../tools/Reply/Success';
+import Error from '../tools/Reply/Error';
 interface profileProps {
   wp: string;
   pfp: string;
