@@ -12,14 +12,14 @@ function PlayerProgress({ coins }: PlayerProgress) {
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         <div className="flex items-center gap-2 ">
-          <img src="/King.svg" alt="rankIcon" className="w-[45px] "></img>
-          <div className="flex  flex-col ">
+          <img src="/King.svg" alt="rankIcon" className="w-[45px]"></img>
+          <div className="flex  flex-col  ">
             <strong className="  text-gray-100">GOLD</strong>
             <span className=" text-gray-400">Ranking</span>
           </div>
         </div>
         <div className="flex items-center  gap-2">
-          <img src="/coin.svg" alt="coinIcon" className="w-[27px] "></img>
+          <img src="/coin.svg" alt="coinIcon" className="w-[27px]"></img>
           <div className="flex  flex-col ">
             <strong className="  text-gray-100">{coins + ' ₳'} </strong>
             <span className=" text-gray-400">cache earned</span>
