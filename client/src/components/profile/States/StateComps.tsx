@@ -14,6 +14,12 @@ interface OverViewDataInterf {
   colored: boolean;
 }
 
+interface ImageInterf {
+  rank: string;
+  width: string;
+  isVisible: boolean;
+}
+
 function MatchData({
   player1,
   player2,
@@ -73,4 +79,14 @@ function OverViewData({ header, data, colored }: OverViewDataInterf) {
     </div>
   );
 }
-export { MatchData, OverViewData };
+
+function Rank({ rank, width, isVisible }: ImageInterf) {
+  return (
+    <img
+      src={'/ranks/' + rank + '.svg'}
+      alt={rank}
+      className={`${width}  ${isVisible ? '' : 'mix-blend-luminosity'}`}
+    ></img>
+  );
+}
+export { MatchData, OverViewData, Rank };

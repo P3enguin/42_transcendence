@@ -10,6 +10,7 @@ import {
 import FriendStats from './States/Friends';
 import AchievementStats from './States/Achievement';
 import MatchHistoryStat from './States/MatchHistory';
+import RankingStat from './States/RankingStat';
 
 function ProfileStats({
   nickname,
@@ -108,8 +109,12 @@ function ProfileStats({
         ) : selected == 1 ? (
           <AchievementStats />
         ) : selected == 2 ? (
-          <MatchHistoryStat/>
-        ) : <div></div>}
+          <MatchHistoryStat />
+        ) : selected == 3 ? (
+          <RankingStat />
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );
