@@ -41,33 +41,66 @@ export class ChatService {
             
     }
 
-    async CreateRoom(player: Player, room: any) {
+    async CreateRoom(room: any) {
         const shortid = require('shortid');
         const roomId  = shortid.generate();
-        console.log({room});
-        try {
-         await this.prisma.room.create({
-          data: {
-            channelId: roomId,
-            name: room.name,
-            Topic: room.Topic,
-            Key: room.Key,
-            memberLimit: room.memberLimit,
-            stats: room.stats,
-            IsChannel: true,
-            adminId: player.id,
+        const player = await this.prisma.player.findUnique({
+          where:{
+            nickname: room.creator,
           },
         });
-        console.log("room created");
-        return roomId; 
-        }catch(e){
-            console.log("error while creating new room",e);
-            return "no Room";
-            }
-            
-        // return "not even closed";
+        console.log({room});
+        try {
+          await this.prisma.room.create({
+            data: {
+              channelId: roomId,
+              name: room.name,
+              Topic: room.Topic,
+              Key: room.Key,
+              memberLimit: room.memberLimit,
+              stats: room.stats,
+              IsChannel: true,
+              adminId: player.id, // add null-check here
+            },
+          });
+          console.log("room created");
+          return roomId; 
+        } catch(e) {
+          console.log("error while creating new room", e);
+          return "no Room";
         }
-        removeFromChat(nickname : string) {
-            return "removed From Chat";
+      }
+    async CreatePrivateChat(room: any) {
+        const shortid = require('shortid');
+        const roomId  = shortid.generate();
+        const name = room.player1+room.creator;
+        const player = await this.prisma.player.findUnique({
+          where:{
+            nickname: room.creator,
+          },
+        });
+        console.log({room});
+        try {
+          await this.prisma.room.create({
+            data: {
+              channelId: roomId,
+              name: name,
+              Key: room.Key,
+              memberLimit: room.memberLimit,
+              stats: "private",
+              IsChannel: false,
+              adminId: player.id, // add null-check here
+            },
+          });
+          console.log("room created");
+          return roomId; 
+        } catch(e) {
+          console.log("error while creating new room", e);
+          return "no Room";
         }
+      }
+  
+  removeFromChat(nickname : string) {
+         return "removed From Chat";
+  }
 }

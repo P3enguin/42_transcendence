@@ -36,19 +36,23 @@ model Player {
 
   rooms             Room[]
 
+  equipedTitle      Int       @default(0)
+
   @@map("players")
 }
 
 model Status {
-  id          Int     @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
 
-  player    Player?
+  player          Player?
 
-  level       Int     @default(0)
+  level           Int     @default(0)
 
-  achivement  Achivement_status[]
-  title       Titles_status[]
-  rank        Ranks_status[]
+  experionPoints  Int     @default(0) // <---- player experion
+
+  achivement      Achivement_status[]
+  title           Titles_status[]
+  rank            Ranks_status[]
 }
 
 model Achivement {

@@ -3,6 +3,8 @@ import { ChatService } from './chat.service';
 import { GetPlayer } from 'src/auth/decorator';
 import { Request, Response } from 'express';
 import { Player } from '@prisma/client';
+import { JwtGuard } from 'src/auth/guard';
+
 
 @Controller('chat')
 export class ChatController {
@@ -47,9 +49,17 @@ export class ChatController {
 	}
 
 	@Post('CreateRoom')
-    CreateRoom(@GetPlayer() player: Player, @Req() req: Request, @Res() res: Response) {
+    CreateRoom(@Req() req: Request, @Res() res: Response) {
 		const room = req.body;
-        const roomId = this.chatService.CreateRoom(player, room);
+		const roomId = this.chatService.CreateRoom(room);
+		console.log("---->",roomId);
+		res.status(200).json(roomId);
+    }
+
+	@Post('CreatePrivateChat')
+    CreatePrivateChat(@Req() req: Request, @Res() res: Response) {
+		const room = req.body;
+		const roomId = this.chatService.CreatePrivateChat(room);
 		res.status(200).json(roomId);
     }
 }

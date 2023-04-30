@@ -13,6 +13,7 @@ CREATE TABLE "players" (
     "Secret2FA" TEXT NOT NULL DEFAULT '',
     "coins" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
+    "equipedTitle" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "players_pkey" PRIMARY KEY ("id")
 );
@@ -21,6 +22,7 @@ CREATE TABLE "players" (
 CREATE TABLE "Status" (
     "id" SERIAL NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 0,
+    "experionPoints" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Status_pkey" PRIMARY KEY ("id")
 );

@@ -61,16 +61,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
     )) as LogPlayer;
-    this.chatService.removeFromChat(player.nickname);
+    // this.chatService.removeFromChat(player.nickname);
   }
 
   @SubscribeMessage('message')
   handleMessage(
-    @GetPlayer() player: LogPlayer,
+    @GetPlayer('nickname') nickname: string,
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ): string {
-      this.server.to(this.players.get(player.nickname)).emit('message', "received succ");
+      this.server.to(this.players.get(nickname)).emit('message', "received successfully");
     return 'received !';
   }
 }

@@ -12,7 +12,7 @@ function Conversation ({nickname, avatar}: any) {
             <div className="flex items-center ">
               <img className="rounded-full border"
                 src={picture} alt="avatar" width={45} height={45} />
-              <h3 className="ml-2">{nickname} Naahio </h3>
+              <h3 className="ml-2">{nickname} </h3>
             </div>
           </div>
           <div>

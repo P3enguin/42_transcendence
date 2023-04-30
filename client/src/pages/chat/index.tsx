@@ -14,8 +14,7 @@ let socket: Socket;
 //use the chat :
 function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
 
-  const [pictures, changePictures] = useState({ pfp: '', wp: '' });
-  const [isLoading, setLoading] = useState(true);
+  console.log("==> from server 1",data);
 
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showStartNew, setShowStartNew] = useState(false);
@@ -47,17 +46,16 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
       console.log(data.nickname," : disconnected");
       clientsMap.delete(socket.id);
     });
-    
+  
     socket.on('message', (message: any) => {
       console.log(`Received message from ${message.username}: ${message.message}`);
     });
-    const handelReceivedMesage = (message: string) => {
+    
+    const handelReceivedMessage = (message: string) => {
       const nickname = data.nickname;
       console.log(`Sending message from ${nickname}: ${message}`);
       socket.emit('message', {nickname, message});
     };
-
-    return () => socket.disconnect()
 
   }, []);
 
@@ -79,13 +77,13 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
             {showRecentChat && <RecentChat avatar={data.avatar} player={data.nickname} /> }
-            {showStartNew && <StartNew data={data} />}
+            {showStartNew && <StartNew nickname={data.nickname}  token={jwt_token}/>}
             </div>
           </div>
         </div>
         <div className="hidden md:flex w-full justify-between flex-col ">
           <div className="flex h-[5%] w-full items-center border-b "></div>
-          { <StartNew />}
+          { <StartNew nickname={data.nickname}  token={jwt_token}/>}
         </div>
       </div>
     </>
