@@ -7,9 +7,9 @@ function RankingStat() {
         <div className="relative mb-4 h-4 w-[900px] rounded-full bg-[#0D1743]  ">
           <div
             className="h-4 rounded-full bg-[#01FD91]"
-            style={{ width: '100%' }}
+            style={{ width: '45%' }}
           ></div>
-          <div className="absolute -top-5 flex w-[920px] flex-row justify-between -left-[2.5px]">
+          <div className="relative -top-9 flex w-[920px] flex-row justify-between -left-[2.5px]">
             <Rank rank="Iron" width="w-[50px]" isVisible={true} />
             <Rank rank="Bronze" width="w-[50px]" isVisible={true} />
             <Rank rank="Silver" width="w-[50px]" isVisible={true} />

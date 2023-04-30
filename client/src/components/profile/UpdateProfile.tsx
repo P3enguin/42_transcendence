@@ -346,7 +346,7 @@ function UpdateProfile({
               src="/wallpaper.png"
               alt="wallpaper"
               id="wallpaper-holder"
-              className="h-[140px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl lg:h-[200px]"
+              className="h-[140px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl object-cover object-center lg:h-[200px]"
             />
             <label
               htmlFor="wallpaper"
@@ -368,7 +368,7 @@ function UpdateProfile({
               src="/pfp1.png"
               alt="pfp"
               id="pfp-holder"
-              className="pfp -mt-10  h-[100px] w-[100px]"
+              className="pfp -mt-10  h-[100px] w-[100px] object-cover object-center"
             />
             <label
               htmlFor="pfp"
