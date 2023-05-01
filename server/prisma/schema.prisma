@@ -139,7 +139,7 @@ model Match {
 model Room {
   id          Int     @id @default(autoincrement())
   channelId   String  
-  name        String?
+  name        String  @unique()
   Topic       String?
   Key         String?
   memberLimit Int     @default(2)

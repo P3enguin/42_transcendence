@@ -14,7 +14,6 @@ let socket: Socket;
 //use the chat :
 function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
 
-  console.log("==> from server 1",data);
 
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showStartNew, setShowStartNew] = useState(false);

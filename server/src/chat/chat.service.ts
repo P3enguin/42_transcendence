@@ -74,22 +74,37 @@ export class ChatService {
         const shortid = require('shortid');
         const roomId  = shortid.generate();
         const name = room.player1+room.creator;
-        const player = await this.prisma.player.findUnique({
+        const checkRoom = await this.prisma.room.findFirst({
           where:{
+            name: name,
+          }
+        });
+        if (!checkRoom)
+        {
+          console.log("new priv chat id",roomId);
+          const player = await this.prisma.player.findUnique({
+            where:{
             nickname: room.creator,
           },
-        });
-        console.log({room});
-        try {
-          await this.prisma.room.create({
-            data: {
-              channelId: roomId,
-              name: name,
-              Key: room.Key,
-              memberLimit: room.memberLimit,
-              stats: "private",
-              IsChannel: false,
-              adminId: player.id, // add null-check here
+        }); //<<---- get room first check if name exist  and quit
+        if (player)
+        {
+          try {
+            await this.prisma.room.create({
+             data: {
+               channelId: roomId,
+                name: name,
+                Key: room.Key,
+                memberLimit: room.memberLimit,
+                stats: "private",
+                IsChannel: false,
+                adminId: player.id, // add null-check here
+                member: {
+                connect: [
+                  { nickname: room.player1 },
+                  { nickname: room.creator },
+                ],
+              }
             },
           });
           console.log("room created");
@@ -98,8 +113,12 @@ export class ChatService {
           console.log("error while creating new room", e);
           return "no Room";
         }
+        }else
+        return ("can't create room for undefined user")
       }
-  
+      return "Room already existe";
+    }
+
   removeFromChat(nickname : string) {
          return "removed From Chat";
   }

@@ -52,7 +52,6 @@ export class ChatController {
     CreateRoom(@Req() req: Request, @Res() res: Response) {
 		const room = req.body;
 		const roomId = this.chatService.CreateRoom(room);
-		console.log("---->",roomId);
 		res.status(200).json(roomId);
     }
 

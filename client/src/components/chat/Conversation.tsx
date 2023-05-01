@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { SendIcon, SettingIcon } from "../icons/Icons";
 
 function Conversation ({nickname, avatar}: any) {
+  console.log()
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/" + avatar;
     return(
       <div className="flex w-full h-full justify-between flex-col ">

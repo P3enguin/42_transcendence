@@ -105,7 +105,7 @@ CREATE TABLE "Match" (
 CREATE TABLE "Room" (
     "id" SERIAL NOT NULL,
     "channelId" TEXT NOT NULL,
-    "name" TEXT,
+    "name" TEXT NOT NULL,
     "Topic" TEXT,
     "Key" TEXT,
     "memberLimit" INTEGER NOT NULL DEFAULT 2,
@@ -180,6 +180,9 @@ CREATE UNIQUE INDEX "Ranks_name_key" ON "Ranks"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Titles_name_key" ON "Titles"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Room_name_key" ON "Room"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "InvalidToken_token_key" ON "InvalidToken"("token");
