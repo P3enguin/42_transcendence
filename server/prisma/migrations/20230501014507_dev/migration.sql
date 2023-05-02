@@ -9,11 +9,11 @@ CREATE TABLE "players" (
     "password" TEXT NOT NULL,
     "firstname" TEXT NOT NULL,
     "lastname" TEXT NOT NULL,
-    "title" TEXT NOT NULL DEFAULT 'Noob',
     "Is2FAEnabled" BOOLEAN NOT NULL DEFAULT false,
     "Secret2FA" TEXT NOT NULL DEFAULT '',
     "coins" INTEGER NOT NULL,
     "statusId" INTEGER NOT NULL,
+    "equipedTitle" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "players_pkey" PRIMARY KEY ("id")
 );
@@ -22,6 +22,7 @@ CREATE TABLE "players" (
 CREATE TABLE "Status" (
     "id" SERIAL NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 0,
+    "experionPoints" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Status_pkey" PRIMARY KEY ("id")
 );
@@ -102,8 +103,9 @@ CREATE TABLE "Match" (
 
 -- CreateTable
 CREATE TABLE "Room" (
-    "channelId" SERIAL NOT NULL,
-    "name" TEXT,
+    "id" SERIAL NOT NULL,
+    "channelId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "Topic" TEXT,
     "Key" TEXT,
     "memberLimit" INTEGER NOT NULL DEFAULT 2,
@@ -111,10 +113,10 @@ CREATE TABLE "Room" (
     "IsChannel" BOOLEAN NOT NULL DEFAULT false,
     "IsRead" BOOLEAN NOT NULL DEFAULT false,
     "Isseen" INTEGER NOT NULL DEFAULT 0,
-    "adminId" INTEGER,
+    "adminId" INTEGER[],
     "avatar" TEXT NOT NULL DEFAULT '#',
 
-    CONSTRAINT "Room_pkey" PRIMARY KEY ("channelId")
+    CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -130,7 +132,7 @@ CREATE TABLE "Chat" (
 
 -- CreateTable
 CREATE TABLE "Ban" (
-    "channelId" SERIAL NOT NULL,
+    "channelId" INTEGER NOT NULL,
     "playerId" INTEGER NOT NULL,
     "reason" TEXT NOT NULL,
 
@@ -178,6 +180,9 @@ CREATE UNIQUE INDEX "Ranks_name_key" ON "Ranks"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Titles_name_key" ON "Titles"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Room_name_key" ON "Room"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "InvalidToken_token_key" ON "InvalidToken"("token");
@@ -228,10 +233,10 @@ ALTER TABLE "Match" ADD CONSTRAINT "Match_winner_fkey" FOREIGN KEY ("winner") RE
 ALTER TABLE "Match" ADD CONSTRAINT "Match_loser_fkey" FOREIGN KEY ("loser") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Chat" ADD CONSTRAINT "Chat_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Chat" ADD CONSTRAINT "Chat_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Ban" ADD CONSTRAINT "Ban_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Room"("channelId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Ban" ADD CONSTRAINT "Ban_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Room"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_friends" ADD CONSTRAINT "_friends_A_fkey" FOREIGN KEY ("A") REFERENCES "players"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -249,4 +254,4 @@ ALTER TABLE "_block" ADD CONSTRAINT "_block_B_fkey" FOREIGN KEY ("B") REFERENCES
 ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_A_fkey" FOREIGN KEY ("A") REFERENCES "players"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_B_fkey" FOREIGN KEY ("B") REFERENCES "Room"("channelId") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_PlayerToRoom" ADD CONSTRAINT "_PlayerToRoom_B_fkey" FOREIGN KEY ("B") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;

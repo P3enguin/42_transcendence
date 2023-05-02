@@ -54,11 +54,11 @@ export class PlayerService {
       console.log(err);
     }
   }
-  //-----------------------------------{ Add a fried }-----------------------------
+  //-----------------------------------{ Add a friend }-----------------------------
 
   async AddFriend(player: Player, nickname: string) {
+    console.log("nickname: " + player.nickname);
     const check_friend = await this.prisma.player.findUnique({
-
       where: {
         id: player.id,
       },
@@ -75,7 +75,6 @@ export class PlayerService {
         },
       },
     });
-    console.log(check_friend);
     if (
       !check_friend.friends.some((f) => f.nickname === nickname) &&
       !check_friend.block.some((f) => f.nickname === nickname)
@@ -92,6 +91,19 @@ export class PlayerService {
           },
         },
       });
+      await this.prisma.player.update({
+        where: {
+          nickname: nickname,
+        },
+        data: {
+          friends: {
+            connect: {
+              nickname: player.nickname,
+            },
+          },
+        },
+      });
+
       console.log('Friend added !', nickname);
       return 'Friend added successfully';
     } else {
