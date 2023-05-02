@@ -11,7 +11,7 @@ function Player({ nickname, avatar, userProfile }: PLayerProps) {
       <div className="flex w-3/4 flex-row items-center gap-1">
         <Link href={'/users/' + nickname}>
           <img
-            className="w-[45px] rounded-full border sm:w-[48px] "
+            className="w-[45px] rounded-full border sm:w-[48px] h-[45px] sm:h-[48px]"
             src={
               //   process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + elem.avatar
               avatar

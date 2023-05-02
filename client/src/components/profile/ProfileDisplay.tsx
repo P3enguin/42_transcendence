@@ -6,8 +6,8 @@ import AvatarProfileComp from './Avatar';
 import { AvatarLevelCounter, AddFriendIcon } from '../icons/Icons';
 import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
-import Success from './Reply/Success';
-import Error from './Reply/Error';
+import Success from '../tools/Reply/Success';
+import Error from '../tools/Reply/Error';
 interface profileProps {
   wp: string;
   pfp: string;
@@ -168,8 +168,8 @@ function ProfileDisplay({
             src={wp}
             alt="wallpaper"
             id="wallpaper-holder"
-            className=" h-[160px] min-h-[80px] w-full 
-            min-w-[200px] rounded-t-3xl sm:h-[220px] xl:h-[250px] "
+            className="h-[160px] min-h-[80px] w-full min-w-[200px] 
+             rounded-t-3xl object-cover object-center sm:h-[220px] xl:h-[250px]"
           />
           {userProfile && (
             <label
@@ -211,7 +211,7 @@ function ProfileDisplay({
                   id="GradientLevel"
                   track="track2"
                   fill="fill2"
-                  cssProps="progress blue absolute z-10
+                  cssProps="progress blue absolute z-10 
                   h-[40px] w-[35px] shrink-0 translate-x-[-4px] translate-y-[-5px]"
                 />
                 <div
@@ -229,7 +229,7 @@ function ProfileDisplay({
                 track="track"
                 fill="fill"
                 cssProps="progress blue z-10 h-[170px] w-[150px] 
-                shrink-0 xl:h-[200px] xl:w-[170px]"
+                shrink-0 xl:h-[200px] xl:w-[170px] object-cover object-center"
               />
 
               <div className="flex flex-col text-center text-white xl:pl-6 xl:text-start">
