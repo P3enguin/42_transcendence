@@ -101,7 +101,7 @@ export class AuthService {
           status: {
             create: {},
           },
-          equipedTitle: 1,
+          // equipedTitle: 1,
         },
       });
 
