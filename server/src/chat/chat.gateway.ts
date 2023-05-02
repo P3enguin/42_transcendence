@@ -31,7 +31,6 @@ export interface LogPlayer extends Player {
   },
 })
 
-
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server<

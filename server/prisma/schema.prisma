@@ -41,6 +41,8 @@ model Player {
   @@map("players")
 }
 
+
+
 model Status {
   id              Int     @id @default(autoincrement())
 
