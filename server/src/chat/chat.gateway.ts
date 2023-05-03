@@ -44,16 +44,16 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
  
  afterInit(server: Server) {
    console.log(server);
-   //Do stuffs
+   
  }
  
  handleDisconnect(client: Socket) {
    console.log(`Disconnected: ${client.id}`);
-   //Do stuffs
+   
  }
  
  handleConnection(client: Socket, ...args: any[]) {
    console.log(`Connected ${client.id}`);
-   //Do stuffs
+   
  }
 }

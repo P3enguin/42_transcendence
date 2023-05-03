@@ -13,7 +13,7 @@ export class ChatController {
 	) {}
 
 	@Post('sendMessage')
-	SendPrivMessage(friendId: string, message: string)
+	SendPrivMessage(friendId: number, message: string)
 	{
 		return this.chatService.SendPrivMessage(friendId, message);
 	}
@@ -27,7 +27,8 @@ export class ChatController {
 	@Get('privateMessages')
 	GetPrivMessage(@GetPlayer() player: Player, @Req() req: Request, @Res() res: Response)
 	{
-		return this.chatService.GetPrivMessage(player, req.query.friendId);
+		const message = this.chatService.GetPrivMessage(player, req.query.friendId);
+		res.json(message);
 	}
 
 	@Get('channelMessages')
@@ -45,7 +46,7 @@ export class ChatController {
 	@Get('allChat')
 	GetChat(@GetPlayer() player: Player)
 	{
-		
+		return "full chat";
 	}
 
 	@Post('CreateRoom')
