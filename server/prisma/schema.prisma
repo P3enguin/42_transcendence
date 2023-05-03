@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -37,11 +36,23 @@ model Player {
   rooms             Room[]
 
   equipedTitle      Int       @default(0)
+  requests          Request[] @relation()
 
   @@map("players")
 }
 
+model Request {
+  id            String     @id
 
+  fromPlayerId  Int
+
+  toPlayerId    Int
+  toPlayer      Player  @relation(fields: [toPlayerId], references: [id])
+
+  status        String? @default("pending")
+
+  receivedAt    DateTime @default(now())
+}
 
 model Status {
   id              Int     @id @default(autoincrement())

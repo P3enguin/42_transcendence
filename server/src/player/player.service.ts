@@ -56,7 +56,37 @@ export class PlayerService {
   }
   //-----------------------------------{ Add a friend }-----------------------------
 
-  async AddFriend(player: Player, nickname: string) {
+  async AddRequest(player: Player, receiverId: number) {
+    const shortid = require('shortid');
+    const reqId = shortid.generate();
+    const requests = await this.prisma.player.findUnique({
+      where: {
+        id: player.id,
+      },
+      select :{
+        requests:{
+          where:{
+            fromPlayerId: receiverId,
+          }
+        }
+      }
+    });
+    if (requests)
+      console.log("Request already sended");
+    try{
+      const request = await this.prisma.request.create({
+        data: {
+          id: reqId,
+          fromPlayerId: receiverId,
+          toPlayerId: player.id,
+        },
+      });
+    }catch(err) {
+      console.log("can't create your request" + err.message);
+    }
+  }
+
+  async AddFriend(player: Player, nickname: string, requestId: string) {
     console.log("nickname: " + player.nickname);
     const check_friend = await this.prisma.player.findUnique({
       where: {
@@ -103,8 +133,11 @@ export class PlayerService {
           },
         },
       });
-
-      console.log('Friend added !', nickname);
+      await this.prisma.request.delete({
+        where :{
+          id: requestId,
+        },
+      });
       return 'Friend added successfully';
     } else {
       console.log(nickname, 'exist !');

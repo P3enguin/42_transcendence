@@ -19,6 +19,17 @@ CREATE TABLE "players" (
 );
 
 -- CreateTable
+CREATE TABLE "Request" (
+    "id" TEXT NOT NULL,
+    "fromPlayerId" INTEGER NOT NULL,
+    "toPlayerId" INTEGER NOT NULL,
+    "status" TEXT DEFAULT 'pending',
+    "receivedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Request_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Status" (
     "id" SERIAL NOT NULL,
     "level" INTEGER NOT NULL DEFAULT 0,
@@ -207,6 +218,9 @@ CREATE INDEX "_PlayerToRoom_B_index" ON "_PlayerToRoom"("B");
 
 -- AddForeignKey
 ALTER TABLE "players" ADD CONSTRAINT "players_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Request" ADD CONSTRAINT "Request_toPlayerId_fkey" FOREIGN KEY ("toPlayerId") REFERENCES "players"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Achivement_status" ADD CONSTRAINT "Achivement_status_statusId_fkey" FOREIGN KEY ("statusId") REFERENCES "Status"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

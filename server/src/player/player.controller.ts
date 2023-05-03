@@ -86,10 +86,15 @@ export class PlayerController {
 
   //------------------------------{ Friend }----------------------------------
 
+  @Post('addRequest')
+  AddRequest(@GetPlayer() player, @Req() req: Request) {
+    // console.log("request received from ",req.body.);
+    return this.playerService.AddRequest(player, req.body.user.id);
+  }
+
   @Patch('AddFriend')
   AddFriend(@GetPlayer() player, @Req() req: Request) {
-    console.log(req.body)
-    return this.playerService.AddFriend(player, req.body.friend);
+    return this.playerService.AddFriend(player, req.body.friend, req.body.requestId);
   }
 
   @Get('friends')
@@ -100,6 +105,7 @@ export class PlayerController {
   ) {
     return this.playerService.GetFriends(req, res, query.nickname);
   }
+
   @Patch('block')
   BlockFriend(@Req() req: Request, friendId: number) {
     return this.playerService.BlockFriend(req, 2);
