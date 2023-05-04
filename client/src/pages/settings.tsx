@@ -24,8 +24,8 @@ import {
   isStrong,
 } from '@/components/profile/ValidationFuncs';
 
-import Error from '@/components/profile/Reply/Error';
-import Success from '@/components/profile/Reply/Success';
+import Error from '@/components/tools/Reply/Error';
+import Success from '@/components/tools/Reply/Success';
 
 interface propsData {
   firstname: string;

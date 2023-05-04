@@ -101,8 +101,10 @@ export class AuthService {
           status: {
             create: {},
           },
+          // equipedTitle: 1,
         },
       });
+
       await this.achiv.assignAchiv(player.statusId);
       await this.title.assignTitle(player.statusId);
       await this.prisma.status.update({

@@ -10,7 +10,7 @@ export class AchivementController {
 	constructor(private achievement: AchivementService) {}
 
 	@Post('achiv')
-	async fillAvhievememt(@GetPlayer() player: Player) {
+	async fillAvhievememt() {
 		return this.achievement.fillAvhievememt();
 	}
 }

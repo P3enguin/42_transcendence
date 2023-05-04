@@ -4,6 +4,11 @@ export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
+  joined: (data: any) => void;
+  startGame: (data: any) => void;
+  connected: (data: any) => void;
+  'move it': (data: any) => void;
+  message: (data: any) => void;
 }
 
 export interface ClientToServerEvents {

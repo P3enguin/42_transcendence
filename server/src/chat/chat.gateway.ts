@@ -16,7 +16,13 @@ import {
   ServerToClientEvents,
   SocketData,
 } from './inteface';
+import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
+import { GetPlayer } from 'src/auth/decorator';
+
+export interface LogPlayer extends Player {
+  socketId?: string;
+}
 
 @WebSocketGateway({
   namespace: 'chat',
@@ -24,6 +30,7 @@ import { JwtGuard } from 'src/auth/guard';
     origin: '*',
   },
 })
+
 
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -33,26 +40,37 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     InterServerEvents,
     SocketData
   >;
-  players = new Map<string, Socket[]>;
+  players = new Map<string, string>;
 
-  constructor(private chatService: ChatService) {}
-  handleConnection(
+  constructor(private chatService: ChatService,
+              private jwt: JwtGuard) 
+              {}
+  async handleConnection(
     @ConnectedSocket() client: Socket,
     @Body() data: SocketData,
   ) {
-    
-    console.log('client connected:', client.id);
+    const player = (await this.jwt.verifyToken(
+      client.handshake.auth.token,
+    )) as LogPlayer;
+    player.socketId = client.id;
+    this.players.set(player.nickname ,client.id);
+    console.log('client connected:', client.id, player.nickname);
+    this.server.to(client.id).emit('connected', 'welcome to the Chat Server !');
   }
-  handleDisconnect(client: Socket) {
-    console.log('client disconnected:', client.id);
+  async handleDisconnect(client: Socket) {
+    const player = (await this.jwt.verifyToken(
+      client.handshake.auth.token,
+    )) as LogPlayer;
+    // this.chatService.removeFromChat(player.nickname);
   }
 
   @SubscribeMessage('message')
   handleMessage(
+    @GetPlayer('nickname') nickname: string,
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: SocketData,
+    @MessageBody() data: any,
   ): string {
-    // console.log('message:', data);
+      this.server.to(this.players.get(nickname)).emit('message', "received successfully");
     return 'received !';
   }
 }

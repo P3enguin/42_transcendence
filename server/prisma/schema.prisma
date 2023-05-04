@@ -36,19 +36,23 @@ model Player {
 
   rooms             Room[]
 
+  equipedTitle      Int       @default(0)
+
   @@map("players")
 }
 
 model Status {
-  id          Int     @id @default(autoincrement())
+  id              Int     @id @default(autoincrement())
 
-  player    Player?
+  player          Player?
 
-  level       Int     @default(0)
+  level           Int     @default(0)
 
-  achivement  Achivement_status[]
-  title       Titles_status[]
-  rank        Ranks_status[]
+  experionPoints  Int     @default(0) // <---- player experion
+
+  achivement      Achivement_status[]
+  title           Titles_status[]
+  rank            Ranks_status[]
 }
 
 model Achivement {
@@ -131,27 +135,28 @@ model Match {
   score     String
   playerAt  DateTime @default(now())
 }
- 
+
 model Room {
-  channelId   Int     @id @default(autoincrement())
-  name        String?
+  id          Int     @id @default(autoincrement())
+  channelId   String  
+  name        String  @unique()
   Topic       String?
   Key         String?
   memberLimit Int     @default(2)
   stats       String?
 
-  IsChannel Boolean   @default(false)
+  IsChannel   Boolean @default(false)
 
-  IsRead  Boolean @default(false)
-  Isseen  Int @default(0)
+  IsRead      Boolean @default(false)
+  Isseen      Int     @default(0)
 
-  adminId Int?
+  adminId     Int[]
 
-  member Player[]
-  chats  Chat[]
-  bans   Ban[]
+  member      Player[]
+  chats       Chat[]
+  bans        Ban[]
 
-  avatar String   @default("#")
+  avatar String       @default("#")
 }
 
 model Chat {
@@ -162,12 +167,12 @@ model Chat {
   sendAt  DateTime  @default(now())
 
   roomId Int
-  room   Room       @relation(fields: [roomId], references: [channelId])
+  room   Room       @relation(fields: [roomId], references: [id])
 }
 
 model Ban {
-  channelId Int  @id @default(autoincrement())
-  channel   Room @relation(fields: [channelId], references: [channelId])
+  channelId Int  @id
+  channel   Room @relation(fields: [channelId], references: [id])
 
   playerId Int
   reason   String
