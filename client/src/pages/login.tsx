@@ -1,5 +1,5 @@
-import UpdateProfile from "@/components/profile/UpdateProfile";
-import { verifyToken, verifySession } from "@/components/VerifyToken";
+import UpdateProfile from '@/components/profile/UpdateProfile';
+import { verifyToken, verifySession } from '@/components/VerifyToken';
 
 function loginPage({
   email,
@@ -28,7 +28,7 @@ function loginPage({
 }
 
 export async function getServerSideProps(context: any) {
-  const jwt_token: string = context.req.cookies["jwt_token"];
+  const jwt_token: string = context.req.cookies['jwt_token'];
   if (!jwt_token) {
     const response = await verifySession(context.req.headers.cookie);
     if (!response.ok) {
@@ -36,7 +36,7 @@ export async function getServerSideProps(context: any) {
       console.log(data);
       return {
         redirect: {
-          destination: "/",
+          destination: '/',
           permanent: true,
         },
       };
@@ -46,8 +46,8 @@ export async function getServerSideProps(context: any) {
     return {
       props: {
         email: result.jwtDecoded.email,
-        firstName: result.jwtDecoded.firstName,
-        lastName: result.jwtDecoded.lastName,
+        firstName: result.jwtDecoded.firstName ?? null,
+        lastName: result.jwtDecoded.lastName ?? null,
         image: result.jwtDecoded.picture,
         coins: result.jwtDecoded.coins,
       },
@@ -58,7 +58,7 @@ export async function getServerSideProps(context: any) {
     if (res.ok) {
       return {
         redirect: {
-          destination: "/profile",
+          destination: '/profile',
           permanent: true,
         },
       };
@@ -67,7 +67,7 @@ export async function getServerSideProps(context: any) {
   //  to check the validity of jwt before redirecting later
   return {
     redirect: {
-      destination: "/",
+      destination: '/',
       permanent: true,
     },
   };

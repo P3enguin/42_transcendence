@@ -43,17 +43,15 @@ function Login() {
         else Router.push('/profile');
       } else if (!response.ok) {
         const err = await response.json();
-        if (err.error.message)
-          throw new Error(err.error.message);
-        else
-          throw new Error("An unexprected error occured");
+        if (err.error.message) throw new Error(err.error.message);
+        else throw new Error('An unexpected error occurred');
       }
     } catch (err) {
       console.log(err);
       const span = document.getElementById('error-span');
       if (err instanceof Error) {
         if (span) span.innerHTML = err.message;
-      } 
+      }
     }
   }
 
@@ -79,7 +77,7 @@ function Login() {
                 className={`flex flex-row rounded-full border border-white bg-white p-1 `}
               >
                 <Image
-                  src="/googlelogo.png"
+                  src="/googleLogo.png"
                   alt="google-Logo"
                   width={22}
                   height={22}
@@ -123,15 +121,15 @@ function Login() {
               id="nickname"
               className="peer block w-full appearance-none rounded-full border-2 border-gray-300 
                     bg-transparent py-2.5 px-3 text-sm 
-                      text-white focus:border-blue-600 focus:outline-none focus:ring-0"
+                    text-white focus:border-blue-600 focus:outline-none focus:ring-0"
               placeholder=" "
               required
             />
             <label
               htmlFor="nickname"
               className="absolute top-3 -z-10
-                     origin-[0] -translate-y-8 scale-100 transform pl-3
-                     text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+                      origin-[0] -translate-y-8 scale-100 transform pl-3
+                      text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
                       peer-focus:-translate-y-8 peer-focus:scale-100 
                       peer-focus:font-medium peer-focus:text-blue-600 "
             >
@@ -152,11 +150,11 @@ function Login() {
             <label
               htmlFor="password"
               className="absolute top-3 -z-10
-                     origin-[0] -translate-y-8 scale-100 transform 
-                     px-3 text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100
+                      origin-[0] -translate-y-8 scale-100 transform 
+                      px-3 text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100
                       peer-focus:left-0 
-                       peer-focus:-translate-y-8 peer-focus:scale-100 
-                       peer-focus:font-medium peer-focus:text-blue-600"
+                      peer-focus:-translate-y-8 peer-focus:scale-100 
+                      peer-focus:font-medium peer-focus:text-blue-600"
             >
               Password
             </label>
@@ -172,10 +170,10 @@ function Login() {
           >
             <button
               type="submit"
-              className="hover:text-l hover:text-md  w-full transform rounded-full 
+              className="hover:text-l hover:text-md w-full transform rounded-full
                                 bg-[#0097E2] py-2 px-12 
                                 text-center text-xs  uppercase text-white  shadow transition duration-300
-                                 hover:scale-110 hover:bg-[#2C3B7C]  md:text-base"
+                                hover:scale-110 hover:bg-[#2C3B7C]  md:text-base"
             >
               SIGN IN
             </button>
