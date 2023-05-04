@@ -23,6 +23,10 @@ interface PongAiProps {
 }
 
 const PongAi = ({ gameRef, newScore }: PongAiProps) => {
+  const HitRef = useRef<HTMLAudioElement>(null);
+  const WallRef = useRef<HTMLAudioElement>(null);
+  const ComScoreRef = useRef<HTMLAudioElement>(null);
+  const UserScoreRef = useRef<HTMLAudioElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const ballRef = useRef<HTMLDivElement>(null);
   const [ballPosition, setBallPosition] = useState({ x: 400, y: 565 });
@@ -37,22 +41,42 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
     y: BOARD_HEIGHT - PADDLE_OFFSET - PADDLE_HEIGHT,
   });
 
+  const PlayAudio = (audio: React.RefObject<HTMLAudioElement>) => {
+    if (audio.current) {
+      audio.current.play().catch(() => { });
+    }
+  };
+
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
     if (boardRef.current) {
       const rec = boardRef.current.getBoundingClientRect();
       const mousePosition =
-        (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth - PADDLE_WIDTH/2;
+        (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth -
+        PADDLE_WIDTH / 2;
       setPaddle2Position((prev) => ({ x: mousePosition, y: prev.y }));
     }
   };
 
-  const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {};
+  const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
+    if (boardRef.current) {
+      const rec = boardRef.current.getBoundingClientRect();
+      const touchPosition =
+        (700 * (e.touches[0].clientX - rec.left)) /
+          boardRef.current.offsetWidth -
+        PADDLE_WIDTH / 2;
+      setPaddle2Position((prev) => ({ x: touchPosition, y: prev.y }));
+    }
+  };
 
   function resetBall() {
     console.log('GOOOOOOOAAAAALLLLLLL!!!');
     if (ballPosition.y > BOARD_HEIGHT / 2) {
+      console.log(ballPosition, Paddle2Position);
+      PlayAudio(ComScoreRef);
       newScore('AI');
     } else {
+      console.log(ballPosition, Paddle1Position);
+      PlayAudio(UserScoreRef);
       newScore('Player');
     }
     setBallPosition((prev) => ({ x: prev.x, y: BOARD_HEIGHT / 2 }));
@@ -63,40 +87,41 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
       ballPosition.x + ballVelocity.x <= 5 ||
       ballPosition.x + BALL_DIAMETER + ballVelocity.x >= 695
     ) {
+      PlayAudio(WallRef);
       setBallVelocity((prev) => ({ x: -prev.x, y: prev.y }));
     }
     if (
       ballPosition.y + ballVelocity.y <= 5 ||
       ballPosition.y + BALL_DIAMETER + ballVelocity.y >= 975
     ) {
-      setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
+      // setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
       resetBall();
     }
   }
 
   function checkPaddleCollision() {
     if (
-      ballPosition.x + ballVelocity.x >= Paddle2Position.x &&
-      ballPosition.x + BALL_DIAMETER + ballVelocity.x <=
-        Paddle2Position.x + PADDLE_WIDTH
+      ballPosition.x + BALL_DIAMETER + ballVelocity.x >= Paddle2Position.x &&
+      ballPosition.x + ballVelocity.x <= Paddle2Position.x + PADDLE_WIDTH
     ) {
       if (
         ballPosition.y + ballVelocity.y >=
         Paddle2Position.y - BALL_DIAMETER
       ) {
-        setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
+        PlayAudio(HitRef);
+        setBallVelocity((prev) => ({ x: prev.x, y: Math.abs(prev.y) * -1 }));
       }
     }
     if (
-      ballPosition.x + ballVelocity.x >= Paddle1Position.x &&
-      ballPosition.x + BALL_DIAMETER + ballVelocity.x <=
-        Paddle1Position.x + PADDLE_WIDTH
+      ballPosition.x + BALL_DIAMETER + ballVelocity.x >= Paddle1Position.x &&
+      ballPosition.x + ballVelocity.x <= Paddle1Position.x + PADDLE_WIDTH
     ) {
       if (
         ballPosition.y + ballVelocity.y <=
         Paddle1Position.y + PADDLE_HEIGHT
       ) {
-        setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
+        PlayAudio(HitRef);
+        setBallVelocity((prev) => ({ x: prev.x, y: Math.abs(prev.y) }));
       }
     }
   }
@@ -109,7 +134,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
       ) {
         // com.y += ((ball.y - (com.y + com.height/2)))*0.1;
         setPaddle1Position((prev) => ({
-          x: prev.x+ ((ballPosition.x - (prev.x + PADDLE_WIDTH / 2))) * 0.1,
+          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
           y: prev.y,
         }));
       }
@@ -121,7 +146,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
       ) {
         setPaddle2Position((prev) => ({
-          x: prev.x + ((ballPosition.x - (prev.x + PADDLE_WIDTH / 2))) * 0.1,
+          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
           y: prev.y,
         }));
       }
@@ -139,7 +164,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
       checkWallCollision();
       checkPaddleCollision();
       chaseBall();
-    }, 1000 / 50);
+    }, 1000 / 100);
     return () => {
       clearInterval(interval);
     };
@@ -147,17 +172,23 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
   }, [ballPosition, ballVelocity]);
 
   return (
-    <Board
-      position="Bottom"
-      parentRef={gameRef}
-      boardRef={boardRef}
-      mouseHandler={handleMouseMove}
-      touchHandler={handleTouchMove}
-    >
-      <Paddle position={Paddle1Position} boardRef={boardRef} />
-      <Ball position={ballPosition} ballRef={ballRef} />
-      <Paddle position={Paddle2Position} boardRef={boardRef} />
-    </Board>
+    <>
+      <audio src="../game/sounds/hit.mp3" ref={HitRef}></audio>
+      <audio src="../game/sounds/wall.mp3" ref={WallRef}></audio>
+      <audio src="../game/sounds/comScore.mp3" ref={ComScoreRef}></audio>
+      <audio src="../game/sounds/userScore.mp3" ref={UserScoreRef}></audio>
+      <Board
+        position="Bottom"
+        parentRef={gameRef}
+        boardRef={boardRef}
+        mouseHandler={handleMouseMove}
+        touchHandler={handleTouchMove}
+      >
+        <Paddle position={Paddle1Position} boardRef={boardRef} />
+        <Ball position={ballPosition} ballRef={ballRef} />
+        <Paddle position={Paddle2Position} boardRef={boardRef} />
+      </Board>
+    </>
   );
 };
 
