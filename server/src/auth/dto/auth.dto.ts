@@ -1,9 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class AuthDto {
   @IsEmail()
@@ -13,9 +8,6 @@ export class AuthDto {
   @IsString()
   @IsNotEmpty()
   nickname: string;
-  
-  // @IsString()
-  // avatar: string;
 
   @IsString()
   @IsNotEmpty()
@@ -24,25 +16,21 @@ export class AuthDto {
   @IsString()
   @IsNotEmpty()
   firstname: string;
-  
+
   @IsString()
   @IsNotEmpty()
   lastname: string;
 
   @IsNumber()
-  coins:number
+  coins: number;
 }
 
-export class singDTO {
-
+export class signDTO {
   @IsString()
   @IsNotEmpty()
   nickname: string;
-  
 
   @IsString()
   @IsNotEmpty()
   password: string;
-
 }
-

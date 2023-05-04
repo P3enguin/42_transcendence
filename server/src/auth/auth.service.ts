@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AuthDto, singDTO } from './dto';
+import { AuthDto, signDTO } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -151,7 +151,7 @@ export class AuthService {
     }
   }
 
-  async signin(res: Response, dto: singDTO) {
+  async signin(res: Response, dto: signDTO) {
     try {
       const player = await this.prisma.player.findUnique({
         where: {

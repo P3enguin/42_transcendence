@@ -58,13 +58,11 @@ export class PlayerController {
 
   @Patch('data')
   changeData(@Req() req: Request, @Res() res: Response) {
-    console.log(req.body);
     return this.playerService.changeData(req.body, res);
   }
 
   @Patch('password')
   changePassword(@Req() req: Request, @Res() res: Response) {
-    console.log(req.body);
     return this.playerService.changePassowrd(req.body, res);
   }
 
