@@ -21,7 +21,8 @@ function SideNavBar({ children }: LayoutProps) {
     { path: '/game/[id]', index: 2 },
     { path: '/profile', index: 3 },
     { path: '/users/[id]', index: 3 },
-    { path: '/settings', index: 4 },
+    { path: '/shop', index: 4 },
+    { path: '/settings', index: 5 },
   ];
 
   const router = useRouter();
@@ -84,7 +85,7 @@ function SideNavBar({ children }: LayoutProps) {
   }
 
   return (
-    <div className="w-full h-full relative ">
+    <div className="relative h-full w-full ">
       {/* navbar */}
       <GameNavBar
         toggleSideBar={toggleSideBar}
