@@ -1,4 +1,10 @@
 [{
+        "name": "New",
+        "description": "Join The Game",
+        "requirement": "Join The Game",
+        "effect": "+20 coins"
+    },
+    {
         "name": "unstoppable (I, II, III)",
         "description": "win 5 ranked game streak",
         "requirement": "win 5 ranked game",
@@ -18,8 +24,8 @@
     },
     {
         "name": "Cold-Blooded",
-        "description": "win 30 game streak against the same enemie",
-        "requirement": "win 30 game streak against the same enemie",
+        "description": "win 30 game streak against the same enemy",
+        "requirement": "win 30 game streak against the same enemy",
         "effect": "+10 ball speed"
     },
     {

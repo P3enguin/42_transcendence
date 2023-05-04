@@ -24,6 +24,9 @@ import {
   isStrong,
 } from '@/components/profile/ValidationFuncs';
 
+import Error from '@/components/tools/Reply/Error';
+import Success from '@/components/tools/Reply/Success';
+
 interface propsData {
   firstname: string;
   lastname: string;
@@ -33,8 +36,8 @@ interface propsData {
 
 function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
   const [error, setError] = useState(false);
-  const [successPass, setSuccesPass] = useState(false);
-  const [successSave, setSuccess] = useState(false);
+  const [reply, setreply] = useState('');
+  const [succes, setSuccess] = useState(false);
 
   const [state, updateState] = useState([
     { valid: true, touched: false },
@@ -79,12 +82,14 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         credentials: 'include',
       });
       if (response.status == 201) {
-        setSuccesPass(true);
+        setreply('Password Changed !');
+        setSuccess(true);
         setTimeout(() => {
-          setSuccesPass(false);
+          setSuccess(false);
         }, 3000);
       } else if (response.status == 400) {
         const err = await response.json();
+        setreply('An Error has Occurred!');
         setError(true);
         setTimeout(() => {
           setError(false);
@@ -118,6 +123,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         credentials: 'include',
       });
       if (response.status == 201) {
+        setreply('Data has been Changed !');
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
@@ -126,10 +132,15 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         const err = await response.json();
         if (err.error === 'Nickname already exist') {
           const span = document.getElementById('nickspan');
-          const newArr = mutateArray(2,{ valid: false, touched: false },state);
+          const newArr = mutateArray(
+            2,
+            { valid: false, touched: false },
+            state,
+          );
           updateState(newArr);
           printError(span, err.error);
         } else {
+          setreply('An Error has Occurred!');
           setError(true);
           setTimeout(() => {
             setError(false);
@@ -186,10 +197,10 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     if (!touched) touched = true;
 
     span!.innerHTML = '';
-    
+
     newState = mutateArray(0, { valid: false, touched: touched }, newState);
     if (first_name === firstname)
-    newState = mutateArray(0, { valid: false, touched: false }, newState);
+      newState = mutateArray(0, { valid: false, touched: false }, newState);
     else if (isEmpty(first_name)) {
       printError(span, 'First name cannot be empty!');
     } else if (isTooLong(first_name)) {
@@ -197,7 +208,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     } else if (!isValidName(first_name)) {
       printError(span, 'first name contains forbidden characters!');
     } else {
-      newState = mutateArray(0,{ valid: true, touched: touched }, newState);
+      newState = mutateArray(0, { valid: true, touched: touched }, newState);
     }
     updateState(newState);
   }
@@ -246,7 +257,6 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       newState = mutateArray(2, { valid: true, touched: touched }, newState);
     }
     updateState(newState);
-
   }
 
   function validPassword(event: React.ChangeEvent<HTMLInputElement>) {
@@ -351,45 +361,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         />
       )}
       <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={` absolute  -mb-12 w-[300px] rounded
-              border border-red-400 bg-red-600 px-4 py-3 text-center`}
-          >
-            <strong id="err-profile" className="font-bold">
-              An Error has occurred!
-            </strong>
-          </motion.div>
-        )}
-        {successSave && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={` absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
-            px-4  py-3 text-center text-teal-900 shadow-md `}
-          >
-            <strong id="succ-profile" className="font-bold">
-              Updated Successfully!
-            </strong>
-          </motion.div>
-        )}
-        {successPass && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={` absolute -mb-12 w-[300px] rounded border border-teal-500 bg-lime-500
-            px-4  py-3 text-center text-teal-900 shadow-md `}
-          >
-            <strong id="succ-profile" className="font-bold">
-              Password Change Successfully
-            </strong>
-          </motion.div>
-        )}
+        {error && <Error reply={reply} />}
+        {succes && <Success reply={reply} />}
       </AnimatePresence>
       <div
         className="mt-[40px] flex h-[750px] w-11/12 flex-col
