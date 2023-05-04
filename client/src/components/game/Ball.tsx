@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ballProps {
   boardRef?: React.RefObject<HTMLDivElement>;
@@ -27,7 +27,6 @@ const Ball = ({ boardRef, position, ballRef }: ballProps) => {
   useEffect(() => {
     const resizeBall = () => {
       if (ballRef.current && boardRef && boardRef.current) {
-        console.log(boardRef.current?.offsetWidth);
         ballRef.current.style.width = boardRef.current?.offsetWidth / 35 + 'px';
         ballRef.current.style.height = ballRef.current.offsetWidth + 'px';
       }

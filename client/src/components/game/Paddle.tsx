@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface paddleProps {
   boardRef?: React.RefObject<HTMLDivElement>;
@@ -8,9 +8,10 @@ interface paddleProps {
 const Paddle = ({ boardRef, position }: paddleProps) => {
   const [paddleOffset, setPaddleOffset] = useState<number>(0);
   const [paddleX, setPaddleX] = useState<number>(0);
-  const paddleRef = React.useRef<HTMLDivElement>(null);
+  const [paddleY, setPaddleY] = useState<number>(0);
+  const paddleRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const resizePaddle = () => {
       if (paddleRef.current && boardRef && boardRef.current) {
         paddleRef.current.style.width =
@@ -19,6 +20,7 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
           paddleRef.current.offsetWidth / 5 + 'px';
         setPaddleOffset(paddleRef.current.offsetHeight / 1.5);
         setPaddleX((position.x * 100) / 700);
+        setPaddleY((position.y * 100) / 980);
       }
     };
     resizePaddle();
@@ -31,9 +33,8 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
   }, [boardRef?.current, position]);
 
   const paddleStyle = {
-    top: position.y === 1 ? paddleOffset : undefined,
-    bottom: position.y === -1 ? paddleOffset : undefined,
-    left: position.y === 1 ? 100 - paddleX + '%' : paddleX + '%',
+    top: paddleY + '%',
+    left: paddleX + '%',
   };
   return (
     <div
