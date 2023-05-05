@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { SideBarIcon, LogoutIcon, SearchBarIcon,NotificationIcon } from '../icons/Icons';
+import { SideBarIcon, SearchBarIcon, NotificationIcon } from '../icons/Icons';
+import { NotiAddFriend, NotiAccept } from './Notification';
 import { useRouter } from 'next/router';
 
 interface FunctionProps {
@@ -13,7 +14,7 @@ interface FunctionProps {
 }
 
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
-  const [notif,setNotif] = useState(false);
+  const [notif, setNotif] = useState(false);
   const router = useRouter();
 
   function handleSearch(event: React.FormEvent) {
@@ -71,7 +72,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
         </div>
         <form
           onSubmit={handleSearch}
-          className="flex sm:w-1/3  w-1/2 flex-row items-center justify-center lg:w-1/4 "
+          className="flex w-1/2  flex-row items-center justify-center sm:w-1/3 lg:w-1/4 "
         >
           <input
             type="search"
@@ -85,41 +86,67 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             </button>
           </label>
         </form>
-        <div className="sm:absolute relative right-12 flex">
+        <div className="relative right-12 flex sm:absolute">
           <button onClick={() => setNotif(!notif)}>
-            <NotificationIcon/>
+            <NotificationIcon />
           </button>
         </div>
       </div>
-    {notif && <div x-show="dropdownOpen" className="absolute top-[56px] right-12 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-50 w-[20rem]" >
+      {notif && (
+        <div
+          x-show="dropdownOpen"
+          className="absolute top-[56px] right-12 z-50 mt-2 w-[21rem] max-h-[400px] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
+        >
           <div className="py-2">
-              <a href="#" className="flex items-center px-4 py-3 border-b hover:bg-[#8fd4f6] -mx-2">
-                  <img className="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" alt="avatar"/>
-                  <p className="text-[#2F3C78] text-sm mx-2">
-                      <span className="font-bold">Sara Salah</span> replied on the <span className="font-bold text-blue-500" >Upload Image</span> artical . 2m
-                  </p>
-              </a>
-              <a href="#" className="flex items-center px-4 py-3 border-b hover:bg-[#8fd4f6] -mx-2">
-                  <img className="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80" alt="avatar"/>
-                  <p className="text-[#2F3C78] text-sm mx-2">
-                      <span className="font-bold">Slick Net</span> start following you . 45m
-                  </p>
-              </a>
-              <a href="#" className="flex items-center px-4 py-3 border-b hover:bg-[#8fd4f6] -mx-2">
-                  <img className="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1450297350677-623de575f31c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80" alt="avatar"/>
-                  <p className="text-[#2F3C78] text-sm mx-2">
-                      <span className="font-bold" >Jane Doe</span> Like Your reply on <span className="font-bold text-blue-500" >Test with TDD</span> artical . 1h
-                  </p>
-              </a>
-              <a href="#" className="flex items-center px-4 py-3 hover:bg-[#8fd4f6] -mx-2">
-                  <img className="h-8 w-8 rounded-full object-cover mx-1" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=398&q=80" alt="avatar"/>
-                  <p className="text-[#2F3C78] text-sm mx-2">
-                      <span className="font-bold" >Abigail Bennett</span> start following you . 3h
-                  </p>
-              </a>
+            <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAccept
+              username="Pobri stito"
+              image="https://randomuser.me/api/portraits/men/50.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/10.jpg"
+            />
           </div>
-          <a href="#" className="block bg-gray-800 text-white text-center font-bold py-2">See all notifications</a>
-      </div>}
+          {/* <a
+            href="#"
+            className="block bg-gray-800 py-2 text-center font-bold text-white"
+          >
+            See all notifications
+          </a> */}
+        </div>
+      )}
     </div>
   );
 }
