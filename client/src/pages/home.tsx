@@ -3,18 +3,16 @@ import LiveGames from '@/components/home/LiveGames';
 import Leaderboard from '@/components/home/Leaderboard';
 import Layout from '@/components/layout/layout';
 import Head from 'next/head';
+import { LeaderBoard } from '@/interfaces/LeaderBoard';
+import { Rooms } from '@/interfaces/Rooms';
 
-interface Rooms {
-  channelId: number;
-  name: string;
-  Topic: string;
-  memberLimit: number;
-  memberCount: number;
-  stats: string;
-  avatar: string;
-}
-
-function HomePlayer({ rooms }: { rooms: Rooms[] }) {
+function HomePlayer({
+  rooms,
+  leaderBoard,
+}: {
+  rooms: Rooms[];
+  leaderBoard: LeaderBoard;
+}) {
   return (
     <>
       <Head>
@@ -24,7 +22,7 @@ function HomePlayer({ rooms }: { rooms: Rooms[] }) {
         <DiscoverChannels rooms={rooms} />
         <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap">
           <LiveGames />
-          <Leaderboard />
+          <Leaderboard leaderBoard={leaderBoard} />
         </div>
       </div>
     </>
@@ -34,19 +32,44 @@ function HomePlayer({ rooms }: { rooms: Rooms[] }) {
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/room/discover',
+    const roomsRes = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/discover',
       {
         headers: {
           Cookie: req.headers.cookie,
         },
       },
     );
-    const data = await res.json();
+    const roomsData = await roomsRes.json();
+
+    const levelLeaderBoardRes = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/leaderboard/level',
+      {
+        headers: {
+          Cookie: req.headers.cookie,
+        },
+      },
+    );
+    const levelLeaderBoardData = await levelLeaderBoardRes.json();
+
+    const rankLeaderBoardRes = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/leaderboard/rank',
+      {
+        headers: {
+          Cookie: req.headers.cookie,
+        },
+      },
+    );
+    const rankLeaderBoardData = await rankLeaderBoardRes.json();
+
     return {
       // modify this to return anything you want before your page load
       props: {
-        rooms: data.rooms,
+        rooms: roomsData.rooms,
+        leaderBoard: {
+          level: levelLeaderBoardData,
+          rank: rankLeaderBoardData,
+        },
       },
     };
   }
