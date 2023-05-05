@@ -14,9 +14,14 @@ export class RoomService {
           name: true,
           Topic: true,
           memberLimit: true,
-          stats: true,
           avatar: true,
           member: true,
+        },
+        where: {
+          IsChannel: true,
+          NOT: {
+            stats: 'secret',
+          },
         },
       });
       rooms = rooms.map((room) => ({

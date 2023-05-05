@@ -1,15 +1,6 @@
 import Image from 'next/image';
 import ChannelHome from './ChannelHome';
-
-interface Rooms {
-  channelId: number;
-  name: string;
-  Topic: string;
-  memberLimit: number;
-  memberCount: number;
-  stats: string;
-  avatar: string;
-}
+import { Rooms } from '@/interfaces/Rooms';
 
 export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
   return (
