@@ -79,11 +79,11 @@ export default function NavBar({
                             {
                                   item.current && 
                             <motion.div
-                              initial={{ opacity: 0, x: '-50%' }}
-                              animate={{ opacity: 100, x: '0%' }}
+                              initial={{ opacity: 0, x: '-160%' }}
+                              animate={{ opacity: 100, x: '-110%' }}
                               transition={{ duration: 0.2 }}
-                              exit={{ opacity: 0 }}
-                              className='h-1/4 w-[5px] rounded-sm border border-[#0097E2]'
+                              exit={{opacity:0, x: '-160%' }}
+                              className='absolute h-[0px] w-[5px] rounded-sm border border-[#0097E2]'
                             ></motion.div>
                             }
                           </AnimatePresence>
