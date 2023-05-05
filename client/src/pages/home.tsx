@@ -33,7 +33,7 @@ export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
     const roomsRes = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/room/discover',
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/discover',
       {
         headers: {
           Cookie: req.headers.cookie,

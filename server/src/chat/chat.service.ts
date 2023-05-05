@@ -6,120 +6,135 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ChatService {
-    constructor(
-        private jwt:    JwtService,
-        private prisma: PrismaService,
-    ) {}
+  constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
+  // check if the receiver blocked, the player can send to anyone else
+  SendPrivMessage(friendId: string, message: string) {
+    return 'SendPrivMessage';
+  }
 
-    // check if the receiver blocked, the player can send to anyone else
-    SendPrivMessage(friendId: string, message: string)
-    {
-       return ('SendPrivMessage');
-    }
-    
-    SendPublicMessage(channelId: number, message: string)
-    {
-        return ('SendPublicMessage');
-    }
-    
-    GetPrivMessage(player: Player, friendId: any)
-    {
-        return ('7oet_d9Z');
-    }
-    
-    GetChannelMessage(channelId: number)
-    {
-        return ('GetChannelMessage');
-    }
-    
-    GetChatById(id: string) {
+  SendPublicMessage(channelId: number, message: string) {
+    return 'SendPublicMessage';
+  }
 
-    }
+  GetPrivMessage(player: Player, friendId: any) {
+    return '7oet_d9Z';
+  }
 
-    GetChat(player: Player) {
-            
-    }
+  GetChannelMessage(channelId: number) {
+    return 'GetChannelMessage';
+  }
 
-    async CreateRoom(room: any) {
-        const shortid = require('shortid');
-        const roomId  = shortid.generate();
-        const player = await this.prisma.player.findUnique({
-          where:{
-            nickname: room.creator,
-          },
-        });
-        console.log({room});
+  GetChatById(id: string) {}
+
+  GetChat(player: Player) {}
+
+  async CreateRoom(room: any) {
+    const shortid = require('shortid');
+    const roomId = shortid.generate();
+    const player = await this.prisma.player.findUnique({
+      where: {
+        nickname: room.creator,
+      },
+    });
+    console.log({ room });
+    try {
+      await this.prisma.room.create({
+        data: {
+          channelId: roomId,
+          name: room.name,
+          Topic: room.Topic,
+          Key: room.Key,
+          memberLimit: room.memberLimit,
+          stats: room.stats,
+          IsChannel: true,
+          adminId: player.id, // add null-check here
+        },
+      });
+      console.log('room created');
+      return roomId;
+    } catch (e) {
+      console.log('error while creating new room', e);
+      return 'no Room';
+    }
+  }
+
+  async CreatePrivateChat(room: any) {
+    const shortid = require('shortid');
+    const roomId = shortid.generate();
+    const name = room.player1 + room.creator;
+    const checkRoom = await this.prisma.room.findFirst({
+      where: {
+        name: name,
+      },
+    });
+    if (!checkRoom) {
+      console.log('new priv chat id', roomId);
+      const player = await this.prisma.player.findUnique({
+        where: {
+          nickname: room.creator,
+        },
+      }); //<<---- get room first check if name exist  and quit
+      if (player) {
         try {
           await this.prisma.room.create({
             data: {
               channelId: roomId,
-              name: room.name,
-              Topic: room.Topic,
+              name: name,
               Key: room.Key,
               memberLimit: room.memberLimit,
-              stats: room.stats,
-              IsChannel: true,
+              stats: 'private',
+              IsChannel: false,
               adminId: player.id, // add null-check here
-            },
-          });
-          console.log("room created");
-          return roomId; 
-        } catch(e) {
-          console.log("error while creating new room", e);
-          return "no Room";
-        }
-      }
-    async CreatePrivateChat(room: any) {
-        const shortid = require('shortid');
-        const roomId  = shortid.generate();
-        const name = room.player1+room.creator;
-        const checkRoom = await this.prisma.room.findFirst({
-          where:{
-            name: name,
-          }
-        });
-        if (!checkRoom)
-        {
-          console.log("new priv chat id",roomId);
-          const player = await this.prisma.player.findUnique({
-            where:{
-            nickname: room.creator,
-          },
-        }); //<<---- get room first check if name exist  and quit
-        if (player)
-        {
-          try {
-            await this.prisma.room.create({
-             data: {
-               channelId: roomId,
-                name: name,
-                Key: room.Key,
-                memberLimit: room.memberLimit,
-                stats: "private",
-                IsChannel: false,
-                adminId: player.id, // add null-check here
-                member: {
+              member: {
                 connect: [
                   { nickname: room.player1 },
                   { nickname: room.creator },
                 ],
-              }
+              },
             },
           });
-          console.log("room created");
-          return roomId; 
-        } catch(e) {
-          console.log("error while creating new room", e);
-          return "no Room";
+          console.log('room created');
+          return roomId;
+        } catch (e) {
+          console.log('error while creating new room', e);
+          return 'no Room';
         }
-        }else
-        return ("can't create room for undefined user")
-      }
-      return "Room already existe";
+      } else return "can't create room for undefined user";
     }
+    return 'Room already existe';
+  }
 
-  removeFromChat(nickname : string) {
-         return "removed From Chat";
+  removeFromChat(nickname: string) {
+    return 'removed From Chat';
+  }
+
+  async getDiscoveredRooms(res: Response) {
+    try {
+      let rooms = await this.prisma.room.findMany({
+        select: {
+          channelId: true,
+          name: true,
+          Topic: true,
+          memberLimit: true,
+          avatar: true,
+          member: true,
+        },
+        where: {
+          IsChannel: true,
+          NOT: {
+            stats: 'secret',
+          },
+        },
+      });
+      rooms = rooms.map((room) => ({
+        ...room,
+        memberCount: room.member.length,
+      }));
+      return res.status(200).json({ rooms });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: err });
+    }
   }
 }
