@@ -1,11 +1,10 @@
-import { Fragment, useState } from "react";
-import { ReactComponentElement } from "react";
-import Link from "next/link";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import Image from "next/image";
+import { Fragment, useState } from 'react';
+import { ReactComponentElement } from 'react';
+import Link from 'next/link';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface pageState {
   name: string;
@@ -14,7 +13,7 @@ interface pageState {
 }
 
 function classNames(...classes: Array<string>) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function NavBar({
@@ -70,12 +69,26 @@ export default function NavBar({
                         onClick={(e) => handleClick(e, index)}
                         className={classNames(
                           item.current
-                            ? " text-[#0097E2]"
-                            : "text-white hover:text-[#656565] ease-in duration-200",
-                          "px-3 py-2 rounded-md text-md font-bold"
+                            ? ' text-[#0097E2]'
+                            : 'text-white duration-200 ease-in hover:text-[#656565]',
+                          'text-md rounded-md px-3 py-2 font-bold',
                         )}
                       >
-                        {item.name}
+                        <div className="flex flex-row items-center gap-0.5">
+                          <AnimatePresence>
+                            {
+                                  item.current && 
+                            <motion.div
+                              initial={{ opacity: 0, x: '-50%' }}
+                              animate={{ opacity: 100, x: '0%' }}
+                              transition={{ duration: 0.2 }}
+                              exit={{ opacity: 0 }}
+                              className='h-1/4 w-[5px] rounded-sm border border-[#0097E2]'
+                            ></motion.div>
+                            }
+                          </AnimatePresence>
+                          {item.name}
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -102,9 +115,9 @@ export default function NavBar({
                   onClick={(e) => handleClick(e, index)}
                   className={classNames(
                     item.current
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                    "block px-3 py-2 rounded-md text-base font-medium"
+                      ? 'bg-gray-900 text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                    'block rounded-md px-3 py-2 text-base font-medium',
                   )}
                 >
                   {item.name}

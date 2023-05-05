@@ -39,15 +39,12 @@ function NotiAccept({ username, image }: NotifInterface) {
       </div>
       <div className="w-4/5 text-sm text-[#2F3C78]">
         <div>
-          <span className="font-bold ">{username}{" "}</span>
-          <span>
-            accepted your{' '}
-            <span className="font-bold text-blue-500">Friend Request!</span>
-          </span>
+          <span className="font-bold ">{username} </span>
+          <span>accepted your friend request!</span>
         </div>
       </div>
     </div>
   );
 }
 
-export { NotiAddFriend,NotiAccept };
+export { NotiAddFriend, NotiAccept };

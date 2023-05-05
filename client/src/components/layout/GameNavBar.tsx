@@ -100,7 +100,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
           <div className="py-2">
             <NotiAddFriend
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/11.jpg"
             />
              <NotiAccept
               username="Pobri stito"
@@ -108,35 +108,35 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             />
              <NotiAddFriend
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/12.jpg"
             />
              <NotiAccept
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/13.jpg"
             />
              <NotiAddFriend
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/15.jpg"
             />
              <NotiAccept
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/14.jpg"
             />
              <NotiAddFriend
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/15.jpg"
             />
              <NotiAccept
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/17.jpg"
             />
              <NotiAddFriend
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/20.jpg"
             />
              <NotiAccept
               username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/10.jpg"
+              image="https://randomuser.me/api/portraits/men/21.jpg"
             />
           </div>
           {/* <a
