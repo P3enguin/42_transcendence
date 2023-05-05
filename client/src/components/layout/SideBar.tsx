@@ -9,6 +9,7 @@ import {
   ChatIcon,
   GameIcon,
   ProfileIcon,
+  ShopIcon,
   SettingsIcon,
 } from '../icons/Icons';
 import { ReactNode } from 'react';
@@ -78,6 +79,14 @@ function SideBar({
             >
               <ProfileIcon svgIndex={svgIndex} />
             </Link>
+
+            <Link
+              className="mt-2 flex h-12 w-12 items-center justify-center"
+              href="/shop"
+              shallow
+            >
+              <ShopIcon svgIndex={svgIndex} />
+            </Link>
           </div>
 
           <div className="flex flex-col items-center gap-10">
@@ -87,21 +96,14 @@ function SideBar({
                 <LogoutIcon />
               </button>
             </div>
-            <div className="flex flex-col items-center gap-10">
-              <div className="flex">
-                <button onClick={handleLogOut}>
-                  <LogoutIcon />
-                </button>
-              </div>
-              <div className="mb-3 ">
-                <Link
-                  className="mt-2 flex h-12 w-12 items-center justify-center"
-                  href="/settings"
-                  shallow
-                >
-                  <SettingsIcon svgIndex={svgIndex} />
-                </Link>
-              </div>
+            <div className="mb-3">
+              <Link
+                className="mt-2 flex h-12 w-12 items-center justify-center"
+                href="/settings"
+                shallow
+              >
+                <SettingsIcon svgIndex={svgIndex} />
+              </Link>
             </div>
           </div>
         </motion.aside>
@@ -124,7 +126,7 @@ function SideBar({
           >
             <div className="flex h-auto flex-col items-center justify-around gap-10">
               <Link
-                className="mt-2 flex h-12 w-12 items-center justify-center "
+                className="mt-2 flex h-12 w-12 items-center justify-center"
                 href="/home"
                 shallow
               >
@@ -132,7 +134,7 @@ function SideBar({
               </Link>
 
               <Link
-                className="mt-2 flex h-12 w-12 items-center justify-center "
+                className="mt-2 flex h-12 w-12 items-center justify-center"
                 href="/chat"
                 shallow
               >
@@ -140,7 +142,7 @@ function SideBar({
               </Link>
 
               <Link
-                className="mt-2 flex h-12 w-12 items-center justify-center "
+                className="mt-2 flex h-12 w-12 items-center justify-center"
                 href="/game"
                 shallow
               >
@@ -148,7 +150,7 @@ function SideBar({
               </Link>
 
               <Link
-                className="mt-2 flex h-12 w-12 items-center justify-center "
+                className="mt-2 flex h-12 w-12 items-center justify-center"
                 href="/profile"
                 shallow
               >
@@ -162,7 +164,7 @@ function SideBar({
                   <LogoutIcon />
                 </button>
               </div>
-              <div className="mb-3 ">
+              <div className="mb-3">
                 <Link
                   className="mt-2 flex h-12 w-12 items-center justify-center"
                   href="/settings"
