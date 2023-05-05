@@ -12,7 +12,7 @@ import {
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { AuthDto, singDTO } from './dto';
+import { AuthDto, signDTO } from './dto';
 import { JwtSessionGuard, JwtGuard, Jwt2FAGuard } from 'src/auth/guard';
 import { playerStrat, Token2FAQuery } from './Interfaces/Interface';
 
@@ -39,7 +39,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  signin(@Res() res: Response, @Body() dto: singDTO) {
+  signin(@Res() res: Response, @Body() dto: signDTO) {
     return this.authService.signin(res, dto);
   }
 

@@ -1,8 +1,10 @@
 import { AnimatePresence, LazyMotion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { SideBarIcon, LogoutIcon, SearchBarIcon } from '../icons/Icons';
+import { SideBarIcon, SearchBarIcon, NotificationIcon } from '../icons/Icons';
+import { NotiAddFriend, NotiAccept } from './Notification';
 import { useRouter } from 'next/router';
 
 interface FunctionProps {
@@ -12,6 +14,7 @@ interface FunctionProps {
 }
 
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
+  const [notif, setNotif] = useState(false);
   const router = useRouter();
 
   function handleSearch(event: React.FormEvent) {
@@ -69,7 +72,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
         </div>
         <form
           onSubmit={handleSearch}
-          className="flex w-1/2 flex-row items-center justify-center sm:w-1/4 "
+          className="flex w-1/2  flex-row items-center justify-center sm:w-1/3 lg:w-1/4 "
         >
           <input
             type="search"
@@ -83,12 +86,67 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             </button>
           </label>
         </form>
-        <div className="absolute right-12 hidden sm:flex">
-          <button onClick={handleLogOut}>
-            <LogoutIcon />
+        <div className="relative right-12 flex sm:absolute">
+          <button onClick={() => setNotif(!notif)}>
+            <NotificationIcon />
           </button>
         </div>
       </div>
+      {notif && (
+        <div
+          x-show="dropdownOpen"
+          className="absolute top-[56px] right-12 z-50 mt-2 w-[21rem] max-h-[400px] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
+        >
+          <div className="py-2">
+            <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/11.jpg"
+            />
+             <NotiAccept
+              username="Pobri stito"
+              image="https://randomuser.me/api/portraits/men/50.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/12.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/13.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/15.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/14.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/15.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/17.jpg"
+            />
+             <NotiAddFriend
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/20.jpg"
+            />
+             <NotiAccept
+              username="Ezio Auditori"
+              image="https://randomuser.me/api/portraits/men/21.jpg"
+            />
+          </div>
+          {/* <a
+            href="#"
+            className="block bg-gray-800 py-2 text-center font-bold text-white"
+          >
+            See all notifications
+          </a> */}
+        </div>
+      )}
     </div>
   );
 }

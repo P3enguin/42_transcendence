@@ -96,14 +96,21 @@ function SideBar({
                 <LogoutIcon />
               </button>
             </div>
-            <div className="mb-3">
-              <Link
-                className="mt-2 flex h-12 w-12 items-center justify-center"
-                href="/settings"
-                shallow
-              >
-                <SettingsIcon svgIndex={svgIndex} />
-              </Link>
+            <div className="flex flex-col items-center gap-10">
+              <div className="flex">
+                <button onClick={handleLogOut}>
+                  <LogoutIcon />
+                </button>
+              </div>
+              <div className="mb-3 ">
+                <Link
+                  className="mt-2 flex h-12 w-12 items-center justify-center"
+                  href="/settings"
+                  shallow
+                >
+                  <SettingsIcon svgIndex={svgIndex} />
+                </Link>
+              </div>
             </div>
           </div>
         </motion.aside>
