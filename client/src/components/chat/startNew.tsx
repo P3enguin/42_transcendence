@@ -60,7 +60,6 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
         creator,
       };
 
-      console.log("Creating Room", room);
     const res = await axios.post(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
       room,

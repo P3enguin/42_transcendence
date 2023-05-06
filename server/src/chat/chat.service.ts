@@ -59,7 +59,12 @@ export class ChatService {
               memberLimit: room.memberLimit,
               stats: room.stats,
               IsChannel: true,
-              adminId: player.id, // add null-check here
+              adminId: player.id,
+              member: {
+                connect: [
+                  { id: player.id },
+                ],
+              } // add null-check here
             },
           });
           console.log("room created");
@@ -73,6 +78,13 @@ export class ChatService {
         const shortid = require('shortid');
         const roomId  = shortid.generate();
         const name = room.player1+room.creator;
+        const receiver = await this.prisma.player.findUnique({
+          where:{
+            nickname:name,
+          },
+        });
+        if (!receiver)
+          throw "Player dosn't exist";
         const checkRoom = await this.prisma.room.findFirst({
           where:{
             name: name,
@@ -95,7 +107,7 @@ export class ChatService {
                 name: name,
                 Key: room.Key,
                 memberLimit: room.memberLimit,
-                stats: "private",
+                stats: "secret",
                 IsChannel: false,
                 adminId: player.id, // add null-check here
                 member: {
@@ -115,7 +127,7 @@ export class ChatService {
         }else
         return ("can't create room for undefined user")
       }
-      return "Room already existe";
+      return "Room already exist";
     }
 
   removeFromChat(nickname : string) {

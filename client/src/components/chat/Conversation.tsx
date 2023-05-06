@@ -7,23 +7,21 @@ let socket: any;
 
 function Conversation ({nickname, avatar}: any) {
 
-  const [message, setMessage] = useState("");
-  const [username, setUsername] = useState("");
+  // const [message, setMessage] = useState("");
+  // const [username, setUsername] = useState("");
 
-  useEffect(() => {
-    socketInitializer();
+  // useEffect(() => {
+  //   socketInitializer();
 
-    return () => {
-      socket.disconnect();
-    };
-    }, []);
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  //   }, []);
 
-    async function socketInitializer() {
-      await fetch
-    }
-  };
+  //   async function socketInitializer() {
+  //     await fetch
+  //   }
 
-  console.log()
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/" + avatar;
     return(
       <div className="flex w-full h-full justify-between flex-col ">
