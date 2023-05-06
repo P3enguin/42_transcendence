@@ -24,7 +24,11 @@ export default function Leaderboard({
             <li key={i} className="p-2">
               <LeaderboardPlayerRank
                 nickname={player.player.nickname}
-                avatar={'/' + player.player.avatar}
+                avatar={
+                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  '/avatars/' +
+                  player.player.avatar
+                }
                 rankNo={i + 1}
                 rankName={player.rank[0].ranks.avatar}
                 rankColor="#8A19D4"
