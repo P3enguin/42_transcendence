@@ -1,15 +1,14 @@
 import {
-  ConnectedSocket,
-  MessageBody,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
+  OnGatewayInit,
   WebSocketServer,
-} from '@nestjs/websockets';
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+ } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { Server, Socket } from 'socket.io';
-import { Body, LoggerService, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Socket, Server } from 'socket.io';
+import { Body } from '@nestjs/common';
 import {
   ClientToServerEvents,
   InterServerEvents,
@@ -31,46 +30,30 @@ export interface LogPlayer extends Player {
   },
 })
 
-
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
-  server: Server<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >;
-  players = new Map<string, string>;
-
-  constructor(private chatService: ChatService,
-              private jwt: JwtGuard) 
-              {}
-  async handleConnection(
-    @ConnectedSocket() client: Socket,
-    @Body() data: SocketData,
-  ) {
-    const player = (await this.jwt.verifyToken(
-      client.handshake.auth.token,
-    )) as LogPlayer;
-    player.socketId = client.id;
-    this.players.set(player.nickname ,client.id);
-    console.log('client connected:', client.id, player.nickname);
-    this.server.to(client.id).emit('connected', 'welcome to the Chat Server !');
-  }
-  async handleDisconnect(client: Socket) {
-    const player = (await this.jwt.verifyToken(
-      client.handshake.auth.token,
-    )) as LogPlayer;
-    // this.chatService.removeFromChat(player.nickname);
-  }
-
-  @SubscribeMessage('message')
-  handleMessage(
-    @GetPlayer('nickname') nickname: string,
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: any,
-  ): string {
-      this.server.to(this.players.get(nickname)).emit('message', "received successfully");
-    return 'received !';
-  }
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+ constructor(private chatservice: ChatService) {}
+ 
+ @WebSocketServer() server: Server;
+ 
+ @SubscribeMessage('sendMessage')
+ async handleSendMessage(client: Socket, payload: string): Promise<void> {
+   await this.chatservice.SendPrivMessage(1, payload);
+   this.server.emit('recMessage', payload);
+ }
+ 
+ afterInit(server: Server) {
+   console.log(server);
+   
+ }
+ 
+ handleDisconnect(client: Socket) {
+   console.log(`Disconnected: ${client.id}`);
+   
+ }
+ 
+ handleConnection(client: Socket, ...args: any[]) {
+   console.log(`Connected ${client.id}`);
+   
+ }
 }

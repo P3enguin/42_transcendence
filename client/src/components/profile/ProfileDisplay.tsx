@@ -19,6 +19,7 @@ interface profileProps {
   exp: number;
   MaxExp: number;
   userProfile: boolean;
+  request?:string;
 }
 
 function ProfileDisplay({
@@ -31,6 +32,7 @@ function ProfileDisplay({
   exp,
   MaxExp,
   userProfile,
+  request,
 }: profileProps) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -39,10 +41,10 @@ function ProfileDisplay({
   async function SendFriendRequest(event: React.MouseEvent) {
     event.preventDefault();
     const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/AddFriend',
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/addRequest',
       {
-        method: 'PATCH',
-        body: JSON.stringify({ friend: nickname }),
+        method: 'POST',
+        body: JSON.stringify({ receiver: nickname }),
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
       },
@@ -249,7 +251,7 @@ function ProfileDisplay({
                   focus:outline-none focus:ring-black xl:flex"
                   />
                 </>
-              ) : (
+              ) :(
                 <>
                   <div className="flex flex-col gap-[43px] ">
                     <span className="text-[7px] text-gray-400 ">

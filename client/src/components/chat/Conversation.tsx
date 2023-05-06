@@ -1,8 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
 import Image from 'next/image';
 import { SendIcon, SettingIcon } from "../icons/Icons";
 
+let socket: any;
+
 function Conversation ({nickname, avatar}: any) {
+
+  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    socketInitializer();
+
+    return () => {
+      socket.disconnect();
+    };
+    }, []);
+
+    async function socketInitializer() {
+      await fetch
+    }
+  };
+
   console.log()
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/" + avatar;
     return(

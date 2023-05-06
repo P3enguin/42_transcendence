@@ -47,13 +47,15 @@ export class PlayerController {
 
   @Get('data')
   getData(
-    @Req() req: Request,
+    @GetPlayer() player: any,
     @Query() query: queryParam,
     @Res() res: Response,
   ) {
-    if (query.nickname)
-      return this.playerService.getDataNickname(query.nickname as string, res);
-    else return this.playerService.getDataID(req.body.user.id as number, res);
+    if (query.nickname) {
+      if (player.nickname === query.nickname)
+        return res.status(200).json({ IsThePlayer: true });
+      return this.playerService.getDataNickname(player.id,query.nickname as string, res);
+    } else return this.playerService.getDataID(player.id as number, res);
   }
 
   @Patch('data')
@@ -84,10 +86,25 @@ export class PlayerController {
 
   //------------------------------{ Friend }----------------------------------
 
-  @Patch('AddFriend')
-  AddFriend(@GetPlayer() player, @Req() req: Request) {
-    console.log(req.body)
-    return this.playerService.AddFriend(player, req.body.friend);
+  @Post('addRequest')
+  AddRequest(@GetPlayer() player, @Req() req: Request, @Res() res: Response) {
+    // console.log("request received from ",req.body.);
+    // console.log(player);
+    this.playerService.AddRequest(player, req.body.receiver, res);
+  }
+
+  @Patch('AcceptFriend')
+  AcceptFriend(@GetPlayer() player, @Req() req: Request, @Res() res: Response) {
+    return this.playerService.AcceptFriend(
+      player,
+      req.body.friend,
+      req.body.requestId,
+    );
+  }
+
+  @Patch('rejectRequest')
+  rejectRequest(@GetPlayer() player) {
+    return this.playerService.rejectRequest();
   }
 
   @Get('friends')
@@ -98,6 +115,7 @@ export class PlayerController {
   ) {
     return this.playerService.GetFriends(req, res, query.nickname);
   }
+
   @Patch('block')
   BlockFriend(@Req() req: Request, friendId: number) {
     return this.playerService.BlockFriend(req, 2);
@@ -169,6 +187,6 @@ export class PlayerController {
 
   @Get('search')
   getDataSearch(@Res() res: Response, @Query() query: querySearchParam) {
-    return this.playerService.getDataSearch(res,query.search)
+    return this.playerService.getDataSearch(res, query.search);
   }
 }

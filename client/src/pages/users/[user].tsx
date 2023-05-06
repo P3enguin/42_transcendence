@@ -20,6 +20,7 @@ interface player {
   wallpaper: string;
   joinDate: string;
   exist?: boolean;
+  request:string;
 }
 
 function UserProfile({
@@ -31,6 +32,7 @@ function UserProfile({
   wallpaper,
   joinDate,
   exist,
+  request,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const list = ['hh', 'hh2', 'hh3'];
@@ -58,8 +60,9 @@ function UserProfile({
             exp={1800}
             MaxExp={2500}
             userProfile={false}
+            request={request}
           />
-          <ProfileStats  nickname={nickname}  userProfile={false} />
+          <ProfileStats nickname={nickname} userProfile={false} />
         </div>
       </>
     );
@@ -80,7 +83,15 @@ export async function getServerSideProps({ params, req }: any) {
       },
     );
     const data = await res.json();
-    if (!data.player)
+    console.log(data);
+    if (data.IsThePlayer) {
+      return {
+        redirect: {
+          destination: '/profile',
+          permanent: true,
+        },
+      };
+    } else if (!data.player)
       return {
         props: {
           exist: false,
@@ -105,6 +116,7 @@ export async function getServerSideProps({ params, req }: any) {
         wallpaper: data.player.wallpaper,
         joinDate: date,
         exist: true,
+        request:data.request.status,
       },
     };
   }

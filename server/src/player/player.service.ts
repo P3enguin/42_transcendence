@@ -13,7 +13,7 @@ import * as fs from 'fs';
 export class PlayerService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  async getDataNickname(nickname: string, res: Response) {
+  async getDataNickname(senderID:number,nickname: string, res: Response) {
     try {
       const player = await this.prisma.player.findUnique({
         where: {
@@ -30,7 +30,18 @@ export class PlayerService {
           joinAt: true,
         },
       });
-      return res.status(200).json({ player });
+
+      const request = await this.prisma.request.findFirst({
+        where: {
+          toPlayerId: player.id,
+          fromPlayerId: senderID,
+        },
+        select : {
+          status : true,
+        }
+      });
+
+      return res.status(200).json({ player,request});
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -56,8 +67,46 @@ export class PlayerService {
   }
   //-----------------------------------{ Add a friend }-----------------------------
 
-  async AddFriend(player: Player, nickname: string) {
-    console.log("nickname: " + player.nickname);
+  async rejectRequest() {}
+
+  async AddRequest(player: Player, receiver: string, res: Response) {
+    const shortid = require('shortid');
+    const reqId = shortid.generate();
+    const receiverId = await this.prisma.player.findUnique({
+      where: {
+        nickname: receiver,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!receiverId) throw new Error('Nickname Not Found');
+    try {
+      const existingRequest = await this.prisma.request.findFirst({
+        where: {
+          toPlayerId: receiverId.id,
+          fromPlayerId: player.id,
+        },
+      });
+      if (existingRequest) throw new Error('Request already sent');
+
+      const request = await this.prisma.request.create({
+        data: {
+          id: reqId,
+          fromPlayerId: player.id,
+          toPlayerId: receiverId.id,
+        },
+      });
+      return res.json({ message: 'Success' });
+    } catch (err) {
+      if (err instanceof Error)
+        return res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: 'An Error has Occured' });
+    }
+  }
+
+  async AcceptFriend(player: Player, nickname: string, requestId: string) {
+    console.log('nickname: ' + player.nickname);
     const check_friend = await this.prisma.player.findUnique({
       where: {
         id: player.id,
@@ -103,8 +152,11 @@ export class PlayerService {
           },
         },
       });
-
-      console.log('Friend added !', nickname);
+      await this.prisma.request.delete({
+        where: {
+          id: requestId,
+        },
+      });
       return 'Friend added successfully';
     } else {
       console.log(nickname, 'exist !');
@@ -393,25 +445,23 @@ export class PlayerService {
   }
 
   //----------------------------------{Search}-----------------------------------
-  async getDataSearch( res: Response, searchParam : string) {
-    // Only fetching Users for the moment 
+  async getDataSearch(res: Response, searchParam: string) {
+    // Only fetching Users for the moment
     try {
       const data = await this.prisma.player.findMany({
-        where : {
+        where: {
           nickname: {
             contains: searchParam,
-          }
+          },
         },
-        select : {
-          nickname : true,
-          avatar : true,
-        }
-      })
-      return res.status(200).json({players : data});
-    }catch (error) {
-      return res.status(400).json({ error : "An Error has occurred"});
+        select: {
+          nickname: true,
+          avatar: true,
+        },
+      });
+      return res.status(200).json({ players: data });
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occurred' });
     }
   }
-
-
 }
