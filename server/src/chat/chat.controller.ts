@@ -1,11 +1,22 @@
-import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetPlayer } from 'src/auth/decorator';
 import { Request, Response } from 'express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
+import { JoinChannelDto } from './dto';
 
-// @UseGuards(JwtGuard)
+@UseGuards(JwtGuard)
 @Controller('chat')
 export class ChatController {
   constructor(private chatService: ChatService) {}
@@ -54,6 +65,37 @@ export class ChatController {
     const room = req.body;
     const roomId = this.chatService.CreatePrivateChat(room);
     res.status(200).json(roomId);
+  }
+
+  @Post('join')
+  async joinChannel(
+    @GetPlayer() player: Player,
+    @Body() joinChannelDto: JoinChannelDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const channel = await this.chatService.joinChannel(
+        player,
+        joinChannelDto,
+      );
+      res.status(200).json(channel);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  @Delete('leave/:id')
+  async leaveChannel(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.chatService.leaveChannel(player, channelId);
+      res.status(200).json({ message: 'Successfully left the room' });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   }
 
   @Get('discover')
