@@ -23,7 +23,11 @@ export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
         {rooms.map((room) => (
           <li key={room.name} className="p-2">
             <ChannelHome
-              icon={'/' + room.avatar}
+              avatar={
+                process.env.NEXT_PUBLIC_BACKEND_HOST +
+                '/rooms/' +
+                room.avatar
+              }
               name={room.name}
               memberCount={room.memberCount}
               channelLink={`/chat/${room.channelId}`}
