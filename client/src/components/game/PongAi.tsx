@@ -43,7 +43,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
 
   const PlayAudio = (audio: React.RefObject<HTMLAudioElement>) => {
     if (audio.current) {
-      audio.current.play().catch(() => { });
+      audio.current.play().catch(() => {});
     }
   };
 
@@ -53,6 +53,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
       const mousePosition =
         (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth -
         PADDLE_WIDTH / 2;
+      if (mousePosition < 0 || mousePosition > 700 - PADDLE_WIDTH) return;
       setPaddle2Position((prev) => ({ x: mousePosition, y: prev.y }));
     }
   };
@@ -64,6 +65,11 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         (700 * (e.touches[0].clientX - rec.left)) /
           boardRef.current.offsetWidth -
         PADDLE_WIDTH / 2;
+      if (
+        touchPosition < 0 + PADDLE_WIDTH / 2 ||
+        touchPosition > 700 - PADDLE_WIDTH / 2
+      )
+        return;
       setPaddle2Position((prev) => ({ x: touchPosition, y: prev.y }));
     }
   };
@@ -132,7 +138,6 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
         ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
       ) {
-        // com.y += ((ball.y - (com.y + com.height/2)))*0.1;
         setPaddle1Position((prev) => ({
           x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
           y: prev.y,
@@ -164,7 +169,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
       checkWallCollision();
       checkPaddleCollision();
       chaseBall();
-    }, 1000 / 100);
+    }, 1000 / 150);
     return () => {
       clearInterval(interval);
     };

@@ -36,7 +36,7 @@ function MatchData({
              status ? 'from-[#01fd91a8]' : 'from-[#ff0d3ea8]'
            } to-[#2C3B7C] p-2`}
     >
-      <div className="flex w-[45%] items-center gap-[13px]">
+      <div className="flex lg:w-[45%] w-[40%] items-center gap-[13px]">
         <img
           className="rounded-full bg-[#8bd9ffb3]"
           src={P1Avatar}
@@ -46,14 +46,14 @@ function MatchData({
         />
         <div className="truncate text-sm font-semibold">{player1}</div>
       </div>
-      <div className="flex w-[20%] flex-col items-center justify-center">
+      <div className="flex lg:w-[20%]  w-[10%] flex-col items-center justify-center">
         <div className="text-lg font-bold">{status ? 'WIN' : 'LOSS'}</div>
         <div className="text-sm font-semibold">{score}</div>
         <div className="text-xs font-semibold text-[#CFCFCF]">
           {date + 'min ago'}{' '}
         </div>
       </div>
-      <div className="flex w-[45%] items-center justify-end gap-[13px]">
+      <div className="flex lg:w-[45%]  w-[40%] items-center justify-end gap-[13px]">
         <div className="truncate text-sm font-semibold">{player2}</div>
         <img
           className="rounded-full bg-[#8bd9ffb3]"
