@@ -116,6 +116,9 @@ export class ChatService {
         Key: true,
         memberLimit: true,
         member: true,
+        bans: {
+          where: { playerId: player.id },
+        },
       },
     });
 
@@ -125,6 +128,10 @@ export class ChatService {
 
     if (channel.Key && key !== channel.Key) {
       throw new Error('Invalid key');
+    }
+
+    if (channel.bans.length > 0) {
+      throw new Error('You are banned from this room');
     }
 
     if (
