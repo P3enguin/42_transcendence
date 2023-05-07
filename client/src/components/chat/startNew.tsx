@@ -10,8 +10,6 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
 
   const [player1, setPlayer1] = useState('')
 
-  console.log("==> from server 2",nickname);
-  // function RoomForm() {
     const [name, setName] = useState('');
     const [topic, setTopic] = useState('');
     const [key, setKey] = useState('');
@@ -31,19 +29,20 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   
     async function createPrivateChat(event : React.FormEvent) {
       event.preventDefault();
+
       const chat = {
         player1,
         creator,
       }
-
       const res = await axios.post(
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/createPrivateChat',
         chat,
         {
+          withCredentials: true,
           headers: { Authorization: `Bearer ${token}` },
         }
       ).then( res =>{
-        console.log(res);
+        console.log(res.data);
         router.push(/chat/ + res.data);
       }).catch(err => console.log(err));
     }
@@ -59,17 +58,23 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
         isChannel,
         creator,
       };
-
-    const res = await axios.post(
+     console.log("creating Room");
+     const res = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
-      room,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(room),
+        credentials: 'include',
       }
-    ).then(res => {
-      console.log(res);
-      router.push(/chat/ + res.data)
-    }).catch(err => console.log(err));
+    );
+    if (res.status == 200) {
+      const roomId = await res.json()
+      router.push(`/chat/${roomId}`);
+    }
   }
 
     return (
@@ -112,7 +117,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                             setSecretEntered(false);
                            // disable secret radio button
                           }}
-                          // checked={stats === 'public'}
+                          checked={stats === 'public'}
                         />
                         <label htmlFor="normal" className="m-1 whitespace-nowrap">
                           public

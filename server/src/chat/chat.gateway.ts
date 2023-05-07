@@ -1,4 +1,6 @@
 import {
+  ConnectedSocket,
+  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   OnGatewayInit,
@@ -17,7 +19,7 @@ import {
 } from './inteface';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
-import { GetPlayer } from 'src/auth/decorator';
+import { GetPlayer } from 'src/game/decorator';
 
 export interface LogPlayer extends Player {
   socketId?: string;
@@ -32,28 +34,48 @@ export interface LogPlayer extends Player {
 
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
- constructor(private chatservice: ChatService) {}
+ constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
  
  @WebSocketServer() server: Server;
  
- @SubscribeMessage('sendMessage')
- async handleSendMessage(client: Socket, payload: string): Promise<void> {
-   await this.chatservice.SendPrivMessage(1, payload);
-   this.server.emit('recMessage', payload);
- }
  
  afterInit(server: Server) {
    console.log(server);
    
- }
- 
- handleDisconnect(client: Socket) {
+  }
+  
+  handleDisconnect(client: Socket) {
    console.log(`Disconnected: ${client.id}`);
    
- }
- 
- handleConnection(client: Socket, ...args: any[]) {
-   console.log(`Connected ${client.id}`);
-   
- }
+  }
+  
+  async handleConnection(client: Socket) {
+    const player = (await this.jwt.verifyToken(
+      client.handshake.auth.token,
+    )) as LogPlayer;
+    player.socketId = client.id;
+    client.handshake.query.user = JSON.stringify(player);
+    console.log('player connected:', player.nickname, player.socketId);
+    this.server.to(client.id).emit('connected', 'Hello world!');
+  }
+
+  
+  @SubscribeMessage('joinChat')
+  handleJoinChat(client: Socket, payload: any){
+    console.log(payload);
+    client.join(payload.id)
+  }
+
+  @SubscribeMessage('sendMessage')
+  handleSendMessage(
+    @GetPlayer() player: LogPlayer,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ){
+    // const data = Date.UTC()
+    console.log(data.id);
+    console.log(player);
+    this.server.to(data.id).emit('message', data.message);
+    // this.chatservice.SendPrivMessage(RoomId, payload.message, player.id)
+  }
 }

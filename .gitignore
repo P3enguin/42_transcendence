@@ -68,3 +68,5 @@ todo
 
 !**/uploads/avatars/default.png
 !**/uploads/wallpapers/wallpaper.png
+
+*.map

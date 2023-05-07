@@ -15,11 +15,11 @@ function RankingStat() {
             <Rank rank="Silver" width="w-[50px]" isVisible={true} />
             <Rank rank="Gold" width="w-[50px]" isVisible={true} />
             <Rank rank="Platinum" width="w-[55px]" isVisible={true} />
-            <Rank rank="Diamond" width="w-[55px]" isVisible={true} />
-            <Rank rank="Amethyst" width="w-[50px]" isVisible={true} />
-            <Rank rank="RedStar" width="w-[50px]" isVisible={true} />
-            <Rank rank="Master" width="w-[60px]" isVisible={true} />
-            <Rank rank="King" width="w-[70px]" isVisible={true} />
+            <Rank rank="Diamond" width="w-[55px]" isVisible={false} />
+            <Rank rank="Amethyst" width="w-[50px]" isVisible={false} />
+            <Rank rank="RedStar" width="w-[50px]" isVisible={false} />
+            <Rank rank="Master" width="w-[60px]" isVisible={false} />
+            <Rank rank="King" width="w-[70px]" isVisible={false} />
           </div>
         </div>
       </div>
@@ -34,22 +34,22 @@ function RankingStat() {
                     lg:w-[50%] lg:border-r-2"
         >
           <h1>STATS:</h1>
-          <div className="flex flex-row items-center">
-            <img src="/star.svg" alt="startIcon" className="w-[20px] "></img>
+          <div className="flex flex-row items-center justify-evenly  lg:w-2/3 w-1/2">
+            <img src="/star.svg" alt="startIcon" className="w-[20px]"></img>
             <p>Rank Point : 120RP</p>
           </div>
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center justify-evenly lg:w-2/3 w-1/2">
             <RankingIconFix />
-            <p>Current Rank : Gold</p>
+            <p>Current Rank : Platin</p>
           </div>
-          <div className="flex flex-row items-center">
+          <div className="flex flex-row items-center justify-evenly lg:w-2/3 w-1/2">
             <RankingIconFix />
             <p>Next Rank : Platinum</p>
           </div>
         </div>
         <div className="mt-9 flex  w-full flex-col items-center">
           <h1>RECENT RANK GAMES:</h1>
-          <div className="mt-4 flex h-[250px] w-full flex-col items-center  gap-5  overflow-auto ">
+          <div className="mt-4 flex h-[250px] w-full flex-col items-center  gap-5  overflow-auto">
             <MatchData
               player1={'hhmangol'}
               player2={'3absslam'}
@@ -61,7 +61,7 @@ function RankingStat() {
             />
             <MatchData
               player1={'hhmangol'}
-              player2={'3absslam'}
+              player2={'3absslam mol'}
               status={false}
               date={'5'}
               score={'12-1'}

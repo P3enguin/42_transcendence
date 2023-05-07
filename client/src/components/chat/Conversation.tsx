@@ -1,26 +1,70 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
-import Image from 'next/image';
 import { SendIcon, SettingIcon } from "../icons/Icons";
+import axios from "axios";
 
 let socket: any;
+function Conversation ({nickname, avatar, jwt_token, id}: any) {
 
-function Conversation ({nickname, avatar}: any) {
+  const [message, setMessage] = useState([]);
 
-  // const [message, setMessage] = useState("");
-  // const [username, setUsername] = useState("");
+  const clientsMap = new Map();
 
-  // useEffect(() => {
-  //   socketInitializer();
+  async function getRoomData()
+  {
+    const Channel = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat/getRoomInfo?roomId=${id}`,
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${jwt_token}` },
+        }
+      ).then(channel => {
+        console.log(channel.data);
+      }).catch(err => console.log(err));
 
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  //   }, []);
+  }
+  const sendMessage = () => {
+    if (socket)
+    {
+      console.log('Sending message')
+      socket.emit("sendMessage",{message:"hello there", id});
+    }
+  }
 
-  //   async function socketInitializer() {
-  //     await fetch
-  //   }
+
+ 
+  useEffect(() => {
+
+    
+
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
+      auth: {
+        token: jwt_token,
+      },
+    });
+    socket.on('connected', () => {
+      console.log(nickname," : connected to the socket with : ",socket.id)
+      clientsMap.set(socket.id, nickname);
+      socket.emit('joinChat',{id});
+        
+        socket.on('disconnect', () =>{
+        console.log(nickname," : disconnected");
+        clientsMap.delete(socket.id);
+      });
+      
+      socket.on('message', (message: any) => {
+        console.log(`Received message from ${message}`);
+        handelReceivedMessage(message);
+      });
+  });
+    
+    const handelReceivedMessage = (message: string) => {
+      
+    };
+    return (()=> {
+      socket.disconnect();
+    })
+  }, []);
 
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/" + avatar;
     return(
@@ -44,16 +88,17 @@ function Conversation ({nickname, avatar}: any) {
           <div className="flex flex-col w-[100%] h-[95%]
             items-center justify-end ">
               <div className="sm:flex flex-col relative  w-[90%] mb-2 items-center ">
-                  <input type="text" name="nickname" id="nickname"
+                  <input type="text" name="nickname" id="nickname "
                     className=" border-white w-[70%]
                     peer block w-full appearance-none rounded-full border-2 bg-transparent
                     py-2.5 px-3  text-xs sm:text-sm 
-                    text-white focus:border-blue-600 focus:outline-none focus:ring-0 overflow-hidden"
-                    placeholder="Message . . ." required/>
+                    text-white focus:border-blue-600 focus:outline-none focus:ring-0 overflow-hidden "
+                    placeholder="Message . . . " required/>
                     <button  type="submit" 
-                      className=" right-0 top-0 absolute  peer block appearance-none mt-2
-                      rounded-full bg-transparent py-1 sm:py-1.5 px-12 text-xs sm:text-sm w-[50%] sx:w-[100px]
-                      focus:outline-none focus:ring-0 bg-blue-500  m-0 /">
+                      className="absolute m-auto rounded-full top-[50%] translate-y-[-50%] right-[10px]"
+                      onClick={
+                        sendMessage
+                      }>
                             <SendIcon />
                     </button>
               </div>

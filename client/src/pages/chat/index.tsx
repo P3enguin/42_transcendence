@@ -28,35 +28,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
     setShowStartNew(true);
   };
 
-  useEffect(() => {
-    const clientsMap = new Map();
 
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
-      auth: {
-        token: jwt_token,
-      },
-    });
-    socket.on('connect', () => {
-      console.log(data.nickname," : connected to the socket with : ",socket.id)
-      clientsMap.set(socket.id, data.nickname);
-    });
-
-    socket.on('disconnect', () =>{
-      console.log(data.nickname," : disconnected");
-      clientsMap.delete(socket.id);
-    });
-  
-    socket.on('message', (message: any) => {
-      console.log(`Received message from ${message.username}: ${message.message}`);
-    });
-    
-    const handelReceivedMessage = (message: string) => {
-      const nickname = data.nickname;
-      console.log(`Sending message from ${nickname}: ${message}`);
-      socket.emit('message', {nickname, message});
-    };
-
-  }, []);
 
   return (
     <>
@@ -66,7 +38,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
             <Link href={`/chat`}>Chat Room </Link>
           </div>
           {
-            showRecentChat && <OnlineNow player={data.friends} />
+            showRecentChat && <OnlineNow player={data.nickname} />
           }
 
           <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
@@ -96,8 +68,7 @@ export async function getServerSideProps({ req }: any) {
     if (res.ok) {
       try {
         const data = await res.json();
-        console.log("player: ",data);
-        
+
         return {
           props: {
             data,

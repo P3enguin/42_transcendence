@@ -58,13 +58,11 @@ export class PlayerController {
 
   @Patch('data')
   changeData(@Req() req: Request, @Res() res: Response) {
-    console.log(req.body);
     return this.playerService.changeData(req.body, res);
   }
 
   @Patch('password')
   changePassword(@Req() req: Request, @Res() res: Response) {
-    console.log(req.body);
     return this.playerService.changePassowrd(req.body, res);
   }
 
@@ -101,9 +99,9 @@ export class PlayerController {
   GetFriends(
     @Req() req: Request,
     @Res() res: Response,
-    @Query() query: queryParam,
+    @GetPlayer() player: Player,
   ) {
-    return this.playerService.GetFriends(req, res, query.nickname);
+    return this.playerService.GetFriends(req, res, player.nickname);
   }
 
   @Patch('block')

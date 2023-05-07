@@ -121,6 +121,7 @@ export class PlayerService {
           },
         },
       });
+
       await this.prisma.player.update({
         where: {
           nickname: nickname,
@@ -133,11 +134,11 @@ export class PlayerService {
           },
         },
       });
-      await this.prisma.request.delete({
-        where :{
-          id: requestId,
-        },
-      });
+      // await this.prisma.request.delete({
+      //   where :{
+      //     id: requestId,
+      //   },
+      // });
       return 'Friend added successfully';
     } else {
       console.log(nickname, 'exist !');
@@ -155,7 +156,12 @@ export class PlayerService {
           nickname: nickname,
         },
         include: {
-          friends: true,
+          friends: {
+            select: {
+              nickname: true,
+              avatar: true,
+            }
+          },
         },
       });
       return res.status(200).json(FriendList.friends);

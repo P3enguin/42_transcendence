@@ -56,9 +56,6 @@ export class JwtGuard extends AuthGuard('jwt_token') {
         where: {
           id: decoded['id'],
           },
-          include: {
-            friends: true,
-          },
       });
       if (!user) throw new Error('Error: invalid token');
       delete user.password;
