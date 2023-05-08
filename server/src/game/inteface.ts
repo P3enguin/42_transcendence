@@ -8,7 +8,8 @@ export interface ServerToClientEvents {
   startGame: (data: any) => void;
   connected: (data: any) => void;
   update: (data: any) => void;
-  'move it': (data: any) => void;
+  moveBall: (data: any) => void;
+  movePaddle: (data: any) => void;
 }
 
 export interface ClientToServerEvents {

@@ -111,16 +111,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('move')
   handleMove(@GetPlayer() player: connectedPlayer, @MessageBody() data: any) {
     // console.log('move', data, player.gameId);
-    this.server.to(player.gameId).emit('move it', data);
+    this.gameService
+      .getGameById(player.gameId)
+      .movePaddle(data.position, data.x);
+    // this.server.to(player.gameId).emit('move it', data);
   }
-
 
   startGame(gameId: string) {
     const game: Game = this.gameService.getGameById(gameId);
     game.inteval = setInterval(() => {
-      const ballpos = game.updateGame();
-      // console.log('update', ballpos);
-      this.server.to(gameId).emit('update', ballpos);
+      const gamepos = game.updateGame();
+      console.log('update', gamepos);
+      this.server.to(gameId).emit('moveBall', gamepos.ball);
+      // this.server.to(gameId).emit('movePaddle', {
+      //   bottomPaddle: gamepos.bottomPaddle,
+      //   topPaddle: gamepos.topPaddle,
+      // });
     }, 1000/40);
   }
-} 
+}
