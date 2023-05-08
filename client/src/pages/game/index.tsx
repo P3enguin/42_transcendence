@@ -1,3 +1,6 @@
+import OnlineFriends from '@/components/game/OnlineFriends';
+import StartGame from '@/components/game/StartGame';
+import StartTraining from '@/components/game/StartTraining';
 import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
@@ -34,90 +37,12 @@ function Game({ jwt_token, data }: { jwt_token: string; data: [] }) {
       </Head>
 
       <div className="m-5 flex h-[70%]  min-h-[600px] flex-col rounded-2xl border border-neutral-300 sm:m-20 lg:min-w-[60%]">
-        <div className="flex h-2/5 flex-col p-5 md:h-1/2">
-          <h2 className="m-2 text-lg font-bold md:text-2xl">
-            INVITE YOUR ONLINE FRIENDS TO PLAY:
-          </h2>
-          <div className="scrollbar flex flex-wrap justify-center overflow-y-auto">
-            {data.map((user: any, index) => (
-              <div
-                key={index}
-                className="m-3 mb-10 flex w-[170px] flex-col items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 p-5"
-              >
-                <img
-                  className="h-12 w-12 rounded-full"
-                  src={user.avatar}
-                  alt="Avatar"
-                />
-                <h3>{user.nickname}</h3>
-                <button className="rounded-lg bg-[#0097E2]">
-                  <h3 className="p-1">play with</h3>
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        <OnlineFriends data={data} />
         <div className="m-4 min-h-[1px] w-1/2 self-center bg-neutral-300"></div>
         <div className="flex h-full w-full flex-col  md:h-1/3 md:flex-row">
-          <div className="flex h-full flex-col rounded-2xl pl-5 pr-5 sm:p-5 md:w-[50%] ">
-            <h2 className="m-2 text-lg font-bold md:text-2xl">START A GAME</h2>
-            <div className="felx m-auto mb-0 flex-row ">
-              <div className="mr-6 inline-flex items-center self-center whitespace-nowrap">
-                <input
-                  type="radio"
-                  id="normal"
-                  name="type"
-                  onChange={() => {
-                    setGametype('NORMAL');
-                    setIsButtonDisabled(false);
-                  }}
-                />
-                <label htmlFor="normal" className="m-1 whitespace-nowrap">
-                  Normal Game
-                </label>
-              </div>
-              <div className="inline-flex items-center self-center whitespace-nowrap">
-                <input
-                  type="radio"
-                  id="ranked"
-                  name="type"
-                  onChange={() => {
-                    setGametype('RANKED');
-                    setIsButtonDisabled(false);
-                  }}
-                />
-                <label htmlFor="ranked" className="m-1 whitespace-nowrap">
-                  Ranked Game
-                </label>
-              </div>
-            </div>
-            <button
-              className="m-auto mt-5 w-[200px] rounded-xl bg-[#0097E2] p-1"
-              onClick={(e) => {
-                e.preventDefault();
-                joinMatchmaking(gametype);
-              }}
-              disabled={isButtonDisabled}
-            >
-              JOIN MATCHMAKING
-            </button>
-          </div>
+          <StartGame />
           <div className=" min-h-[1px] w-1/2 min-w-[1px] self-center bg-neutral-300 md:h-2/3 md:w-[1px]"></div>
-          <div className="flex h-full flex-col rounded-2xl pl-5 pr-5 sm:p-5 md:w-[50%]">
-            <h2 className="m-2 text-lg font-bold md:text-2xl">
-              START TRAINING
-            </h2>
-            <div className="felx m-auto mb-0 flex-row self-center">
-              You don’t know how things are going? <br />
-              Don’t worry, you can always train and play with our AI.
-            </div>
-            <button
-              className="m-auto mt-1 w-[200px] rounded-xl bg-[#0097E2] p-1"
-              onClick={playWithAI}
-            >
-              PLAY WITH AI
-            </button>
-          </div>
+          <StartTraining />
         </div>
       </div>
     </>
