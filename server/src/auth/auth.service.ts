@@ -65,7 +65,7 @@ export class AuthService {
         res.status(200).cookie('jwt_2FA', jwt2FA, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 60 * 24, // expires after 15 min
+          maxAge: 1000 * 60 * 60 * 24, // expires after  24H
         });
         res.redirect(process.env.FRONTEND_HOST + '/verify');
       } else {
