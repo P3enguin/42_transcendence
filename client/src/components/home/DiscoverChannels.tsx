@@ -14,7 +14,7 @@ export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
         />
         <h1 className="pl-2 text-xl font-bold uppercase">Discover Channels:</h1>
       </div>
-      <ul className="flex overflow-x-auto whitespace-nowrap py-4 px-9">
+      <ul className="scrollbar mx-2 mb-2 flex overflow-x-auto whitespace-nowrap py-4 px-9">
         {rooms.length == 0 && (
           <div className="flex h-[90px] w-full items-center justify-center">
             <p>No channels</p>
@@ -24,9 +24,7 @@ export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
           <li key={room.name} className="p-2">
             <ChannelHome
               avatar={
-                process.env.NEXT_PUBLIC_BACKEND_HOST +
-                '/rooms/' +
-                room.avatar
+                process.env.NEXT_PUBLIC_BACKEND_HOST + '/rooms/' + room.avatar
               }
               name={room.name}
               memberCount={room.memberCount}
