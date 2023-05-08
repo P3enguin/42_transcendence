@@ -48,6 +48,7 @@ export class GameService {
   removePlayerFromGame(id: string, nickname: string) {
     const game = this.games.get(id);
     if (game) {
+      clearInterval(game.inteval);
       game.removePlayer(nickname);
       if (!game.players.length) {
         console.log('deleting game');

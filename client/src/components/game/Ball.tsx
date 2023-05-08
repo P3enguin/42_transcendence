@@ -1,33 +1,31 @@
 import { useEffect, useState } from 'react';
+import { Socket } from 'socket.io-client';
 
 interface ballProps {
   boardRef?: React.RefObject<HTMLDivElement>;
   ballRef: React.RefObject<HTMLDivElement>;
-  position: { x: number; y: number };
+  ws: Socket;
 }
 
-const Ball = ({ boardRef, position, ballRef }: ballProps) => {
+const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
+  const [Position, setPosition] = useState({ x: 400, y: 565 });
   const [ballX, setBallX] = useState<number>(0);
   const [ballY, setBallY] = useState<number>(0);
 
+  ws.on('update', ({ x, y }: { x: number; y: number }) => {
+    setPosition({ x, y });
+  });
+
   useEffect(() => {
-    // if (boardRef?.current) {
-      // if (type === '2player') {
-        setBallX((position.x * 100) / 700);
-        setBallY((position.y * 100) / 980);
-    //   }
-    //   else if (type === 'ai') {
-    //     setBallX((position.x * 100) / boardRef.current?.offsetWidth);
-    //     setBallY((position.y * 100) / boardRef.current?.offsetHeight);
-    //   }
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position]);
+    setBallX((Position.x * 100) / 700);
+    setBallY((Position.y * 100) / 980);
+  }, [Position]);
 
   useEffect(() => {
     const resizeBall = () => {
       if (ballRef.current && boardRef && boardRef.current) {
-        ballRef.current.style.width = boardRef.current?.offsetWidth / 35 + 'px';
+        ballRef.current.style.width =
+          boardRef.current?.offsetWidth / 8 / 5 + 'px';
         ballRef.current.style.height = ballRef.current.offsetWidth + 'px';
       }
     };

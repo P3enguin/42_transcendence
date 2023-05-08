@@ -7,6 +7,7 @@ export interface ServerToClientEvents {
   joined: (data: any) => void;
   startGame: (data: any) => void;
   connected: (data: any) => void;
+  update: (data: any) => void;
   'move it': (data: any) => void;
 }
 

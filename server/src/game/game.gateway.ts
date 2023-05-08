@@ -18,7 +18,7 @@ import {
 import { JwtGuard } from 'src/auth/guard';
 import { GetPlayer } from './decorator/get-player.decorator';
 import { Player } from '@prisma/client';
-import { Player as gamePlayer } from './interfaces';
+import { Game, Player as gamePlayer } from './interfaces';
 
 export interface connectedPlayer extends Player {
   socketId?: string;
@@ -85,6 +85,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           this.server.to(game.players[1].socketId).emit('startGame', {
             position: 'Top',
           });
+          setTimeout(() => {
+            this.startGame(game.id);
+          }, 1000);
         } else {
           game.addSpectator(
             new gamePlayer(player.id, player.nickname, client.id),
@@ -107,7 +110,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('move')
   handleMove(@GetPlayer() player: connectedPlayer, @MessageBody() data: any) {
-    console.log('move', data, player.gameId);
+    // console.log('move', data, player.gameId);
     this.server.to(player.gameId).emit('move it', data);
   }
-}
+
+
+  startGame(gameId: string) {
+    const game: Game = this.gameService.getGameById(gameId);
+    game.inteval = setInterval(() => {
+      const ballpos = game.updateGame();
+      // console.log('update', ballpos);
+      this.server.to(gameId).emit('update', ballpos);
+    }, 1000/40);
+  }
+} 

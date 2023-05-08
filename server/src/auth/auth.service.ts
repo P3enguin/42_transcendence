@@ -169,13 +169,13 @@ export class AuthService {
         if (player.Is2FAEnabled) {
           const secret = process.env.JWT_2FA;
           const jwt2FA = await this.jwt.signAsync(player, {
-            expiresIn: '15m',
+            expiresIn: '1d',
             secret: secret,
           });
           res.status(200).cookie('jwt_2FA', jwt2FA, {
             httpOnly: true,
             // secure: true,
-            maxAge: 1000 * 60 * 15, // expires after 15 min
+            maxAge: 1000 * 60 * 60 * 24, // expires after 24H
           });
           return res.json({ Is2FAenabled: true });
         } else {

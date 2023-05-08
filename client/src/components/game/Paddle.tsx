@@ -1,15 +1,39 @@
 import { useEffect, useState, useRef } from 'react';
+import { Socket } from 'socket.io-client';
 
 interface paddleProps {
   boardRef?: React.RefObject<HTMLDivElement>;
-  position: { x: number; y: number };
+  position: string;
+  ws: Socket;
 }
 
-const Paddle = ({ boardRef, position }: paddleProps) => {
-  const [paddleOffset, setPaddleOffset] = useState<number>(0);
+const BOARD_WIDHT = 700;
+const BOARD_HEIGHT = BOARD_WIDHT * 1.4;
+const PADDLE_OFFSET = 10;
+const PADDLE_WIDTH = BOARD_WIDHT / 8;
+const PADDLE_HEIGHT = PADDLE_WIDTH / 5;
+const BALL_DIAMETER = PADDLE_HEIGHT;
+const BALL_RADIUS = BALL_DIAMETER / 2;
+
+const Paddle = ({ boardRef, position, ws }: paddleProps) => {
+  const [PaddlePosition, setPaddlePosition] = useState({
+    x: 350,
+    y:
+      position === 'Top'
+        ? PADDLE_OFFSET
+        : BOARD_HEIGHT - PADDLE_OFFSET - PADDLE_HEIGHT,
+  });
   const [paddleX, setPaddleX] = useState<number>(0);
   const [paddleY, setPaddleY] = useState<number>(0);
   const paddleRef = useRef<HTMLDivElement>(null);
+
+  ws.on('move it', ({ position, x }: any) => {
+    if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2) {
+      setPaddlePosition((prev) => ({ x: x - PADDLE_WIDTH / 2, y: prev.y }));
+    } else if (position === 'Bottom' && PaddlePosition.y > BOARD_HEIGHT / 2) {
+      setPaddlePosition((prev) => ({ x: x - PADDLE_WIDTH / 2, y: prev.y }));
+    }
+  });
 
   useEffect(() => {
     const resizePaddle = () => {
@@ -18,9 +42,8 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
           boardRef.current?.offsetWidth / 8 + 'px';
         paddleRef.current.style.height =
           paddleRef.current.offsetWidth / 5 + 'px';
-        setPaddleOffset(paddleRef.current.offsetHeight / 1.5);
-        setPaddleX((position.x * 100) / 700);
-        setPaddleY((position.y * 100) / 980);
+        setPaddleX((PaddlePosition.x * 100) / 700);
+        setPaddleY((PaddlePosition.y * 100) / 980);
       }
     };
     resizePaddle();
@@ -30,7 +53,7 @@ const Paddle = ({ boardRef, position }: paddleProps) => {
       window.removeEventListener('resize', resizePaddle);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current, position]);
+  }, [boardRef?.current, PaddlePosition]);
 
   const paddleStyle = {
     top: paddleY + '%',
