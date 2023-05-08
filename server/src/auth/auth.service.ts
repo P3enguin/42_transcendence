@@ -59,13 +59,13 @@ export class AuthService {
           id: player.id,
         };
         const jwt2FA = await this.jwt.signAsync(payload, {
-          expiresIn: '15m',
+          expiresIn: '1d',
           secret: secret,
         });
         res.status(200).cookie('jwt_2FA', jwt2FA, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 15, // expires after 15 min
+          maxAge: 1000 * 60 * 60 * 24, // expires after 15 min
         });
         res.redirect(process.env.FRONTEND_HOST + '/verify');
       } else {
