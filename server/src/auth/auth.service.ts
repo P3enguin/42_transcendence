@@ -142,7 +142,7 @@ export class AuthService {
         if (e.code === 'P2002') {
           error = 'Nickname already exist';
         } else {
-          error = 'An Error has occured';
+          error = 'An Error has occurred';
         }
       }
       // error handling for invalid session token
@@ -273,7 +273,7 @@ export class AuthService {
       });
     } catch (error) {
       console.log(error);
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
 
@@ -303,7 +303,7 @@ export class AuthService {
         res.status(400).json({ error: 'Invalid Token' });
       }
     } catch (error) {
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
 
@@ -364,7 +364,7 @@ export class AuthService {
         res.status(400).json({ error: 'Invalid Token' });
       }
     } catch (error) {
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
 }
