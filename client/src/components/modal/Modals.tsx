@@ -16,7 +16,7 @@ function ModalActivate2FA({
 }: QrCodeProps) {
   async function verify(event: React.FormEvent) {
     event.preventDefault();
-    if (await verifyOTP(event, '/auth/confirm2FA',"PATCH")) setActivated(true);
+    if (await verifyOTP(event, '/auth/confirm2FA', 'PATCH')) setActivated(true);
   }
 
   return (
@@ -134,7 +134,7 @@ function ModalDeactivate2FA({
       } else {
         const result = await res.json();
         if (result.error.message) throw new Error(result.error.message);
-        else throw new Error('An unexpected Error has occured');
+        else throw new Error('An unexpected Error has occurred');
       }
     } catch (error) {
       const span = document.getElementById('password2FASpan');

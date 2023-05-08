@@ -28,7 +28,7 @@ function Search() {
         if (!response.ok) {
           const err = await response.json();
           if (err.error.message) throw new Error(err.error.message);
-          else throw new Error('An unexprected error occured');
+          else throw new Error('An unexprected error occurred');
         } else if (response.ok) {
           const data = await response.json();
           setPlayers(data.players);
@@ -49,15 +49,15 @@ function Search() {
   return (
     <div
       className="mt-[40px] flex h-[750px] w-11/12 flex-col
-  gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
+                gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
     >
       <h1 className="text-center">Search for Players or Channels</h1>
-      <div className="flex h-1/2 gap-10 min-h-[233px] w-full flex-wrap justify-center overflow-scroll p-6 scrollbar-hide sm:gap-10 ">
+      <div className="flex  min-h-[233px] w-full flex-wrap justify-center gap-10 overflow-scroll p-6 scrollbar-hide sm:gap-10 ">
         {isloading ? (
           <div>Fetching data...</div>
         ) : (
           players!.map((player, index) => (
-            <div key={index} className='w-[150px]'>
+            <div key={index} className="w-[150px] h-[20px]">
               <Player
                 nickname={player.nickname}
                 avatar={

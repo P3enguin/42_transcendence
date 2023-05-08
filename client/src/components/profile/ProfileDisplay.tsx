@@ -1,9 +1,13 @@
 import { EditIconProfile, EditIconWallpaper } from '../icons/Icons';
-import { useState } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
 import AvatarProfileComp from './Avatar';
-import { AvatarLevelCounter, AddFriendIcon } from '../icons/Icons';
+import {
+  AvatarLevelCounter,
+  AddFriendIcon,
+  CancelIcon,
+  IsFriendIcon,
+} from '../icons/Icons';
 import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
 import Success from '../tools/Reply/Success';
@@ -19,7 +23,17 @@ interface profileProps {
   exp: number;
   MaxExp: number;
   userProfile: boolean;
-  request?:string;
+  isFriend?: boolean;
+  requestFriend?: {
+    status: string | undefined;
+    id: string | undefined;
+  };
+  setRequest?: Dispatch<
+    SetStateAction<{
+      status: string | undefined;
+      id: string | undefined;
+    }>
+  >;
 }
 
 function ProfileDisplay({
@@ -32,7 +46,9 @@ function ProfileDisplay({
   exp,
   MaxExp,
   userProfile,
-  request,
+  requestFriend,
+  setRequest,
+  isFriend,
 }: profileProps) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -50,14 +66,46 @@ function ProfileDisplay({
       },
     );
     if (response.ok) {
+      const result = await response.json();
+      const updatedValue = { status: 'pending', id: result.requestId };
+      setRequest?.(updatedValue);
       setreply('Friend Request Sent !');
       setSuccess(true);
       setTimeout(() => {
-        setError(false);
+        setSuccess(false);
       }, 3000);
       return;
     } else {
       setreply('Failed to send Friend Request');
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  }
+
+  async function CancelFriendRequest(event: React.MouseEvent) {
+    event.preventDefault();
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/cancelRequest',
+      {
+        method: 'POST',
+        body: JSON.stringify({ requestId: requestFriend?.id }),
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      },
+    );
+    if (response.ok) {
+      const updatedValue = { status: undefined, id: undefined };
+      setRequest?.(updatedValue);
+      setreply('Request has been cancelled!');
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+      return;
+    } else {
+      setreply('Failed to cancel  Friend Request');
       setError(true);
       setTimeout(() => {
         setError(false);
@@ -191,7 +239,7 @@ function ProfileDisplay({
           onChange={handleWpChange}
         />
         <div className="relative mb-5 flex flex-col items-center xl:flex-row">
-          <div className="flex w-full items-start  justify-center xl:w-1/3 ">
+          <div className="flex w-full items-start  justify-center xl:w-[400px] ">
             {userProfile ? (
               <TitlesComp
                 cssProps="rounded-lg border-white bg-[#2C3B7C] p-1  text-[6px] leading-3
@@ -207,7 +255,7 @@ function ProfileDisplay({
                 the title
               </strong>
             )}
-            <div className=" block ">
+            <div className="block">
               <div className="absolute z-40 translate-x-[102px] xl:translate-x-[120px] xl:translate-y-[-8px] ">
                 <AvatarLevelCounter
                   id="GradientLevel"
@@ -234,7 +282,7 @@ function ProfileDisplay({
                 shrink-0 xl:h-[200px] xl:w-[170px] object-cover object-center"
               />
 
-              <div className="flex flex-col text-center text-white xl:pl-6 xl:text-start">
+              <div className="flex flex-col text-center text-white xl:ml-2 xl:text-center">
                 <strong className="w-[155px]">{fullname}</strong>
                 <span className=" text-gray-400">{'@' + nickname}</span>
               </div>
@@ -251,30 +299,54 @@ function ProfileDisplay({
                   focus:outline-none focus:ring-black xl:flex"
                   />
                 </>
-              ) :(
+              ) : (
                 <>
-                  <div className="flex flex-col gap-[43px] ">
+                  <div className="flex flex-col gap-[43px] xl:w-[200px]">
                     <span className="text-[7px] text-gray-400 ">
                       {'MEMBER SINCE: ' + joinDate}
                     </span>
                     <div className="flex flex-row justify-between gap-1">
                       <strong
                         id="titleUser"
-                        className="  hidden  text-sm
+                        className="  hidden  items-center text-sm
                       text-white outline-none focus:border-black  
                       xl:flex"
                       >
                         the title
                       </strong>
-                      <button
-                        onClick={SendFriendRequest}
-                        type="button"
-                        className=" left-20  flex gap-1 rounded-lg bg-[#102272]
-                        px-2  py-1 text-xs 
-                        font-medium text-white hover:bg-[#0e1949] focus:outline-none"
-                      >
-                        Add friend <AddFriendIcon />
-                      </button>
+                      {!requestFriend?.status && !isFriend ? (
+                        <button
+                          onClick={SendFriendRequest}
+                          type="button"
+                          className=" left-20  flex gap-1 rounded-lg bg-[#102272]
+                          px-2  py-1 text-xs 
+                          font-medium text-white hover:bg-[#0e1949] focus:outline-none"
+                        >
+                          Add friend <AddFriendIcon />
+                        </button>
+                      ) : requestFriend?.status === 'pending' ? (
+                        <>
+                          <button
+                            onClick={CancelFriendRequest}
+                            type="button"
+                            className=" left-20 flex  items-center rounded-lg bg-red-700
+                                      px-2  py-1 text-xs font-medium text-white hover:bg-red-600 focus:outline-none"
+                          >
+                            Cancel Request <CancelIcon />
+                          </button>
+                        </>
+                      ) : requestFriend?.status === 'accepted' || isFriend ? (
+                        <>
+                          <div
+                            className=" left-20 flex  items-center rounded-lg bg-[#39ce77]
+                                    px-2  py-1 text-xs font-medium text-white "
+                          >
+                            Friend <IsFriendIcon />
+                          </div>
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
                 </>

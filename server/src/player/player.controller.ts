@@ -17,7 +17,6 @@ import { PlayerService } from './player.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { JwtService } from '@nestjs/jwt';
 import { query, Request, Response } from 'express';
 import { GetPlayer } from 'src/auth/decorator';
 
@@ -54,7 +53,11 @@ export class PlayerController {
     if (query.nickname) {
       if (player.nickname === query.nickname)
         return res.status(200).json({ IsThePlayer: true });
-      return this.playerService.getDataNickname(player.id,query.nickname as string, res);
+      return this.playerService.getDataNickname(
+        player.id,
+        query.nickname as string,
+        res,
+      );
     } else return this.playerService.getDataID(player.id as number, res);
   }
 
@@ -86,25 +89,55 @@ export class PlayerController {
 
   //------------------------------{ Friend }----------------------------------
 
+  @Get('requests')
+  GetRequests(@GetPlayer() player: Player, @Res() res: Response) {
+    return this.playerService.GetRequests(player.id, res);
+  }
+
   @Post('addRequest')
-  AddRequest(@GetPlayer() player, @Req() req: Request, @Res() res: Response) {
-    // console.log("request received from ",req.body.);
-    // console.log(player);
+  AddRequest(
+    @GetPlayer() player: Player,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     this.playerService.AddRequest(player, req.body.receiver, res);
   }
 
-  @Patch('AcceptFriend')
-  AcceptFriend(@GetPlayer() player, @Req() req: Request, @Res() res: Response) {
-    return this.playerService.AcceptFriend(
+  @Post('cancelRequest')
+  CancelRequest(
+    @GetPlayer() player: Player,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.playerService.CancelRequest(res, player, req.body.requestId);
+  }
+
+  @Post('AcceptRequest')
+  AcceptRequest(
+    @GetPlayer() player: Player,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.playerService.AcceptRequest(
       player,
-      req.body.friend,
+      req.body.senderId,
       req.body.requestId,
+      res,
     );
   }
 
-  @Patch('rejectRequest')
-  rejectRequest(@GetPlayer() player) {
-    return this.playerService.rejectRequest();
+  @Post('RejectRequest')
+  rejectRequest(
+    @GetPlayer() player: Player,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    return this.playerService.rejectRequest(
+      player,
+      req.body.senderId,
+      req.body.requestId,
+      res,
+    );
   }
 
   @Get('friends')
@@ -148,7 +181,6 @@ export class PlayerController {
   ) {
     return this.playerService.updatePFP(req, file.filename);
   }
-
   @Post('wallpaper')
   @UseInterceptors(
     FileInterceptor('file', {

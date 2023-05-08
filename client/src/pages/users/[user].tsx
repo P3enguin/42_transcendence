@@ -2,14 +2,6 @@ import Layout from '@/components/layout/layout';
 import { useState } from 'react';
 import ProfileDisplay from '@/components/profile/ProfileDisplay';
 import ProfileStats from '@/components/profile/ProfileStats';
-import {
-  FriendIcon,
-  AchievementIcon,
-  MatchHistoryIcon,
-  RankingIcon,
-} from '@/components/icons/Icons';
-
-import { useEffect } from 'react';
 
 interface player {
   nickname: string;
@@ -20,7 +12,11 @@ interface player {
   wallpaper: string;
   joinDate: string;
   exist?: boolean;
-  request:string;
+  request: {
+    status: string | undefined;
+    id: string | undefined;
+  };
+  isFriend?:boolean;
 }
 
 function UserProfile({
@@ -33,6 +29,7 @@ function UserProfile({
   joinDate,
   exist,
   request,
+  isFriend,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const list = ['hh', 'hh2', 'hh3'];
@@ -41,6 +38,7 @@ function UserProfile({
       <p className="mt-[400px]  text-xl text-red-600">Player does not exist!</p>
     );
   const [isLoading, setLoading] = useState(false);
+  const [requestFriend, setRequest] = useState(request);
   const titles = ['hh', 'hh2', 'hh3'];
 
   if (isLoading) return <p>Loading...</p>;
@@ -60,7 +58,9 @@ function UserProfile({
             exp={1800}
             MaxExp={2500}
             userProfile={false}
-            request={request}
+            requestFriend={requestFriend}
+            setRequest={setRequest}
+            isFriend={isFriend}
           />
           <ProfileStats nickname={nickname} userProfile={false} />
         </div>
@@ -83,7 +83,6 @@ export async function getServerSideProps({ params, req }: any) {
       },
     );
     const data = await res.json();
-    console.log(data);
     if (data.IsThePlayer) {
       return {
         redirect: {
@@ -116,7 +115,8 @@ export async function getServerSideProps({ params, req }: any) {
         wallpaper: data.player.wallpaper,
         joinDate: date,
         exist: true,
-        request:data.request.status,
+        request: data.request,
+        isFriend: data.isFriend,
       },
     };
   }
