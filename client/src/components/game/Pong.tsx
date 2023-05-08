@@ -27,34 +27,31 @@ const BALL_RADIUS = BALL_DIAMETER / 2;
 const Pong = ({ gameRef, socket, position }: PongProps) => {
   const boardRef = useRef<HTMLDivElement>(null);
   const ballRef = useRef<HTMLDivElement>(null);
-  // socket.on('move it', ({ position, x }: any) => {
-  //   if (position === 'Top') {
-  //     setPaddle1Position((prev) => ({x : x - PADDLE_WIDTH/2, y: prev.y}));
-  //   } else {
-  //     setPaddle2Position((prev) => ({ x: x - PADDLE_WIDTH / 2, y: prev.y }));
-  //   }
-  // });
+  let prevX = 0;
 
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
-    
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
-      let x = (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth;
-      if (x < 0 + PADDLE_WIDTH/2 || x > 700 - PADDLE_WIDTH/2) return;
-      if (position === 'Top')
-          x = Math.abs(x - 700)
-      socket.emit('move', { x: Math.round(x), position });
+      const mousePosition = e.clientX - rec.left;
+      let x = Math.round((700 * mousePosition) / boardRef.current.offsetWidth);
+      if (x < 0 + PADDLE_WIDTH / 2 || x > 700 - PADDLE_WIDTH / 2) return;
+      if (position === 'Top') x = (x - 700) * -1;
+      if (x === prevX) return;
+      prevX = x;
+      socket.emit('move', { x, position });
     }
   };
-
+  
   const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
-      const x =
-        (700 * (e.touches[0].clientX - rec.left)) /
-        boardRef.current.offsetWidth;
+      const touchPosition = e.touches[0].clientX - rec.left;
+      let x = Math.round((700 * touchPosition) / boardRef.current.offsetWidth);
       if (x < 0 || x > 700) return;
-      socket.emit('move', { x: Math.round(x), position });
+      if (position === 'Top') x = Math.abs(x - 700);
+      if (x === prevX) return;
+      prevX = x;
+      socket.emit('move', { x, position });
     }
   };
 

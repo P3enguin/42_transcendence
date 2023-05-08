@@ -139,23 +139,23 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
       ) {
         setPaddle1Position((prev) => ({
-          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.3,
           y: prev.y,
         }));
       }
     }
     // FOR SECOND PADDLE 'BOTTOM'
-    else {
-      if (
-        ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
-        ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
-      ) {
-        setPaddle2Position((prev) => ({
-          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
-          y: prev.y,
-        }));
-      }
-    }
+    // else {
+    //   if (
+    //     ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
+    //     ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
+    //   ) {
+    //     setPaddle2Position((prev) => ({
+    //       x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+    //       y: prev.y,
+    //     }));
+    //   }
+    // }
   }
 
   useEffect(() => {
@@ -189,9 +189,9 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         mouseHandler={handleMouseMove}
         touchHandler={handleTouchMove}
       >
-        <Paddle position={Paddle1Position} boardRef={boardRef} />
-        <Ball position={ballPosition} ballRef={ballRef} />
-        <Paddle position={Paddle2Position} boardRef={boardRef} />
+        <Paddle position="Top" ws={null} />
+        <Ball ballRef={ballRef} ws={null} />
+        <Paddle position="Bottom" ws={null} />
       </Board>
     </>
   );

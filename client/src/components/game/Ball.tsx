@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 interface ballProps {
   boardRef?: React.RefObject<HTMLDivElement>;
   ballRef: React.RefObject<HTMLDivElement>;
-  ws: Socket;
+  ws: Socket | null;
 }
 
 const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
@@ -12,9 +12,11 @@ const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
   const [ballX, setBallX] = useState<number>(0);
   const [ballY, setBallY] = useState<number>(0);
 
-  ws.on('update', ({ x, y }: { x: number; y: number }) => {
-    setPosition({ x, y });
-  });
+  if (ws) {
+    ws.on('moveBall', ({ x, y }: { x: number; y: number } ) => {
+      setPosition({ x: x, y: y });
+    });
+  }
 
   useEffect(() => {
     setBallX((Position.x * 100) / 700);

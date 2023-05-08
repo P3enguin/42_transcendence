@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 interface paddleProps {
   boardRef?: React.RefObject<HTMLDivElement>;
   position: string;
-  ws: Socket;
+  ws: Socket | null;
 }
 
 const BOARD_WIDHT = 700;
@@ -27,13 +27,21 @@ const Paddle = ({ boardRef, position, ws }: paddleProps) => {
   const [paddleY, setPaddleY] = useState<number>(0);
   const paddleRef = useRef<HTMLDivElement>(null);
 
-  ws.on('move it', ({ position, x }: any) => {
-    if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2) {
-      setPaddlePosition((prev) => ({ x: x - PADDLE_WIDTH / 2, y: prev.y }));
-    } else if (position === 'Bottom' && PaddlePosition.y > BOARD_HEIGHT / 2) {
-      setPaddlePosition((prev) => ({ x: x - PADDLE_WIDTH / 2, y: prev.y }));
-    }
-  });
+  if (ws) {
+   ws.on('movePaddle', ({ topPaddle, bottomPaddle }: any) => {
+      if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2) {
+        setPaddlePosition((prev) => ({
+          x: topPaddle.x - PADDLE_WIDTH / 2,
+          y: prev.y,
+        }));
+      } else if (position === 'Bottom' && PaddlePosition.y > BOARD_HEIGHT / 2) {
+        setPaddlePosition((prev) => ({
+          x: bottomPaddle.x - PADDLE_WIDTH / 2,
+          y: prev.y,
+        }));
+      }
+    });
+  }
 
   useEffect(() => {
     const resizePaddle = () => {
