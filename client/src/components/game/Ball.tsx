@@ -12,12 +12,16 @@ const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
   const [ballX, setBallX] = useState<number>(0);
   const [ballY, setBallY] = useState<number>(0);
 
-  if (ws) {
-    ws.on('moveBall', ({ x, y }: { x: number; y: number } ) => {
-      setPosition({ x: x, y: y });
-    });
-  }
-
+  useEffect(() => {
+    if (ws) {
+      ws.on('moveBall', ({ x, y }: { x: number; y: number }) => {
+        setPosition({ x: x, y: y });
+      });
+    }
+    return () => {
+      ws?.off('moveBall');
+    };
+  }, []);
   useEffect(() => {
     setBallX((Position.x * 100) / 700);
     setBallY((Position.y * 100) / 980);

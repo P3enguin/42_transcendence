@@ -27,21 +27,29 @@ const Paddle = ({ boardRef, position, ws }: paddleProps) => {
   const [paddleY, setPaddleY] = useState<number>(0);
   const paddleRef = useRef<HTMLDivElement>(null);
 
-  if (ws) {
-   ws.on('movePaddle', ({ topPaddle, bottomPaddle }: any) => {
-      if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2) {
-        setPaddlePosition((prev) => ({
-          x: topPaddle.x - PADDLE_WIDTH / 2,
-          y: prev.y,
-        }));
-      } else if (position === 'Bottom' && PaddlePosition.y > BOARD_HEIGHT / 2) {
-        setPaddlePosition((prev) => ({
-          x: bottomPaddle.x - PADDLE_WIDTH / 2,
-          y: prev.y,
-        }));
-      }
-    });
-  }
+  useEffect(() => {
+    if (ws) {
+      ws.on('movePaddle', ({ topPaddle, bottomPaddle }: any) => {
+        if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2) {
+          setPaddlePosition((prev) => ({
+            x: topPaddle.x - PADDLE_WIDTH / 2,
+            y: prev.y,
+          }));
+        } else if (
+          position === 'Bottom' &&
+          PaddlePosition.y > BOARD_HEIGHT / 2
+        ) {
+          setPaddlePosition((prev) => ({
+            x: bottomPaddle.x - PADDLE_WIDTH / 2,
+            y: prev.y,
+          }));
+        }
+      });
+    }
+    return () => {
+      ws?.off('movePaddle');
+    };
+  }, []);
 
   useEffect(() => {
     const resizePaddle = () => {
