@@ -18,7 +18,7 @@ import {
 import { JwtGuard } from 'src/auth/guard';
 import { GetPlayer } from './decorator/get-player.decorator';
 import { Player } from '@prisma/client';
-import { Player as gamePlayer } from './interfaces';
+import { Game, Player as gamePlayer } from './interfaces';
 
 export interface connectedPlayer extends Player {
   socketId?: string;
@@ -85,6 +85,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           this.server.to(game.players[1].socketId).emit('startGame', {
             position: 'Top',
           });
+          setTimeout(() => {
+            this.startGame(game.id);
+          }, 1000);
         } else {
           game.addSpectator(
             new gamePlayer(player.id, player.nickname, client.id),
@@ -107,7 +110,23 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('move')
   handleMove(@GetPlayer() player: connectedPlayer, @MessageBody() data: any) {
-    console.log('move', data, player.gameId);
-    this.server.to(player.gameId).emit('move it', data);
+    // console.log('move', data, player.gameId);
+    this.gameService
+      .getGameById(player.gameId)
+      .movePaddle(data.position, data.x);
+    // this.server.to(player.gameId).emit('move it', data);
+  }
+
+  startGame(gameId: string) {
+    const game: Game = this.gameService.getGameById(gameId);
+    game.inteval = setInterval(() => {
+      const gamepos = game.updateGame();
+      // console.log('update', gamepos);
+      this.server.to(gameId).emit('moveBall', gamepos.ball);
+      this.server.to(gameId).emit('movePaddle', {
+        bottomPaddle: gamepos.bottomPaddle,
+        topPaddle: gamepos.topPaddle,
+      });
+    }, 1000/40);
   }
 }

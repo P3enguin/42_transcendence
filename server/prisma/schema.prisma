@@ -153,7 +153,7 @@ model Match {
 
 model Room {
   id          Int     @id @default(autoincrement())
-  channelId   String
+  channelId   String  @unique()
   name        String  @unique()
   Topic       String?
   Key         String?

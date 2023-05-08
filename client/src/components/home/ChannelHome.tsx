@@ -2,14 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 interface Channel {
-  icon: string;
+  avatar: string;
   name: string;
   memberCount: number;
   channelLink: string;
 }
 
 export default function ChannelHome({
-  icon,
+  avatar,
   name,
   memberCount,
   channelLink,
@@ -20,7 +20,7 @@ export default function ChannelHome({
       className="inline flex h-[90px] w-[125px] flex-col items-center rounded-[20px] bg-[#88d9ff99] p-2"
     >
       <Image
-        src={icon}
+        src={avatar}
         alt="channel"
         width={40}
         height={40}
