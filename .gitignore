@@ -69,3 +69,8 @@ todo
 
 !**/uploads/avatars/default.png
 !**/uploads/wallpapers/wallpaper.png
+
+
+# prisma migration
+
+**/prisma/migrations/*
