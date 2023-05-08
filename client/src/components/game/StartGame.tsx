@@ -1,9 +1,7 @@
 import axios from 'axios';
-import { Radio } from 'flowbite-react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-// radio input component
 export const RadioInput = ({ id, label, onChange }: any) => {
   return (
     <div className="mr-6 inline-flex items-center self-center whitespace-nowrap">
@@ -15,11 +13,10 @@ export const RadioInput = ({ id, label, onChange }: any) => {
   );
 };
 
-// start game component
 const StartGame = () => {
+  const router = useRouter();
   const [gametype, setGametype] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const router = useRouter();
 
   async function joinMatchmaking(gametype: string) {
     const res = await axios.get(
@@ -48,7 +45,7 @@ const StartGame = () => {
         />
         <RadioInput
           id="ranked"
-          label="Ranked Game"
+          label="Ranked Game" 
           onChange={() => {
             setGametype('RANKED');
             setIsButtonDisabled(false);
