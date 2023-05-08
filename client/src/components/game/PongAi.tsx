@@ -189,9 +189,9 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         mouseHandler={handleMouseMove}
         touchHandler={handleTouchMove}
       >
-        <Paddle position="Top" ws={null} />
-        <Ball ballRef={ballRef} ws={null} />
-        <Paddle position="Bottom" ws={null} />
+        <Paddle position="Top" />
+        <Ball ballRef={ballRef} />
+        <Paddle position="Bottom" />
       </Board>
     </>
   );

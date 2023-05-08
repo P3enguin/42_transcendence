@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 interface paddleProps {
   boardRef?: React.RefObject<HTMLDivElement>;
   position: string;
-  ws: Socket | null;
+  ws?: Socket;
 }
 
 const BOARD_WIDHT = 700;

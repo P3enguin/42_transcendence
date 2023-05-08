@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client';
 interface ballProps {
   boardRef?: React.RefObject<HTMLDivElement>;
   ballRef: React.RefObject<HTMLDivElement>;
-  ws: Socket | null;
+  ws?: Socket;
 }
 
 const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
