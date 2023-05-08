@@ -17,15 +17,15 @@ export class PlayerGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
   async handleConnection(client: Socket) {
-    console.log('Client connected: ' + client.id);
+    // console.log('Client connected: ' + client.id);
   }
 
   handleDisconnect(client: Socket) {
-    console.log('Client disconnected: ' + client.id);
+    // console.log('Client disconnected: ' + client.id);
   }
 
   @SubscribeMessage('route')
   handlerRoute(client: Socket, payload: any) {
-    console.log('route: ', payload);
+    // console.log('route: ', payload);
   }
 }
