@@ -1,6 +1,6 @@
 import Board from './Board';
-import Paddle from './Paddle';
-import Ball from './Ball';
+import PaddleAi from './PaddleAi';
+import BallAi from './BallAi';
 import {
   MouseEventHandler,
   TouchEventHandler,
@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import Simulation from '../home/Simulation';
 
 const BOARD_WIDHT = 700;
 const BOARD_HEIGHT = BOARD_WIDHT * 1.4;
@@ -20,9 +21,10 @@ const BALL_RADIUS = BALL_DIAMETER / 2;
 interface PongAiProps {
   gameRef: React.RefObject<HTMLDivElement>;
   newScore: (player: string) => void;
+  isSimulation: boolean;
 }
 
-const PongAi = ({ gameRef, newScore }: PongAiProps) => {
+const PongAi = ({ gameRef, newScore, isSimulation }: PongAiProps) => {
   const HitRef = useRef<HTMLAudioElement>(null);
   const WallRef = useRef<HTMLAudioElement>(null);
   const ComScoreRef = useRef<HTMLAudioElement>(null);
@@ -42,13 +44,13 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
   });
 
   const PlayAudio = (audio: React.RefObject<HTMLAudioElement>) => {
-    if (audio.current) {
+    if (audio.current && !isSimulation) {
       audio.current.play().catch(() => {});
     }
   };
 
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
-    if (boardRef.current) {
+    if (boardRef.current && !isSimulation) {
       const rec = boardRef.current.getBoundingClientRect();
       const mousePosition =
         (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth -
@@ -59,7 +61,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
   };
 
   const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
-    if (boardRef.current) {
+    if (boardRef.current && !isSimulation) {
       const rec = boardRef.current.getBoundingClientRect();
       const touchPosition =
         (700 * (e.touches[0].clientX - rec.left)) /
@@ -70,7 +72,7 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         touchPosition > 700 - PADDLE_WIDTH / 2
       )
         return;
-      setPaddle2Position((prev) => ({ x: touchPosition, y: prev.y }));
+      // setPaddle2Position((prev) => ({ x: touchPosition, y: prev.y }));
     }
   };
 
@@ -139,23 +141,25 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
       ) {
         setPaddle1Position((prev) => ({
-          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.3,
+          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
           y: prev.y,
         }));
       }
     }
     // FOR SECOND PADDLE 'BOTTOM'
-    // else {
-    //   if (
-    //     ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
-    //     ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
-    //   ) {
-    //     setPaddle2Position((prev) => ({
-    //       x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
-    //       y: prev.y,
-    //     }));
-    //   }
-    // }
+    else {
+      if (isSimulation) {
+        if (
+          ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
+          ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
+        ) {
+          setPaddle2Position((prev) => ({
+            x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+            y: prev.y,
+          }));
+        }
+      }
+    }
   }
 
   useEffect(() => {
@@ -189,9 +193,9 @@ const PongAi = ({ gameRef, newScore }: PongAiProps) => {
         mouseHandler={handleMouseMove}
         touchHandler={handleTouchMove}
       >
-        <Paddle position="Top" />
-        <Ball ballRef={ballRef} />
-        <Paddle position="Bottom" />
+        <PaddleAi position={Paddle1Position} boardRef={boardRef} />
+        <BallAi position={ballPosition} ballRef={ballRef} />
+        <PaddleAi position={Paddle2Position} boardRef={boardRef} />
       </Board>
     </>
   );
