@@ -1,5 +1,9 @@
 function Message(message: any, time: string) {
 
+    // useEffect (()=>{
+
+    // }, [message])
+
     return (
         <div>
             <div className="conversation">

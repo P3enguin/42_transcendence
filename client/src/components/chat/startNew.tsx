@@ -75,7 +75,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   }
 
     return (
-      <div className=" flex flex-col w-[100%] h-[95%] border-t lg-m">
+      <div className=" flex flex-col w-[100%] h-[95%] md:m-5">
           <div className=" sm:items-center lg:flex w-[100%]
                   h-[30%] text-3xl text-center lg:text-start self-center">
               Select a Chat or <br/>
