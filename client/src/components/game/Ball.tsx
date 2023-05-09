@@ -1,31 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
 interface ballProps {
   boardRef?: React.RefObject<HTMLDivElement>;
-  ballRef: React.RefObject<HTMLDivElement>;
   ws?: Socket;
 }
 
-const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
-  const [Position, setPosition] = useState({ x: 400, y: 565 });
-  const [ballX, setBallX] = useState<number>(0);
-  const [ballY, setBallY] = useState<number>(0);
+const BOARD_WIDHT = 700;
+const BOARD_HEIGHT = BOARD_WIDHT * 1.4;
+const PADDLE_OFFSET = 10;
+const PADDLE_WIDTH = BOARD_WIDHT / 8;
+const PADDLE_HEIGHT = PADDLE_WIDTH / 5;
+const BALL_DIAMETER = PADDLE_HEIGHT;
+const BALL_RADIUS = BALL_DIAMETER / 2;
+const INIT_BALL_X = BOARD_WIDHT / 2 - BALL_RADIUS;
+const INIT_BALL_Y = BOARD_HEIGHT / 2 - BALL_RADIUS;
+
+const Ball = ({ boardRef, ws }: ballProps) => {
+  const ballRef = useRef<HTMLDivElement>(null);
+  const [Position, setPosition] = useState({ x: INIT_BALL_X, y: INIT_BALL_Y });
 
   useEffect(() => {
     if (ws) {
       ws.on('moveBall', ({ x, y }: { x: number; y: number }) => {
-        setPosition({ x: x, y: y });
+        setPosition({ x, y });
       });
     }
     return () => {
-      ws?.off('moveBall');
+      if (ws) ws.off('moveBall');
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    setBallX((Position.x * 100) / 700);
-    setBallY((Position.y * 100) / 980);
-  }, [Position]);
 
   useEffect(() => {
     const resizeBall = () => {
@@ -36,13 +41,14 @@ const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
       }
     };
     resizeBall();
+    setPosition((prev) => ({ x: prev.x, y: prev.y }));
     window.addEventListener('resize', resizeBall);
 
     return () => {
       window.removeEventListener('resize', resizeBall);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current]);
+  }, [boardRef?.current, ballRef.current]);
 
   return (
     <div
@@ -51,8 +57,8 @@ const Ball = ({ boardRef, ballRef, ws }: ballProps) => {
       style={{
         backgroundImage: "url('../game/Ball.svg')",
         backgroundSize: '100%',
-        top: ballY + '%',
-        left: ballX + '%',
+        left: (Position.x * 100) / 700 + '%',
+        top: (Position.y * 100) / 980 + '%',
         // transform: 'translate(50%, 50%)',
       }}
     ></div>
