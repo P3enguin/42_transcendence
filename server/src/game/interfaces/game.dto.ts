@@ -38,10 +38,11 @@ export class Paddle {
   constructor(position: 'top' | 'bottom') {
     this.width = 700 / 8;
     this.height = this.width / 5;
-    this.x = 350;
     if (position === 'top') {
+      this.x = 700/4-this.width/2;
       this.y = 10;
     } else {
+      this.x = 3*(700/4)-this.width/2;
       this.y = 700*1.4 - this.height - 10;
     }
   }
