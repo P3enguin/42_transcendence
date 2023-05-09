@@ -1,219 +1,200 @@
-import axios from "axios";
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-
+import { InputDefault, InputKey } from '../Input/Inputs';
 
 function StartNew({ nickname, token }: { nickname: string; token: string }) {
   const router = useRouter();
 
-  // Private Chat Room
+  const [player1, setPlayer1] = useState('');
 
-  const [player1, setPlayer1] = useState('')
+  const [description, setDescription] = useState('');
+  const [name, setName] = useState('');
+  const [topic, setTopic] = useState('');
+  const [key, setKey] = useState('');
+  const [memberLimit, setMemberLimit] = useState(50);
+  const [stats, setStats] = useState('');
+  const [isChannel, setIsChannel] = useState(true);
+  const [creator, setCreator] = useState(nickname);
 
-    const [name, setName] = useState('');
-    const [topic, setTopic] = useState('');
-    const [key, setKey] = useState('');
-    const [memberLimit, setMemberLimit] = useState(50);
-    const [stats, setStats] = useState('');
-    const [isChannel, setIsChannel] = useState(true);
-    const [creator, setCreator] = useState(nickname);
+  const [NicknameEntered, setNicknameEntered] = useState(false);
 
-    const [NicknameEntered, setNicknameEntered] = useState(false);
+  async function createPrivateChat(event: React.FormEvent) {
+    event.preventDefault();
 
-    const [nameEntered, setNameEntered] = useState(false);
-    const [privateBEntered, setPrivateBEntered] = useState(false);
-    // const [SecretDisabled, setSecretEntered] = useState(true);
-  
-    async function createPrivateChat(event : React.FormEvent) {
-      event.preventDefault();
-
-      const chat = {
-        player1,
-        creator,
-      }
-      const res = await axios.post(
+    const chat = {
+      player1,
+      creator,
+    };
+    const res = await axios
+      .post(
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/createPrivateChat',
         chat,
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${token}` },
-        }
-      ).then( res =>{
+        },
+      )
+      .then((res) => {
         console.log(res.data);
         router.push(/chat/ + res.data);
-      }).catch(err => console.log(err));
-    }
+      })
+      .catch((err) => console.log(err));
+  }
 
-    async function createRoom(event : React.FormEvent)  {
-      event.preventDefault();
-      const room = {
-        name,
-        topic,
-        key,
-        memberLimit,
-        stats,
-        isChannel,
-        creator,
-      };
-     console.log("creating Room");
-     const res = await fetch(
+  async function createRoom(event: React.FormEvent) {
+    event.preventDefault();
+    const room = {
+      name,
+      topic,
+      key,
+      memberLimit,
+      stats,
+      isChannel,
+      creator,
+    };
+    console.log('creating Room');
+    const res = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
       {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           // Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(room),
         credentials: 'include',
-      }
+      },
     );
     if (res.status == 200) {
-      const roomId = await res.json()
+      const roomId = await res.json();
       router.push(`/chat/${roomId}`);
     }
   }
 
-    return (
-      <div className=" flex flex-col w-[100%] h-[95%] md:m-5">
-          <div className=" sm:items-center lg:flex w-[100%]
-                  h-[30%] text-3xl text-center lg:text-start self-center">
-              Select a Chat or <br/>
-                  Start a New:
-            </div>
-            <div className=" flex h-full w-full flex-col lg:flex-row p-2">
-             {!NicknameEntered && (<div className=" sm:flex sm:self-center lg:flex mb-0 flex-col  self-center h-[85%] w-[70%]">
-                <div className=" sm:h-[2%] lg:flex flex-col h-[10%] w-[90%] ">
-                  <h2 className=" flex text-xl">Channel : </h2>
-                  <form onSubmit={createRoom}>
-                    <input
-                      type="text"
-                      name="channel"
-                      id="channel"
-                      className=" border-white w-[90%] peer block w-full appearance-none
-                      rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm
-                      text-white focus:border-blue-600 focus:outline-none "
-                      placeholder="channel name"
-                      required
-                      onChange={(e) => {
-                        setName(e.target.value)
-                        setNameEntered(e.target.value !== '');
-                      }} />
-                        {
-                          nameEntered && (
-                          <div className=" flex flex-col">
-                        <div className=" inline-flex items-center  whitespace-nowrap">
+  return (
+    <div className=" flex h-[95%] w-[100%] flex-col md:pl-2">
+      <div
+        className=" h-[30%] w-[100%] self-center
+                  text-center text-3xl sm:items-center lg:flex lg:text-start"
+      >
+        Select a Chat or <br />
+        Start a New:
+      </div>
+      <div className=" flex h-full w-full flex-col border p-2 lg:flex-row">
+        {!NicknameEntered && (
+          <div className=" mb-0 h-[85%] w-[70%] flex-col self-center  sm:flex sm:self-center lg:flex">
+            <div className=" h-[10%] w-[90%] flex-col sm:h-[2%] lg:flex ">
+              <form onSubmit={createRoom}>
+
+                <InputDefault name="name" id="name" description="channel name" setName={setName}/>
+
+                {name && (
+                  <div className="flex p-2">
+                    <h3>type: </h3>
+                    <div className=" mt-2 flex flex-col pl-6 md:mt-5">
+                      <div className=" flex items-center  whitespace-nowrap">
                         <input
                           type="radio"
                           id="public"
                           name="type"
                           onChange={(e) => {
-                            setStats('public')
+                            setStats('public');
                             console.log(stats);
-                           // disable secret radio button
+                            // disable secret radio button
                           }}
                         />
-                        <label htmlFor="normal" className=" m-1 whitespace-nowrap">
+                        <label htmlFor="normal" className=" whitespace-nowrap pl-2">
                           public
                         </label>
-                          </div>
-                          <div className=" inline-flex items-center  whitespace-nowrap">
-                          <input
+                       {stats === 'public' && ( <div className="text-xs pl-5">Public channels are visible to everyone<br /> and can be discovered through search or<br /> browsing, and everyone can join.</div>)}
+                      </div>
+                      <div className=" inline-flex items-center  whitespace-nowrap">
+                        <input
                           type="radio"
                           id="private"
                           name="type"
                           onChange={(e) => {
-                            setStats('private')
+                            setStats('private');
                             console.log(stats); // disable secret radio button
                           }}
                           // disable if secret radio button is selected
-                          />
-                        <label htmlFor="normal" className=" m-1 whitespace-nowrap">
+                        />
+                        <label htmlFor="normal" className=" whitespace-nowrap pl-2">
                           private
                         </label>
-                          </div>
-                          <div className=" inline-flex items-center  whitespace-nowrap">
-                            <input
-                            type="radio"
-                            id="secret"
-                            name="type"
-                            onChange={(e) => {
-                              setStats('secret')
-                              console.log(stats);// enable secret radio button
-                            }}// disable if private radio button is selected
-                            />
-                            <label htmlFor="normal" className=" m-1 whitespace-nowrap">
-                              secret
-                            </label>
-                            </div>
-                        </div>)
-                        }{
-                          (stats === "private") &&
-                          (<input
-                            type="text"
-                            name="key"
-                            id="key"
-                            className=" border-white w-[90%] peer block w-full appearance-none
-                            rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm
-                            text-white focus:border-blue-600 focus:outline-none "
-                            placeholder="channel password"
-                            required
-                            onChange={(e) => {
-                              setKey(e.target.value)
-                            }} />
-                            )}{
-                            stats && nameEntered &&
-                            (<input
-                            type="text"
-                            name="Topic"
-                            id="Topic"
-                            className=" border-white w-[90%] peer block w-full appearance-none
-                            rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm
-                            text-white focus:border-blue-600 focus:outline-none "
-                            placeholder="channel Topic"
-                            onChange={(e) => {
-                              setTopic(e.target.value);
-                            }} />      
-                            )}
-                      <button
-                      name="create"
-                      className=" border-white m-auto mt-2 peer  appearance-none sm:mt-20 block
-                      rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-s w-[50%] sm:w-[100px]
-                        w-[50%] text-white focus:border-blue-600 focus:outline-none focus:ring-0 bg-blue-500 lg:mt-60 lg:ml-20"
-                        >
-                        Create
-                      </button>
-                  </form>
+                        {stats === 'private' && ( <div className="text-xs pl-5">Private channels are visible to<br />everyone and can be discovered through search or<br /> browsing, but they require a password to join.</div>)}
+                      </div>
+                      <div className=" inline-flex items-center  whitespace-nowrap">
+                        <input
+                          type="radio"
+                          id="secret"
+                          name="type"
+                          onChange={(e) => {
+                            setStats('secret');
+                            console.log(stats); // enable secret radio button
+                          }} // disable if private radio button is selected
+                        />
+                        <label htmlFor="normal" className=" whitespace-nowrap pl-2 ">
+                          secret
+                        </label>
+                        {stats === 'secret' && ( <div className="text-xs pl-5">Secret channels rae invite-only<br /> channels that cannot be discovered<br /> through search or browsing.</div>)}
+                      </div>
+                    </div>
                   </div>
-              </div>)}
+                )}
+                {stats === 'private' && (
+                 <InputKey name="key" id="key" description="channel's Key" setKey={setKey}/>
+                )}
+                {stats && name && (
+                  <InputDefault name="topic" id="topic" description="channel's Topic" setName={setTopic}/>
+                )}
+                <button
+                  name="create"
+                  className=" hover:text-s absolute mx-auto mt-1 transform 
+                                          rounded-full rounded-full bg-[#0097E2] px-9 py-2
+                                          text-[10px] font-bold uppercase text-white 
+                                          shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]  "
+                >
+                  Create
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
 
-              {!nameEntered && (<div className=" flex m-auto flex-row self-center h-[85%] w-[70%] ">
-                <div className=" flex flex-col h-[10%] w-[90%] ">
-                  <h2 className=" flex text-xl whitespace-nowrap ">Direct Message :</h2>
-                  <div className=" sm:flex flex-col relative flex items-center justify-center ">
-                  <input type="text" name="nickname" id="nickname"
-                    className="  border-white w-[90%]
-                    peer block w-full appearance-none rounded-full border-2 bg-transparent
-                    py-2.5 px-3  text-xs sm:text-sm 
-                    text-white focus:border-blue-600 focus:outline-none focus:ring-0 overflow-hidden"
-                    placeholder="player" required
-                    onChange={(e) => {
-                      setPlayer1(e.target.value);
-                      setNicknameEntered(e.target.value !== '');
-                    }}/>
-                     <button
-                         onClick={(e)=>{
-                          createPrivateChat(e);
-                         }}
-                        className=" uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
-                                      transform transition duration-300 px-[12px]
-                                      hover:text-s hover:scale-[115%] text-white text-[10px] 
-                                      font-bold py-2  rounded-full absolute rounded-full
-                                      top-[50%] translate-y-[-50%] right-[9px]"
-                      >
-                        start
-                      </button>
-                    {/* <button 
+        {!name && (
+          <div className=" m-auto flex h-[85%] w-[70%] flex-row self-center ">
+            <div className=" flex h-[10%] w-[90%] flex-col ">
+              <div className=" relative flex flex-col items-center justify-center sm:flex ">
+                <input
+                  type="text"
+                  name="nickname"
+                  id="nickname"
+                  className="  peer block
+                    w-[90%] w-full appearance-none overflow-hidden rounded-full border-2 border-white
+                    bg-transparent py-2.5  px-3 text-xs 
+                    text-white focus:border-blue-600 focus:outline-none focus:ring-0 sm:text-sm"
+                  placeholder="player"
+                  required
+                  onChange={(e) => {
+                    setPlayer1(e.target.value);
+                    setNicknameEntered(e.target.value !== '');
+                  }}
+                />
+                <button
+                  onClick={(e) => {
+                    createPrivateChat(e);
+                  }}
+                  className=" hover:text-s absolute top-[50%] right-[9px] mx-auto 
+                                      translate-y-[-50%] transform rounded-full rounded-full
+                                      bg-[#0097E2] px-[12px] py-2 text-[10px] 
+                                      font-bold uppercase  text-white shadow transition
+                                      duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]"
+                >
+                  start
+                </button>
+                {/* <button 
                       type="submit"
                       className=" lg:right-0 lg:top-0 lg:absolute border-white peer block appearance-none mt-2
                             rounded-full border-2 bg-transparent py-2.5 px-3 text-xs sm:text-sm w-[50%] sm:w-[100px]
@@ -224,12 +205,13 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                              >
                       start
                     </button> */}
-                  </div>
-                </div>
-              </div>)}
               </div>
-              </div>
-    );
-// }
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+  // }
 }
 export default StartNew;
