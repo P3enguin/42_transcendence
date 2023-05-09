@@ -37,7 +37,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
       },
     });
     socket.on('connect', () => {
-      console.log(data.nickname," : connected to the socket")
+      console.log(data.nickname," : connected to the socket with : ",socket.id)
       clientsMap.set(socket.id, data.nickname);
     });
 
