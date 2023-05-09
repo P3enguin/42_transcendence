@@ -142,25 +142,25 @@ model Match {
 model Room {
   id          Int     @id @default(autoincrement())
   channelId   String  @unique()
-  name        String  @unique()
+  name        String?
   topic       String?
   key         String?
   memberLimit Int     @default(2)
-  stats       String?
+  privacy     String  @default("secret")
 
   isChannel Boolean @default(false)
-  isRead    Boolean @default(false)
-  isSeen    Int     @default(0)
 
   ownerId Int
-  owner   Player  @relation(fields: [ownerId], references: [id])
+  owner   Player?  @relation(fields: [ownerId], references: [id])
 
-  admins  Player[] @relation("room_admins")
-  members Player[] @relation("room_members")
-  chats   Chat[]
-  bans    Ban[]
+  admins    Player[] @relation("room_admins")
+  members   Player[] @relation("room_members")
+  messages  Chat[]
+  bans      Ban[]
 
-  avatar String @default("#")
+  avatar String @default("default.png")
+
+  createdAt DateTime @default(now())
 }
 
 model Chat {

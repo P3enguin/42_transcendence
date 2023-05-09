@@ -1,4 +1,4 @@
-export interface Rooms {
+export interface Channels {
   channelId: number;
   name: string;
   topic: string;

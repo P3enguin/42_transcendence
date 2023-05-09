@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -14,7 +15,7 @@ import { GetPlayer } from 'src/auth/decorator';
 import { Request, Response } from 'express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
-import { BanMemberDto, JoinChannelDto } from './dto';
+import { BanMemberDto, CreateChannelDto, JoinChannelDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('chat')
@@ -53,18 +54,35 @@ export class ChatController {
   @Get('allChat')
   GetChat(@GetPlayer() player: Player) {}
 
-  @Post('CreateRoom')
-  CreateRoom(@Req() req: Request, @Res() res: Response) {
-    const room = req.body;
-    const roomId = this.chatService.CreateRoom(room);
-    res.status(200).json(roomId);
+  @Post('create')
+  async createChannel(
+    @GetPlayer() player: Player,
+    @Body() createChannelDto: CreateChannelDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.createChannel(
+        player,
+        createChannelDto,
+      );
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      return res.status(500).json({ error: 'An error has occurred' });
+    }
   }
 
-  @Post('CreatePrivateChat')
-  CreatePrivateChat(@Req() req: Request, @Res() res: Response) {
-    const room = req.body;
-    const roomId = this.chatService.CreatePrivateChat(room);
-    res.status(200).json(roomId);
+  @Post('create/dm')
+  async createDM(
+    @GetPlayer() player: Player,
+    @Query('nickname') nickname: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.createDM(player, nickname);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      return res.status(500).json({ error: 'An error has occurred' });
+    }
   }
 
   @Post('join')
@@ -74,13 +92,11 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      const channel = await this.chatService.joinChannel(
-        player,
-        joinChannelDto,
-      );
-      res.status(200).json(channel);
+      const result = await this.chatService.joinChannel(player, joinChannelDto);
+      res.status(result.status).json(result.data);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      console.log(error);
+      return res.status(500).json({ error: 'An error has occurred' });
     }
   }
 
@@ -91,10 +107,11 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      await this.chatService.leaveChannel(player, channelId);
-      res.status(200).json({ message: 'Successfully left the room' });
+      const result = await this.chatService.leaveChannel(player, channelId);
+      res.status(result.status).json(result.data);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      console.log(error);
+      return res.status(500).json({ error: 'An error has occurred' });
     }
   }
 
@@ -104,12 +121,23 @@ export class ChatController {
     @Body() banMemberDto: BanMemberDto,
     @Res() res: Response,
   ) {
-    const result = await this.chatService.banMember(player, banMemberDto);
-    res.status(result.status).json(result.data);
+    try {
+      const result = await this.chatService.banMember(player, banMemberDto);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'An error has occurred' });
+    }
   }
 
   @Get('discover')
-  getDiscoveredRooms(@Res() res: Response) {
-    return this.chatService.getDiscoveredRooms(res);
+  async getDiscoveredChannels(@Res() res: Response) {
+    try {
+      const result = await this.chatService.getDiscoveredChannels();
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'An error has occurred' });
+    }
   }
 }

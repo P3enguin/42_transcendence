@@ -1,8 +1,12 @@
 import Image from 'next/image';
 import ChannelHome from './ChannelHome';
-import { Rooms } from '@/interfaces/Rooms';
+import { Channels } from '@/interfaces/Channels';
 
-export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
+export default function DiscoverChannels({
+  channels,
+}: {
+  channels: Channels[];
+}) {
   return (
     <div className="w-[90%] rounded-[20px] border border-white">
       <div className="flex pl-4 pt-4">
@@ -15,20 +19,22 @@ export default function DiscoverChannels({ rooms }: { rooms: Rooms[] }) {
         <h1 className="pl-2 text-xl font-bold uppercase">Discover Channels:</h1>
       </div>
       <ul className="scrollbar mx-2 mb-2 flex overflow-x-auto whitespace-nowrap py-4 px-9">
-        {rooms.length == 0 && (
+        {channels.length == 0 && (
           <div className="flex h-[90px] w-full items-center justify-center">
             <p>No channels</p>
           </div>
         )}
-        {rooms.map((room) => (
-          <li key={room.name} className="p-2">
+        {channels.map((channel) => (
+          <li key={channel.name} className="p-2">
             <ChannelHome
               avatar={
-                process.env.NEXT_PUBLIC_BACKEND_HOST + '/rooms/' + room.avatar
+                process.env.NEXT_PUBLIC_BACKEND_HOST +
+                '/channels/' +
+                channel.avatar
               }
-              name={room.name}
-              memberCount={room.memberCount}
-              channelLink={`/chat/${room.channelId}`}
+              name={channel.name}
+              memberCount={channel.memberCount}
+              channelLink={`/chat/${channel.channelId}`}
             />
           </li>
         ))}

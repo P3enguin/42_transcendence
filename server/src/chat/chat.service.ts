@@ -3,7 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
 import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { BanMemberDto, JoinChannelDto } from './dto';
+import { BanMemberDto, CreateChannelDto, JoinChannelDto } from './dto';
+import { generate } from 'shortid';
 
 @Injectable()
 export class ChatService {
@@ -30,80 +31,85 @@ export class ChatService {
 
   GetChat(player: Player) {}
 
-  async CreateRoom(room: any) {
-    const shortid = require('shortid');
-    const roomId = shortid.generate();
-    const player = await this.prisma.player.findUnique({
-      where: {
-        nickname: room.creator,
+  async createChannel(player: Player, createChannelDto: CreateChannelDto) {
+    const { name, topic, key, memberLimit, privacy } = createChannelDto;
+
+    const channel = await this.prisma.room.create({
+      select: {
+        channelId: true,
+        name: true,
+        topic: true,
+        memberLimit: true,
+        privacy: true,
+        ownerId: true,
+      },
+      data: {
+        channelId: generate(),
+        name,
+        topic,
+        key,
+        memberLimit,
+        privacy,
+        isChannel: true,
+        owner: {
+          connect: { id: player.id },
+        },
+        admins: {
+          connect: { id: player.id },
+        },
+        members: {
+          connect: { id: player.id },
+        },
       },
     });
-    console.log({ room });
-    try {
-      await this.prisma.room.create({
-        data: {
-          channelId: roomId,
-          name: room.name,
-          topic: room.Topic,
-          key: room.Key,
-          memberLimit: room.memberLimit,
-          stats: room.stats,
-          isChannel: true,
-          ownerId: player.id, // add null-check here
-        },
-      });
-      console.log('room created');
-      return roomId;
-    } catch (e) {
-      console.log('error while creating new room', e);
-      return 'no Room';
-    }
+
+    return {
+      status: 201,
+      data: channel,
+    };
   }
 
-  async CreatePrivateChat(room: any) {
-    const shortid = require('shortid');
-    const roomId = shortid.generate();
-    const name = room.player1 + room.creator;
-    const checkRoom = await this.prisma.room.findFirst({
+  async createDM(player: Player, nickname: string) {
+    const existingDM = await this.prisma.room.findFirst({
       where: {
-        name: name,
+        isChannel: false,
+        memberLimit: 2,
+        members: {
+          every: {
+            OR: [{ nickname: player.nickname }, { nickname: nickname }],
+          },
+        },
       },
     });
-    if (!checkRoom) {
-      console.log('new priv chat id', roomId);
-      const player = await this.prisma.player.findUnique({
-        where: {
-          nickname: room.creator,
-        },
-      }); //<<---- get room first check if name exist  and quit
-      if (player) {
-        try {
-          await this.prisma.room.create({
-            data: {
-              channelId: roomId,
-              name: name,
-              key: room.Key,
-              memberLimit: room.memberLimit,
-              stats: 'private',
-              isChannel: false,
-              ownerId: player.id, // add null-check here
-              members: {
-                connect: [
-                  { nickname: room.player1 },
-                  { nickname: room.creator },
-                ],
-              },
-            },
-          });
-          console.log('room created');
-          return roomId;
-        } catch (e) {
-          console.log('error while creating new room', e);
-          return 'no Room';
-        }
-      } else return "can't create room for undefined user";
+
+    if (existingDM) {
+      return {
+        status: 403,
+        data: { error: 'DM already exists' },
+      };
     }
-    return 'Room already existe';
+
+    const dm = await this.prisma.room.create({
+      select: {
+        channelId: true,
+      },
+      data: {
+        channelId: generate(),
+        isChannel: false,
+        memberLimit: 2,
+        owner: {
+          connect: { id: player.id },
+        },
+        members: {
+          connect: [{ nickname: player.nickname }, { nickname }],
+        },
+      },
+    });
+
+    return {
+      status: 201,
+      data: dm,
+    };
   }
 
   async joinChannel(player: Player, JoinChannelDto: JoinChannelDto) {
@@ -123,22 +129,34 @@ export class ChatService {
     });
 
     if (!channel) {
-      throw new Error('Invalid channel');
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
     }
 
     if (channel.key && key !== channel.key) {
-      throw new Error('Invalid key');
+      return {
+        status: 403,
+        data: { error: 'Invalid key' },
+      };
     }
 
     if (channel.bans.length > 0) {
-      throw new Error('You are banned from this room');
+      return {
+        status: 403,
+        data: { error: 'You are banned from this room' },
+      };
     }
 
     if (
       channel.memberLimit &&
       channel.members.length + 1 > channel.memberLimit
     ) {
-      throw new Error('Room is full');
+      return {
+        status: 403,
+        data: { error: 'Channel is full' },
+      };
     }
 
     const updatedRoom = await this.prisma.room.update({
@@ -147,7 +165,7 @@ export class ChatService {
         name: true,
         topic: true,
         memberLimit: true,
-        stats: true,
+        privacy: true,
         avatar: true,
       },
       where: { channelId: channelId },
@@ -163,13 +181,17 @@ export class ChatService {
       },
     });
 
-    return updatedRoom;
+    return {
+      status: 200,
+      data: updatedRoom,
+    };
   }
 
   async leaveChannel(player: Player, channelId: string) {
     const room = await this.prisma.room.findFirst({
       where: {
         channelId: channelId,
+        isChannel: true,
         members: {
           some: {
             id: player.id,
@@ -179,7 +201,10 @@ export class ChatService {
     });
 
     if (!room) {
-      throw new Error('Invalid room');
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
     }
 
     await this.prisma.room.update({
@@ -195,6 +220,11 @@ export class ChatService {
         rooms: { disconnect: { channelId: channelId } },
       },
     });
+
+    return {
+      status: 204,
+      data: { error: 'Successfully left the channel' },
+    };
   }
 
   async banMember(player: Player, banMemberDto: BanMemberDto) {
@@ -305,32 +335,32 @@ export class ChatService {
     };
   }
 
-  async getDiscoveredRooms(res: Response) {
-    try {
-      let rooms = await this.prisma.room.findMany({
-        select: {
-          channelId: true,
-          name: true,
-          topic: true,
-          memberLimit: true,
-          avatar: true,
-          members: true,
+  async getDiscoveredChannels() {
+    let channels = await this.prisma.room.findMany({
+      select: {
+        channelId: true,
+        name: true,
+        topic: true,
+        memberLimit: true,
+        avatar: true,
+        members: true,
+      },
+      where: {
+        isChannel: true,
+        NOT: {
+          privacy: 'secret',
         },
-        where: {
-          isChannel: true,
-          NOT: {
-            stats: 'secret',
-          },
-        },
-      });
-      rooms = rooms.map((room) => ({
-        ...room,
-        memberCount: room.members.length,
-      }));
-      return res.status(200).json({ rooms });
-    } catch (err) {
-      console.log(err);
-      return res.status(400).json({ error: err });
-    }
+      },
+    });
+
+    channels = channels.map((room) => ({
+      ...room,
+      memberCount: room.members.length,
+    }));
+
+    return {
+      status: 200,
+      data: channels,
+    };
   }
 }
