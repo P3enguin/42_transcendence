@@ -127,6 +127,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         bottomPaddle: gamepos.bottomPaddle,
         topPaddle: gamepos.topPaddle,
       });
-    }, 1000/40);
+    }, 1000/60);
   }
 }
