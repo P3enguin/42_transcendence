@@ -32,7 +32,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
 
   return (
     <>
-      <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
+      <div className="flex h-[70%] w-[80%] min-h-[600px] m-5 sm:m-20 flex-row rounded-2xl border border-neutral-300 max-w-[1500px] ">
       <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r">
           <div className="flex h-[5%] items-center border-b pl-5 w-[100%]">
             <Link href={`/chat`}>Chat Room </Link>
@@ -42,7 +42,7 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
           }
 
           <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
-            <div className="flex flex-row justify-between border-t pt-1">
+            <div className="flex flex-row justify-between pt-1">
             <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
             <div className="md:hidden cursor-pointer text-green-300" onClick={handleStartNewClick}>Start New</div>
             </div>

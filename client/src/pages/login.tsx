@@ -33,7 +33,6 @@ export async function getServerSideProps(context: any) {
     const response = await verifySession(context.req.headers.cookie);
     if (!response.ok) {
       const data = await response.json();
-      console.log(data);
       return {
         redirect: {
           destination: '/',
@@ -42,7 +41,6 @@ export async function getServerSideProps(context: any) {
       };
     }
     const result = await response.json();
-    console.log(result);
     return {
       props: {
         email: result.jwtDecoded.email,

@@ -65,8 +65,16 @@
 todo
 **/uploads/avatars/*
 **/uploads/wallpapers/*
+**/uploads/rooms/*
 
 !**/uploads/avatars/default.png
 !**/uploads/wallpapers/wallpaper.png
 
+<<<<<<< HEAD
 *.map
+=======
+
+# prisma migration
+
+**/prisma/migrations/*
+>>>>>>> origin/dev

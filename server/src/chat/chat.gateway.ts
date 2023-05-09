@@ -7,7 +7,7 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
- } from '@nestjs/websockets';
+} from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { Socket, Server } from 'socket.io';
 import { Body } from '@nestjs/common';
@@ -31,24 +31,21 @@ export interface LogPlayer extends Player {
     origin: '*',
   },
 })
-
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+export class ChatGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
- constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
- 
- @WebSocketServer() server: Server;
- 
- 
- afterInit(server: Server) {
-   console.log(server);
-   
+  constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
+
+  @WebSocketServer() server: Server;
+
+  afterInit(server: Server) {
+    console.log(server);
   }
-  
+
   handleDisconnect(client: Socket) {
-   console.log(`Disconnected: ${client.id}`);
-   
+    console.log(`Disconnected: ${client.id}`);
   }
-  
+
   async handleConnection(client: Socket) {
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
@@ -59,11 +56,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.server.to(client.id).emit('connected', 'Hello world!');
   }
 
-  
   @SubscribeMessage('joinChat')
-  handleJoinChat(client: Socket, payload: any){
+  handleJoinChat(client: Socket, payload: any) {
     console.log(payload);
-    client.join(payload.id)
+    client.join(payload.id);
   }
 
   @SubscribeMessage('sendMessage')
@@ -71,7 +67,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     @GetPlayer() player: LogPlayer,
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
-  ){
+  ) {
     // const data = Date.UTC()
     console.log(data.id);
     console.log(player);

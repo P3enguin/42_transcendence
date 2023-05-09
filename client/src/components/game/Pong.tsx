@@ -16,35 +16,41 @@ interface PongProps {
   position: string;
 }
 
+const BOARD_WIDHT = 700;
+const BOARD_HEIGHT = BOARD_WIDHT * 1.4;
+const PADDLE_OFFSET = 10;
+const PADDLE_WIDTH = BOARD_WIDHT / 8;
+const PADDLE_HEIGHT = PADDLE_WIDTH / 5;
+const BALL_DIAMETER = PADDLE_HEIGHT;
+const BALL_RADIUS = BALL_DIAMETER / 2;
+
 const Pong = ({ gameRef, socket, position }: PongProps) => {
   const boardRef = useRef<HTMLDivElement>(null);
-  const [ballPosition, setBallPosition] = useState({ x: 300, y: 100 });
-  const [Paddle1Position, setPaddle1Position] = useState({ x: 525, y: 1 });
-  const [Paddle2Position, setPaddle2Position] = useState({ x: 175, y: -1 });
-
-  socket.on('move it', ({ position, x }: any) => {
-    if (position === 'Top') {
-      setPaddle1Position({ x, y: 1 });
-    } else {
-      setPaddle2Position({ x, y: -1 });
-    }
-  });
+  const ballRef = useRef<HTMLDivElement>(null);
+  let prevX = 0;
 
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
-      const x = (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth;
+      const mousePosition = e.clientX - rec.left;
+      let x = Math.round((700 * mousePosition) / boardRef.current.offsetWidth);
+      if (x < 0 + PADDLE_WIDTH / 2 || x > 700 - PADDLE_WIDTH / 2) return;
+      if (position === 'Top') x = (x - 700) * -1;
+      if (x === prevX) return;
+      prevX = x;
       socket.emit('move', { x, position });
     }
   };
-
+  
   const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
-      const x =
-        (700 * (e.touches[0].clientX - rec.left)) /
-        boardRef.current.offsetWidth;
+      const touchPosition = e.touches[0].clientX - rec.left;
+      let x = Math.round((700 * touchPosition) / boardRef.current.offsetWidth);
       if (x < 0 || x > 700) return;
+      if (position === 'Top') x = Math.abs(x - 700);
+      if (x === prevX) return;
+      prevX = x;
       socket.emit('move', { x, position });
     }
   };
@@ -57,9 +63,9 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
       mouseHandler={handleMouseMove}
       touchHandler={handleTouchMove}
     >
-      <Paddle position={Paddle1Position} />
-      <Ball position={ballPosition} />
-      <Paddle position={Paddle2Position} />
+      <Paddle position="Top" ws={socket} />
+      <Ball ws={socket} ballRef={ballRef} />
+      <Paddle position="Bottom" ws={socket} />
     </Board>
   );
 };

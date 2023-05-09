@@ -101,7 +101,6 @@ html {
 }
 
 
-
 @media only screen and (min-device-width: 640px) {
   button:hover .friend-icon {
     fill: #0097e2; /* Change to the color you want */
@@ -128,5 +127,21 @@ button:hover .friend-text {
   color: #0097e2;
 }
 
+
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  width: 7px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+ 
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(50, 55, 145);
+  border-radius: 5px;
+}
 
 /******************************* profile css **********************************/

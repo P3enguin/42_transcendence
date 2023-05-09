@@ -1,28 +1,31 @@
-import { Injectable, Req, Res } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { JoinChannelDto } from './dto';
 
 @Injectable()
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  // check if the receiver blocked, the player can send to anyone else
-  SendPrivMessage(friendId: string, message: string) {
-    return 'SendPrivMessage';
+    // check if the receiver blocked, the player can send to anyone else
+  SendPrivMessage(friendId: string, message: string)
+  { 
+      return ('SendPrivMessage');
   }
-
-  SendPublicMessage(channelId: number, message: string) {
-    return 'SendPublicMessage';
+    
+  SendPublicMessage(channelId: number, message: string)
+  {
+    return ('SendPublicMessage');
   }
-
+    
+  GetChannelMessage(channelId: number)
+  {
+      return ('GetChannelMessage');
+  }
   GetPrivMessage(player: Player, friendId: any) {
     return '7oet_d9Z';
-  }
-
-  GetChannelMessage(channelId: number) {
-    return 'GetChannelMessage';
   }
 
   GetChatById(id: string) {}
@@ -154,8 +157,88 @@ export class ChatService {
     return checkRoom2.channelId;
   }
 
-  removeFromChat(nickname: string) {
-    return 'removed From Chat';
+  async joinChannel(player: Player, JoinChannelDto: JoinChannelDto) {
+    const { channelId, key } = JoinChannelDto;
+
+    const channel = await this.prisma.room.findUnique({
+      where: { channelId: channelId },
+      select: {
+        channelId: true,
+        Key: true,
+        memberLimit: true,
+        member: true,
+      },
+    });
+
+    if (!channel) {
+      throw new Error('Invalid channel');
+    }
+
+    if (channel.Key && key !== channel.Key) {
+      throw new Error('Invalid key');
+    }
+
+    if (
+      channel.memberLimit &&
+      channel.member.length + 1 > channel.memberLimit
+    ) {
+      throw new Error('Room is full');
+    }
+
+    const updatedRoom = await this.prisma.room.update({
+      select: {
+        channelId: true,
+        name: true,
+        Topic: true,
+        memberLimit: true,
+        stats: true,
+        avatar: true,
+      },
+      where: { channelId: channelId },
+      data: {
+        member: { connect: { id: player.id } },
+      },
+    });
+
+    await this.prisma.player.update({
+      where: { id: player.id },
+      data: {
+        rooms: { connect: { channelId: channelId } },
+      },
+    });
+
+    return updatedRoom;
+  }
+
+  async leaveChannel(player: Player, channelId: string) {
+    const room = await this.prisma.room.findFirst({
+      where: {
+        channelId: channelId,
+        member: {
+          some: {
+            id: player.id,
+          },
+        },
+      },
+    });
+
+    if (!room) {
+      throw new Error('Invalid room');
+    }
+
+    await this.prisma.room.update({
+      where: { channelId: channelId },
+      data: {
+        member: { disconnect: { id: player.id } },
+      },
+    });
+
+    await this.prisma.player.update({
+      where: { id: player.id },
+      data: {
+        rooms: { disconnect: { channelId: channelId } },
+      },
+    });
   }
 
   async getDiscoveredRooms(res: Response) {

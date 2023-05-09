@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, IsInt, IsOptional, } from 'class-validator';
 
 export class ChatDto {
 
@@ -27,4 +27,13 @@ export class ChatDto {
 
     
     IsChannel: boolean;
+}
+
+export class JoinChannelDto {
+  @IsString()
+  channelId: string;
+
+  @IsString()
+  @IsOptional()
+  key?: string;
 }

@@ -1,12 +1,22 @@
-import { Body, 
-  Controller, Get, Post, Query, Req, Res,
-  UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetPlayer } from 'src/auth/decorator';
 import { Request, Response } from 'express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
 import { ChatDto } from './dto';
+import { JoinChannelDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('chat')
@@ -43,15 +53,10 @@ export class ChatController {
   }
 
   @Get('getRoom')
-  async getRoom(
-  @Req() req: Request,
-  @Res() res: Response,
-  @Query() room: any,
-) {
+  async getRoom(@Req() req: Request, @Res() res: Response, @Query() room: any) {
     const roomId = await this.chatService.getRoomByName(room);
     res.status(200).json(roomId);
-}
-
+  }
 
   @Get('channelMessages')
   GetChannelMessage(channelId: number) {
@@ -70,17 +75,47 @@ export class ChatController {
   async CreateRoom(@Req() req: Request, @Res() res: Response) {
     const room = req.body;
     const roomId = await this.chatService.CreateRoom(room);
-    console.log(roomId)
+    console.log(roomId);
     res.status(200).json(roomId);
   }
-  
 
   @Post('CreatePrivateChat')
   async CreatePrivateChat(@Req() req: Request, @Res() res: Response) {
     const room = req.body;
     const roomId = await this.chatService.CreatePrivateChat(room);
-    console.log(roomId)
+    console.log(roomId);
     res.status(200).json(roomId);
+  }
+
+  @Post('join')
+  async joinChannel(
+    @GetPlayer() player: Player,
+    @Body() joinChannelDto: JoinChannelDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const channel = await this.chatService.joinChannel(
+        player,
+        joinChannelDto,
+      );
+      res.status(200).json(channel);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  @Delete('leave/:id')
+  async leaveChannel(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      await this.chatService.leaveChannel(player, channelId);
+      res.status(200).json({ message: 'Successfully left the room' });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   }
 
   @Get('discover')

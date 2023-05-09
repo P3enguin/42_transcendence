@@ -44,7 +44,7 @@ function OnlineNow ({player, token}: any)
   }, []);
 
   return (
-    <div className="flex h-[15%] w-[100%] flex-col pl-5 pr-5">
+    <div className="flex h-[15%] w-[100%] flex-col pl-5 pr-5 border-b">
       <div>Friends : </div>
       <div className="scroll-hide flex w-[90%] space-x-1 flex-row overflow-hidden overflow-x-auto scrollbar-hide">
         {friends.map((friend: any, key: number) => {
