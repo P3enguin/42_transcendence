@@ -11,7 +11,6 @@ import OnlineNow from '@/components/chat/OnlineNow';
 import RecentChat from '@/components/chat/recent_chat';
 import { log } from 'console';
 
-let socket: Socket;
 //use the chat :
 function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
 

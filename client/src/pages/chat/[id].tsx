@@ -13,7 +13,6 @@ import RecentChat from '@/components/chat/recent_chat';
 import Link from 'next/link';
 import { Console } from 'console';
 
-let socket: Socket;
 //use the chat :
 function Chat({ jwt_token, data, id }: { jwt_token: string; data: any, id: string }) {
 
