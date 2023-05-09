@@ -35,7 +35,7 @@ const Ai = () => {
           P2="AI"
           P2Score={AIScore}
         />
-        <PongAi gameRef={gameRef} newScore={newScore} />
+        <PongAi gameRef={gameRef} newScore={newScore} isSimulation={true} />
       </div>
     </>
   );

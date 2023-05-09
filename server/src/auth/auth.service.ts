@@ -42,13 +42,13 @@ export class AuthService {
       if (!player) {
         const secret = process.env.JWT_SESSION;
         const jwtSession = await this.jwt.signAsync(user, {
-          expiresIn: '15m',
+          expiresIn: '1d',
           secret: secret,
         });
         res.status(200).cookie('jwt_session', jwtSession, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 15, // expires after 15 min
+          maxAge: 1000 * 60 * 60 *24, // expires after 24H
         });
         res.redirect(process.env.FRONTEND_HOST + '/login');
 

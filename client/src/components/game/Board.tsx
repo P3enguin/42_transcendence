@@ -33,7 +33,7 @@ const Board = ({
           boardRef.current.style.height =
             boardRef.current.offsetWidth * 1.4 + 'px';
         } else if (parentWidth > parentHeight / 1.4) {
-          boardRef.current.style.height = (parentHeight - 64) * 0.9 + 'px';
+          boardRef.current.style.height = (parentHeight - 64) * 0.91 + 'px';
           boardRef.current.style.width =
             boardRef.current.offsetHeight / 1.4 + 'px';
         }
@@ -44,14 +44,15 @@ const Board = ({
     return () => {
       window.removeEventListener('resize', resizeBoard);
     };
-  }, [boardRef, parentRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardRef.current, parentRef.current]);
 
   return (
     <div
       onMouseMove={mouseHandler}
       onTouchMove={touchHandler}
       ref={boardRef}
-      className="bg-center bg-no-repeat rounded-[3%]"
+      className="rounded-[3%] bg-center bg-no-repeat w-full"
       style={{
         backgroundImage: "url('../game/GameBoard.svg')",
         backgroundSize: '100%',

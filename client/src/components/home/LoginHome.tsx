@@ -1,5 +1,5 @@
-import { Label } from 'flowbite-react';
-import { AnimateSharedLayout, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import Simulation from './Simulation';
 import Image from 'next/image';
 import { useState } from 'react';
 import Router from 'next/router';
@@ -14,11 +14,6 @@ interface SignInInterface {
 }
 
 function Login() {
-  const [text, changeText] = useState([
-    { text: 'Sign In', status: true },
-    { text: 'gg', status: false },
-  ]);
-
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const nickInput = document.getElementById('nickname') as HTMLInputElement;
@@ -56,7 +51,7 @@ function Login() {
   }
 
   return (
-    <div className="w-full max-w-lg justify-center text-base  md:w-2/3 md:text-2xl">
+    <div className="lg:w-[500px]  justify-center text-base  md:text-2xl">
       <motion.div
         key="login"
         initial={{ opacity: 0 }}

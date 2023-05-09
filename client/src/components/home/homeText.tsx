@@ -7,7 +7,7 @@ export interface handleFunc {
 
 function HomeText({ handleJoin }: handleFunc) {
   return (
-    <div className="text-center xl:text-left w-auto xl:w-1/4 css ">
+    <div className=" xl:text-left ">
       <motion.div
         key="text1"
         initial={{ opacity: 0 }}
@@ -15,7 +15,7 @@ function HomeText({ handleJoin }: handleFunc) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <h3 className="text-3xl xl:text-6xl text-white mb-1 md:mb-10 sh">
+        <h3 className="text-3xl xl:text-6xl text-white mb-1 md:mb-10 ">
           Ponigator
         </h3>
         <p className="mt-4 text-xl xl:text-4xl md:text-3xl leading-relaxed mb-1 md:mb-10  text-white ">

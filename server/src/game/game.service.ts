@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Game, GameType, Player } from './interfaces';
-import { randomUUID } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Socket } from 'socket.io';
 
 @Injectable()
 export class GameService {

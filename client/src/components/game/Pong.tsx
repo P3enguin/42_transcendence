@@ -26,7 +26,6 @@ const BALL_RADIUS = BALL_DIAMETER / 2;
 
 const Pong = ({ gameRef, socket, position }: PongProps) => {
   const boardRef = useRef<HTMLDivElement>(null);
-  const ballRef = useRef<HTMLDivElement>(null);
   let prevX = 0;
 
   const handleMouseMove: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -34,14 +33,15 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
       const rec = boardRef.current.getBoundingClientRect();
       const mousePosition = e.clientX - rec.left;
       let x = Math.round((700 * mousePosition) / boardRef.current.offsetWidth);
-      if (x < 0 + PADDLE_WIDTH / 2 || x > 700 - PADDLE_WIDTH / 2) return;
+      x = position === 'Top' ? x + PADDLE_WIDTH / 2 : x - PADDLE_WIDTH / 2;
       if (position === 'Top') x = (x - 700) * -1;
+      if (x < 0 || x > 700 - PADDLE_WIDTH) return;
       if (x === prevX) return;
       prevX = x;
       socket.emit('move', { x, position });
     }
   };
-  
+
   const handleTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
@@ -63,9 +63,9 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
       mouseHandler={handleMouseMove}
       touchHandler={handleTouchMove}
     >
-      <Paddle position="Top" ws={socket} />
-      <Ball ws={socket} ballRef={ballRef} />
-      <Paddle position="Bottom" ws={socket} />
+      <Paddle position="Top" ws={socket} boardRef={boardRef} />
+      <Ball ws={socket} boardRef={boardRef} />
+      <Paddle position="Bottom" ws={socket} boardRef={boardRef} />
     </Board>
   );
 };

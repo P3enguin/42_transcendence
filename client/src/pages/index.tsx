@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { AnimatePresence, motion, AnimateSharedLayout } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import Simulation from '@/components/home/Simulation';
+import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
 import Login from '@/components/home/LoginHome';
 import NavBar from '@/components/home/NavBar';
 import HomeText from '@/components/home/homeText';
@@ -9,6 +10,8 @@ import { verifyToken } from '@/components/VerifyToken';
 import Router from 'next/router';
 
 export default function Home({ authenticated }: { authenticated: boolean }) {
+  const simRef = useRef<HTMLDivElement>(null);
+
   const [state, setState] = useState([
     { name: 'Home', current: true, animation: { rotate: 0 } },
     { name: 'About', current: false, animation: { rotate: -90 } },
@@ -60,39 +63,72 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
 
         {/* Navigation bar component */}
         <NavBar state={state} handleClick={handleClick} />
-
-        {/* Home Content components */}
-        <div className="relative pt-12">
+        <div className="flex  h-[calc(100vh-80px)] w-screen justify-start">
           <div
-            className={` flex items-center   gap-12
-                      ${state[1].current ? 'xl:flex-row' : 'flex-col-reverse'}
-                      ${
-                        state[2].current
-                          ? 'mr-12 justify-end'
-                          : 'justify-center'
-                      } 
-                      ${join ? 'xl:flex-row-reverse' : 'xl:flex-row'}`}
+            className={`flex  w-full gap-[100px] pt-12
+            ${state[1].current ? 'xl:flex-row' : ''}
+            ${state[2].current ? 'mr-12 justify-end' : ''} 
+            ${join ? 'flex-row-reverse justify-start' : 'justify-start'}`}
           >
             <motion.div
+              ref={simRef}
               key="img"
               layoutId="test"
               initial={true}
               animate={animate}
               transition={{ type: 'Tween' }}
               exit={{ opacity: 0 }}
+              className={`flex h-full w-[50%] 
+            ${state[1].current ? '' : ''}
+            ${state[2].current ? '' : ''} 
+            ${join ? 'justify-start' : 'justify-end'}
+              `}
             >
-              <div className={getImageStyle()}>
-                <Image src="/game.png" alt="game" width={700} height={700} />
-              </div>
+              <Simulation gameRef={simRef} />
             </motion.div>
-            {state[0].current && <HomeText handleJoin={handleJoin} />}
-            {join && <Login />}
+            <div className=" flex h-screen  max-w-[500px] pt-[100px]">
+              {state[0].current && <HomeText handleJoin={handleJoin} />}
+              {join && <Login />}
+            </div>
           </div>
         </div>
+        {/* Home Content components */}
       </>
     );
   }
 }
+
+{
+  /* <div className="relative pt-12">
+<div
+  className={` m-12  items-center  gap-12
+            ${state[1].current ? 'xl:flex-row' : 'flex-col-reverse'}
+            ${
+              state[2].current
+                ? 'mr-12 justify-end'
+                : 'justify-center'
+            } 
+            ${join ? 'xl:flex-row-reverse' : 'xl:flex-row'}`}
+>
+  <motion.div
+    key="img"
+    layoutId="test"
+    initial={true}
+    animate={animate}
+    transition={{ type: 'Tween' }}
+    exit={{ opacity: 0 }}
+    ref={simRef}
+  >
+    <div className={getImageStyle()}>
+      <Simulation gameRef={simRef} />
+      {/* <Image src="/game.png" alt="game" width={700} height={700} /> */
+}
+//   </div>
+// </motion.div>
+// {state[0].current && <HomeText handleJoin={handleJoin} />}
+// {join && <Login />}
+// </div>
+// </div> */}
 
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
