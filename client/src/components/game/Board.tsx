@@ -44,14 +44,15 @@ const Board = ({
     return () => {
       window.removeEventListener('resize', resizeBoard);
     };
-  }, [boardRef, parentRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardRef.current, parentRef.current]);
 
   return (
     <div
       onMouseMove={mouseHandler}
       onTouchMove={touchHandler}
       ref={boardRef}
-      className="bg-center bg-no-repeat rounded-[3%]"
+      className="rounded-[3%] bg-center bg-no-repeat"
       style={{
         backgroundImage: "url('../game/GameBoard.svg')",
         backgroundSize: '100%',

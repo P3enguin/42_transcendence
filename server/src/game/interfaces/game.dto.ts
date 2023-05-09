@@ -38,11 +38,12 @@ export class Paddle {
   constructor(position: 'top' | 'bottom') {
     this.width = 700 / 8;
     this.height = this.width / 5;
-    this.x = 350;
     if (position === 'top') {
+      this.x = 700 / 4 - this.width / 2;
       this.y = 10;
     } else {
-      this.y = 700*1.4 - this.height - 10;
+      this.x = 3 * (700 / 4) - this.width / 2;
+      this.y = 700 * 1.4 - this.height - 10;
     }
   }
 }
@@ -135,7 +136,6 @@ export class Game {
     if (position === 'Bottom') this.paddle[0].x = x;
     else this.paddle[1].x = x;
   }
-
   updateGame() {
     let newBallX = this.ball.x + this.ball.velocityX;
     let newBallY = this.ball.y + this.ball.velocityY;
@@ -149,26 +149,30 @@ export class Game {
     }
 
     // check if ball is colliding with paddle
-    // if (
-    //   newBallX + this.ball.diameter >= this.paddle[0].x &&
-    //   newBallX <= this.paddle[0].x + this.paddle[0].width
-    // ) {
-    //   if (newBallY + this.ball.diameter >= this.paddle[0].y)
-    //     this.ball.velocityY = -Math.abs(this.ball.velocityY);
-    // } else if (
-    //   newBallX + this.ball.diameter >= this.paddle[1].x &&
-    //   newBallX <= this.paddle[1].x + this.paddle[1].width
-    // ) {
-    //   if (newBallY <= this.paddle[1].y + this.paddle[1].height)
-    //     this.ball.velocityY = Math.abs(this.ball.velocityY);
-    // }
+    // bottom paddle
+    if (
+      newBallX + this.ball.diameter >= this.paddle[0].x &&
+      newBallX <= this.paddle[0].x + this.paddle[0].width
+    ) {
+      if (newBallY >= this.paddle[0].y - this.ball.diameter) {
+        this.ball.velocityY = -Math.abs(this.ball.velocityY);
+      }
+    }
+    // top paddle
+    if (newBallX + this.ball.diameter >= this.paddle[1].x &&
+      newBallX <= this.paddle[1].x + this.paddle[1].width) {
+      if (newBallY <= this.paddle[1].y + this.paddle[1].height) {
+        this.ball.velocityY = Math.abs(this.ball.velocityY);;
+      }
+    }
+
 
     // must remove this later
     if (
       newBallY <= this.board.offset ||
       newBallY + this.ball.diameter >= this.board.height - this.board.offset
     ) {
-      this.ball.velocityY = -this.ball.velocityY;
+      newBallY = this.board.height / 2 - this.ball.radius;
     }
 
     this.ball.x = newBallX;
