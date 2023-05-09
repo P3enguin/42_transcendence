@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
 import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { JoinChannelDto } from './dto';
+import { BanMemberDto, JoinChannelDto } from './dto';
 
 @Injectable()
 export class ChatService {
@@ -44,12 +44,12 @@ export class ChatService {
         data: {
           channelId: roomId,
           name: room.name,
-          Topic: room.Topic,
-          Key: room.Key,
+          topic: room.Topic,
+          key: room.Key,
           memberLimit: room.memberLimit,
           stats: room.stats,
-          IsChannel: true,
-          adminId: player.id, // add null-check here
+          isChannel: true,
+          ownerId: player.id, // add null-check here
         },
       });
       console.log('room created');
@@ -82,12 +82,12 @@ export class ChatService {
             data: {
               channelId: roomId,
               name: name,
-              Key: room.Key,
+              key: room.Key,
               memberLimit: room.memberLimit,
               stats: 'private',
-              IsChannel: false,
-              adminId: player.id, // add null-check here
-              member: {
+              isChannel: false,
+              ownerId: player.id, // add null-check here
+              members: {
                 connect: [
                   { nickname: room.player1 },
                   { nickname: room.creator },
@@ -113,9 +113,9 @@ export class ChatService {
       where: { channelId: channelId },
       select: {
         channelId: true,
-        Key: true,
+        key: true,
         memberLimit: true,
-        member: true,
+        members: true,
         bans: {
           where: { playerId: player.id },
         },
@@ -126,7 +126,7 @@ export class ChatService {
       throw new Error('Invalid channel');
     }
 
-    if (channel.Key && key !== channel.Key) {
+    if (channel.key && key !== channel.key) {
       throw new Error('Invalid key');
     }
 
@@ -136,7 +136,7 @@ export class ChatService {
 
     if (
       channel.memberLimit &&
-      channel.member.length + 1 > channel.memberLimit
+      channel.members.length + 1 > channel.memberLimit
     ) {
       throw new Error('Room is full');
     }
@@ -145,14 +145,14 @@ export class ChatService {
       select: {
         channelId: true,
         name: true,
-        Topic: true,
+        topic: true,
         memberLimit: true,
         stats: true,
         avatar: true,
       },
       where: { channelId: channelId },
       data: {
-        member: { connect: { id: player.id } },
+        members: { connect: { id: player.id } },
       },
     });
 
@@ -170,7 +170,7 @@ export class ChatService {
     const room = await this.prisma.room.findFirst({
       where: {
         channelId: channelId,
-        member: {
+        members: {
           some: {
             id: player.id,
           },
@@ -185,7 +185,7 @@ export class ChatService {
     await this.prisma.room.update({
       where: { channelId: channelId },
       data: {
-        member: { disconnect: { id: player.id } },
+        members: { disconnect: { id: player.id } },
       },
     });
 
@@ -197,19 +197,127 @@ export class ChatService {
     });
   }
 
+  async banMember(player: Player, banMemberDto: BanMemberDto) {
+    const { channelId, memberNickname, reason } = banMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to ban users" },
+      };
+    }
+
+    // Find if the user to ban exists
+    const member = await this.prisma.player.findUnique({
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the user is a member of the room
+    if (
+      !channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is not a member of the channel' },
+      };
+    }
+
+    // Prevent admins from banning owner and other admins
+    if (
+      channel.owner.id === member.id ||
+      (channel.owner.id !== player.id &&
+        channel.admins.find((channelAdmin) => channelAdmin.id === member.id))
+    ) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to ban this user" },
+      };
+    }
+
+    // Performing the ban on the channel member
+    const ban = await this.prisma.ban.create({
+      data: {
+        channel: {
+          connect: { id: channel.id },
+        },
+        player: {
+          connect: { id: member.id },
+        },
+        reason: reason,
+      },
+    });
+
+    if (!ban) {
+      return {
+        status: 500,
+        data: { error: 'An error occurred while banning the member' },
+      };
+    }
+
+    // Remove user from the room
+    await this.prisma.room.update({
+      where: { channelId: channelId },
+      data: {
+        members: { disconnect: { id: member.id } },
+      },
+    });
+
+    await this.prisma.player.update({
+      where: { id: member.id },
+      data: {
+        rooms: { disconnect: { channelId: channelId } },
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully banned member from the channel' },
+    };
+  }
+
   async getDiscoveredRooms(res: Response) {
     try {
       let rooms = await this.prisma.room.findMany({
         select: {
           channelId: true,
           name: true,
-          Topic: true,
+          topic: true,
           memberLimit: true,
           avatar: true,
-          member: true,
+          members: true,
         },
         where: {
-          IsChannel: true,
+          isChannel: true,
           NOT: {
             stats: 'secret',
           },
@@ -217,7 +325,7 @@ export class ChatService {
       });
       rooms = rooms.map((room) => ({
         ...room,
-        memberCount: room.member.length,
+        memberCount: room.members.length,
       }));
       return res.status(200).json({ rooms });
     } catch (err) {

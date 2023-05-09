@@ -14,7 +14,7 @@ import { GetPlayer } from 'src/auth/decorator';
 import { Request, Response } from 'express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
-import { JoinChannelDto } from './dto';
+import { BanMemberDto, JoinChannelDto } from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('chat')
@@ -96,6 +96,16 @@ export class ChatController {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
+  }
+
+  @Post('ban')
+  async banMember(
+    @GetPlayer() player: Player,
+    @Body() banMemberDto: BanMemberDto,
+    @Res() res: Response,
+  ) {
+    const result = await this.chatService.banMember(player, banMemberDto);
+    res.status(result.status).json(result.data);
   }
 
   @Get('discover')

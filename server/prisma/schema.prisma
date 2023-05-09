@@ -33,7 +33,11 @@ model Player {
   wins Match[] @relation(name: "wins")
   loss Match[] @relation(name: "loss")
 
-  rooms Room[]
+  ownedRooms  Room[]
+
+  admins  Room[] @relation(name: "room_admins")
+  rooms   Room[] @relation(name: "room_members")
+  bans    Ban[]
 
   equipedTitle Int @default(0)
 
@@ -139,21 +143,22 @@ model Room {
   id          Int     @id @default(autoincrement())
   channelId   String  @unique()
   name        String  @unique()
-  Topic       String?
-  Key         String?
+  topic       String?
+  key         String?
   memberLimit Int     @default(2)
   stats       String?
 
-  IsChannel Boolean @default(false)
+  isChannel Boolean @default(false)
+  isRead    Boolean @default(false)
+  isSeen    Int     @default(0)
 
-  IsRead Boolean @default(false)
-  Isseen Int     @default(0)
+  ownerId Int
+  owner   Player  @relation(fields: [ownerId], references: [id])
 
-  adminId Int[]
-
-  member Player[]
-  chats  Chat[]
-  bans   Ban[]
+  admins  Player[] @relation("room_admins")
+  members Player[] @relation("room_members")
+  chats   Chat[]
+  bans    Ban[]
 
   avatar String @default("#")
 }
@@ -170,11 +175,15 @@ model Chat {
 }
 
 model Ban {
-  channelId Int  @id
+  id  Int @id @default(autoincrement())
+
+  channelId Int
   channel   Room @relation(fields: [channelId], references: [id])
 
-  playerId Int
-  reason   String
+  playerId  Int
+  player    Player @relation(fields: [playerId], references: [id])
+
+  reason  String?
 }
 
 model InvalidToken {

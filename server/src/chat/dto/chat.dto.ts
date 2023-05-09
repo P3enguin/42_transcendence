@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class JoinChannelDto {
   @IsString()
@@ -7,4 +7,16 @@ export class JoinChannelDto {
   @IsString()
   @IsOptional()
   key?: string;
+}
+
+export class BanMemberDto {
+  @IsString()
+  channelId: string;
+
+  @IsString()
+  memberNickname: string;
+
+  @IsString()
+  @IsOptional()
+  reason?: string;
 }
