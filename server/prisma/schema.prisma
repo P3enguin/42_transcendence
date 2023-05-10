@@ -63,7 +63,7 @@ model Status {
 
   level Int @default(0)
 
-  experionPoints Int @default(0) // <---- player experion
+  XP Int @default(0)
 
   achivement Achivement_status[]
   title      Titles_status[]
@@ -141,6 +141,7 @@ model Titles_status {
 
 model Match {
   id Int @id @default(autoincrement())
+  type String
 
   winner   Int
   winnerId Player @relation(fields: [winner], references: [id], name: "wins")
