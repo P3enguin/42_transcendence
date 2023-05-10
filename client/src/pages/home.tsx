@@ -4,22 +4,23 @@ import Leaderboard from '@/components/home/Leaderboard';
 import Layout from '@/components/layout/layout';
 import Head from 'next/head';
 import { LeaderBoard } from '@/interfaces/LeaderBoard';
-import { Rooms } from '@/interfaces/Rooms';
+import { Channels } from '@/interfaces/Channels';
 
 function HomePlayer({
-  rooms,
+  channels,
   leaderBoard,
 }: {
-  rooms: Rooms[];
+  channels: Channels[];
   leaderBoard: LeaderBoard;
 }) {
+  console.log(channels);
   return (
     <>
       <Head>
         <title>Ponginator | Home</title>
       </Head>
       <div className="my-[55px] flex w-full flex-col items-center gap-[65px]">
-        <DiscoverChannels rooms={rooms} />
+        <DiscoverChannels channels={channels} />
         <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap">
           <LiveGames />
           <Leaderboard leaderBoard={leaderBoard} />
@@ -32,7 +33,7 @@ function HomePlayer({
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const roomsRes = await fetch(
+    const channelsRes = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/discover',
       {
         headers: {
@@ -40,7 +41,7 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    const roomsData = await roomsRes.json();
+    const channelsData = await channelsRes.json();
 
     const levelLeaderBoardRes = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/leaderboard/level',
@@ -65,7 +66,7 @@ export async function getServerSideProps({ req }: any) {
     return {
       // modify this to return anything you want before your page load
       props: {
-        rooms: roomsData.rooms,
+        channels: channelsData,
         leaderBoard: {
           level: levelLeaderBoardData,
           rank: rankLeaderBoardData,

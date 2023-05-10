@@ -1,32 +1,23 @@
-import { IsNotEmpty, IsNumber, IsString, IsInt, IsOptional, } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 
-export class ChatDto {
+export class CreateChannelDto {
+  @IsString()
+  name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    channelId: string;
+  @IsString()
+  @IsOptional()
+  topic?: string;
 
-    @IsString()
-    @IsNotEmpty()
-    name: string;
+  @IsString()
+  @IsOptional()
+  key?: string;
 
-    Topic: string;
+  @IsInt()
+  memberLimit: number;
 
-    @IsString()
-    @IsNotEmpty()
-    Key: string;
-
-
-    @IsNumber()
-    @IsNotEmpty()
-    memberLimit: number;
-
-    @IsString()
-    @IsNotEmpty()
-    stats: string;
-
-    
-    IsChannel: boolean;
+  @IsString()
+  @IsEnum(['public', 'private', 'secret'])
+  privacy: 'public' | 'private' | 'secret';
 }
 
 export class JoinChannelDto {
@@ -36,4 +27,16 @@ export class JoinChannelDto {
   @IsString()
   @IsOptional()
   key?: string;
+}
+
+export class BanMemberDto {
+  @IsString()
+  channelId: string;
+
+  @IsString()
+  memberNickname: string;
+
+  @IsString()
+  @IsOptional()
+  reason?: string;
 }
