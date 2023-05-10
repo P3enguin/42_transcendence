@@ -33,7 +33,11 @@ model Player {
   wins Match[] @relation(name: "wins")
   loss Match[] @relation(name: "loss")
 
-  rooms Room[]
+  ownedRooms  Room[]
+
+  admins  Room[] @relation(name: "room_admins")
+  rooms   Room[] @relation(name: "room_members")
+  bans    Ban[]
 
   equipedTitle Int       @default(0)
   requestsFrom Request[] @relation("requestFrom")
@@ -153,25 +157,26 @@ model Match {
 
 model Room {
   id          Int     @id @default(autoincrement())
-  channelId   String  @unique() 
-  name        String  @unique()
-  Topic       String?
-  Key         String?
+  channelId   String  @unique()
+  name        String?
+  topic       String?
+  key         String?
   memberLimit Int     @default(2)
-  stats       String?
+  privacy     String  @default("secret")
 
-  IsChannel Boolean @default(false)
+  isChannel Boolean @default(false)
 
-  IsRead Boolean @default(false)
-  Isseen Int     @default(0)
+  ownerId Int
+  owner   Player?  @relation(fields: [ownerId], references: [id])
 
-  adminId Int[]
+  admins    Player[] @relation("room_admins")
+  members   Player[] @relation("room_members")
+  messages  Chat[]
+  bans      Ban[]
 
-  member Player[]
-  chats  Chat[]
-  bans   Ban[]
+  avatar String @default("default.png")
 
-  avatar String @default("#")
+  createdAt DateTime @default(now())
 }
 
 model Chat {
@@ -186,11 +191,15 @@ model Chat {
 }
 
 model Ban {
-  channelId Int  @id
+  id  Int @id @default(autoincrement())
+
+  channelId Int
   channel   Room @relation(fields: [channelId], references: [id])
 
-  playerId Int
-  reason   String
+  playerId  Int
+  player    Player @relation(fields: [playerId], references: [id])
+
+  reason  String?
 }
 
 model InvalidToken {

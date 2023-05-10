@@ -11,7 +11,10 @@ export default function LiveGame({
 }: any) {
   return (
     <div className="flex w-full items-center gap-[13px] rounded-[20px] border border-white p-2">
-      <div className="flex w-[40%] items-center justify-end gap-[13px]">
+      <Link
+        href={'/users/' + nickname1}
+        className="flex w-[40%] items-center justify-end gap-[13px]"
+      >
         <div className="truncate font-semibold">{nickname1}</div>
         <Image
           className="rounded-full bg-[#8bd9ffb3]"
@@ -20,7 +23,7 @@ export default function LiveGame({
           width={56}
           height={56}
         />
-      </div>
+      </Link>
       <div className="flex w-[20%] flex-col items-center justify-center">
         <div className="text-sm font-semibold">{score}</div>
         <div className="text-xl font-bold">VS</div>
@@ -30,7 +33,10 @@ export default function LiveGame({
           </button>
         </Link>
       </div>
-      <div className="flex w-[40%] items-center justify-start gap-[13px]">
+      <Link
+        href={'/users/' + nickname1}
+        className="flex w-[40%] items-center justify-start gap-[13px]"
+      >
         <Image
           className="rounded-full bg-[#8bd9ffb3]"
           src={avatar2}
@@ -39,7 +45,7 @@ export default function LiveGame({
           height={56}
         />
         <div className="truncate font-semibold">{nickname2}</div>
-      </div>
+      </Link>
     </div>
   );
 }
