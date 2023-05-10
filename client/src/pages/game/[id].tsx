@@ -17,12 +17,13 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
   const [P2, setP2] = useState('');
   const [P1Score, setP1Score] = useState<number>(0);
   const [P2Score, setP2Score] = useState<number>(0);
+  const [gameOn, setGameOn] = useState<boolean>(false);
 
-  const newScore = (player: string) => {
-    if (player === 'P1') {
-      setP1Score((prev) => prev + 1);
-    } else if (player === 'P2') {
-      setP2Score((prev) => prev + 1);
+  const getResult = (): string => {
+    if (P1Score > P2Score) {
+      return `${P1} wins!`;
+    } else {
+      return `${P2} wins!`;
     }
   };
 
@@ -40,23 +41,28 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
           console.log('joined: ', data);
         });
         socket.on('startGame', ({ position, P1, P2 }: any) => {
-          console.log('startGame', position);
+          console.log('startGame');
+          console.log('position: ', position);
+
           setPosition(position);
+          setGameOn(true);
           setP1(P1);
           setP2(P2);
-        });
-        socket.on('updateScore', ({ player, score }: any) => {
-          if (player === 'P1') {
-            setP1Score(score);
-          } else if (player === 'P2') {
-            setP2Score(score);
-          }
+          socket.on('updateScore', (data: { [key: string]: number }) => {
+            setP1Score(data[P1]);
+            setP2Score(data[P2]);
+          });
+          socket.on('gameOver', (data: any) => {
+            console.log('gameOver: ', data);
+            setGameOn(false);
+          });
         });
       });
     }
     return () => {
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt_token, params, res]);
 
   return (
@@ -68,12 +74,13 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         className="flex h-full w-full flex-col items-center justify-around"
         ref={gameRef}
       >
-        {Position && (
+        {gameOn && (
           <ScoreBoard P1={P1} P1Score={P1Score} P2={P2} P2Score={P2Score} />
         )}
-        {Position && (
+        {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
         )}
+        {!gameOn && Position && <div>Game Over {getResult()}</div>}
       </div>
     </>
   );
