@@ -24,7 +24,7 @@ function ProfileStats({
   return (
     <div
       className="flex h-[500px] w-11/12 flex-col  rounded-3xl 
-        bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
+        bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1100px]"
     >
       <div
         className="flex border-2 border-t-0 border-l-0 border-r-0 

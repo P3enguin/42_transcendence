@@ -211,7 +211,7 @@ function ProfileDisplay({
       </AnimatePresence>
       <div
         className="relative mt-[20px] flex w-11/12 flex-col justify-center
-        rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1000px]"
+        rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1100px]"
       >
         <div className="flex justify-end">
           <img

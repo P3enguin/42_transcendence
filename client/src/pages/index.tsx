@@ -87,6 +87,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
                 <Simulation
                   gameRef={simRef}
                   isRotated={state[1].current || state[2].current}
+                  isContact={state[2].current}
                 />
                 {/* <Image src="/game.png" alt="game" width={700} height={700} /> */}
               </div>

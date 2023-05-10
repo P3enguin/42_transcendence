@@ -3,6 +3,7 @@ interface textRef {
   text0Ref: React.RefObject<HTMLDivElement>;
   text1Ref: React.RefObject<HTMLDivElement>;
 }
+
 function Description({ text0Ref, text1Ref }: textRef) {
   return (
     <>
@@ -13,7 +14,7 @@ function Description({ text0Ref, text1Ref }: textRef) {
         animate={{ opacity: 1 }}
         transition={{ ease: 'easeOut', duration: 1.7 }}
         exit={{ opacity: 0 }}
-        className="absolute right-[-10%]  top-[8%]  rotate-90 border p-[12%]  text-center"
+        className="absolute right-[-10%]  top-[8%]  rotate-90 p-[12%]  text-center"
       >
         Playing video games is good. Programming them is great.But then… Setting
         up tournaments is even better!{' '}
@@ -25,7 +26,7 @@ function Description({ text0Ref, text1Ref }: textRef) {
         animate={{ opacity: 1 }}
         transition={{ ease: 'easeOut', duration: 1.5 }}
         exit={{ opacity: 0 }}
-        className="absolute  bottom-[8%]  left-[-9%] rotate-90   border  pt-[3%] text-center sm:p-12"
+        className="absolute  bottom-[8%]  left-[-9%] rotate-90    pt-[3%] text-center sm:p-12"
       >
         Ft_transcendence is the last project in 42 common-core cursus.With
         ft_transcendence, you learn how to recreate the 1979 classic Pong,
