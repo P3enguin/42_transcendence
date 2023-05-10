@@ -46,6 +46,10 @@ export class Paddle {
       this.y = 700 * 1.4 - this.height - 10;
     }
   }
+
+  updatePosition(x: number) {
+    this.x = x;
+  }
 }
 
 export class Ball {
@@ -55,6 +59,8 @@ export class Ball {
   radius: number;
   x: number;
   y: number;
+  newX: number;
+  newY: number;
   speed: number;
   velocityX: number;
   velocityY: number;
@@ -69,6 +75,16 @@ export class Ball {
     this.velocityX = this.speed * Math.cos(Math.PI / 4);
     this.velocityY = this.speed * Math.sin(Math.PI / 4);
   }
+
+  setNextPosition() {
+    this.newX = this.x + this.velocityX;
+    this.newY = this.y + this.velocityY;
+  }
+
+  updatePosition() {
+    this.x = this.newX;
+    this.y = this.newY;
+  }
 }
 
 export class Game {
@@ -82,6 +98,7 @@ export class Game {
   createdAt: Date;
   updatedAt: Date;
   inteval: NodeJS.Timeout;
+  gameOn: boolean;
 
   constructor(gameType: GameType) {
     this.id = generateID();
@@ -96,7 +113,7 @@ export class Game {
     this.inteval = null;
   }
 
-  isFull() {
+  isActive() {
     // check if game is full and both players are connected
     return (
       this.players.length === 2 &&
@@ -106,18 +123,16 @@ export class Game {
   }
 
   connectPlayer(nickname: string, socketId: string) {
-    const player = this.players.find((p) => p.nickname === nickname);
-    if (player) {
-      player.socketId = socketId;
-    }
+    const player = this.isPlayer(nickname);
+    if (player) player.socketId = socketId;
   }
 
   isPlayer(nickname: string) {
     return this.players.find((p) => p.nickname === nickname);
   }
 
-  addSpectator(player: Player) {
-    this.spectator.push(player);
+  addSpectator(spectator: Player) {
+    this.spectator.push(spectator);
   }
 
   removePlayer(nickname: string) {
@@ -133,54 +148,96 @@ export class Game {
   }
 
   movePaddle(position: string, x: number) {
-    if (position === 'Bottom') this.paddle[0].x = x;
-    else this.paddle[1].x = x;
+    if (position === 'Bottom') {
+      this.paddle[0].updatePosition(x);
+    } else if (position === 'Top') {
+      this.paddle[1].updatePosition(x);
+    }
   }
-  updateGame() {
-    let newBallX = this.ball.x + this.ball.velocityX;
-    let newBallY = this.ball.y + this.ball.velocityY;
 
-    // check if ball is colliding with paddle
+  checkWallCollision() {
     if (
-      newBallX <= this.board.offset ||
-      newBallX + this.ball.diameter >= this.board.width - this.board.offset
+      this.ball.newX <= this.board.offset ||
+      this.ball.newX + this.ball.diameter >=
+        this.board.width - this.board.offset
     ) {
       this.ball.velocityX = -this.ball.velocityX;
     }
+  }
 
-    // check if ball is colliding with paddle
+  checkPaddleCollision() {
     // bottom paddle
     if (
-      newBallX + this.ball.diameter >= this.paddle[0].x &&
-      newBallX <= this.paddle[0].x + this.paddle[0].width
+      this.ball.newX + this.ball.diameter >= this.paddle[0].x &&
+      this.ball.newX <= this.paddle[0].x + this.paddle[0].width
     ) {
-      if (newBallY >= this.paddle[0].y - this.ball.diameter) {
+      if (this.ball.newY >= this.paddle[0].y - this.ball.diameter) {
         this.ball.velocityY = -Math.abs(this.ball.velocityY);
       }
     }
+
     // top paddle
-    if (newBallX + this.ball.diameter >= this.paddle[1].x &&
-      newBallX <= this.paddle[1].x + this.paddle[1].width) {
-      if (newBallY <= this.paddle[1].y + this.paddle[1].height) {
-        this.ball.velocityY = Math.abs(this.ball.velocityY);;
+    if (
+      this.ball.newX + this.ball.diameter >= this.paddle[1].x &&
+      this.ball.newX <= this.paddle[1].x + this.paddle[1].width
+    ) {
+      if (this.ball.newY <= this.paddle[1].y + this.paddle[1].height) {
+        this.ball.velocityY = Math.abs(this.ball.velocityY);
       }
     }
+  }
 
-
-    // must remove this later
-    if (
-      newBallY <= this.board.offset ||
-      newBallY + this.ball.diameter >= this.board.height - this.board.offset
+  checkNewScore(): boolean {
+    if (this.ball.newY <= this.board.offset) {
+      this.ball.newY = this.board.height / 2 - this.ball.radius;
+      this.players[1].score++;
+      return true;
+    } else if (
+      this.ball.newY + this.ball.diameter >=
+      this.board.height - this.board.offset
     ) {
-      newBallY = this.board.height / 2 - this.ball.radius;
+      this.ball.newY = this.board.height / 2 - this.ball.radius;
+      this.players[0].score++;
+      return true;
     }
+    return false;
+  }
 
-    this.ball.x = newBallX;
-    this.ball.y = newBallY;
+  updateGame() {
+    this.ball.setNextPosition();
+
+    // check if ball is colliding with Wall
+    this.checkWallCollision();
+
+    // check if ball is colliding with paddle
+    this.checkPaddleCollision();
+
+    // check if ball scored
+    this.checkNewScore();
+
+    // update ball position
+    this.ball.updatePosition();
     return {
       ball: { x: Math.round(this.ball.x), y: Math.round(this.ball.y) },
       topPaddle: { x: Math.round(this.paddle[1].x) },
       bottomPaddle: { x: Math.round(this.paddle[0].x) },
     };
+  }
+
+  getScore() {
+    return {
+      // this.players[0].nickname: this.players[0].score,
+      // this.players[1].nickname: this.players[1].score,
+      top: this.players[1].score,
+      bottom: this.players[0].score,
+    };
+  }
+
+  start() {
+    this.gameOn = true;
+  }
+
+  End() {
+    this.gameOn = false;
   }
 }

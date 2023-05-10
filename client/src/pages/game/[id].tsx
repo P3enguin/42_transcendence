@@ -1,5 +1,6 @@
 import Board from '@/components/game/Board';
 import Pong from '@/components/game/Pong';
+import ScoreBoard from '@/components/game/ScoreBoard';
 import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
@@ -12,9 +13,21 @@ let socket: Socket;
 const PlayGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
   const [Position, setPosition] = useState('');
+  const [P1, setP1] = useState('');
+  const [P2, setP2] = useState('');
+  const [P1Score, setP1Score] = useState<number>(0);
+  const [P2Score, setP2Score] = useState<number>(0);
+
+  const newScore = (player: string) => {
+    if (player === 'P1') {
+      setP1Score((prev) => prev + 1);
+    } else if (player === 'P2') {
+      setP2Score((prev) => prev + 1);
+    }
+  };
 
   useEffect(() => {
-    socket = io(`${process.env .NEXT_PUBLIC_BACKEND_HOST}/game`, {
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },
@@ -26,9 +39,18 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         socket.on('joined', (data: any) => {
           console.log('joined: ', data);
         });
-        socket.on('startGame', ({ position }: any) => {
+        socket.on('startGame', ({ position, P1, P2 }: any) => {
           console.log('startGame', position);
           setPosition(position);
+          setP1(P1);
+          setP2(P2);
+        });
+        socket.on('updateScore', ({ player, score }: any) => {
+          if (player === 'P1') {
+            setP1Score(score);
+          } else if (player === 'P2') {
+            setP2Score(score);
+          }
         });
       });
     }
@@ -46,7 +68,9 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         className="flex h-full w-full flex-col items-center justify-around"
         ref={gameRef}
       >
-        <div>PlayGame {res}</div>
+        {Position && (
+          <ScoreBoard P1={P1} P1Score={P1Score} P2={P2} P2Score={P2Score} />
+        )}
         {Position && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
         )}

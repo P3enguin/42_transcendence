@@ -59,7 +59,7 @@ export class GameService {
 
   getActiveGame(id: string) {
     const game = this.games.get(id);
-    if (game && game.isFull()) {
+    if (game && game.isActive()) {
       return game;
     }
     return null;

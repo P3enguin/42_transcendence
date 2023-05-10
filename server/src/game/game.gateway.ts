@@ -66,7 +66,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): string {
     const game = this.gameService.getGameById(data.gameId);
     if (game) {
-      if (!game.isFull()) {
+      if (!game.isActive()) {
         if (game.isPlayer(player.nickname)) {
           game.connectPlayer(player.nickname, client.id);
           client.join(data.gameId);
@@ -77,13 +77,17 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             .emit('joined', `${player.nickname} joined the game`);
         }
       }
-      if (game.isFull()) {
+      if (game.isActive()) {
         if (game.isPlayer(player.nickname)) {
           this.server.to(game.players[0].socketId).emit('startGame', {
             position: 'Bottom',
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
           });
           this.server.to(game.players[1].socketId).emit('startGame', {
             position: 'Top',
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
           });
           setTimeout(() => {
             this.startGame(game.id);
@@ -97,9 +101,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             .to(data.gameId)
             .emit('joined', `${player.nickname} is spectating`);
           client.join(data.gameId);
-          this.server
-            .to(client.id)
-            .emit('startGame', { position: 'spectator' });
+          this.server.to(client.id).emit('startGame', {
+            position: 'spectator',
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
+          });
         }
       }
     } else {
@@ -119,14 +125,30 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   startGame(gameId: string) {
     const game: Game = this.gameService.getGameById(gameId);
+    game.start();
     game.inteval = setInterval(() => {
-      const gamepos = game.updateGame();
-      console.log('update', gamepos);
-      this.server.to(gameId).emit('moveBall', gamepos.ball);
-      this.server.to(gameId).emit('movePaddle', {
-        bottomPaddle: gamepos.bottomPaddle,
-        topPaddle: gamepos.topPaddle,
-      });
-    }, 1000/60);
+      game.ball.setNextPosition();
+
+      // check if ball is colliding with Wall
+      game.checkWallCollision();
+
+      // check if ball is colliding with paddle
+      game.checkPaddleCollision();
+
+      // check if ball scored
+      if (game.checkNewScore()) {
+        this.server.to(gameId).emit('score', game.getScore());
+      }
+
+      // update ball position
+      game.ball.updatePosition();
+
+      // console.log('update', gamepos);
+      // this.server.to(gameId).emit('moveBall', gamepos.ball);
+      // this.server.to(gameId).emit('movePaddle', {
+      //   bottomPaddle: gamepos.bottomPaddle,
+      //   topPaddle: gamepos.topPaddle,
+      // });
+    }, 1000 / 60);
   }
 }
