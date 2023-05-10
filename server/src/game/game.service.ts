@@ -66,9 +66,10 @@ export class GameService {
   }
 
   getLiveGames() {
-    let activeGames = Array.from(this.games.values()).filter((game) =>
-      game.isActive(),
-    );
+    let activeGames = Array.from(this.games.values()).filter((game) => {
+      if (game && game.isActive()) return game;
+      return null;
+    });
     // delete game attributes that are not needed for the client
     activeGames = activeGames.map((game) => {
       delete game.inteval;
