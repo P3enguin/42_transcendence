@@ -28,9 +28,7 @@ const nextConfig = {
             },
         ],
     },
-    <<
-    <<
-    << < HEAD
+
 };
 
 module.exports = nextConfig;

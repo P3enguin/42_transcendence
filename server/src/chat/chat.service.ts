@@ -42,23 +42,23 @@ export class ChatService {
         name: room.name,
       },
     });
-    if (check_room)
-      return check_room.channelId
     const shortid = require('shortid');
     const roomId = shortid.generate();
+    if (check_room)
+    return check_room.channelId
     const player = await this.prisma.player.findUnique({
       where: {
         nickname: room.creator,
       },
     });
-
+    console.log("from server : ",room);
     try {
-      await this.prisma.room.create({
+      const newRoom = await this.prisma.room.create({
         data: {
           channelId: roomId,
           name: room.name,
-          Topic: room.Topic,
-          Key: room.Key,
+          Topic: room.topic,
+          Key: room.key,
           memberLimit: room.memberLimit,
           avatar:'BM.jpeg',
           stats: room.stats,
@@ -71,7 +71,7 @@ export class ChatService {
           }
         },
       });
-      console.log('room created', roomId);
+      console.log('room created', newRoom);
       return roomId.toString();
     } catch (e) {
       console.log('error while creating new room', e);

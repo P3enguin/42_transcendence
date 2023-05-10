@@ -73,9 +73,8 @@ export class ChatController {
 
   @Post('CreateRoom')
   async CreateRoom(@Req() req: Request, @Res() res: Response) {
-    const room = req.body;
+    const room = req.body.room;
     const roomId = await this.chatService.CreateRoom(room);
-    console.log(roomId);
     res.status(200).json(roomId);
   }
 
