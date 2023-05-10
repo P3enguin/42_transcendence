@@ -66,9 +66,20 @@ export class GameService {
   }
 
   getLiveGames() {
-    const activeGames = Array.from(this.games.values()).filter((game) =>
+    let activeGames = Array.from(this.games.values()).filter((game) =>
       game.isActive(),
     );
+    // delete game attributes that are not needed for the client
+    activeGames = activeGames.map((game) => {
+      delete game.inteval;
+      delete game.board;
+      delete game.ball;
+      delete game.paddle;
+      delete game.gameOn;
+      delete game.players[0].socketId;
+      delete game.players[1].socketId;
+      return game;
+    });
     return activeGames;
   }
 
@@ -218,7 +229,7 @@ export class GameService {
     console.log('The match has been saved');
     await this.updatePlayersXP(game);
     if (game.type.toString() === 'RANKED')
-    console.log('The players XP has been updated');
+      console.log('The players XP has been updated');
     this.deleteGame(id);
   }
 }

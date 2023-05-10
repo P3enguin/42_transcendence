@@ -2,13 +2,15 @@ import { off } from 'process';
 import { generate as generateID } from 'shortid';
 
 export class Player {
-  score: number;
   id: number;
   nickname: string;
+  avatar: string;
   socketId: string;
-  constructor(id: number, nickname: string, socketId?: string) {
+  score: number;
+  constructor(id: number, nickname: string, avatar: string, socketId?: string) {
     this.id = id;
     this.nickname = nickname;
+    this.avatar = avatar;
     this.score = 0;
     this.socketId = socketId || '';
   }
@@ -226,8 +228,9 @@ export class Game {
     };
   }
 
-  getScore(): { [key: string]: number } {
+  getScore(): { [key: string]: number | string } {
     return {
+      gameId: this.id,
       [this.players[0].nickname]: this.players[0].score,
       [this.players[1].nickname]: this.players[1].score,
     };

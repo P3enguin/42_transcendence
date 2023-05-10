@@ -28,7 +28,7 @@ export class GameController {
     @Query('gametype') gametype: GameType,
   ) {
     const id = this.gameService.joinGame(
-      new Player(player.id, player.nickname),
+      new Player(player.id, player.nickname, player.avatar),
       gametype,
     );
     return res.status(200).json(id);

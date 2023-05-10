@@ -62,7 +62,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleGetLiveGames(@ConnectedSocket() client: Socket) {
     client.join('LiveGames');
     const games = this.gameService.getLiveGames();
-    client.emit('LiveGames', games);
+    this.server.to(client.id).emit('LiveGames', games);
   }
 
   @SubscribeMessage('joinGame')
@@ -97,15 +97,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             P2: game.players[1].nickname,
           });
           this.server.to('LiveGames').emit('newGame', {
-            P1: game.players[0].nickname,
-            P2: game.players[1].nickname,
+            P1: game.players[0],
+            P2: game.players[1],
+            gameId: game.id,
           });
           setTimeout(() => {
             this.startGame(game.id);
           }, 1000);
         } else {
           game.addSpectator(
-            new gamePlayer(player.id, player.nickname, client.id),
+            new gamePlayer(
+              player.id,
+              player.nickname,
+              player.avatar,
+              client.id,
+            ),
           );
           // player.gameId = data.gameId;
           this.server
@@ -142,17 +148,14 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       game.checkPaddleCollision();
       // check if ball scored
       if (game.checkNewScore()) {
-        this.server.to(gameId).emit('updateScore', game.getScore());
-        this.server.to('LiveGames').emit('updateScore', game.getScore());
+        this.server
+          .to(gameId)
+          .to('LiveGames')
+          .emit('updateScore', game.getScore());
       }
       // check if the game reached 5 score
       if (game.checkWin()) {
-        console.log('game over, winner:', game.getWinner().nickname);
-
-        this.server.to(gameId).emit('gameOver', {
-          /*need to fill*/
-        });
-        this.server.to('LiveGames').emit('gameOver', gameId);
+        this.server.to(gameId).to('LiveGames').emit('gameOver', gameId);
         clearInterval(game.inteval);
         this.gameService.saveGame(gameId);
       }

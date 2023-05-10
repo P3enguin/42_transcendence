@@ -48,10 +48,13 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
           setGameOn(true);
           setP1(P1);
           setP2(P2);
-          socket.on('updateScore', (data: { [key: string]: number }) => {
-            setP1Score(data[P1]);
-            setP2Score(data[P2]);
-          });
+          socket.on(
+            'updateScore',
+            (data: { [key: string]: number | string }) => {
+              setP1Score(data[P1] as number);
+              setP2Score(data[P2] as number);
+            },
+          );
           socket.on('gameOver', (data: any) => {
             console.log('gameOver: ', data);
             setGameOn(false);
