@@ -9,6 +9,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   const [player1, setPlayer1] = useState('');
 
   const [description, setDescription] = useState('');
+
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
   const [key, setKey] = useState('');
@@ -53,7 +54,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
       isChannel,
       creator,
     };
-    console.log('creating Room');
+    console.log('creating Room', room);
     const res = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/CreateRoom',
       {
@@ -62,7 +63,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
           'Content-Type': 'application/json',
           // Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(room),
+        body: JSON.stringify({room,}),
         credentials: 'include',
       },
     );
@@ -75,41 +76,41 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   return (
     <div className=" flex h-[95%] w-[100%] flex-col md:pl-2">
       <div
-        className=" h-[30%] w-[100%] self-center
+        className="h-[15%] md:h-[30%] w-[100%] self-center
                   text-center text-3xl sm:items-center lg:flex lg:text-start"
       >
         Select a Chat or <br />
         Start a New:
       </div>
-      <div className=" flex h-full w-full flex-col border p-2 lg:flex-row">
+      <div className=" flex h-full w-full flex-col border p-2 lg:flex-row border border-yellow-300">
         {!NicknameEntered && (
-          <div className=" mb-0 h-[85%] w-[70%] flex-col self-center  sm:flex sm:self-center lg:flex">
-            <div className=" h-[10%] w-[90%] flex-col sm:h-[2%] lg:flex ">
+          <div className=" mb-0 h-[85%] w-full md:w-[70%] flex-col items-center border border-red-600">
+            {/* <div className=" h-[10%] w-[90%] flex-col sm:h-[2%] lg:flex border border-red-600"> */}
               <form onSubmit={createRoom}>
 
                 <InputDefault name="name" id="name" description="channel name" setName={setName}/>
 
                 {name && (
-                  <div className="flex p-2">
-                    <h3>type: </h3>
-                    <div className=" mt-2 flex flex-col pl-6 md:mt-5">
-                      <div className=" flex items-center  whitespace-nowrap">
+                  <div className="flex-row md:flex-col pr-1 md:p-2">
+                    <h3 className='h-[38px] w-[38px]'>type: </h3>
+                    <div className=" pr-5 md:pr-0 mt-2 flex flex-col pl-6 md:mt-5 items-center border">
+                      <div className=" flex items-center flex-col md:flex-row whitespace-nowrap">
                         <input
                           type="radio"
                           id="public"
                           name="type"
                           onChange={(e) => {
                             setStats('public');
-                            console.log(stats);
-                            // disable secret radio button
                           }}
                         />
                         <label htmlFor="normal" className=" whitespace-nowrap pl-2">
                           public
                         </label>
-                       {stats === 'public' && ( <div className="text-xs pl-5">Public channels are visible to everyone<br /> and can be discovered through search or<br /> browsing, and everyone can join.</div>)}
+                       {stats === 'public' && ( <div className="text-xs md:pl-5 whitespace-normal text-ellipsis overflow-hidden w-[70%] md:text-center">
+                                    Public channels are visible to everyone and can be discovered through search or browsing, and everyone can join.
+                                  </div>)}
                       </div>
-                      <div className=" inline-flex items-center  whitespace-nowrap">
+                      <div className=" inline-flex items-center flex-col md:flex-row whitespace-nowrap">
                         <input
                           type="radio"
                           id="private"
@@ -123,9 +124,9 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                         <label htmlFor="normal" className=" whitespace-nowrap pl-2">
                           private
                         </label>
-                        {stats === 'private' && ( <div className="text-xs pl-5">Private channels are visible to<br />everyone and can be discovered through search or<br /> browsing, but they require a password to join.</div>)}
+                        {stats === 'private' && ( <div className="text-xs md:pl-5 whitespace-normal text-ellipsis overflow-hidden w-[70%] text-center">Private channels are visible to everyone and can be discovered through search or browsing, but they require a password to join.</div>)}
                       </div>
-                      <div className=" inline-flex items-center  whitespace-nowrap">
+                      <div className=" inline-flex items-center flex-col md:flex-row whitespace-nowrap">
                         <input
                           type="radio"
                           id="secret"
@@ -138,7 +139,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                         <label htmlFor="normal" className=" whitespace-nowrap pl-2 ">
                           secret
                         </label>
-                        {stats === 'secret' && ( <div className="text-xs pl-5">Secret channels rae invite-only<br /> channels that cannot be discovered<br /> through search or browsing.</div>)}
+                        {stats === 'secret' && ( <div className="text-xs md:pl-5 whitespace-normal text-ellipsis overflow-hidden w-[70%] text-center">Secret channels rae invite-only channels that cannot be discovered through search or browsing.</div>)}
                       </div>
                     </div>
                   </div>
@@ -154,13 +155,15 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                   className=" hover:text-s absolute mx-auto mt-1 transform 
                                           rounded-full rounded-full bg-[#0097E2] px-9 py-2
                                           text-[10px] font-bold uppercase text-white 
-                                          shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]  "
+                                          shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]  
+                                          
+                                          "
                 >
                   Create
                 </button>
               </form>
             </div>
-          </div>
+          // </div>
         )}
 
         {!name && (
