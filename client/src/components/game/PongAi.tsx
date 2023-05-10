@@ -22,9 +22,10 @@ interface PongAiProps {
   gameRef: React.RefObject<HTMLDivElement>;
   newScore: (player: string) => void;
   isSimulation: boolean;
+  isRotated: boolean;
 }
 
-const PongAi = ({ gameRef, newScore, isSimulation }: PongAiProps) => {
+const PongAi = ({ gameRef, newScore, isSimulation,isRotated }: PongAiProps) => {
   const HitRef = useRef<HTMLAudioElement>(null);
   const WallRef = useRef<HTMLAudioElement>(null);
   const ComScoreRef = useRef<HTMLAudioElement>(null);
@@ -192,6 +193,7 @@ const PongAi = ({ gameRef, newScore, isSimulation }: PongAiProps) => {
         boardRef={boardRef}
         mouseHandler={handleMouseMove}
         touchHandler={handleTouchMove}
+        isRotated={isRotated}
       >
         <PaddleAi position={Paddle1Position} boardRef={boardRef} />
         <BallAi position={ballPosition} ballRef={ballRef} />

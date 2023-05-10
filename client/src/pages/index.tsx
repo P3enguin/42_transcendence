@@ -15,7 +15,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
   const [state, setState] = useState([
     { name: 'Home', current: true, animation: { rotate: 0 } },
     { name: 'About', current: false, animation: { rotate: -90 } },
-    { name: 'Contact', current: false, animation: { rotate: 0 } },
+    { name: 'Contact', current: false, animation: { rotate: 90 } },
   ]);
   const [animate, setAnimation] = useState({ rotate: 0 });
   const [join, setJoin] = useState(false);
@@ -43,9 +43,9 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
   }
 
   function getImageStyle() {
-    if (state[0].current) return 'px-4 shrink-0';
-    else if (state[1].current) return 'w-3/5 md:max-xl:w-4/5 xl:w-full';
-    else return 'px-4 shrink-0';
+    if (state[0].current) return 'px-4 shrink-0 lg:h-full h-1/4';
+    else if (state[1].current || state[1].current)
+      return 'w-3/5 md:max-xl:w-4/5 xl:w-full ';
   }
 
   useEffect(() => {
@@ -63,72 +63,42 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
 
         {/* Navigation bar component */}
         <NavBar state={state} handleClick={handleClick} />
-        <div className="flex  h-[calc(100vh-80px)] w-screen justify-start">
+        {/* Home Content components */}
+        <div className="h-[calc(100vh-80px)] min-h-[400px] pt-10 xl:p-0 overflow-hidden">
           <div
-            className={`flex  w-full gap-[100px] pt-12
-            ${state[1].current ? 'xl:flex-row' : ''}
-            ${state[2].current ? 'mr-12 justify-end' : ''} 
-            ${join ? 'flex-row-reverse justify-start' : 'justify-start'}`}
+            ref={simRef}
+            className={`relative flex  h-[100%] flex-col-reverse items-center
+                      justify-end gap-12 border
+                      ${
+                        join ? 'xl:flex-row-reverse' : 'xl:flex-row'
+                      } xl:justify-center
+                     `}
           >
             <motion.div
-              ref={simRef}
               key="img"
               layoutId="test"
               initial={true}
               animate={animate}
-              transition={{ type: 'Tween' }}
+              transition={{ type: 'Tween', ease: 'easeOut',duration:0.5 }}
               exit={{ opacity: 0 }}
-              className={`flex h-full w-[50%] 
-            ${state[1].current ? '' : ''}
-            ${state[2].current ? '' : ''} 
-            ${join ? 'justify-start' : 'justify-end'}
-              `}
+              className=""
             >
-              <Simulation gameRef={simRef} />
+              <div className={getImageStyle()}>
+                <Simulation
+                  gameRef={simRef}
+                  isRotated={state[1].current || state[2].current}
+                />
+                {/* <Image src="/game.png" alt="game" width={700} height={700} /> */}
+              </div>
             </motion.div>
-            <div className=" flex h-screen  max-w-[500px] pt-[100px]">
-              {state[0].current && <HomeText handleJoin={handleJoin} />}
-              {join && <Login />}
-            </div>
+            {state[0].current && <HomeText handleJoin={handleJoin} />}
+            {join && <Login />}
           </div>
         </div>
-        {/* Home Content components */}
       </>
     );
   }
 }
-
-{
-  /* <div className="relative pt-12">
-<div
-  className={` m-12  items-center  gap-12
-            ${state[1].current ? 'xl:flex-row' : 'flex-col-reverse'}
-            ${
-              state[2].current
-                ? 'mr-12 justify-end'
-                : 'justify-center'
-            } 
-            ${join ? 'xl:flex-row-reverse' : 'xl:flex-row'}`}
->
-  <motion.div
-    key="img"
-    layoutId="test"
-    initial={true}
-    animate={animate}
-    transition={{ type: 'Tween' }}
-    exit={{ opacity: 0 }}
-    ref={simRef}
-  >
-    <div className={getImageStyle()}>
-      <Simulation gameRef={simRef} />
-      {/* <Image src="/game.png" alt="game" width={700} height={700} /> */
-}
-//   </div>
-// </motion.div>
-// {state[0].current && <HomeText handleJoin={handleJoin} />}
-// {join && <Login />}
-// </div>
-// </div> */}
 
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
