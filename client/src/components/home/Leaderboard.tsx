@@ -8,7 +8,7 @@ export default function Leaderboard({
   leaderBoard: LeaderBoard;
 }) {
   return (
-    <div className="w-full rounded-[20px] border border-white">
+    <div className="w-full rounded-[20px] border border-white pr-3 pb-3">
       <div className="flex items-center pl-4 pt-4">
         <Image
           src="rankLeaderboard.svg"
@@ -18,7 +18,7 @@ export default function Leaderboard({
         />
         <h1 className="pl-2 text-xl font-bold uppercase">Leaderboard:</h1>
       </div>
-      <div className="max-h-[580px] overflow-auto">
+      <div className="scrollbar max-h-[580px] overflow-auto">
         <ol className="flex flex-col py-4 px-9">
           {leaderBoard.level.map((player: any, i: number) => (
             <li key={i} className="p-2">

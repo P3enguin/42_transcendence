@@ -47,8 +47,7 @@ export class AuthService {
         });
         res.status(200).cookie('jwt_session', jwtSession, {
           httpOnly: true,
-          // secure: true,
-          maxAge: 1000 * 60 * 60 *24, // expires after 24H
+          maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
         });
         res.redirect(process.env.FRONTEND_HOST + '/login');
 
@@ -65,7 +64,7 @@ export class AuthService {
         res.status(200).cookie('jwt_2FA', jwt2FA, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 60 * 24, // expires after  24H
+          maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
         });
         res.redirect(process.env.FRONTEND_HOST + '/verify');
       } else {
@@ -73,7 +72,7 @@ export class AuthService {
         res.cookie('jwt_token', jwtToken.access_token, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 60, // expires after 1 hour, to change and check later hh
+          maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
         });
         res.redirect(process.env.FRONTEND_HOST + '/profile');
       }
@@ -132,7 +131,7 @@ export class AuthService {
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,
         // secure: true,
-        maxAge: 1000 * 60 * 60, // expires after 1 hour, to change and check later hh
+        maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
       });
       res.clearCookie('jwt_session');
       res.status(201).send({ success: true });
@@ -175,7 +174,7 @@ export class AuthService {
           res.status(200).cookie('jwt_2FA', jwt2FA, {
             httpOnly: true,
             // secure: true,
-            maxAge: 1000 * 60 * 60 * 24, // expires after 24H
+            maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
           });
           return res.json({ Is2FAenabled: true });
         } else {
@@ -183,7 +182,7 @@ export class AuthService {
           res.cookie('jwt_token', token.access_token, {
             httpOnly: true,
             // secure: true,
-            maxAge: 1000 * 60 * 60,
+            maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
           });
           res.status(200).send({ Is2FAenabled: false });
         }
@@ -206,7 +205,7 @@ export class AuthService {
     const secret = this.config.get('JWT_SECRET');
 
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '60m',
+      expiresIn: '1d',
       secret: secret,
     });
     return {
@@ -357,7 +356,7 @@ export class AuthService {
         res.cookie('jwt_token', token.access_token, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 60,
+          maxAge: 1000 * 60 * 60 * 24 // expire after 24 hours
         });
         res.status(200).send({ success: true });
       } else {

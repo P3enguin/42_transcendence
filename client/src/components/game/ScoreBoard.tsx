@@ -37,7 +37,6 @@ const ScoreBoard = (props: ScoreBoardProps) => {
   return (
     <>
       <div className="felx min-w-[300px] flex-col">
-        <h1 className="text-center">ScoreBoard</h1>
         <p className="text-center">{formatTime(elapsedTime)}</p>
         <div className="flex flex-row justify-between">
           <div>

@@ -41,11 +41,11 @@ const Board = ({
           parentHeight = parentRef.current.offsetWidth;
         }
         if (parentWidth < parentHeight / 1.4) {
-          boardRef.current.style.width = parentWidth * 0.9 + 'px';
+          boardRef.current.style.width = parentWidth * 0.8 + 'px';
           boardRef.current.style.height =
             boardRef.current.offsetWidth * 1.4 + 'px';
         } else if (parentWidth > parentHeight / 1.4) {
-          boardRef.current.style.height = (parentHeight - 64) * 0.9 + 'px';
+          boardRef.current.style.height = (parentHeight - 64) * 0.8 + 'px';
           boardRef.current.style.width =
             boardRef.current.offsetHeight / 1.4 + 'px';
         }
@@ -77,7 +77,7 @@ const Board = ({
       });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef.current, parentRef.current, isRotated]);
+  }, [boardRef.current, parentRef.current, parentRef, isRotated]);
 
   return (
     <div

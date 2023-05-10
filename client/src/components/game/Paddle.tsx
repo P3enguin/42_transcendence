@@ -30,15 +30,18 @@ const Paddle = ({ boardRef, position, ws }: paddleProps) => {
 
   useEffect(() => {
     if (ws) {
-      ws.on('movePaddle', ({ topPaddle, bottomPaddle }: any) => {
-        if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2)
-          setPaddlePosition((prev) => ({ x: topPaddle.x, y: prev.y }));
-        else if (position === 'Bottom' && PaddlePosition.y > BOARD_HEIGHT / 2)
-          setPaddlePosition((prev) => ({ x: bottomPaddle.x, y: prev.y }));
-      });
+      ws.on(
+        'updatePaddle',
+        ({ top, bottom }: { top: { x: number }; bottom: { x: number } }) => {
+          if (position === 'Top' && PaddlePosition.y < BOARD_HEIGHT / 2)
+            setPaddlePosition((prev) => ({ x: top.x, y: prev.y }));
+          else if (position === 'Bottom' && PaddlePosition.y > BOARD_HEIGHT / 2)
+            setPaddlePosition((prev) => ({ x: bottom.x, y: prev.y }));
+        },
+      );
     }
     return () => {
-      if (ws) ws.off('movePaddle');
+      if (ws) ws.off('updatePaddle');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -48,12 +51,8 @@ const Paddle = ({ boardRef, position, ws }: paddleProps) => {
       if (paddleRef.current && boardRef.current) {
         paddleRef.current.style.width =
           boardRef.current?.offsetWidth / 8 + 'px';
-        console.log(`offset wiDTH : ${boardRef.current?.offsetWidth}`);
-        console.log(`width : ${paddleRef.current.style.width}`);
         paddleRef.current.style.height =
           paddleRef.current.offsetWidth / 5 + 'px';
-        console.log(`offset Height : ${boardRef.current?.offsetHeight}`);
-        console.log(`height : ${paddleRef.current.style.height}`);
       }
     };
     setPaddlePosition((prev) => ({ x: prev.x, y: prev.y }));

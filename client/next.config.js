@@ -24,9 +24,10 @@ const nextConfig = {
             protocol: 'http',
             hostname: '**',
             port: '8000',
-            pathname: '/rooms/**',
+            pathname: '/channels/**',
         }, ],
     },
-}
+
+};
 
 module.exports = nextConfig;

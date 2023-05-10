@@ -22,12 +22,12 @@ const Ball = ({ boardRef, ws }: ballProps) => {
 
   useEffect(() => {
     if (ws) {
-      ws.on('moveBall', ({ x, y }: { x: number; y: number }) => {
+      ws.on('updateBall', ({ x, y }: { x: number; y: number }) => {
         setPosition({ x, y });
       });
     }
     return () => {
-      if (ws) ws.off('moveBall');
+      if (ws) ws.off('updateBall');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

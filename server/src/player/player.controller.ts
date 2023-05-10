@@ -144,9 +144,9 @@ export class PlayerController {
   GetFriends(
     @Req() req: Request,
     @Res() res: Response,
-    @Query() query: queryParam,
+    @GetPlayer() player: Player,
   ) {
-    return this.playerService.GetFriends(req, res, query.nickname);
+    return this.playerService.GetFriends(req, res, player.nickname);
   }
 
   @Patch('block')

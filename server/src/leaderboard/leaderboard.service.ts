@@ -18,7 +18,7 @@ export class LeaderBoardService {
             },
           },
           level: true,
-          experionPoints: true,
+          XP: true,
           rank: {
             select: {
               ranks: true,
@@ -32,7 +32,7 @@ export class LeaderBoardService {
             level: 'desc',
           },
           {
-            experionPoints: 'desc',
+            XP: 'desc',
           },
         ],
       });
@@ -55,7 +55,7 @@ export class LeaderBoardService {
             },
           },
           level: true,
-          experionPoints: true,
+          XP: true,
           rank: {
             orderBy: {
               current_points: 'desc',

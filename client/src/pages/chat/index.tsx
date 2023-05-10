@@ -9,14 +9,15 @@ import Link from 'next/link';
 import StartNew from '@/components/chat/startNew';
 import OnlineNow from '@/components/chat/OnlineNow';
 import RecentChat from '@/components/chat/recent_chat';
+import { log } from 'console';
 
-let socket: Socket;
 //use the chat :
 function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
 
 
   const [showRecentChat, setShowRecentChat] = useState(true);
-  const [showStartNew, setShowStartNew] = useState(false);
+  const [showStartNew, setShowStartNew] = useState(true);
+  const [showMobile, setShowMobile] = useState(false);
 
   const handleRecentChatClick = () => {
     setShowRecentChat(true);
@@ -28,62 +29,63 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
     setShowStartNew(true);
   };
 
+
   useEffect(() => {
-    const clientsMap = new Map();
-
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
-      auth: {
-        token: jwt_token,
-      },
-    });
-    socket.on('connect', () => {
-      console.log(data.nickname," : connected to the socket with : ",socket.id)
-      clientsMap.set(socket.id, data.nickname);
-    });
-
-    socket.on('disconnect', () =>{
-      console.log(data.nickname," : disconnected");
-      clientsMap.delete(socket.id);
-    });
-  
-    socket.on('message', (message: any) => {
-      console.log(`Received message from ${message.username}: ${message.message}`);
-    });
     
-    const handelReceivedMessage = (message: string) => {
-      const nickname = data.nickname;
-      console.log(`Sending message from ${nickname}: ${message}`);
-      socket.emit('message', {nickname, message});
-    };
-
+    const MobilView = () =>{
+      console.log('show mobile==>', showMobile);
+      console.log('show StartNew==>', showStartNew);
+      console.log('show RecentChat==>', showRecentChat);
+      console.log('////////////////////////////////////////////////////////');
+      
+      if  (document.body.offsetWidth < 800) {
+        setShowMobile(true);
+        setShowStartNew(false);
+        setShowRecentChat(true);
+      }
+      else
+      {
+        setShowMobile(false);
+        setShowStartNew(true);
+        setShowRecentChat(true);
+      }
+    }
+    MobilView();
+    window.addEventListener('resize', MobilView) 
+    return (()=>{
+      window.removeEventListener('resize', MobilView);
+    })
   }, []);
 
   return (
     <>
-      <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
-      <div className="h-[100%] w-[100%] md:w-[360px] flex-col  md:border-r">
+      <div className="flex h-[70%] w-[80%] min-h-[600px] m-5 sm:m-20 flex-row rounded-2xl border  border-neutral-300 max-w-[1500px] ">
+      {showRecentChat &&  (<div className="h-[100%] w-[100%] flex-col tx:border-r">
           <div className="flex h-[5%] items-center border-b pl-5 w-[100%]">
             <Link href={`/chat`}>Chat Room </Link>
           </div>
           {
-            showRecentChat && <OnlineNow player={data.friends} />
+            showRecentChat && <OnlineNow player={data.nickname} />
           }
 
           <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
-            <div className="flex flex-row justify-between border-t pt-1">
+            <div className="flex flex-row justify-between  pt-1">
             <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
             <div className="md:hidden cursor-pointer text-green-300" onClick={handleStartNewClick}>Start New</div>
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
             {showRecentChat && <RecentChat avatar={data.avatar} player={data.nickname} /> }
-            {showStartNew && <StartNew nickname={data.nickname}  token={jwt_token}/>}
             </div>
           </div>
-        </div>
-        <div className="hidden md:flex w-full justify-between flex-col ">
+        </div>)}
+        {showStartNew && (<div className=" md:flex w-full justify-between flex-col">
+         {(!showStartNew && <div className="flex flex-row justify-between  pt-1">
+            <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
+            <div className="md:hidden cursor-pointer text-green-300" onClick={handleStartNewClick}>Start New</div>
+            </div>)}
           <div className="flex h-[5%] w-full items-center border-b "></div>
           { <StartNew nickname={data.nickname}  token={jwt_token}/>}
-        </div>
+        </div>)}
       </div>
     </>
   );
@@ -96,8 +98,7 @@ export async function getServerSideProps({ req }: any) {
     if (res.ok) {
       try {
         const data = await res.json();
-        console.log("player: ",data);
-        
+
         return {
           props: {
             data,

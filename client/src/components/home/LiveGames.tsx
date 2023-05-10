@@ -2,12 +2,12 @@ import LiveGame from './LiveGame';
 
 export default function LiveGames() {
   return (
-    <div className="w-full rounded-[20px] border border-white">
+    <div className="w-full rounded-[20px] border border-white pr-3 pb-3">
       <div className="flex items-center pl-4 pt-4">
         <div className="h-[12px] w-[12px] rounded-full bg-[#EB2230]"></div>
         <h1 className="pl-2 text-xl font-bold uppercase">Live Games:</h1>
       </div>
-      <div className="max-h-[580px] overflow-auto">
+      <div className="scrollbar max-h-[580px] overflow-auto">
         <ul className="flex flex-col py-4 px-9">
           <li className="p-2">
             <LiveGame

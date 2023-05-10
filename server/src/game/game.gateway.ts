@@ -58,6 +58,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.removePlayerFromGame(player.gameId, player.nickname);
   }
 
+  @SubscribeMessage('GetLiveGames')
+  handleGetLiveGames(@ConnectedSocket() client: Socket) {
+    client.join('LiveGames');
+    const games = this.gameService.getLiveGames();
+    this.server.to(client.id).emit('LiveGames', games);
+  }
+
   @SubscribeMessage('joinGame')
   handleMessage(
     @GetPlayer() player: connectedPlayer,
@@ -66,7 +73,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): string {
     const game = this.gameService.getGameById(data.gameId);
     if (game) {
-      if (!game.isFull()) {
+      if (!game.isActive()) {
         if (game.isPlayer(player.nickname)) {
           game.connectPlayer(player.nickname, client.id);
           client.join(data.gameId);
@@ -77,29 +84,45 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             .emit('joined', `${player.nickname} joined the game`);
         }
       }
-      if (game.isFull()) {
+      if (game.isActive()) {
         if (game.isPlayer(player.nickname)) {
           this.server.to(game.players[0].socketId).emit('startGame', {
             position: 'Bottom',
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
           });
           this.server.to(game.players[1].socketId).emit('startGame', {
             position: 'Top',
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
+          });
+          this.server.to('LiveGames').emit('newGame', {
+            P1: game.players[0],
+            P2: game.players[1],
+            gameId: game.id,
           });
           setTimeout(() => {
             this.startGame(game.id);
           }, 1000);
         } else {
           game.addSpectator(
-            new gamePlayer(player.id, player.nickname, client.id),
+            new gamePlayer(
+              player.id,
+              player.nickname,
+              player.avatar,
+              client.id,
+            ),
           );
           // player.gameId = data.gameId;
           this.server
             .to(data.gameId)
             .emit('joined', `${player.nickname} is spectating`);
           client.join(data.gameId);
-          this.server
-            .to(client.id)
-            .emit('startGame', { position: 'spectator' });
+          this.server.to(client.id).emit('startGame', {
+            position: 'spectator',
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
+          });
         }
       }
     } else {
@@ -110,23 +133,36 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('move')
   handleMove(@GetPlayer() player: connectedPlayer, @MessageBody() data: any) {
-    // console.log('move', data, player.gameId);
-    this.gameService
-      .getGameById(player.gameId)
-      .movePaddle(data.position, data.x);
-    // this.server.to(player.gameId).emit('move it', data);
+    const game = this.gameService.getGameById(player.gameId);
+    if (game) game.movePaddle(data.position, data.x);
   }
 
   startGame(gameId: string) {
     const game: Game = this.gameService.getGameById(gameId);
+    game.start();
     game.inteval = setInterval(() => {
-      const gamepos = game.updateGame();
-      console.log('update', gamepos);
-      this.server.to(gameId).emit('moveBall', gamepos.ball);
-      this.server.to(gameId).emit('movePaddle', {
-        bottomPaddle: gamepos.bottomPaddle,
-        topPaddle: gamepos.topPaddle,
-      });
-    }, 1000/60);
+      game.ball.setNextPosition();
+      // check if ball is colliding with Wall
+      game.checkWallCollision();
+      // check if ball is colliding with paddle
+      game.checkPaddleCollision();
+      // check if ball scored
+      if (game.checkNewScore()) {
+        this.server
+          .to(gameId)
+          .to('LiveGames')
+          .emit('updateScore', game.getScore());
+      }
+      // check if the game reached 5 score
+      if (game.checkWin()) {
+        this.server.to(gameId).to('LiveGames').emit('gameOver', gameId);
+        clearInterval(game.inteval);
+        this.gameService.saveGame(gameId);
+      }
+      // update ball position
+      game.ball.updatePosition();
+      this.server.to(gameId).emit('updateBall', game.getBallPos());
+      this.server.to(gameId).emit('updatePaddle', game.getPaddlePos());
+    }, 1000 / 60);
   }
 }

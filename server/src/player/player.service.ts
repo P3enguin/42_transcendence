@@ -338,7 +338,12 @@ export class PlayerService {
           nickname: nickname,
         },
         include: {
-          friends: true,
+          friends: {
+            select: {
+              nickname: true,
+              avatar: true,
+            }
+          },
         },
       });
       return res.status(200).json(FriendList.friends);

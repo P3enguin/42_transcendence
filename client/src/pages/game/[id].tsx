@@ -1,5 +1,6 @@
 import Board from '@/components/game/Board';
 import Pong from '@/components/game/Pong';
+import ScoreBoard from '@/components/game/ScoreBoard';
 import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
@@ -12,9 +13,22 @@ let socket: Socket;
 const PlayGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
   const [Position, setPosition] = useState('');
+  const [P1, setP1] = useState('');
+  const [P2, setP2] = useState('');
+  const [P1Score, setP1Score] = useState<number>(0);
+  const [P2Score, setP2Score] = useState<number>(0);
+  const [gameOn, setGameOn] = useState<boolean>(false);
+
+  const getResult = (): string => {
+    if (P1Score > P2Score) {
+      return `${P1} wins!`;
+    } else {
+      return `${P2} wins!`;
+    }
+  };
 
   useEffect(() => {
-    socket = io(`${process.env .NEXT_PUBLIC_BACKEND_HOST}/game`, {
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },
@@ -26,15 +40,32 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         socket.on('joined', (data: any) => {
           console.log('joined: ', data);
         });
-        socket.on('startGame', ({ position }: any) => {
-          console.log('startGame', position);
+        socket.on('startGame', ({ position, P1, P2 }: any) => {
+          console.log('startGame');
+          console.log('position: ', position);
+
           setPosition(position);
+          setGameOn(true);
+          setP1(P1);
+          setP2(P2);
+          socket.on(
+            'updateScore',
+            (data: { [key: string]: number | string }) => {
+              setP1Score(data[P1] as number);
+              setP2Score(data[P2] as number);
+            },
+          );
+          socket.on('gameOver', (data: any) => {
+            console.log('gameOver: ', data);
+            setGameOn(false);
+          });
         });
       });
     }
     return () => {
       socket.disconnect();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt_token, params, res]);
 
   return (
@@ -46,10 +77,13 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         className="flex h-full w-full flex-col items-center justify-around"
         ref={gameRef}
       >
-        <div>PlayGame {res}</div>
-        {Position && (
+        {gameOn && (
+          <ScoreBoard P1={P1} P1Score={P1Score} P2={P2} P2Score={P2Score} />
+        )}
+        {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
         )}
+        {!gameOn && Position && <div>Game Over {getResult()}</div>}
       </div>
     </>
   );

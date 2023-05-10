@@ -17,7 +17,7 @@ function RecentChat({avatar, player, friendId }: any)
           },
         },
       );
-      router.push('/chat/' + 5);
+      router.push('/chat/' + res.data.id);
     }
 
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST +"/avatars/" +  avatar;
