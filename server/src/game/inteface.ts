@@ -10,6 +10,11 @@ export interface ServerToClientEvents {
   update: (data: any) => void;
   moveBall: (data: any) => void;
   movePaddle: (data: any) => void;
+  updateScore: (data: any) => void;
+  updateBall: (data: any) => void;
+  updatePaddle: (data: any) => void;
+  gameOver: (data: any) => void;
+  newGame: (data: any) => void;
 }
 
 export interface ClientToServerEvents {

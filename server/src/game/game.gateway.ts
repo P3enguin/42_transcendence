@@ -58,6 +58,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.gameService.removePlayerFromGame(player.gameId, player.nickname);
   }
 
+  @SubscribeMessage('GetLiveGames')
+  handleGetLiveGames(@ConnectedSocket() client: Socket) {
+    client.join('LiveGames');
+    const games = this.gameService.getLiveGames();
+    client.emit('LiveGames', games);
+  }
+
   @SubscribeMessage('joinGame')
   handleMessage(
     @GetPlayer() player: connectedPlayer,
@@ -89,6 +96,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             P1: game.players[0].nickname,
             P2: game.players[1].nickname,
           });
+          this.server.to('LiveGames').emit('newGame', {
+            P1: game.players[0].nickname,
+            P2: game.players[1].nickname,
+          });
           setTimeout(() => {
             this.startGame(game.id);
           }, 1000);
@@ -116,11 +127,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('move')
   handleMove(@GetPlayer() player: connectedPlayer, @MessageBody() data: any) {
-    // console.log('move', data, player.gameId);
-    this.gameService
-      .getGameById(player.gameId)
-      .movePaddle(data.position, data.x);
-    // this.server.to(player.gameId).emit('move it', data);
+    const game = this.gameService.getGameById(player.gameId);
+    if (game) game.movePaddle(data.position, data.x);
   }
 
   startGame(gameId: string) {
@@ -128,27 +136,30 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     game.start();
     game.inteval = setInterval(() => {
       game.ball.setNextPosition();
-
       // check if ball is colliding with Wall
       game.checkWallCollision();
-
       // check if ball is colliding with paddle
       game.checkPaddleCollision();
-
       // check if ball scored
       if (game.checkNewScore()) {
-        this.server.to(gameId).emit('score', game.getScore());
+        this.server.to(gameId).emit('updateScore', game.getScore());
+        this.server.to('LiveGames').emit('updateScore', game.getScore());
       }
+      // check if the game reached 5 score
+      if (game.checkWin()) {
+        console.log('game over, winner:', game.getWinner().nickname);
 
+        this.server.to(gameId).emit('gameOver', {
+          /*need to fill*/
+        });
+        this.server.to('LiveGames').emit('gameOver', gameId);
+        clearInterval(game.inteval);
+        this.gameService.saveGame(gameId);
+      }
       // update ball position
       game.ball.updatePosition();
-
-      // console.log('update', gamepos);
-      // this.server.to(gameId).emit('moveBall', gamepos.ball);
-      // this.server.to(gameId).emit('movePaddle', {
-      //   bottomPaddle: gamepos.bottomPaddle,
-      //   topPaddle: gamepos.topPaddle,
-      // });
+      this.server.to(gameId).emit('updateBall', game.getBallPos());
+      this.server.to(gameId).emit('updatePaddle', game.getPaddlePos());
     }, 1000 / 60);
   }
 }

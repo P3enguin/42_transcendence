@@ -10,14 +10,15 @@ export class Player {
     this.id = id;
     this.nickname = nickname;
     this.score = 0;
-    this.socketId = socketId || null;
+    this.socketId = socketId || '';
   }
 }
 
 export enum GameType {
   'RANKED',
   'NORMAL',
-  'INVITE',
+  'TIME_ATTACK',
+  'SURVIVAL_MODE',
 }
 export class Board {
   width: number;
@@ -113,41 +114,42 @@ export class Game {
     this.inteval = null;
   }
 
-  isActive() {
+  isActive(): boolean {
     // check if game is full and both players are connected
     return (
       this.players.length === 2 &&
-      this.players[0].socketId &&
-      this.players[1].socketId
+      this.players[0].socketId != '' &&
+      this.players[1].socketId != ''
     );
   }
 
-  connectPlayer(nickname: string, socketId: string) {
+  connectPlayer(nickname: string, socketId: string): void {
     const player = this.isPlayer(nickname);
     if (player) player.socketId = socketId;
   }
 
-  isPlayer(nickname: string) {
+  isPlayer(nickname: string): Player | undefined {
     return this.players.find((p) => p.nickname === nickname);
   }
 
-  addSpectator(spectator: Player) {
+  addSpectator(spectator: Player): void {
     this.spectator.push(spectator);
   }
 
-  removePlayer(nickname: string) {
+  removePlayer(nickname: string): void {
     this.players = this.players.filter((p) => p.nickname !== nickname) as [
       Player?,
       Player?,
     ];
   }
 
-  getPlayerPosition(nickname: string) {
+  getPlayerPosition(nickname: string): string | null {
     const player = this.players.find((p) => p.nickname === nickname);
+    if (!player) return null;
     return this.players.indexOf(player) === 0 ? 'Bottom' : 'Top';
   }
 
-  movePaddle(position: string, x: number) {
+  movePaddle(position: string, x: number): void {
     if (position === 'Bottom') {
       this.paddle[0].updatePosition(x);
     } else if (position === 'Top') {
@@ -155,7 +157,7 @@ export class Game {
     }
   }
 
-  checkWallCollision() {
+  checkWallCollision(): void {
     if (
       this.ball.newX <= this.board.offset ||
       this.ball.newX + this.ball.diameter >=
@@ -165,7 +167,7 @@ export class Game {
     }
   }
 
-  checkPaddleCollision() {
+  checkPaddleCollision(): void {
     // bottom paddle
     if (
       this.ball.newX + this.ball.diameter >= this.paddle[0].x &&
@@ -190,14 +192,14 @@ export class Game {
   checkNewScore(): boolean {
     if (this.ball.newY <= this.board.offset) {
       this.ball.newY = this.board.height / 2 - this.ball.radius;
-      this.players[1].score++;
+      this.players[0].score++;
       return true;
     } else if (
       this.ball.newY + this.ball.diameter >=
       this.board.height - this.board.offset
     ) {
       this.ball.newY = this.board.height / 2 - this.ball.radius;
-      this.players[0].score++;
+      this.players[1].score++;
       return true;
     }
     return false;
@@ -224,20 +226,51 @@ export class Game {
     };
   }
 
-  getScore() {
+  getScore(): { [key: string]: number } {
     return {
-      // this.players[0].nickname: this.players[0].score,
-      // this.players[1].nickname: this.players[1].score,
-      top: this.players[1].score,
-      bottom: this.players[0].score,
+      [this.players[0].nickname]: this.players[0].score,
+      [this.players[1].nickname]: this.players[1].score,
     };
   }
 
-  start() {
+  getBallPos(): { x: number; y: number } {
+    return { x: this.ball.x, y: this.ball.y };
+  }
+
+  getPaddlePos(): { top: { x: number }; bottom: { x: number } } {
+    return {
+      top: { x: this.paddle[1].x },
+      bottom: { x: this.paddle[0].x },
+    };
+  }
+
+  getAllinfo() {
+    const ball = { x: this.ball.x, y: this.ball.y };
+    const paddle = { top: this.paddle[1].x, bottom: this.paddle[0].x };
+    const score = { top: this.players[1].score, bottom: this.players[0].score };
+    return { ball, paddle, score };
+  }
+
+  start(): void {
     this.gameOn = true;
   }
 
-  End() {
+  End(): void {
     this.gameOn = false;
+  }
+
+  checkWin(): boolean {
+    return this.players.some((p) => p.score === 5);
+  }
+
+  getWinner(): Player | null {
+    if (this.players[0].score === 5) return this.players[0];
+    if (this.players[1].score === 5) return this.players[1];
+    return null;
+  }
+  getLooser(): Player | null {
+    if (this.players[0].score === 5) return this.players[1];
+    if (this.players[1].score === 5) return this.players[0];
+    return null;
   }
 }
