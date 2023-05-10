@@ -123,10 +123,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const gamepos = game.updateGame();
       console.log('update', gamepos);
       this.server.to(gameId).emit('moveBall', gamepos.ball);
-      // this.server.to(gameId).emit('movePaddle', {
-      //   bottomPaddle: gamepos.bottomPaddle,
-      //   topPaddle: gamepos.topPaddle,
-      // });
-    }, 1000/40);
+      this.server.to(gameId).emit('movePaddle', {
+        bottomPaddle: gamepos.bottomPaddle,
+        topPaddle: gamepos.topPaddle,
+      });
+    }, 1000/60);
   }
 }

@@ -27,6 +27,7 @@ const nextConfig = {
             pathname: '/channels/**',
         }, ],
     },
-}
 
-module.exports = nextConfig
+};
+
+module.exports = nextConfig;

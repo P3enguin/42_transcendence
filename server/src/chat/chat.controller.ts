@@ -71,6 +71,21 @@ export class ChatController {
     }
   }
 
+  @Get('channels/:id')
+  async getChannel(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.getChannel(player, channelId);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'An error has occurred' });
+    }
+  }
+
   @Post('create/dm')
   async createDM(
     @GetPlayer() player: Player,
@@ -81,6 +96,21 @@ export class ChatController {
       const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {
+      return res.status(500).json({ error: 'An error has occurred' });
+    }
+  }
+
+  @Get('dm')
+  async getDM(
+    @GetPlayer() player: Player,
+    @Query('nickname') nickname: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.getDM(player, nickname);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: 'An error has occurred' });
     }
   }

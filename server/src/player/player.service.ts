@@ -13,7 +13,7 @@ import * as fs from 'fs';
 export class PlayerService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  async getDataNickname(nickname: string, res: Response) {
+  async getDataNickname(senderId: number, nickname: string, res: Response) {
     try {
       const player = await this.prisma.player.findUnique({
         where: {
@@ -28,9 +28,31 @@ export class PlayerService {
           avatar: true,
           wallpaper: true,
           joinAt: true,
+          friends: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
-      return res.status(200).json({ player });
+      if (!player) throw new Error('Nickname not found');
+      let isFriend = false;
+      if (player.friends)
+        isFriend = player.friends.some((f) => f.id === senderId);
+
+      const request = await this.prisma.request.findFirst({
+        where: {
+          fromPlayerId: senderId,
+          NOT :{
+            status:"rejected",
+          }
+        },
+        select: {
+          status: true,
+          id: true,
+        },
+      });
+      return res.status(200).json({ player, request, isFriend });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -55,30 +77,127 @@ export class PlayerService {
     }
   }
   //-----------------------------------{ Add a friend }-----------------------------
+  async GetRequests(playerId: number, res: Response) {
+    try {
+      const requestsTo = await this.prisma.request.findMany({
+        where: {
+          toPlayerId: playerId,
+        },
+        include: {
+          fromPlayer: {
+            select: {
+              nickname: true,
+              avatar: true,
+            },
+          },
+        },
+      });
+      const requestsFrom = await this.prisma.request.findMany({
+        where: {
+          fromPlayerId: playerId,
+        },
+        include: {
+          toPlayer: {
+            select: {
+              nickname: true,
+              avatar: true,
+            },
+          },
+        },
+      });
+      const allRequests = [...requestsFrom, ...requestsTo];
 
-  async AddFriend(player: Player, nickname: string) {
-    console.log("nickname: " + player.nickname);
-    const check_friend = await this.prisma.player.findUnique({
+      const sortedRequests = allRequests.sort(
+        (a, b) => b.receivedAt.getTime() - a.receivedAt.getTime(),
+      );
+
+      const requestsWithType = sortedRequests.map((request) => {
+        if (request.fromPlayerId === playerId) {
+          return {
+            ...request,
+            type: 'from',
+          };
+        } else {
+          return {
+            ...request,
+            type: 'to',
+          };
+        }
+      });
+      return res.status(200).json({ requests: requestsWithType });
+    } catch (error) {
+      return res.status(400).json({ message: 'An error has occurred' });
+    }
+  }
+
+  async AddRequest(player: Player, receiver: string, res: Response) {
+    const shortid = require('shortid');
+    const reqId = shortid.generate();
+    const receiverId = await this.prisma.player.findUnique({
       where: {
-        id: player.id,
+        nickname: receiver,
       },
-      include: {
-        friends: {
-          select: {
-            nickname: true,
-          },
-        },
-        block: {
-          select: {
-            nickname: true,
-          },
-        },
+      select: {
+        id: true,
       },
     });
-    if (
-      !check_friend.friends.some((f) => f.nickname === nickname) &&
-      !check_friend.block.some((f) => f.nickname === nickname)
-    ) {
+    if (!receiverId) throw new Error('Nickname Not Found');
+    try {
+      const existingRequest = await this.prisma.request.findFirst({
+        where: {
+          toPlayerId: receiverId.id,
+          fromPlayerId: player.id,
+          NOT : {
+            status : "rejected",
+          }
+        },
+      });
+      if (existingRequest) throw new Error('Request already sent');
+
+      const request = await this.prisma.request.create({
+        data: {
+          id: reqId,
+          fromPlayerId: player.id,
+          toPlayerId: receiverId.id,
+        },
+      });
+      return res.json({ requestId: request.id });
+    } catch (err) {
+      if (err instanceof Error)
+        return res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: 'An Error has occurred' });
+    }
+  }
+
+  async AcceptRequest(
+    player: Player,
+    senderId: number,
+    requestId: string,
+    res: Response,
+  ) {
+    try {
+      const check_friend = await this.prisma.player.findUnique({
+        where: {
+          id: player.id,
+        },
+        include: {
+          friends: {
+            select: {
+              id: true,
+            },
+          },
+          block: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+      if (check_friend.friends.some((f) => f.id === senderId))
+        throw new Error('Friend already exist');
+      else if (check_friend.block.some((f) => f.id === senderId))
+        throw new Error('You have been blocked');
+      // connect first player
       await this.prisma.player.update({
         where: {
           id: player.id,
@@ -86,29 +205,126 @@ export class PlayerService {
         data: {
           friends: {
             connect: {
-              nickname: nickname,
-            },
-          },
-        },
-      });
-      await this.prisma.player.update({
-        where: {
-          nickname: nickname,
-        },
-        data: {
-          friends: {
-            connect: {
-              nickname: player.nickname,
+              id: senderId,
             },
           },
         },
       });
 
-      console.log('Friend added !', nickname);
-      return 'Friend added successfully';
-    } else {
-      console.log(nickname, 'exist !');
-      return 'Friend already exist !';
+      // connect second player
+      await this.prisma.player.update({
+        where: {
+          id: senderId,
+        },
+        data: {
+          friends: {
+            connect: {
+              id: player.id,
+            },
+          },
+        },
+      });
+      // change request status to accpeted
+      await this.prisma.request.update({
+        where: {
+          id: requestId,
+        },
+        data: {
+          status: 'accepted',
+        },
+      });
+      // get other requests that might have been sent the player
+      const otherRequests = await this.prisma.request.findMany({
+        where: {
+          fromPlayerId: player.id,
+          toPlayerId: senderId,
+          status: 'pending',
+        },
+      });
+      //delete those requests
+      await this.prisma.request.deleteMany({
+        where: {
+          id: { in: otherRequests.map((r) => r.id) },
+        },
+      });
+      return res.json({ message: 'Success' });
+    } catch (error) {
+      if (error instanceof Error) {
+        {
+          console.log(error.message);
+          return res.status(400).json({ error: error.message });
+        }
+        // await this.prisma.request.delete({
+        //   where: {
+        //     id: requestId,
+        //   },
+        // });
+      }
+      return res.status(400).json({ error: 'An error has occurred' });
+    }
+  }
+
+  async rejectRequest(
+    player: Player,
+    senderId: number,
+    requestId: string,
+    res: Response,
+  ) {
+    try {
+      
+      // change request status to accpeted
+      await this.prisma.request.update({
+        where: {
+          id: requestId,
+        },
+        data: {
+          status: 'rejected',
+        },
+      });
+      // get other requests that might have been sent the player
+      // const otherRequests = await this.prisma.request.findMany({
+      //   where: {
+      //     fromPlayerId: player.id,
+      //     toPlayerId: senderId,
+      //     status: 'pending',
+      //   },
+      // });
+      // //delete those requests
+      // await this.prisma.request.deleteMany({
+      //   where: {
+      //     id: { in: otherRequests.map((r) => r.id) },
+      //   },
+      // });
+      return res.json({ message: 'Success' });
+    } catch (error) {
+      if (error instanceof Error) {
+        {
+          console.log(error.message);
+          return res.status(400).json({ error: error.message });
+        }
+        // await this.prisma.request.delete({
+        //   where: {
+        //     id: requestId,
+        //   },
+        // });
+      }
+      return res.status(400).json({ error: 'An error has occurred' });
+    }
+  }
+
+  async CancelRequest(res: Response, player: Player, requestId: string) {
+    const shortid = require('shortid');
+    try {
+      await this.prisma.request.delete({
+        where: {
+          id: requestId,
+        },
+      });
+      return res.json({ message: 'Success' });
+    } catch (err) {
+      if (err instanceof PrismaClientKnownRequestError)
+        return res.status(400).json({ error: err.message });
+      return res.status(400).json({ error: 'An Error has occurred' });
     }
   }
 
@@ -122,7 +338,12 @@ export class PlayerService {
           nickname: nickname,
         },
         include: {
-          friends: true,
+          friends: {
+            select: {
+              nickname: true,
+              avatar: true,
+            }
+          },
         },
       });
       return res.status(200).json(FriendList.friends);
@@ -235,7 +456,7 @@ export class PlayerService {
         if (e.code === 'P2002') {
           error = 'Nickname already exist';
         } else {
-          error = 'An Error has occured';
+          error = 'An Error has occurred';
         }
       }
       // error handling for invalid session token
@@ -258,7 +479,7 @@ export class PlayerService {
       return res.status(201).json({ success: 'Password changed successfully' });
     } catch (err) {
       console.log(err);
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
   async updatePFP(req: Request, fileName: string) {
@@ -358,7 +579,7 @@ export class PlayerService {
       });
       return res.status(200).json({ currentTitle: occupiedTitle.titles.name });
     } catch (error) {
-      return res.status(400).json({ error: 'An Error has occured' });
+      return res.status(400).json({ error: 'An Error has occurred' });
     }
   }
 
@@ -388,30 +609,28 @@ export class PlayerService {
 
       return res.status(200).json({ message: 'Title updated' });
     } catch (error) {
-      return res.status(400).json({ error: 'An Error has occured' });
+      return res.status(400).json({ error: 'An Error has occurred' });
     }
   }
 
   //----------------------------------{Search}-----------------------------------
-  async getDataSearch( res: Response, searchParam : string) {
-    // Only fetching Users for the moment 
+  async getDataSearch(res: Response, searchParam: string) {
+    // Only fetching Users for the moment
     try {
       const data = await this.prisma.player.findMany({
-        where : {
+        where: {
           nickname: {
             contains: searchParam,
-          }
+          },
         },
-        select : {
-          nickname : true,
-          avatar : true,
-        }
-      })
-      return res.status(200).json({players : data});
-    }catch (error) {
-      return res.status(400).json({ error : "An Error has occurred"});
+        select: {
+          nickname: true,
+          avatar: true,
+        },
+      });
+      return res.status(200).json({ players: data });
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occurred' });
     }
   }
-
-
 }

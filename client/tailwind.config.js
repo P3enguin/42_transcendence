@@ -11,6 +11,7 @@ module.exports = {
     theme: {
         screens: {
             'sx': '380px',
+            'tx': '800px',
             'sm': '640px',
             // => @media (min-width: 640px) { ... }
 

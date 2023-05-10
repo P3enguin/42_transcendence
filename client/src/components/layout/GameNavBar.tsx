@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { SideBarIcon, SearchBarIcon, NotificationIcon } from '../icons/Icons';
-import { NotiAddFriend, NotiAccept } from './Notification';
+import { NotiDrop } from './Notification';
 import { useRouter } from 'next/router';
 
 interface FunctionProps {
@@ -40,8 +40,8 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'Tween' }}
-              className="border-r-1 absolute top-0  left-0 flex h-[64px]
-            w-[64px] items-center justify-center rounded-tr-3xl border 
+              className="border-r-1 ]w-[64px] absolute  top-0 left-0 flex
+          h-[64px] items-center justify-center rounded-tr-3xl border 
               border-b-0  border-[#0097E2]  bg-[#2A3568] sm:hidden"
             ></motion.div>
           )}
@@ -92,61 +92,17 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
           </button>
         </div>
       </div>
-      {notif && (
-        <div
-          x-show="dropdownOpen"
-          className="absolute top-[56px] right-12 z-50 mt-2 w-[21rem] max-h-[400px] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
-        >
-          <div className="py-2">
-            <NotiAddFriend
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/11.jpg"
-            />
-             <NotiAccept
-              username="Pobri stito"
-              image="https://randomuser.me/api/portraits/men/50.jpg"
-            />
-             <NotiAddFriend
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/12.jpg"
-            />
-             <NotiAccept
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/13.jpg"
-            />
-             <NotiAddFriend
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/15.jpg"
-            />
-             <NotiAccept
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/14.jpg"
-            />
-             <NotiAddFriend
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/15.jpg"
-            />
-             <NotiAccept
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/17.jpg"
-            />
-             <NotiAddFriend
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/20.jpg"
-            />
-             <NotiAccept
-              username="Ezio Auditori"
-              image="https://randomuser.me/api/portraits/men/21.jpg"
-            />
-          </div>
-          {/* <a
-            href="#"
-            className="block bg-gray-800 py-2 text-center font-bold text-white"
-          >
-            See all notifications
-          </a> */}
-        </div>
-      )}
+      {
+        notif && <NotiDrop />
+        //     {/* <a
+        //       href="#"
+        //       className="block bg-gray-800 py-2 text-center font-bold text-white"
+        //     >
+        //       See all notifications
+        //     </a> */}
+        //   // </div>
+        // )}
+      }
     </div>
   );
 }

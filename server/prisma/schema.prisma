@@ -39,9 +39,25 @@ model Player {
   rooms   Room[] @relation(name: "room_members")
   bans    Ban[]
 
-  equipedTitle Int @default(0)
+  equipedTitle Int       @default(0)
+  requestsFrom Request[] @relation("requestFrom")
+  requestsTo   Request[] @relation("requestTo")
 
   @@map("players")
+}
+
+model Request {
+  id String @id
+
+  toPlayerId Int
+  toPlayer   Player @relation(fields: [toPlayerId], references: [id], name: "requestTo")
+
+  fromPlayerId Int
+  fromPlayer   Player @relation(fields: [fromPlayerId], references: [id], name: "requestFrom")
+
+  status String @default("pending")
+
+  receivedAt DateTime @default(now())
 }
 
 model Status {

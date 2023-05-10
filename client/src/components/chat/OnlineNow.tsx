@@ -1,18 +1,57 @@
-import React from "react";
+import axios from 'axios';
 import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/router';
 
-function OnlineNow ({player}: any)
+function OnlineNow ({player, token}: any)
 {
+  const [friends, setFriends] = useState([]);
+  const router = useRouter();
+
+  async function getRoom(event : React.FormEvent, player1: any, player2: any) {
+    event.preventDefault();
+
+    const room = player1 + player2;
+
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat/getRoom?player1=${player1}&creator=${player2}`,
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    ).then(res => {
+      console.log(res.data);
+      router.push(`/chat/${res.data}`);
+    }).catch(err => console.log(err));
+    
+  }
+
+  useEffect(() => {
+    async function fetchFriends() {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/friends',
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFriends(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchFriends();
+  }, []);
+
   return (
-    <div className="flex h-[15%] w-[100%] flex-col pl-5 pr-5">
+    <div className="flex h-[15%] w-[100%] flex-col pl-5 pr-5 border-b">
       <div>Friends : </div>
       <div className="scroll-hide flex w-[90%] space-x-1 flex-row overflow-hidden overflow-x-auto scrollbar-hide">
-        {player.map((friend: any, key: number) => {
+        {friends.map((friend: any, key: number) => {
           const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/" + friend.avatar;
 
           return (
-            <div key={key} >
-              <Link href={`/users/${friend.nickname}`}>
+            <div key={key} onClick={(event) => getRoom(event, friend.nickname, player)}>
                 <img
                   className="h-14 w-14 md:w-16 md:h-16 cursor-pointer rounded-full border"
                   src={picture}
@@ -20,7 +59,6 @@ function OnlineNow ({player}: any)
                   width={12}
                   height={12}
                 />
-              </Link> 
             </div>
           );
         })}

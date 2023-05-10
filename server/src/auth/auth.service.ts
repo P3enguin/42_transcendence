@@ -42,13 +42,12 @@ export class AuthService {
       if (!player) {
         const secret = process.env.JWT_SESSION;
         const jwtSession = await this.jwt.signAsync(user, {
-          expiresIn: '15m',
+          expiresIn: '1d',
           secret: secret,
         });
         res.status(200).cookie('jwt_session', jwtSession, {
           httpOnly: true,
-          // secure: true,
-          maxAge: 1000 * 60 * 15, // expires after 15 min
+          maxAge: 1000 * 60 * 60 *24, // expires after 24H
         });
         res.redirect(process.env.FRONTEND_HOST + '/login');
 
@@ -65,7 +64,7 @@ export class AuthService {
         res.status(200).cookie('jwt_2FA', jwt2FA, {
           httpOnly: true,
           // secure: true,
-          maxAge: 1000 * 60 * 60 * 24, // expires after 15 min
+          maxAge: 1000 * 60 * 60 * 24, // expires after  24H
         });
         res.redirect(process.env.FRONTEND_HOST + '/verify');
       } else {
@@ -142,7 +141,7 @@ export class AuthService {
         if (e.code === 'P2002') {
           error = 'Nickname already exist';
         } else {
-          error = 'An Error has occured';
+          error = 'An Error has occurred';
         }
       }
       // error handling for invalid session token
@@ -273,7 +272,7 @@ export class AuthService {
       });
     } catch (error) {
       console.log(error);
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
 
@@ -303,7 +302,7 @@ export class AuthService {
         res.status(400).json({ error: 'Invalid Token' });
       }
     } catch (error) {
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
 
@@ -364,7 +363,7 @@ export class AuthService {
         res.status(400).json({ error: 'Invalid Token' });
       }
     } catch (error) {
-      return res.status(400).json({ error: 'An error has occured' });
+      return res.status(400).json({ error: 'An error has occurred' });
     }
   }
 }

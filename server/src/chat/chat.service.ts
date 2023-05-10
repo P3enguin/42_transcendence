@@ -19,12 +19,11 @@ export class ChatService {
     return 'SendPublicMessage';
   }
 
-  GetPrivMessage(player: Player, friendId: any) {
-    return '7oet_d9Z';
-  }
-
   GetChannelMessage(channelId: number) {
     return 'GetChannelMessage';
+  }
+  GetPrivMessage(player: Player, friendId: any) {
+    return '7oet_d9Z';
   }
 
   GetChatById(id: string) {}
@@ -65,6 +64,58 @@ export class ChatService {
 
     return {
       status: 201,
+      data: channel,
+    };
+  }
+
+  async getChannel(player: Player, channelId: string) {
+    let channel = await this.prisma.room.findFirst({
+      select: {
+        channelId: true,
+        name: true,
+        topic: true,
+        memberLimit: true,
+        privacy: true,
+        members: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
+        avatar: true,
+        createdAt: true,
+      },
+      where: {
+        isChannel: true,
+        channelId,
+      },
+    });
+
+    if (
+      !channel ||
+      (channel.privacy === 'secret' &&
+        !channel.members.find((member) => member.nickname === player.nickname))
+    ) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    if (
+      channel.privacy === 'private' &&
+      !channel.members.find((member) => member.nickname === player.nickname)
+    ) {
+      channel['membersCount'] = channel.members.length;
+      delete channel.members;
+      delete channel.topic;
+    }
+
+    return {
+      status: 200,
       data: channel,
     };
   }
@@ -112,6 +163,42 @@ export class ChatService {
     };
   }
 
+  async getDM(player: Player, nickname: string) {
+    const dm = await this.prisma.room.findFirst({
+      select: {
+        channelId: true,
+        members: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
+        createdAt: true,
+      },
+      where: {
+        isChannel: false,
+        memberLimit: 2,
+        members: {
+          every: {
+            OR: [{ nickname: player.nickname }, { nickname: nickname }],
+          },
+        },
+      },
+    });
+
+    if (dm) {
+      return {
+        status: 200,
+        data: dm,
+      };
+    }
+
+    return this.createDM(player, nickname);
+  }
+
   async joinChannel(player: Player, JoinChannelDto: JoinChannelDto) {
     const { channelId, key } = JoinChannelDto;
 
@@ -145,7 +232,7 @@ export class ChatService {
     if (channel.bans.length > 0) {
       return {
         status: 403,
-        data: { error: 'You are banned from this room' },
+        data: { error: 'You are banned from this channel' },
       };
     }
 
