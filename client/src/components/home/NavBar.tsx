@@ -24,7 +24,7 @@ export default function NavBar({
   handleClick: Function;
 }) {
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-[#001033]">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -32,17 +32,29 @@ export default function NavBar({
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobile menu button*/}
 
-                <Disclosure.Button
-                  className="inline-flex items-center justify-center 
-                  rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white 
-                  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-                >
+                <Disclosure.Button className="ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500  lg:hidden">
                   <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
+
+                  <div className="w-6">
+                    <span
+                      aria-hidden="true"
+                      className={`absolute block h-0.5 w-6 transform bg-current transition duration-300 ease-in-out ${
+                        open ? 'rotate-45' : ' -translate-y-1.5'
+                      }`}
+                    ></span>
+                    <span
+                      aria-hidden="true"
+                      className={`absolute block  h-0.5 w-6 transform   bg-current transition duration-300 ease-in-out ${
+                        open ? 'opacity-0' : ''
+                      }`}
+                    ></span>
+                    <span
+                      aria-hidden="true"
+                      className={`absolute block  h-0.5 w-6 transform bg-current  transition duration-300 ease-in-out ${
+                        open ? '-rotate-45' : ' translate-y-1.5'
+                      } `}
+                    ></span>
+                  </div>
                 </Disclosure.Button>
               </div>
 
@@ -76,16 +88,15 @@ export default function NavBar({
                       >
                         <div className="flex flex-row items-center gap-0.5">
                           <AnimatePresence>
-                            {
-                                  item.current && 
-                            <motion.div
-                              initial={{ opacity: 0, x: '-160%' }}
-                              animate={{ opacity: 100, x: '-110%' }}
-                              transition={{ duration: 0.2 }}
-                              exit={{opacity:0, x: '-160%' }}
-                              className='absolute h-[0px] w-[5px] rounded-sm border border-[#0097E2]'
-                            ></motion.div>
-                            }
+                            {item.current && (
+                              <motion.div
+                                initial={{ opacity: 0, x: '-160%' }}
+                                animate={{ opacity: 100, x: '-110%' }}
+                                transition={{ duration: 0.2 }}
+                                exit={{ opacity: 0, x: '-160%' }}
+                                className="absolute h-[0px] w-[5px] rounded-sm border border-[#0097E2]"
+                              ></motion.div>
+                            )}
                           </AnimatePresence>
                           {item.name}
                         </div>
@@ -94,29 +105,19 @@ export default function NavBar({
                   </div>
                 </div>
               </div>
-              <div
-                className="absolute inset-y-0 right-0 flex items-center
-                    pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
-              >
-                <button
-                  type="button"
-                  className="rounded-full bg-gray-800 p-1 text-gray-400
-                 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                ></button>
-              </div>
             </div>
           </div>
 
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pt-2 pb-3">
+          <Disclosure.Panel className="absolute z-20 w-full  flex-grow sm:hidden">
+            <div className="space-y-1 bg-[#001033] px-2 pt-2 pb-3">
               {state.map((item, index) => (
                 <button
                   key={item.name}
                   onClick={(e) => handleClick(e, index)}
                   className={classNames(
                     item.current
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                      ? 'bg-[#2C3B7C] text-white'
+                      : 'text-gray-300 hover:bg-[#CBD2ED] hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium',
                   )}
                 >

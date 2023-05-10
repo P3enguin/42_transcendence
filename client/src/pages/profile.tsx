@@ -42,7 +42,7 @@ function PlayerProfile({
             nickname={nickname}
             joinDate={joinDate}
             coins={coins}
-            exp={1800}
+            exp={1500}
             MaxExp={2500}
             userProfile={true}
           />

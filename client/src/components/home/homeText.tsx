@@ -1,13 +1,13 @@
-import { Props } from "@headlessui/react/dist/types";
-import { AnimateSharedLayout, motion } from "framer-motion";
+import { Props } from '@headlessui/react/dist/types';
+import { AnimateSharedLayout, motion } from 'framer-motion';
 
 export interface handleFunc {
-  handleJoin: (event:React.MouseEvent) => void
+  handleJoin: (event: React.MouseEvent) => void;
 }
 
 function HomeText({ handleJoin }: handleFunc) {
   return (
-    <div className="text-center xl:text-left w-auto xl:w-1/4 css ">
+    <div className="lg:mb-[100px]  w-auto text-center xl:w-1/4 xl:text-left ">
       <motion.div
         key="text1"
         initial={{ opacity: 0 }}
@@ -15,10 +15,10 @@ function HomeText({ handleJoin }: handleFunc) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <h3 className="text-3xl xl:text-6xl text-white mb-1 md:mb-10 sh">
+        <h3 className=" mb-1 text-3xl text-white md:mb-10 xl:text-6xl">
           Ponigator
         </h3>
-        <p className="mt-4 text-xl xl:text-4xl md:text-3xl leading-relaxed mb-1 md:mb-10  text-white ">
+        <p className="mt-4 mb-1 text-xl leading-relaxed text-white md:mb-10 md:text-3xl  xl:text-4xl ">
           The Ultimate Exprerience For The Mighty Ping Context!
         </p>
         <div className="pt-5">
@@ -26,14 +26,14 @@ function HomeText({ handleJoin }: handleFunc) {
             key="buttonSign1"
             layoutId="button"
             initial={false}
-            transition={{ type: "Tween" }}
+            transition={{ type: 'Tween' }}
           >
             <button
               onClick={handleJoin}
-              className="uppercase mx-auto shadow bg-[#0097E2] hover:bg-[#2C3B7C] 
-                            transform transition duration-300 
-                            hover:text-l hover:scale-110  text-white text-s hover:text-l 
-                            font-bold py-2 px-12 rounded-full"
+              className="hover:text-l text-s hover:text-l mx-auto transform 
+                            rounded-full bg-[#0097E2] py-2 
+                            px-12 font-bold  uppercase text-white shadow 
+                            transition duration-300 hover:scale-110 hover:bg-[#2C3B7C]"
             >
               JOIN NOW
             </button>
