@@ -47,7 +47,6 @@ export class GameService {
     const game = this.games.get(id);
     if (game) {
       clearInterval(game.inteval);
-      game.removePlayer(nickname);
       if (!game.players.length) {
         console.log('deleting game');
         this.games.delete(id);
@@ -65,20 +64,35 @@ export class GameService {
     return null;
   }
 
+  getLiveGame(game: Game) {
+    return {
+      id: game.id,
+      players: [
+        {
+          id: game.players[0].id,
+          nickname: game.players[0].nickname,
+          avatar: game.players[0].avatar,
+          score: game.players[0].score,
+        },
+        {
+          id: game.players[1].id,
+          nickname: game.players[1].nickname,
+          avatar: game.players[1].avatar,
+          score: game.players[1].score,
+        },
+      ],
+      type: game.type,
+      createdAt: game.createdAt,
+      updatedAt: game.updatedAt,
+    };
+  }
+
   getLiveGames() {
-    let activeGames = Array.from(this.games.values()).filter((game) =>
-      game.isActive(),
-    );
-    // delete game attributes that are not needed for the client
-    activeGames = activeGames.map((game) => {
-      delete game.inteval;
-      delete game.board;
-      delete game.ball;
-      delete game.paddle;
-      delete game.gameOn;
-      delete game.players[0].socketId;
-      delete game.players[1].socketId;
-      return game;
+    let activeGames = [];
+    Array.from(this.games.values()).forEach((game) => {
+      if (game && game.players.length === 2) {
+        activeGames.push(this.getLiveGame(game));
+      }
     });
     return activeGames;
   }
