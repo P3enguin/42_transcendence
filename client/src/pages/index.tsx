@@ -1,7 +1,8 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { AnimatePresence, motion, AnimateSharedLayout } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import Simulation from '@/components/home/Simulation';
+import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
 import Login from '@/components/home/LoginHome';
 import NavBar from '@/components/home/NavBar';
 import HomeText from '@/components/home/homeText';
@@ -9,10 +10,12 @@ import { verifyToken } from '@/components/VerifyToken';
 import Router from 'next/router';
 
 export default function Home({ authenticated }: { authenticated: boolean }) {
+  const simRef = useRef<HTMLDivElement>(null);
+
   const [state, setState] = useState([
     { name: 'Home', current: true, animation: { rotate: 0 } },
     { name: 'About', current: false, animation: { rotate: -90 } },
-    { name: 'Contact', current: false, animation: { rotate: 0 } },
+    { name: 'Contact', current: false, animation: { rotate: 90 } },
   ]);
   const [animate, setAnimation] = useState({ rotate: 0 });
   const [join, setJoin] = useState(false);
@@ -40,9 +43,9 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
   }
 
   function getImageStyle() {
-    if (state[0].current) return 'px-4 shrink-0';
-    else if (state[1].current) return 'w-3/5 md:max-xl:w-4/5 xl:w-full';
-    else return 'px-4 shrink-0';
+    if (state[0].current) return 'px-4 shrink-0 lg:h-full h-1/4';
+    else if (state[1].current || state[1].current)
+      return 'w-3/5 md:max-xl:w-4/5 xl:w-full ';
   }
 
   useEffect(() => {
@@ -60,29 +63,33 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
 
         {/* Navigation bar component */}
         <NavBar state={state} handleClick={handleClick} />
-
         {/* Home Content components */}
-        <div className="relative pt-12">
+        <div className="h-[calc(100vh-80px)] min-h-[400px] pt-10 xl:p-0 overflow-hidden">
           <div
-            className={` flex items-center   gap-12
-                      ${state[1].current ? 'xl:flex-row' : 'flex-col-reverse'}
+            ref={simRef}
+            className={`relative flex  h-[100%] flex-col-reverse items-center
+                      justify-end gap-12 border
                       ${
-                        state[2].current
-                          ? 'mr-12 justify-end'
-                          : 'justify-center'
-                      } 
-                      ${join ? 'xl:flex-row-reverse' : 'xl:flex-row'}`}
+                        join ? 'xl:flex-row-reverse' : 'xl:flex-row'
+                      } xl:justify-center
+                     `}
           >
             <motion.div
               key="img"
               layoutId="test"
               initial={true}
               animate={animate}
-              transition={{ type: 'Tween' }}
+              transition={{ type: 'Tween', ease: 'easeOut',duration:0.5 }}
               exit={{ opacity: 0 }}
+              className=""
             >
               <div className={getImageStyle()}>
-                <Image src="/game.png" alt="game" width={700} height={700} />
+                <Simulation
+                  gameRef={simRef}
+                  isRotated={state[1].current || state[2].current}
+                  isContact={state[2].current}
+                />
+                {/* <Image src="/game.png" alt="game" width={700} height={700} /> */}
               </div>
             </motion.div>
             {state[0].current && <HomeText handleJoin={handleJoin} />}
