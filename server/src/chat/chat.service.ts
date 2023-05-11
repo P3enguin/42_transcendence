@@ -122,6 +122,16 @@ export class ChatService {
 
   async createDM(player: Player, nickname: string) {
     const existingDM = await this.prisma.room.findFirst({
+      select:{
+        channelId:true,
+        members:{
+          select: {
+            nickname: true,
+            avatar: true,
+          },
+        },
+        
+      },
       where: {
         isChannel: false,
         memberLimit: 2,
@@ -135,8 +145,8 @@ export class ChatService {
 
     if (existingDM) {
       return {
-        status: 403,
-        data: { error: 'DM already exists' },
+        status: 201,
+        data: existingDM,
       };
     }
 

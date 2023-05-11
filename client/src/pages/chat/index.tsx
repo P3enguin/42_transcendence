@@ -60,8 +60,8 @@ function Chat({ jwt_token, data }: { jwt_token: string; data: any }) {
   return (
     <>
       <div className="flex h-[70%] w-[80%] min-h-[600px] m-5 sm:m-20 flex-row rounded-2xl border  border-neutral-300 max-w-[1500px] ">
-      {showRecentChat &&  (<div className="h-[100%] w-[100%] flex-col tx:border-r">
-          <div className="flex h-[5%] items-center border-b pl-5 w-[100%]">
+      {showRecentChat &&  (<div className="h-[100%] w-[100%] flex-col tx:border-r tx:max-w-[400px]">
+          <div className="flex h-[5%] items-center border-b pl-5 w-[100%] ">
             <Link href={`/chat`}>Chat Room </Link>
           </div>
           {

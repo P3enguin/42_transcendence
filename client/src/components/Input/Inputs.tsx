@@ -1,5 +1,5 @@
 import { statObj, handleKeyUp, validFunc } from '../tools/Interface';
-import { Dispatch, SetStateAction, useEffect } from 'react';
+import { Dispatch, FormEvent, SetStateAction, useEffect } from 'react';
 
 export function FirstNameInput({
   state,
@@ -378,11 +378,10 @@ export function InputDefault({
         name={name}
         id={id}
         className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3  text-xs text-white
+                    py-2.5 px-3  text-xs text-white mt-5
                       focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         defaultValue={defaultValue}
-        required
         onChange={ (e)=>{
           e.preventDefault();
           setName(e.target.value);
@@ -392,7 +391,7 @@ export function InputDefault({
       />
       <label
         htmlFor={name}
-        className={`absolute top-3 -z-10 origin-[0]
+        className={`absolute top-8 -z-10 origin-[0]
                       -translate-y-8 scale-100 transform pl-3
                      text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
                       peer-focus:scale-100 peer-focus:font-medium 
@@ -403,7 +402,6 @@ export function InputDefault({
     </div>
   );
 }
-
 export function InputKey({
   name,
   id,
@@ -420,18 +418,18 @@ export function InputKey({
   return (
     <div className="group relative z-0 mb-6 w-3/4">
       <input
-        type="password"
+        type="input"
         name={name}
         id={id}
         className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3  text-xs text-white mt-2
+                    py-2.5 px-3  text-xs text-white mt-5
                       focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         defaultValue={defaultValue}
-        required
         onChange={ (e)=>{
           e.preventDefault();
           setKey(e.target.value);
+          console.log(e.target.value);
         }
         }
       />
@@ -440,7 +438,67 @@ export function InputKey({
         className={`absolute top-3 -z-10 origin-[0]
                       -translate-y-8 scale-100 transform pl-3
                      text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
-                      peer-focus:scale-100 peer-focus:font-medium 
+                      peer-focus:scale-100 peer-focus:font-medium
+                      peer-focus:text-blue-600 md:text-sm `}
+      >
+        {description}
+      </label>
+    </div>
+  );
+}
+
+export function InputBtn({
+  name,
+  id,
+  defaultValue,
+  description,
+  setName,
+  createPrivateChat,
+}: {
+  setName: Dispatch<SetStateAction<string>>,
+  createPrivateChat: () =>{},
+  name: string;
+  id: string;
+  description:string;
+  defaultValue?: string;
+}) {
+  return (
+    <div className="group relative z-0 mb-6 w-3/4 min-w-[160px]">
+      <input
+        type="input"
+        name={name}
+        id={id}
+        className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
+                    py-2.5 px-3  text-xs text-white mt-5
+                      focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
+        placeholder=" "
+        defaultValue={defaultValue}
+        onChange={ (e)=>{
+          e.preventDefault();
+          setName(e.target.value);
+          console.log(e.target.value);
+        }
+        }
+      />
+      <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    createPrivateChat();
+                  }}
+                  className=" hover:text-s absolute top-[66.5%] right-[6px] mx-auto
+                                      translate-y-[-50%] transform rounded-full rounded-full
+                                      bg-[#0097E2] px-[12px] py-2 text-[10px] 
+                                      font-bold uppercase  text-white shadow transition
+                                      duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]"
+                >
+                  start
+                </button>
+      <label
+        htmlFor={name}
+        className={`absolute top-8 -z-10 origin-[0]
+                      -translate-y-8 scale-100 transform pl-3
+                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+                      peer-focus:scale-100 peer-focus:font-large peer-focus:uppercase
                       peer-focus:text-blue-600 md:text-sm `}
       >
         {description}
