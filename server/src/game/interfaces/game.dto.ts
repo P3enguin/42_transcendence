@@ -138,7 +138,7 @@ export class Game {
     this.spectator.push(spectator);
   }
 
-  removePlayer(nickname: string): void {
+  disconnectPlayer(nickname: string): void {
     this.players = this.players.filter((p) => p.nickname !== nickname) as [
       Player?,
       Player?,

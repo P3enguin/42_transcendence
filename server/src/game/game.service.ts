@@ -7,7 +7,11 @@ export class GameService {
   games = new Map<string, Game>();
   players = new Map<string, Player>();
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+    setInterval(() => {
+      console.log('games:', this.games.values());
+    }, 1000 * 10);
+  }
 
   joinGame(player: Player, gametype: GameType) {
     const game = this.getAvailableGame(gametype);
@@ -43,18 +47,18 @@ export class GameService {
     return null;
   }
 
-  removePlayerFromGame(id: string, nickname: string) {
-    const game = this.games.get(id);
-    if (game) {
-      clearInterval(game.inteval);
-      game.removePlayer(nickname);
-      if (!game.players.length) {
-        console.log('deleting game');
-        this.games.delete(id);
-        return;
-      }
-    }
-    this.games.set(id, game);
+  disconnectPlayer(id: string, nickname: string) {
+    // const game = this.games.get(id);
+    // if (game) {
+    //   clearInterval(game.inteval);
+    //   // game.disconnectPlayer(nickname);
+    //   if (!game.players.length) {
+    //     //console.log('deleting game');
+    //     this.games.delete(id);
+    //     return;
+    //   }
+    // }
+    // this.games.set(id, game);
   }
 
   getActiveGame(id: string) {
@@ -133,7 +137,7 @@ export class GameService {
     const requiredXP = this.getRequiedLevelXP(level);
     const EarnedXP = Math.round(requiredXP * 0.7);
     const bonusXP = (winnerscore - looserscore) * Math.round(requiredXP * 0.02);
-    console.log('winner gots ', EarnedXP + bonusXP);
+    //console.log('winner gots ', EarnedXP + bonusXP);
     return EarnedXP + bonusXP;
   }
 
@@ -141,15 +145,15 @@ export class GameService {
     const requiredXP = this.getRequiedLevelXP(level);
     const EarnedXP = Math.round(requiredXP * 0.3);
     const bonusXP = looserscore * Math.round(requiredXP * 0.01);
-    console.log('looser gots ', EarnedXP + bonusXP);
+    //console.log('looser gots ', EarnedXP + bonusXP);
 
     return EarnedXP + bonusXP;
   }
 
-  async updatePlayersXP(game: Game) {
+  async levelUp(_winner: Player, _looser: Player) {
     const winner = await this.prisma.player.findUnique({
       where: {
-        id: game.getWinner().id,
+        id: _winner.id,
       },
       include: {
         status: true,
@@ -157,26 +161,25 @@ export class GameService {
     });
     const looser = await this.prisma.player.findUnique({
       where: {
-        id: game.getLooser().id,
+        id: _looser.id,
       },
       include: {
         status: true,
       },
     });
-    console.log('winner current XP', winner.status.XP);
-    console.log('looser current XP', looser.status.XP);
-    const winnerXP =
-      winner.status.XP +
-      this.calculateWinnerXP(
-        winner.status.level,
-        game.getWinner().score,
-        game.getLooser().score,
-      );
-    const winnerLevel = this.getLevelFromXP(winnerXP);
-    const looserXP =
-      looser.status.XP +
-      this.calculateLooserXP(looser.status.level, game.getLooser().score);
-    const looserLevel = this.getLevelFromXP(looserXP);
+    //// console.log('winner current XP', winner.status.XP);
+    //// console.log('looser current XP', looser.status.XP);
+    winner.status.XP += this.calculateWinnerXP(
+      winner.status.level,
+      _winner.score,
+      _looser.score,
+    );
+    const winnerLevel = this.getLevelFromXP(winner.status.XP);
+    looser.status.XP += this.calculateLooserXP(
+      looser.status.level,
+      _looser.score,
+    );
+    const looserLevel = this.getLevelFromXP(looser.status.XP);
 
     await this.prisma.player.update({
       where: {
@@ -186,7 +189,7 @@ export class GameService {
         status: {
           update: {
             level: winnerLevel,
-            XP: winnerXP,
+            XP: winner.status.XP,
           },
         },
       },
@@ -199,38 +202,33 @@ export class GameService {
         status: {
           update: {
             level: looserLevel,
-            XP: looserXP,
+            XP: looser.status.XP,
           },
         },
       },
     });
 
-    console.log('winner', winner.nickname, ' has ', winnerXP, ' XP');
-    console.log('looser ', looser.nickname, 'has ', looserXP, ' XP');
+    //// console.log('winner', winner.nickname, ' has ', winner.status.XP, ' XP');
+    //// console.log('looser ', looser.nickname, 'has ', winner.status.XP, ' XP');
   }
 
-  async updatePlayersRP(game: Game) {}
+  async rankUp(_winner: Player, _looser: Player) {}
 
   async saveGame(id: string) {
     const game = this.games.get(id);
     await this.prisma.match.create({
       data: {
         type: game.type.toString(),
-        winner:
-          game.players[0].score > game.players[1].score
-            ? game.players[0].id
-            : game.players[1].id,
-        loser:
-          game.players[0].score < game.players[1].score
-            ? game.players[0].id
-            : game.players[1].id,
+        winner: game.getWinner().id,
+        loser: game.getLooser().id,
         score: [game.players[0].score, game.players[1].score].sort().toString(),
       },
     });
-    console.log('The match has been saved');
-    await this.updatePlayersXP(game);
+    //console.log('The match has been saved');
+    await this.levelUp(game.getWinner(), game.getLooser());
+    //console.log('The players XP has been updated');
     if (game.type.toString() === 'RANKED')
-      console.log('The players XP has been updated');
+      await this.rankUp(game.getWinner(), game.getLooser());
     this.deleteGame(id);
   }
 }

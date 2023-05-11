@@ -11,7 +11,7 @@ export default function DiscoverChannels({
     <div className="w-[90%] rounded-[20px] border border-white">
       <div className="flex pl-4 pt-4">
         <Image
-          src="discoverChannels.svg"
+          src="/discoverChannels.svg"
           alt="discoverChannels"
           width={20}
           height={20}

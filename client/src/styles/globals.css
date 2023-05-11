@@ -42,10 +42,9 @@ html {
 }
 
 .level {
-  background-color: #2C3B7C; /*color of the main-background*/
+  background-color: #2c3b7c; /*color of the main-background*/
   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
-
 
 .error {
   border-color: red;
@@ -64,7 +63,7 @@ html {
   transform: translate(100px, 700px) rotate(-90deg);
 }
 .progress .track {
-  stroke: #2C3B7C;
+  stroke: #2c3b7c;
 }
 .progress .fill {
   stroke: rgb(255, 255, 255);
@@ -74,7 +73,7 @@ html {
   transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill {
-  stroke: url(#GradientCounter)
+  stroke: url(#GradientCounter);
 }
 
 .progress .track2,
@@ -86,7 +85,7 @@ html {
 .progress .track2 {
   stroke: rgb(54, 71, 83);
 }
-.progress .fill2{
+.progress .fill2 {
   stroke: rgb(255, 255, 255);
   stroke-linecap: round;
   stroke-dasharray: 2160;
@@ -94,9 +93,8 @@ html {
   transition: stroke-dashoffset 1s;
 }
 .progress.blue .fill2 {
-  stroke: url(#GradientLevel)
+  stroke: url(#GradientLevel);
 }
-
 
 @media only screen and (min-device-width: 640px) {
   button:hover .friend-icon {
@@ -124,21 +122,19 @@ button:hover .friend-text {
   color: #0097e2;
 }
 
-
 *::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
 *::-webkit-scrollbar-track {
-  width: 7px;
-  height: 7px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: rgb(215, 215, 215);
   border-radius: 5px;
 }
- 
+
 *::-webkit-scrollbar-thumb {
-  background-color: rgb(50, 55, 145);
+  background-color: #21437d;
+  border: rgb(215, 215, 215) solid 0.75px;
   border-radius: 5px;
 }
 

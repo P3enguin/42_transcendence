@@ -21,7 +21,7 @@ export class LeaderBoardService {
           XP: true,
           rank: {
             select: {
-              ranks: true,
+              rank: true,
               rankId: true,
             },
           },
@@ -57,22 +57,12 @@ export class LeaderBoardService {
           level: true,
           XP: true,
           rank: {
-            orderBy: {
-              current_points: 'desc',
-            },
-            select: {
-              ranks: true,
-              rankId: true,
-              current_points: true,
-            },
-          },
+            select: { 
+              
+            }
+          }
         },
         take: limit,
-        orderBy: {
-          rank: {
-            _count: 'desc',
-          },
-        },
       });
 
       return res.status(200).json(data);

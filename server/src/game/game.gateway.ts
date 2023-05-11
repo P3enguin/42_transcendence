@@ -28,7 +28,7 @@ export interface connectedPlayer extends Player {
 @WebSocketGateway({
   namespace: 'game',
   cors: {
-    origin: '*',
+    origin: process.env.FRONTEND_HOST,
   },
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -55,7 +55,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.handshake.query.user as string,
     ) as connectedPlayer;
     console.log('client disconnected:', client.id);
-    this.gameService.removePlayerFromGame(player.gameId, player.nickname);
+    this.gameService.disconnectPlayer(player.gameId, player.nickname);
   }
 
   @SubscribeMessage('GetLiveGames')

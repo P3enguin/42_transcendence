@@ -13,6 +13,7 @@
         "db:down": "docker-compose -f ../docker-compose.yml down",
         "db:restart": "npm run db:down && npm run db:up && sleep 1 && npm run db:dev:migrate",
         "db:reset": "npm run db:down && npm run db:up && sleep 1 && npm run db:dev:deploy",
+        "db:studio": "prisma studio",
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "nest start",

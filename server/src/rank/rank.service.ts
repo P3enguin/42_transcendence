@@ -13,7 +13,7 @@ export class RankService {
     const jsonData = JSON.parse(fileContent);
     for (const item of jsonData) {
       try {
-        await this.prisma.ranks.create({
+        await this.prisma.rank.create({
           data: {
             name: item.name,
             points: Number(item.points),
@@ -21,16 +21,16 @@ export class RankService {
           },
         });
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
     return 'Done !';
   }
 
   async assignRanks(statusId: number) {
-    const ranks = await this.prisma.ranks.findMany({});
+    const ranks = await this.prisma.rank.findMany({});
     for (let rank of ranks) {
-      await this.prisma.ranks_status.create({
+      await this.prisma.rank_status.create({
         data: {
           rankId: rank.id,
           statusId: statusId,
