@@ -1,50 +1,56 @@
+import { Game } from '@/interfaces/Game';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function LiveGame({
-  nickname1,
-  avatar1,
-  nickname2,
-  avatar2,
-  score,
-  watchLink,
-}: any) {
+export default function LiveGame({ liveGame }: { liveGame: Game }) {
+  const { id, players, type, createdAt, updatedAt } = liveGame;
+
   return (
     <div className="flex w-full items-center gap-[13px] rounded-[20px] border border-white p-2">
       <Link
-        href={'/users/' + nickname1}
+        href={'/users/' + players[0].nickname}
         className="flex w-[40%] items-center justify-end gap-[13px]"
       >
-        <div className="truncate font-semibold">{nickname1}</div>
+        <div className="truncate font-semibold">{players[0].nickname}</div>
         <Image
           className="rounded-full bg-[#8bd9ffb3]"
-          src={avatar1}
+          src={
+            process.env.NEXT_PUBLIC_BACKEND_HOST +
+            '/avatars/' +
+            players[0].avatar
+          }
           alt="pfp"
           width={56}
           height={56}
         />
       </Link>
       <div className="flex w-[20%] flex-col items-center justify-center">
-        <div className="text-sm font-semibold">{score}</div>
+        <div className="text-sm font-semibold">
+          {players[0].score}-{players[1].score}
+        </div>
         <div className="text-xl font-bold">VS</div>
-        <Link href={watchLink}>
+        <Link href={'game/' + id}>
           <button className="rounded-[5px] bg-[#8BD9FF] px-2 text-sm font-semibold">
             Watch
           </button>
         </Link>
       </div>
       <Link
-        href={'/users/' + nickname1}
+        href={'/users/' + players[1].nickname}
         className="flex w-[40%] items-center justify-start gap-[13px]"
       >
         <Image
           className="rounded-full bg-[#8bd9ffb3]"
-          src={avatar2}
+          src={
+            process.env.NEXT_PUBLIC_BACKEND_HOST +
+            '/avatars/' +
+            players[1].avatar
+          }
           alt="pfp"
           width={56}
           height={56}
         />
-        <div className="truncate font-semibold">{nickname2}</div>
+        <div className="truncate font-semibold">{players[1].nickname}</div>
       </Link>
     </div>
   );

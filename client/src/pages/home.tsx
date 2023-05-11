@@ -7,13 +7,14 @@ import { LeaderBoard } from '@/interfaces/LeaderBoard';
 import { Channels } from '@/interfaces/Channels';
 
 function HomePlayer({
+  jwt_token,
   channels,
   leaderBoard,
 }: {
+  jwt_token: string;
   channels: Channels[];
   leaderBoard: LeaderBoard;
 }) {
-  console.log(channels);
   return (
     <>
       <Head>
@@ -22,7 +23,7 @@ function HomePlayer({
       <div className="my-[55px] flex w-full flex-col items-center gap-[65px]">
         <DiscoverChannels channels={channels} />
         <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap">
-          <LiveGames />
+          <LiveGames jwt_token={jwt_token} />
           <Leaderboard leaderBoard={leaderBoard} />
         </div>
       </div>
@@ -66,6 +67,7 @@ export async function getServerSideProps({ req }: any) {
     return {
       // modify this to return anything you want before your page load
       props: {
+        jwt_token,
         channels: channelsData,
         leaderBoard: {
           level: levelLeaderBoardData,
