@@ -126,7 +126,7 @@ export class AuthService {
       //     },
       //   },
       // });
-      await this.rank.assignRanks(player.statusId);
+      // await this.rank.assignRanks(player.statusId);
       const jwtToken = await this.signToken(player.id, player.nickname);
       res.cookie('jwt_token', jwtToken.access_token, {
         httpOnly: true,

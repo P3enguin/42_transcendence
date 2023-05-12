@@ -8,9 +8,9 @@ export class GameService {
   players = new Map<string, Player>();
 
   constructor(private prisma: PrismaService) {
-    setInterval(() => {
-      console.log('games:', this.games.values());
-    }, 1000 * 10);
+    // setInterval(() => {
+    //   console.log('games:', this.games.values());
+    // }, 1000 * 10);
   }
 
   joinGame(player: Player, gametype: GameType) {
