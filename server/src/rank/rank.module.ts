@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { RankService } from './rank.service';
 import { RankController } from './rank.controller';
 
 @Module({
-  providers: [RankService],
+  providers: [RankService, Logger],
   controllers: [RankController],
   exports: [RankService],
 })
