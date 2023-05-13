@@ -39,7 +39,7 @@ export class ChatGateway
   @WebSocketServer() server: Server;
 
   afterInit(server: Server) {
-    console.log(server);
+    // console.log(server);
   }
 
   handleDisconnect(client: Socket) {
