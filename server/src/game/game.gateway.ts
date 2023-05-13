@@ -19,6 +19,7 @@ import { JwtGuard } from 'src/auth/guard';
 import { GetPlayer } from './decorator/get-player.decorator';
 import { Player } from '@prisma/client';
 import { Game, Player as gamePlayer } from './interfaces';
+import { Logger } from '@nestjs/common';
 
 export interface connectedPlayer extends Player {
   socketId?: string;
@@ -39,23 +40,34 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     InterServerEvents,
     SocketData
   >;
-  constructor(private gameService: GameService, private jwt: JwtGuard) {}
+  constructor(
+    private gameService: GameService,
+    private readonly jwt: JwtGuard,
+    private logger: Logger,
+  ) {
+    this.logger = new Logger(GameGateway.name, { timestamp: true });
+  }
+
   async handleConnection(client: Socket) {
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
     )) as connectedPlayer;
     player.socketId = client.id;
     client.handshake.query.user = JSON.stringify(player);
-    console.log('player connected:', player.nickname, player.socketId);
-    this.server.to(client.id).emit('connected', 'Hello world!');
+    this.logger.log(`player connected: ${player.nickname} ${player.socketId}`);
+    this.server.to(client.id).emit('connected', 'Welcome, How may I help you!');
   }
 
   handleDisconnect(client: Socket) {
-    const player = JSON.parse(
-      client.handshake.query.user as string,
-    ) as connectedPlayer;
-    console.log('client disconnected:', client.id);
-    this.gameService.disconnectPlayer(player.gameId, player.nickname);
+    const player = this.getPlayer(client);
+    const game = this.gameService.getGameById(player.gameId);
+    if (player && game && game.gameOn) {
+      game.playerLeft(player.nickname);
+      this.server.to(player.gameId).emit('left', player.nickname);
+    }
+    this.logger.log(
+      `player disconnected: ${player.nickname} ${player.socketId}`,
+    );
   }
 
   @SubscribeMessage('GetLiveGames')
@@ -69,40 +81,39 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleMessage(
     @GetPlayer() player: connectedPlayer,
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: any,
-  ): string {
-    const game = this.gameService.getGameById(data.gameId);
+    @MessageBody() { gameId }: { gameId: string },
+  ) {
+    const game = this.gameService.getGameById(gameId);
     if (game) {
-      if (!game.isActive()) {
-        if (game.isPlayer(player.nickname)) {
+      if (game.isPlayer(player.nickname)) {
+        if (!game.isFull()) {
           game.connectPlayer(player.nickname, client.id);
-          client.join(data.gameId);
-          player.gameId = data.gameId;
+          client.join(gameId);
+          player.gameId = gameId;
           client.handshake.query.user = JSON.stringify(player);
           this.server
-            .to(data.gameId)
-            .emit('joined', `${player.nickname} joined the game`);
+            .to(gameId)
+            .emit('joined', `${player.nickname} has joined the game`);
         }
-      }
-      if (game.isActive()) {
-        if (game.isPlayer(player.nickname)) {
+        if (game.isFull()) {
           this.server.to(game.players[0].socketId).emit('startGame', {
             position: 'Bottom',
-            P1: game.players[0].nickname,
-            P2: game.players[1].nickname,
+            info: game.getPlayersInfo(),
           });
           this.server.to(game.players[1].socketId).emit('startGame', {
             position: 'Top',
-            P1: game.players[0].nickname,
-            P2: game.players[1].nickname,
+            info: game.getPlayersInfo(),
           });
           this.server
             .to('LiveGames')
             .emit('newGame', this.gameService.getLiveGame(game));
           setTimeout(() => {
-            this.startGame(game.id);
+            this.startGame(game);
           }, 1000);
-        } else {
+        }
+        return { status: 200, message: 'Joined' };
+      } else {
+        if (game.gameOn) {
           game.addSpectator(
             new gamePlayer(
               player.id,
@@ -111,22 +122,22 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
               client.id,
             ),
           );
-          // player.gameId = data.gameId;
           this.server
-            .to(data.gameId)
+            .to(gameId)
             .emit('joined', `${player.nickname} is spectating`);
-          client.join(data.gameId);
+          client.join(gameId);
           this.server.to(client.id).emit('startGame', {
             position: 'spectator',
-            P1: game.players[0].nickname,
-            P2: game.players[1].nickname,
+            info: game.getPlayersInfo(),
           });
+          return { status: 200, message: 'Spectating' };
+        } else {
+          return { status: 401, message: 'This game not satrted yet' };
         }
       }
     } else {
-      this.server.to(client.id).emit('joined', 'Game not found');
+      return { status: 404, message: 'Game not found' };
     }
-    return 'Joining game';
   }
 
   @SubscribeMessage('move')
@@ -135,8 +146,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (game) game.movePaddle(data.position, data.x);
   }
 
-  startGame(gameId: string) {
-    const game: Game = this.gameService.getGameById(gameId);
+  startGame(game) {
     game.start();
     game.inteval = setInterval(() => {
       game.ball.setNextPosition();
@@ -147,20 +157,27 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // check if ball scored
       if (game.checkNewScore()) {
         this.server
-          .to(gameId)
+          .to(game.id)
           .to('LiveGames')
           .emit('updateScore', game.getScore());
       }
       // check if the game reached 5 score
       if (game.checkWin()) {
-        this.server.to(gameId).to('LiveGames').emit('gameOver', gameId);
+        this.server.to(game.id).to('LiveGames').emit('gameOver', game.getScore());
         clearInterval(game.inteval);
-        this.gameService.saveGame(gameId);
+        this.gameService.saveGame(game);
       }
       // update ball position
       game.ball.updatePosition();
-      this.server.to(gameId).emit('updateBall', game.getBallPos());
-      this.server.to(gameId).emit('updatePaddle', game.getPaddlePos());
+      this.server.to(game.id).emit('updateBall', game.getBallPos());
+      this.server.to(game.id).emit('updatePaddle', game.getPaddlePos());
     }, 1000 / 60);
+  }
+
+  getPlayer(client: Socket): connectedPlayer | undefined {
+    const player = JSON.parse(
+      client.handshake.query.user as string,
+    ) as connectedPlayer;
+    return player;
   }
 }
