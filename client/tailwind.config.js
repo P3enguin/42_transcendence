@@ -9,13 +9,28 @@ module.exports = {
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
+        fontSize: {
+
+            ss: '0.5rem',
+            sm: '0.8rem',
+            base: '1rem',
+            xl: '1.25rem',
+            '2xl': '1.563rem',
+            '3xl': '1.953rem',
+            '4xl': '2.441rem',
+            '5xl': '3.052rem',
+        },
         screens: {
             'sx': '380px',
-            'tx': '800px',
+
             'sm': '640px',
             // => @media (min-width: 640px) { ... }
-
             'md': '768px',
+
+            'tx': '800px',
+
+            // 'mx': '878px',
+
             // => @media (min-width: 768px) { ... }
 
             'lg': '1024px',

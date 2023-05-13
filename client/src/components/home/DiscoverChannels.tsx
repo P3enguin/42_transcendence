@@ -11,14 +11,14 @@ export default function DiscoverChannels({
     <div className="w-[90%] rounded-[20px] border border-white">
       <div className="flex pl-4 pt-4">
         <Image
-          src="discoverChannels.svg"
+          src="/discoverChannels.svg"
           alt="discoverChannels"
           width={20}
           height={20}
         />
         <h1 className="pl-2 text-xl font-bold uppercase">Discover Channels:</h1>
       </div>
-      <ul className="scrollbar mx-2 mb-2 flex overflow-x-auto whitespace-nowrap py-4 px-9">
+      <ul className="scrollbar mx-2 mb-2 flex overflow-x-auto whitespace-nowrap px-9 py-4">
         {channels.length == 0 && (
           <div className="flex h-[90px] w-full items-center justify-center">
             <p>No channels</p>

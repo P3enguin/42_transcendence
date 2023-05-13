@@ -1,19 +1,14 @@
-function Message(message: any, time: string) {
+function Message({message, time, side}: {message: string, time: string, side: string}) {
 
     // useEffect (()=>{
 
     // }, [message])
 
     return (
-        <div>
-            <div className="conversation">
-                {/* {message.map((messages) => (
-                    <div key={messages.id} className="message">
-                    <span className="sender">{message.sender}</span>
-                    <span className="text">{message.text}</span>
-                    </div>
-                ))} */}
-                </div>
+        <div className="">
+            <div className="imessage conversation">
+                <p className={`${side} `}>{message}</p>
+            </div>
         </div>
     )
 }

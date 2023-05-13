@@ -6,6 +6,8 @@ export interface ServerToClientEvents {
   withAck: (d: string, callback: (e: number) => void) => void;
   connected: (data: any) => void;
   message: (data: any) => void;
+  NewLogIn: (data: any) => void;
+  NewLogOut: (data: any) => void;
 }
 
 export interface ClientToServerEvents {

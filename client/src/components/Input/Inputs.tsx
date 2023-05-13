@@ -372,7 +372,7 @@ export function InputDefault({
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-6 w-3/4">
+    <div className="group relative z-0 mb-6 w-3/4 min-w-[170px]">
       <input
         type="input"
         name={name}
@@ -416,7 +416,7 @@ export function InputKey({
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-6 w-3/4">
+    <div className="group relative z-0 mb-6 w-3/4 min-w-[170px]">
       <input
         type="input"
         name={name}
@@ -435,7 +435,7 @@ export function InputKey({
       />
       <label
         htmlFor={name}
-        className={`absolute top-3 -z-10 origin-[0]
+        className={`absolute top-7 -z-10 origin-[0]
                       -translate-y-8 scale-100 transform pl-3
                      text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
                       peer-focus:scale-100 peer-focus:font-medium
@@ -463,7 +463,7 @@ export function InputBtn({
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-6 w-3/4 min-w-[160px]">
+    <div className="group relative z-0 mb-6 w-3/4 min-w-[170px] max-w-[350px]">
       <input
         type="input"
         name={name}

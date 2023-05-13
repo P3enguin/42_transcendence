@@ -175,7 +175,7 @@ model Room {
   messages  Chat[]
   bans      Ban[]
 
-  avatar String @default("default.png")
+  avatar String @default("eg.jpeg")
 
   createdAt DateTime @default(now())
 }

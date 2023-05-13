@@ -23,7 +23,7 @@ function RecentChat({avatar, player, friendId }: any)
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST +"/avatars/" +  avatar;
     return (
         <div className="flex justify-between p-2 md:p-0 md:justify-around 
-            space-x-2 md:space-x-5 h-[70px] w-[100%] md:w-[300px] cursor-pointer 
+            space-x-2 md:space-x-5 h-[70px] w-[100%] max-w-[350px] cursor-pointer 
             flex-row item-start rounded-2xl text-sm border
             bg-[#8BD9FF] bg-opacity-20 shadow-xl"
             onClick={(e) => {

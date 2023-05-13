@@ -3,8 +3,26 @@ import Link from 'next/link';
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
 
-function OnlineNow ({player, token}: any)
+function OnlineNow ({player, token, ws}: any)
 {
+  useEffect( ()=>{ 
+    if (ws){
+      ws.emit('getOnlineFriends',(response: any)=>{
+
+      });
+      ws.on('NewLogIn', (res: any)=> {
+
+      });
+      ws.on('NewLogOut', (res: any) =>{
+
+      });
+    }
+    return(()=>{
+      // ws.off('NewLogIn')
+      // ws.off('NewLogOut')
+    })
+  }, [])
+
   const [friends, setFriends] = useState([]);
   const router = useRouter();
 

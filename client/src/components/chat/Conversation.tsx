@@ -1,41 +1,48 @@
-import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
-import { SendIcon, SettingIcon } from "../icons/Icons";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import io from 'socket.io-client';
+import { SendIcon, SettingIcon } from '../icons/Icons';
+import axios from 'axios';
+import Message from './Message';
 
 let socket: any;
-function Conversation ({nickname, avatar, jwt_token, id}: any) {
+function Conversation({ nickname, avatar, jwt_token, id }: any) {
+  const [showTopic, setShowTopic] = useState(true);
 
-  const [message, setMessage] = useState([]);
+  const [messages, setMessages] = useState<string[]>([]);
+
+  const [channel, setChannel] = useState(null);
+  const [message, setMessage] = useState('');
 
   const clientsMap = new Map();
 
-  async function getRoomData()
-  {
-    const Channel = await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat/getRoomInfo?roomId=${id}`,
+  async function getRoomData(id: any) {
+    console.log('get');
+    try {
+      const response = await axios.get(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/channels/${id}`,
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${jwt_token}` },
-        }
-      ).then(channel => {
-        console.log(channel.data);
-      }).catch(err => console.log(err));
+        },
+      );
+      const channel = response.data;
+      console.log(channel);
+      setChannel(channel);
 
-  }
-  const sendMessage = () => {
-    if (socket)
-    {
-      console.log('Sending message')
-      socket.emit("sendMessage",{message:"hello there", id});
+      // Do something with the channel data, such as updating state
+    } catch (error) {
+      console.error(error);
     }
   }
+  const sendMessage = (message: string) => {
+    if (socket) {
+      console.log('Sending message');
+      socket.emit('sendMessage', { message: message, id });
+    }
+  };
 
-
- 
   useEffect(() => {
-
-    
+    getRoomData(id);
 
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
       auth: {
@@ -43,68 +50,110 @@ function Conversation ({nickname, avatar, jwt_token, id}: any) {
       },
     });
     socket.on('connected', () => {
-      console.log(nickname," : connected to the socket with : ",socket.id)
+      console.log(nickname, ' : connected to the socket with : ', socket.id);
       clientsMap.set(socket.id, nickname);
-      socket.emit('joinChat',{id});
-        
-        socket.on('disconnect', () =>{
-        console.log(nickname," : disconnected");
+      socket.emit('joinChat', { id });
+
+      socket.on('disconnect', () => {
+        console.log(nickname, ' : disconnected');
         clientsMap.delete(socket.id);
       });
-      
+
       socket.on('message', (message: any) => {
-        console.log(`Received message from ${message}`);
+        console.log('Received message from', messages);
+        setMessages(prevMessages => [message, ...prevMessages]);
         handelReceivedMessage(message);
       });
-  });
-    
-    const handelReceivedMessage = (message: string) => {
-      
-    };
-    return (()=> {
-      socket.disconnect();
-    })
-  }, []);
+    });
 
-  const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + "/avatars/" + avatar;
-    return(
-      <div className="flex w-full h-full justify-between flex-col ">
-        <div className="flex h-[8%] w-full items-center sm:border-b justify-between p-2">
-        <div className="flex flex-row items-center justify-between w-full px-3 py-2 mt-3 sm:mt-0">
-          <div className="flex items-center">
-            <div className="flex items-center ">
-              <img className="rounded-full border"
-                src={picture} alt="avatar" width={45} height={45} />
-              <h3 className="ml-2">{nickname} </h3>
+    const handelReceivedMessage = (message: string) => {};
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+  if (!channel) {
+    return <div>Loading...</div>;
+  }
+  const picture =
+    process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar;
+  return (
+    <div className="flex h-full w-full flex-col justify-between ">
+      <div className="flex h-[8%] w-full items-center justify-between p-2 sm:border-b">
+        <div className="mt-3 flex w-full flex-row items-center justify-between px-3 py-2 sm:mt-0">
+          <div className="flex w-full flex-row border-b border-red-500 pb-2 pt-2 md:border">
+            <div className="min-w[300px] text-lg ml-2 flex flex-row justify-between">
+              <img
+                className="rounded-full border"
+                src={picture}
+                alt="avatar"
+                width={45}
+                height={45}
+              />
+              <div className="ml-4 flex flex-col items-center">
+                <h3 className=" text-sx font-bold text-red-500">
+                  {channel.name}
+                </h3>
+                <h4 className="flex text-ss md:text-sm">{channel.topic}</h4>
+              </div>
             </div>
           </div>
+
           <div>
             <button className="p-1">
               <SettingIcon />
             </button>
           </div>
         </div>
+      </div>
+      <div
+        className="flex h-[95%] w-[100%] flex-col
+            items-center"
+            >
+        {/* from-them */}
+        <div className="h-[90%] w-full flex flex-col-reverse border border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
+          {messages.map((msg: string, key: number) => {
+              return <Message message={msg} time={'test'} side="from-me" key={key} />; 
+            })}
         </div>
-          <div className="flex flex-col w-[100%] h-[95%]
-            items-center justify-end ">
-              <div className="sm:flex flex-col relative  w-[90%] mb-2 items-center ">
-                  <input type="text" name="nickname" id="nickname "
-                    className=" border-white w-[70%]
-                    peer block w-full appearance-none rounded-full border-2 bg-transparent
-                    py-2.5 px-3  text-xs sm:text-sm 
-                    text-white focus:border-blue-600 focus:outline-none focus:ring-0 overflow-hidden "
-                    placeholder="Message . . . " required/>
-                    <button  type="submit" 
-                      className="absolute m-auto rounded-full top-[50%] translate-y-[-50%] right-[10px]"
-                      onClick={
-                        sendMessage
-                      }>
-                            <SendIcon />
-                    </button>
-              </div>
+        <div className="relative mb-2 w-[90%]  flex-col items-center border sm:flex">
+        <input
+            type="text"
+            name="nickname"
+            id="nickname"
+            className="text-xs peer block w-[70%] w-full appearance-none overflow-hidden rounded-full border-2 border-white bg-transparent px-3 py-2.5 text-white focus:border-blue-600 focus:outline-none focus:ring-0 sm:text-sm"
+            placeholder="Message . . ."
+            required
+            value={message}
+            onChange={(e) => {
+              if (e.target.value != '')
+                setMessage(e.target.value)
+              }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && message != '') {
+                e.preventDefault();
+                sendMessage(message);
+                setMessage("");
+              }
+            }}
+          />
+
+          <button
+            type="submit"
+            className="absolute right-[10px] top-[50%] m-auto translate-y-[-50%] rounded-full"
+            onClick={(e) => {
+              e.preventDefault();
+              if (message != '') {
+              sendMessage(message);
+              setMessage("");
+              }
+            }}
+          >
+            <SendIcon />
+          </button>
         </div>
       </div>
-    );
+    </div>
+  );
 }
 
 export default Conversation;

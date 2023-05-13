@@ -1,145 +1,327 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 html {
-  min-width: 300px;
-  background: rgb(44, 59, 124);
-  background: linear-gradient(
-    90deg,
-    rgba(44, 59, 124, 1) 0%,
-    rgba(13, 23, 67, 1) 100%
-  );
-  font-family: 'Outfit';
-  color: white;
+    min-width: 300px;
+    background: rgb(44, 59, 124);
+    background: linear-gradient( 90deg, rgba(44, 59, 124, 1) 0%, rgba(13, 23, 67, 1) 100%);
+    font-family: 'Outfit';
+    color: white;
 }
+
 
 /* css properties that I couldn't do with tailwind :sad: */
 
 .sh {
-  text-shadow: 2px 2px 2px black;
+    text-shadow: 2px 2px 2px black;
 }
 
 .mg-top {
-  margin-top: 150px;
+    margin-top: 150px;
 }
 
 @media screen and (max-width: 1279px) {
-  .css {
-    margin-bottom: 0;
-  }
+    .css {
+        margin-bottom: 0;
+    }
 }
 
 .pfp-container {
-  filter: url(#round);
+    filter: url(#round);
 }
 
 .pfp {
-  background-color: #0d1743; /*color of the main-background*/
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background-color: #0d1743;
+    /*color of the main-background*/
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 .level {
-  background-color: #2C3B7C; /*color of the main-background*/
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background-color: #2C3B7C;
+    /*color of the main-background*/
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
-
 .error {
-  border-color: red;
+    border-color: red;
 }
 
 .valid {
-  border-color: green;
+    border-color: green;
 }
+
 
 /*===== The CSS =====*/
 
 .progress .track,
 .progress .fill {
-  fill: rgba(0, 0, 0, 0);
-  stroke-width: 50;
-  transform: translate(100px, 700px) rotate(-90deg);
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 50;
+    transform: translate(100px, 700px) rotate(-90deg);
 }
+
 .progress .track {
-  stroke: #2C3B7C;
+    stroke: #2C3B7C;
 }
+
 .progress .fill {
-  stroke: rgb(255, 255, 255);
-  stroke-linecap: round;
-  stroke-dasharray: 2160;
-  stroke-dashoffset: 2160;
-  transition: stroke-dashoffset 1s;
+    stroke: rgb(255, 255, 255);
+    stroke-linecap: round;
+    stroke-dasharray: 2160;
+    stroke-dashoffset: 2160;
+    transition: stroke-dashoffset 1s;
 }
+
 .progress.blue .fill {
-  stroke: url(#GradientCounter)
+    stroke: url(#GradientCounter)
 }
 
 .progress .track2,
 .progress .fill2 {
-  fill: rgba(0, 0, 0, 0);
-  stroke-width: 20;
-  transform: translate(100px, 700px) rotate(-90deg);
-}
-.progress .track2 {
-  stroke: rgb(54, 71, 83);
-}
-.progress .fill2{
-  stroke: rgb(255, 255, 255);
-  stroke-linecap: round;
-  stroke-dasharray: 2160;
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1s;
-}
-.progress.blue .fill2 {
-  stroke: url(#GradientLevel)
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 20;
+    transform: translate(100px, 700px) rotate(-90deg);
 }
 
+.progress .track2 {
+    stroke: rgb(54, 71, 83);
+}
+
+.progress .fill2 {
+    stroke: rgb(255, 255, 255);
+    stroke-linecap: round;
+    stroke-dasharray: 2160;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s;
+}
+
+.progress.blue .fill2 {
+    stroke: url(#GradientLevel)
+}
 
 @media only screen and (min-device-width: 640px) {
-  button:hover .friend-icon {
-    fill: #0097e2; /* Change to the color you want */
-    transform: translate(-3.4rem, 0);
-  }
+    button:hover .friend-icon {
+        fill: #0097e2;
+        /* Change to the color you want */
+        transform: translate(-3.4rem, 0);
+    }
 }
 
 button:hover .friend-icon {
-  fill: #0097e2; /* Change to the color you want */
-  transform: translate(-3.4rem, 0);
+    fill: #0097e2;
+    /* Change to the color you want */
+    transform: translate(-3.4rem, 0);
 }
 
 @media only screen and (max-width: 640px) {
-  button:hover .friend-icon {
-    fill: #0097e2; /* Change to the color you want */
-    transform: translate(0, -1.7rem);
-  }
+    button:hover .friend-icon {
+        fill: #0097e2;
+        /* Change to the color you want */
+        transform: translate(0, -1.7rem);
+    }
 }
 
 button:hover .friend-text {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity 0.3s, visibility 0.3s;
-  color: #0097e2;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0.3s;
+    color: #0097e2;
 }
 
-
 *::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+    width: 5px;
+    height: 5px;
 }
 
 *::-webkit-scrollbar-track {
-  width: 7px;
-  height: 7px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-}
- 
-*::-webkit-scrollbar-thumb {
-  background-color: rgb(50, 55, 145);
-  border-radius: 5px;
+    width: 7px;
+    height: 7px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
 }
 
+*::-webkit-scrollbar-thumb {
+    background-color: rgb(50, 55, 145);
+    border-radius: 5px;
+}
+
+
 /******************************* profile css **********************************/
+
+
+/******************************* chat css **********************************/
+
+.imessage {
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    font-family: "SanFrancisco";
+    font-size: 1.25rem;
+    margin: auto 0.5rem;
+    max-width: 600px;
+    padding: 0rem 1.5rem;
+}
+
+.imessage p {
+    border-radius: 1.15rem;
+    line-height: 1.25;
+    max-width: 75%;
+    padding: 0.5rem .875rem;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.imessage p::before,
+.imessage p::after {
+    bottom: -0.1rem;
+    content: "";
+    height: 1rem;
+    position: absolute;
+}
+
+p.from-me {
+    align-self: flex-end;
+    background-color: #248bf5;
+    color: #fff;
+}
+
+p.from-me::before {
+    /* border-bottom-left-radius: 0.8rem 0.7rem;
+    border-right: 1rem solid #248bf5;
+    right: -0.35rem;
+    transform: translate(0, -0.1rem); */
+    clip-path: url('../../public/Subtract.svg');
+}
+
+
+/* p.from-me::after {
+    background-color: #101B4B;
+    border-bottom-left-radius: 0.5rem;
+    right: -40px;
+    transform: translate(-30px, -2px);
+    width: 10px;
+} */
+
+p[class^="from-"] {
+    margin: 0.5rem 0;
+    width: fit-content;
+}
+
+p.from-me~p.from-me {
+    margin: 0.25rem 0 0;
+}
+
+p.from-me~p.from-me:not(:last-child) {
+    margin: 0.25rem 0 0;
+}
+
+p.from-me~p.from-me:last-child {
+    margin-bottom: 0.5rem;
+}
+
+p.from-them {
+    align-items: flex-start;
+    background-color: #e5e5ea;
+    color: #000;
+}
+
+p.from-them:before {
+    border-bottom-right-radius: 0.8rem 0.7rem;
+    border-left: 1rem solid #e5e5ea;
+    left: -0.35rem;
+    transform: translate(0, -0.1rem);
+}
+
+p.from-them::after {
+    background-color: #fff;
+    border-bottom-right-radius: 0.5rem;
+    left: 20px;
+    transform: translate(-30px, -2px);
+    width: 10px;
+}
+
+p[class^="from-"].emoji {
+    background: none;
+    font-size: 2.5rem;
+}
+
+p[class^="from-"].emoji::before {
+    content: none;
+}
+
+.no-tail::before {
+    display: none;
+}
+
+.margin-b_none {
+    margin-bottom: 0 !important;
+}
+
+.margin-b_one {
+    margin-bottom: 1rem !important;
+}
+
+.margin-t_one {
+    margin-top: 1rem !important;
+}
+
+
+/* general styling */
+
+@font-face {
+    font-family: "SanFrancisco";
+    src: url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff2") format("woff2"), url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff") format("woff");
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-weight: normal;
+    margin: 0;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 1rem;
+}
+
+h1 {
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    border-bottom: 1px solid #e5e5ea;
+    color: #666;
+    font-weight: normal;
+    margin-top: 0;
+    padding-bottom: 1.5rem;
+}
+
+.comment {
+    color: #222;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+    max-width: 100%;
+    padding: 0;
+}
+
+@media screen and (max-width: 800px) {
+    body {
+        margin: 0 0.5rem;
+    }
+    .container {
+        padding: 0.5rem;
+    }
+    .imessage {
+        font-size: 1.05rem;
+        margin: 0 auto 1rem;
+        max-width: 600px;
+        padding: 0.25rem 0.875rem;
+    }
+    .imessage p {
+        margin: 0.5rem 0;
+    }
+}

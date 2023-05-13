@@ -36,7 +36,12 @@ export class ChatGateway
 {
   constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
 
-  @WebSocketServer() server: Server;
+  @WebSocketServer()   server: Server<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>;
 
   afterInit(server: Server) {
     console.log(server);
@@ -74,4 +79,6 @@ export class ChatGateway
     this.server.to(data.id).emit('message', data.message);
     // this.chatservice.SendPrivMessage(RoomId, payload.message, player.id)
   }
+
+  
 }
