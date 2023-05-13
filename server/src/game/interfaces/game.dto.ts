@@ -12,7 +12,7 @@ export class Player {
     this.nickname = nickname;
     this.avatar = avatar;
     this.score = 0;
-    this.socketId = socketId || '';
+    this.socketId = socketId ? socketId : null;
   }
 }
 
@@ -92,7 +92,9 @@ export class Ball {
 
 export class Game {
   id: string;
-  players: [Player?, Player?];
+  players: [Player?, Player?]; // 0: bottom, 1: top
+  winner: Player | null;
+  looser: Player | null;
   paddle: [Paddle, Paddle];
   ball: Ball;
   board: Board;
@@ -106,6 +108,8 @@ export class Game {
   constructor(gameType: GameType) {
     this.id = generateID();
     this.players = [];
+    this.winner = null;
+    this.looser = null;
     this.spectator = [];
     this.type = gameType;
     this.createdAt = new Date();
@@ -116,8 +120,24 @@ export class Game {
     this.inteval = null;
   }
 
+  isFull(): boolean {
+    return (
+      this.players.length === 2 &&
+      this.players[0].socketId != null &&
+      this.players[1].socketId != null
+    );
+  }
+
+  getPlayersInfo() {
+    return {
+      p1: this.players[0].nickname,
+      pScore1: this.players[0].score,
+      p2: this.players[1].nickname,
+      pScore2: this.players[1].score,
+    };
+  }
+
   isActive(): boolean {
-    // check if game is full and both players are connected
     return (
       this.players.length === 2 &&
       this.players[0].socketId != '' &&
@@ -136,19 +156,6 @@ export class Game {
 
   addSpectator(spectator: Player): void {
     this.spectator.push(spectator);
-  }
-
-  disconnectPlayer(nickname: string): void {
-    this.players = this.players.filter((p) => p.nickname !== nickname) as [
-      Player?,
-      Player?,
-    ];
-  }
-
-  getPlayerPosition(nickname: string): string | null {
-    const player = this.players.find((p) => p.nickname === nickname);
-    if (!player) return null;
-    return this.players.indexOf(player) === 0 ? 'Bottom' : 'Top';
   }
 
   movePaddle(position: string, x: number): void {
@@ -207,27 +214,6 @@ export class Game {
     return false;
   }
 
-  updateGame() {
-    this.ball.setNextPosition();
-
-    // check if ball is colliding with Wall
-    this.checkWallCollision();
-
-    // check if ball is colliding with paddle
-    this.checkPaddleCollision();
-
-    // check if ball scored
-    this.checkNewScore();
-
-    // update ball position
-    this.ball.updatePosition();
-    return {
-      ball: { x: Math.round(this.ball.x), y: Math.round(this.ball.y) },
-      topPaddle: { x: Math.round(this.paddle[1].x) },
-      bottomPaddle: { x: Math.round(this.paddle[0].x) },
-    };
-  }
-
   getScore(): { [key: string]: number | string } {
     return {
       gameId: this.id,
@@ -260,6 +246,15 @@ export class Game {
 
   End(): void {
     this.gameOn = false;
+  }
+
+  playerLeft(nickname: string): void {
+    const winner = this.players.find((p) => p.nickname !== nickname);
+    if (winner) {
+      winner.score = 5;
+      this.winner = winner;
+      this.looser = this.players.find((p) => p.nickname === nickname);
+    }
   }
 
   checkWin(): boolean {
