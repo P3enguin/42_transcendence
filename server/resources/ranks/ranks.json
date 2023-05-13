@@ -1,67 +1,67 @@
 [{
-        "id": "1",
+        "id": 0,
         "name": "UnRanked",
-        "points": "0",
+        "points": 0,
         "avatar": "none"
     },
     {
-        "id": "2",
+        "id": 1,
         "name": "Iron",
-        "points": "0",
+        "points": 100,
         "avatar": "server/uploads/ranks/Iron.png"
     },
     {
-        "id": "3",
+        "id": 2,
         "name": "Bronze",
-        "points": "0",
+        "points": 200,
         "avatar": "server/uploads/ranks/Bronze.png"
     },
     {
-        "id": "4",
+        "id": 3,
         "name": "Silver",
-        "points": "0",
+        "points": 300,
         "avatar": "server/uploads/ranks/Silver.png"
     },
     {
-        "id": "5",
+        "id": 4,
         "name": "Gold",
-        "points": "0",
+        "points": 400,
         "avatar": "server/uploads/ranks/Gold.png"
     },
     {
-        "id": "6",
+        "id": 5,
         "name": "Platinum",
-        "points": "0",
+        "points": 500,
         "avatar": "server/uploads/ranks/Platinum.png"
     },
     {
-        "id": "7",
+        "id": 6,
         "name": "Diamond",
-        "points": "0",
+        "points": 600,
         "avatar": "server/uploads/ranks/Diamond.png"
     },
     {
-        "id": "8",
+        "id": 7,
         "name": "Amethyst",
-        "points": "0",
+        "points": 700,
         "avatar": "server/uploads/ranks/Amethyst.png"
     },
     {
-        "id": "9",
+        "id": 8,
         "name": "RedStar",
-        "points": "0",
+        "points": 800,
         "avatar": "server/uploads/ranks/RedStar.png"
     },
     {
-        "id": "10",
+        "id": 9,
         "name": "Master",
-        "points": "0",
+        "points": 900,
         "avatar": "server/uploads/ranks/Master.png"
     },
     {
-        "id": "11",
+        "id": 10,
         "name": "King",
-        "points": "0",
+        "points": 1000,
         "avatar": "server/uploads/ranks/King.png"
     }
 ]
