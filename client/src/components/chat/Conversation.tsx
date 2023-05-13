@@ -3,12 +3,28 @@ import io from 'socket.io-client';
 import { SendIcon, SettingIcon } from '../icons/Icons';
 import axios from 'axios';
 import Message from './Message';
+import { verifyToken } from '../VerifyToken';
 
 let socket: any;
-function Conversation({ nickname, avatar, jwt_token, id }: any) {
+interface Message {
+  sender: string;
+  senderAvatar: string;
+  time: string;
+  message: string;
+}
+
+
+function Conversation({ nickname, jwt_token, id }: any) {
+ 
+useEffect(()=>{
+  
+  console.log("from conv : ",nickname);
+},[nickname])
+
+
   const [showTopic, setShowTopic] = useState(true);
 
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const [channel, setChannel] = useState(null);
   const [message, setMessage] = useState('');
@@ -16,7 +32,6 @@ function Conversation({ nickname, avatar, jwt_token, id }: any) {
   const clientsMap = new Map();
 
   async function getRoomData(id: any) {
-    console.log('get');
     try {
       const response = await axios.get(
         process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/channels/${id}`,
@@ -59,20 +74,26 @@ function Conversation({ nickname, avatar, jwt_token, id }: any) {
         clientsMap.delete(socket.id);
       });
 
-      socket.on('message', (message: any) => {
-        console.log('Received message from', messages);
+      socket.on('message', (messageInfo: any) => {
+        const message: Message = {
+          sender: messageInfo.sender,
+          senderAvatar: messageInfo.senderAvatar,
+          time: messageInfo.time,
+          message: messageInfo.message,
+        };
+        console.log("sender :",message.sender, "receiver :",nickname);
         setMessages(prevMessages => [message, ...prevMessages]);
         handelReceivedMessage(message);
       });
     });
 
-    const handelReceivedMessage = (message: string) => {};
+    const handelReceivedMessage = (message: any) => {};
     return () => {
       socket.disconnect();
     };
   }, []);
   if (!channel) {
-    return <div>Loading...</div>;
+    return <div className="self-center">Loading...</div>;
   }
   const picture =
     process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar;
@@ -111,8 +132,11 @@ function Conversation({ nickname, avatar, jwt_token, id }: any) {
             >
         {/* from-them */}
         <div className="h-[90%] w-full flex flex-col-reverse border border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
-          {messages.map((msg: string, key: number) => {
-              return <Message message={msg} time={'test'} side="from-me" key={key} />; 
+          {messages.map((msg: any, key: number) => {
+            let side = "from-them"
+            if (msg.sender ===  nickname)
+              side = "from-me";
+              return <Message message={msg} side="from-me" key={key} />; 
             })}
         </div>
         <div className="relative mb-2 w-[90%]  flex-col items-center border sm:flex">
@@ -125,7 +149,7 @@ function Conversation({ nickname, avatar, jwt_token, id }: any) {
             required
             value={message}
             onChange={(e) => {
-              if (e.target.value != '')
+                e.preventDefault();
                 setMessage(e.target.value)
               }}
             onKeyDown={(e) => {

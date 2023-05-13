@@ -16,7 +16,7 @@ import { Console } from 'console';
 //use the chat :
 function Chat({ jwt_token, data, id }: { jwt_token: string; data: any, id: string }) {
 
-  console.log("room Id",id);
+  console.log("room Id",data.nickname);
 
   const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ function Chat({ jwt_token, data, id }: { jwt_token: string; data: any, id: strin
             </div>
             <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
             {showRecentChat && <RecentChat avatar={data.avatar} player={data.nickname} /> }
-            {showConversation && <Conversation player={data.nickname} avatar={data.avatar} jwt_token={jwt_token} id={id} />}
+            {showConversation && <Conversation player={data.nickname} jwt_token={jwt_token} id={id} />}
             </div>
           </div>
         </div>

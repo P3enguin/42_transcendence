@@ -55,7 +55,8 @@ export class ChatGateway
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
     )) as LogPlayer;
-    player.socketId = client.id;
+    if (client)
+      player.socketId = client.id;
     client.handshake.query.user = JSON.stringify(player);
     console.log('player connected:', player.nickname, player.socketId);
     this.server.to(client.id).emit('connected', 'Hello world!');
@@ -73,12 +74,20 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
-    // const data = Date.UTC()
+    var time = new Date();
+    const receivedTime = time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
     console.log(data.id);
     console.log(player);
-    this.server.to(data.id).emit('message', data.message);
+
+    const messageInfo= {
+      sender: player.nickname,
+      senderAvatar: player.avatar,
+      time: receivedTime,
+      message: data.message,
+    };
+  
+    this.server.to(data.id).emit('message', messageInfo);
     // this.chatservice.SendPrivMessage(RoomId, payload.message, player.id)
   }
 
-  
 }

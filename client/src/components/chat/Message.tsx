@@ -1,4 +1,4 @@
-function Message({message, time, side}: {message: string, time: string, side: string}) {
+function Message({message, side}: {message: any, side: string}) {
 
     // useEffect (()=>{
 
@@ -7,7 +7,8 @@ function Message({message, time, side}: {message: string, time: string, side: st
     return (
         <div className="">
             <div className="imessage conversation">
-                <p className={`${side} `}>{message}</p>
+                <p className={`${side} `}>{message.message} from {message.sender} {side}</p>
+                <p>{message.time}</p>
             </div>
         </div>
     )
