@@ -65,8 +65,9 @@ model Status {
 
   player Player?
 
-  level Int @default(0)
-  XP Int @default(0)
+  level Int @default(1)
+  // change to BigInt
+  XP BigInt @default(0)
 
   achivement Achivement_status[]
   title      Titles_status[]
@@ -98,7 +99,7 @@ model Achivement_status {
 }
 
 model Rank {
-  id Int @id @default(autoincrement())
+  id Int @id
 
   status Rank_status[]
 
@@ -109,7 +110,7 @@ model Rank {
 
 model Rank_status {
   rank    Rank  @relation(fields: [rankId], references: [id])
-  rankId   Int  
+  rankId   Int @default(0)
   status   Status @relation(fields: [statusId], references: [id])
   statusId Int @unique()
 
