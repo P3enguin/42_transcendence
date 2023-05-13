@@ -62,7 +62,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleGetLiveGames(@ConnectedSocket() client: Socket) {
     client.join('LiveGames');
     const games = this.gameService.getLiveGames();
-    this.server.to(client.id).emit('LiveGames', games);
+    return games;
   }
 
   @SubscribeMessage('joinGame')
@@ -96,11 +96,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             P1: game.players[0].nickname,
             P2: game.players[1].nickname,
           });
-          this.server.to('LiveGames').emit('newGame', {
-            P1: game.players[0],
-            P2: game.players[1],
-            gameId: game.id,
-          });
+          this.server
+            .to('LiveGames')
+            .emit('newGame', this.gameService.getLiveGame(game));
           setTimeout(() => {
             this.startGame(game.id);
           }, 1000);
