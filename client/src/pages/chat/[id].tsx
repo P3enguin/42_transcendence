@@ -6,7 +6,6 @@ import { io, Socket } from 'socket.io-client';
 import { useState } from 'react';
 import axios from 'axios';
 
-
 import Conversation from '@/components/chat/Conversation';
 import OnlineNow from '@/components/chat/OnlineNow';
 import RecentChat from '@/components/chat/recent_chat';
@@ -14,51 +13,99 @@ import Link from 'next/link';
 import { Console } from 'console';
 
 //use the chat :
-function Chat({ jwt_token, data, id }: { jwt_token: string; data: any, id: string }) {
-
-  console.log("room Id",data.nickname);
-
-  const [pictures, changePictures] = useState({ pfp: '', wp: '' });
-  const [isLoading, setLoading] = useState(true);
+function Chat({
+  jwt_token,
+  data,
+  id,
+  ws,
+}: {
+  jwt_token: string;
+  data: any;
+  id: string;
+  ws: Socket;
+}) {
+  console.log('room Id', data.nickname);
 
   const [showRecentChat, setShowRecentChat] = useState(true);
-  const [showConversation, setShowConversation] = useState(false);
+  const [showMobile, setShowMobile] = useState(false);
+  const [showConversation, setShowConversation] = useState(true);
 
   const handleRecentChatClick = () => {
     setShowRecentChat(true);
     setShowConversation(false);
   };
 
-  const handleConversationClick = () => {
+  const handleStartNewClick = () => {
+    console.log('change ', showMobile);
+
     setShowRecentChat(false);
     setShowConversation(true);
   };
-  
+  useEffect(() => {
+    const MobilView = () => {
+      if (document.body.offsetWidth < 800) {
+        // console.log('show mobile==>', showMobile);
+        // console.log('show StartNew==>', showStartNew);
+        // console.log('show RecentChat==>', showRecentChat);
+        console.log('////////////////////////////////////////////////////////');
+
+        if (!showMobile)  {
+          setShowMobile(true);
+          setShowConversation(false);
+          setShowRecentChat(true);
+        }
+      } else {
+        setShowMobile(false);
+        setShowConversation(true);
+        setShowRecentChat(true);
+      }
+    };
+    MobilView();
+    window.addEventListener('resize', MobilView);
+    return () => {
+      window.removeEventListener('resize', MobilView);
+    };
+    // eslint-disable-next-line
+  }, []);
   return (
     <>
-      <div className="flex w-[80%] h-[600px] md:h-[800px] mt-10 flex-row rounded-2xl border border-neutral-300 max-w-[1200px] ">
-      <div className="h-[100%] w-[100%] md:w-[360px] flex-col  tx:border-r ">
-          <div className="flex h-[8%] items-center sm:border-b pl-5 w-[100%]">
-          <Link href={`/chat`}>Chat Room </Link>
-          </div>
+      <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
+        {showRecentChat && (
+          <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px] border border-red-600">
+            <div className="flex h-[5%] w-[100%] items-center border-b pl-5 ">
+              <Link href={`/chat`}>Chat Room </Link>
+            </div>
+            {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
 
-          {
-            showRecentChat && <OnlineNow player={data.nickname} />
-          }
-          <div className="flex h-[92%] sm:h-[95%] flex-col p-1 sm:p-5 sm:pt-0">
-            <div className="flex flex-row justify-between border-t pt-1 h-[5%]">
-              <div className="cursor-pointer text-green-300" onClick={handleRecentChatClick}>Recent Chat</div>
-              <div className="md:hidden cursor-pointer text-green-300" onClick={handleConversationClick}>message</div>
-            </div>
-            <div className="flex-col h-full overflow-hidden overflow-y-auto space-y-3 mt-2 scrollbar-hide">
-            {showRecentChat && <RecentChat avatar={data.avatar} player={data.nickname} /> }
-            {showConversation && <Conversation player={data.nickname} jwt_token={jwt_token} id={id} />}
+            <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
+              <div className="flex flex-row justify-between  pt-1">
+                <div
+                  className="cursor-pointer text-green-300"
+                  onClick={handleRecentChatClick}
+                >
+                  Recent Chat
+                </div>
+                <div
+                  className="cursor-pointer text-green-300 md:hidden"
+                  onClick={handleStartNewClick}
+                >
+                  Start New
+                </div>
+              </div>
+              <div className="mt-2 h-full flex-col overflow-hidden overflow-y-auto border scrollbar-hide">
+                {showRecentChat && (
+                  <RecentChat avatar={data.avatar} player={data.nickname} />
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="hidden md:flex w-full justify-between flex-col h-full">
-          { <Conversation player={data.nickname} avatar={data.avatar} jwt_token={jwt_token} id={id} />}
-        </div>
+        )}
+        {showConversation && (
+          <div className="flex w-full flex-col justify-between">
+            <div className="flex h-[5%] w-full items-center border-b "></div>
+            {<Conversation player={data} jwt_token={jwt_token} id={id} />}
+          </div>
+        )}
       </div>
     </>
   );
@@ -66,17 +113,17 @@ function Chat({ jwt_token, data, id }: { jwt_token: string; data: any, id: strin
 export async function getServerSideProps({ req, params }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
 
-  console.log("this is params", params.id);
+  console.log('this is params', params.id);
 
-  const id = params.id; 
+  const id = params.id;
 
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
       try {
-        console.log("here")
+        console.log('here');
         const data = await res.json();
-        console.log("data  ", {data});
+        console.log('data  ', { data });
         return {
           props: {
             data,

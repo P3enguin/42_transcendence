@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 function RecentChat({avatar, player, friendId }: any)
 {
@@ -22,16 +23,16 @@ function RecentChat({avatar, player, friendId }: any)
 
   const picture = process.env.NEXT_PUBLIC_BACKEND_HOST +"/avatars/" +  avatar;
     return (
-        <div className="flex justify-between p-2 md:p-0 md:justify-around 
-            space-x-2 md:space-x-5 h-[70px] w-[100%] max-w-[350px] cursor-pointer 
+        <div className="flex 
+          h-[70px] w-[100%] tx:max-w-[350px] cursor-pointer 
             flex-row item-start rounded-2xl text-sm border
             bg-[#8BD9FF] bg-opacity-20 shadow-xl"
             onClick={(e) => {
               talk();}
             }
             >
-                <div className="w-[72%] flex flex-row space-x-2">
-                <img
+                {/* <div className="w-[72%] flex flex-row space-x-2">
+                <Image
                     className="h-10 w-10 sm:h-12 sm:w-12 rounded-full  self-center" 
                    src={picture} alt="Avatar" width={10} height={10}/>
                 <div className="flex flex-col self-center border whitespace-nowrap overflow-x-hidden">
@@ -45,7 +46,7 @@ function RecentChat({avatar, player, friendId }: any)
               talk();}}>
             <div className="rounded-full w-[20px] h-[20px] bg-[#01FD91] text-center self-end"> +2</div>
             <div className="text-xs sm:pr-2">10:00AM</div>
-            </div>
+            </div> */}
         </div>
     );
 }

@@ -14,8 +14,8 @@ import { log } from 'console';
 //use the chat :
 function Chat({ jwt_token, data, ws }: { jwt_token: string; data: any, ws: Socket }) {
   const [showRecentChat, setShowRecentChat] = useState(true);
-  const [showStartNew, setShowStartNew] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
+  const [showStartNew, setShowStartNew] = useState(true);
 
   const handleRecentChatClick = () => {
     setShowRecentChat(true);
