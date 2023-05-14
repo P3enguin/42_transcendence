@@ -65,13 +65,13 @@ model Status {
 
   player Player?
 
-  level Int @default(0)
-
-  XP Int @default(0)
+  level Int @default(1)
+  // change to BigInt
+  XP BigInt @default(0)
 
   achivement Achivement_status[]
   title      Titles_status[]
-  rank       Ranks_status[]
+  rank       Rank_status?
 }
 
 model Achivement {
@@ -98,25 +98,23 @@ model Achivement_status {
   @@id([statusId, achivId])
 }
 
-model Ranks {
-  id Int @id @default(autoincrement())
+model Rank {
+  id Int @id
 
-  status Ranks_status[]
+  status Rank_status[]
 
   name   String  @unique()
   points Int
   avatar String?
 }
 
-model Ranks_status {
-  ranks    Ranks  @relation(fields: [rankId], references: [id])
-  rankId   Int
+model Rank_status {
+  rank    Rank  @relation(fields: [rankId], references: [id])
+  rankId   Int @default(0)
   status   Status @relation(fields: [statusId], references: [id])
-  statusId Int
+  statusId Int @unique()
 
   current_points Int @default(0)
-  win_streak     Int @default(0)
-  loss_streak    Int @default(0)
 
   @@id([rankId, statusId])
 }

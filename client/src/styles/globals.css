@@ -41,6 +41,9 @@ html {
     background-color: #2C3B7C;
     /*color of the main-background*/
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background-color: #2c3b7c;
+    /*color of the main-background*/
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 }
 
 .error {

@@ -19,7 +19,7 @@ export default function Leaderboard({
         <h1 className="pl-2 text-xl font-bold uppercase">Leaderboard:</h1>
       </div>
       <div className="scrollbar max-h-[580px] overflow-auto">
-        <ol className="flex flex-col px-9 py-4">
+        {/* <ol className="flex flex-col py-4 px-9">
           {leaderBoard.level.map((player: any, i: number) => (
             <li key={i} className="p-2">
               <LeaderboardPlayerRank
@@ -30,12 +30,12 @@ export default function Leaderboard({
                   player.player.avatar
                 }
                 rankNo={i + 1}
-                rankName={player.rank[0].ranks.avatar}
+                rankName={player.rank.avatar}
                 rankColor="#8A19D4"
               />
             </li>
           ))}
-        </ol>
+        </ol> */}
       </div>
     </div>
   );

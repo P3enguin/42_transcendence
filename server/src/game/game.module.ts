@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { GameService } from './game.service';
 import { GameController } from './game.controller';
 import { GameGateway } from './game.gateway';
@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtGuard } from 'src/auth/guard';
 
 @Module({
-  providers: [GameService, JwtService, JwtGuard, PrismaService, GameGateway],
+  providers: [GameService, JwtService, JwtGuard, PrismaService, GameGateway ,Logger],
   controllers: [GameController],
 })
 export class GameModule {}

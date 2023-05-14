@@ -28,7 +28,7 @@ export interface LogPlayer extends Player {
 @WebSocketGateway({
   namespace: 'chat',
   cors: {
-    origin: '*',
+    origin: process.env.FRONTEND_HOST,
   },
 })
 export class ChatGateway
@@ -44,7 +44,7 @@ export class ChatGateway
 >;
 
   afterInit(server: Server) {
-    console.log(server);
+    // console.log(server);
   }
 
   handleDisconnect(client: Socket) {

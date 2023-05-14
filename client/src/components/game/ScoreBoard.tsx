@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 interface ScoreBoardProps {
-  P1: string;
-  P1Score: number;
-  P2: string;
-  P2Score: number;
+  player1: string;
+  player1Score: number;
+  player2: string;
+  player2Score: number;
 }
 
 const START_DATE = new Date().getTime();
@@ -40,12 +40,12 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         <p className="text-center">{formatTime(elapsedTime)}</p>
         <div className="flex flex-row justify-between">
           <div>
-            <p>{props.P1}</p>
-            <p>{props.P1Score}</p>
+            <p>{props.player1}</p>
+            <p>{props.player1Score}</p>
           </div>
           <div>
-            <p>{props.P2}</p>
-            <p>{props.P2Score}</p>
+            <p>{props.player2}</p>
+            <p>{props.player2Score}</p>
           </div>
         </div>
       </div>

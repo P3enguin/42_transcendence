@@ -5,6 +5,7 @@ export interface ServerToClientEvents {
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
   joined: (data: any) => void;
+  left: (data: any) => void;
   startGame: (data: any) => void;
   connected: (data: any) => void;
   update: (data: any) => void;

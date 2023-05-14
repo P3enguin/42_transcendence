@@ -13,17 +13,19 @@ let socket: Socket;
 const PlayGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
   const [Position, setPosition] = useState('');
-  const [P1, setP1] = useState('');
-  const [P2, setP2] = useState('');
-  const [P1Score, setP1Score] = useState<number>(0);
-  const [P2Score, setP2Score] = useState<number>(0);
+  const [player1, setPlayer1] = useState('');
+  const [player2, setPlayer2] = useState('');
+  const [player1Score, setPlayer1Score] = useState<number>(0);
+  const [player2Score, setPlayer2Score] = useState<number>(0);
   const [gameOn, setGameOn] = useState<boolean>(false);
 
   const getResult = (): string => {
-    if (P1Score > P2Score) {
-      return `${P1} wins!`;
+    if (player1Score > player2Score) {
+      if (Position === 'Bottom') return 'You win!';
+      else return `${player1} wins!`;
     } else {
-      return `${P2} wins!`;
+      if (Position === 'Top') return 'You win!';
+      else return `${player2} wins!`;
     }
   };
 
@@ -40,23 +42,27 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         socket.on('joined', (data: any) => {
           console.log('joined: ', data);
         });
-        socket.on('startGame', ({ position, P1, P2 }: any) => {
+        socket.on('startGame', ({ position, info }: any) => {
           console.log('startGame');
           console.log('position: ', position);
 
           setPosition(position);
           setGameOn(true);
-          setP1(P1);
-          setP2(P2);
+          setPlayer1(info.p1);
+          setPlayer1Score(info.pScore1);
+          setPlayer2(info.p2);
+          setPlayer2Score(info.pScore2);
           socket.on(
             'updateScore',
             (data: { [key: string]: number | string }) => {
-              setP1Score(data[P1] as number);
-              setP2Score(data[P2] as number);
+              setPlayer1Score(data[info.p1] as number);
+              setPlayer2Score(data[info.p2] as number);
             },
           );
           socket.on('gameOver', (data: any) => {
-            console.log('gameOver: ', data);
+            console.log('gameOver: ', data, info.p1, info.p2);
+            setPlayer1Score(data[info.p1]);
+            setPlayer2Score(data[info.p2]);
             setGameOn(false);
           });
         });
@@ -78,7 +84,12 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         ref={gameRef}
       >
         {gameOn && (
-          <ScoreBoard P1={P1} P1Score={P1Score} P2={P2} P2Score={P2Score} />
+          <ScoreBoard
+            player1={player1}
+            player1Score={player1Score}
+            player2={player2}
+            player2Score={player2Score}
+          />
         )}
         {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
