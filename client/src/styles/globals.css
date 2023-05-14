@@ -242,31 +242,6 @@ p.from-them::after {
     width: 10px;
 }
 
-p[class^="from-"].emoji {
-    background: none;
-    font-size: 2.5rem;
-}
-
-p[class^="from-"].emoji::before {
-    content: none;
-}
-
-.no-tail::before {
-    display: none;
-}
-
-.margin-b_none {
-    margin-bottom: 0 !important;
-}
-
-.margin-b_one {
-    margin-bottom: 1rem !important;
-}
-
-.margin-t_one {
-    margin-top: 1rem !important;
-}
-
 
 /* general styling */
 
@@ -274,44 +249,4 @@ p[class^="from-"].emoji::before {
     margin: 0 auto;
     max-width: 600px;
     padding: 1rem;
-}
-
-h1 {
-    font-weight: normal;
-    margin-bottom: 0.5rem;
-}
-
-h2 {
-    border-bottom: 1px solid #e5e5ea;
-    color: #666;
-    font-weight: normal;
-    margin-top: 0;
-    padding-bottom: 1.5rem;
-}
-
-.comment {
-    color: #222;
-    font-size: 1.25rem;
-    line-height: 1.5;
-    margin-bottom: 1.25rem;
-    max-width: 100%;
-    padding: 0;
-}
-
-@media screen and (max-width: 800px) {
-    body {
-        margin: 0 0.5rem;
-    }
-    .container {
-        padding: 0.5rem;
-    }
-    .imessage {
-        font-size: 1.05rem;
-        margin: 0 auto 1rem;
-        max-width: 600px;
-        padding: 0.25rem 0.875rem;
-    }
-    .imessage p {
-        margin: 0.5rem 0;
-    }
 }
