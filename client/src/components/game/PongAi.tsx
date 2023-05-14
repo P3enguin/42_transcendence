@@ -18,7 +18,7 @@ const PADDLE_WIDTH = BOARD_WIDTH / 8;
 const PADDLE_HEIGHT = PADDLE_WIDTH / 5;
 const BALL_DIAMETER = PADDLE_HEIGHT;
 const BALL_RADIUS = BALL_DIAMETER / 2;
-const angleRad = Math.PI / 2; // 45 degrees
+const angleRad = Math.PI / 4; // 45 degrees
 let newBallX: number;
 let newBallY: number;
 let GAME_INTERVAL: NodeJS.Timeout;
@@ -48,7 +48,7 @@ const PongAi = ({
     x: BOARD_WIDTH / 2,
     y: BOARD_HEIGHT / 2,
   });
-  const [ballSpeed, setBallSpeed] = useState(13);
+  const [ballSpeed, setBallSpeed] = useState(15);
   const [ballVelocity, setBallVelocity] = useState({
     x: ballSpeed * Math.cos(angleRad),
     y: ballSpeed * Math.sin(angleRad),
@@ -168,12 +168,12 @@ const PongAi = ({
 
   const checkPaddleCollision = () => {
     // fix ball position with y = mx + b
-    if (
-      newBallX + BALL_RADIUS >= Paddle0Position.x &&
-      newBallX - BALL_RADIUS <= Paddle0Position.x + PADDLE_WIDTH
-    ) {
-      console.log('here');
-      if (newBallY + BALL_RADIUS >= Paddle0Position.y) {
+    if (newBallY + BALL_RADIUS >= Paddle0Position.y) {
+      if (
+        newBallX + BALL_RADIUS >= Paddle0Position.x &&
+        newBallX - BALL_RADIUS <= Paddle0Position.x + PADDLE_WIDTH
+      ) {
+        console.log('here');
         const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
         const b = newBallY - m * newBallX;
         console.log(m, b);
@@ -183,11 +183,11 @@ const PongAi = ({
         return;
       }
     }
-    if (
-      newBallX + BALL_RADIUS >= Paddle1Position.x &&
-      newBallX - BALL_RADIUS <= Paddle1Position.x + PADDLE_WIDTH
-    ) {
-      if (newBallY - BALL_RADIUS <= Paddle1Position.y + PADDLE_HEIGHT) {
+    if (newBallY - BALL_RADIUS <= Paddle1Position.y + PADDLE_HEIGHT) {
+      if (
+        newBallX + BALL_RADIUS >= Paddle1Position.x &&
+        newBallX - BALL_RADIUS <= Paddle1Position.x + PADDLE_WIDTH
+      ) {
         const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
         const b = newBallY - m * newBallX;
         newBallY = Paddle1Position.y + PADDLE_HEIGHT + BALL_RADIUS;
@@ -203,11 +203,11 @@ const PongAi = ({
       newBallY - BALL_RADIUS <= BOARD_OFFSET ||
       newBallY + BALL_RADIUS >= BOARD_HEIGHT - BOARD_OFFSET
     ) {
-      console.log(newBallX, newBallX + BALL_RADIUS, newBallX - BALL_RADIUS);
-      console.log(newBallY, newBallY + BALL_RADIUS, newBallY - BALL_RADIUS);
-      console.log(Paddle1Position.y, Paddle1Position.y + PADDLE_HEIGHT);
-      console.log(Paddle1Position.x, Paddle1Position.x + PADDLE_WIDTH);
-      console.log('/////////////');
+      // console.log(newBallX, newBallX + BALL_RADIUS, newBallX - BALL_RADIUS);
+      // console.log(newBallY, newBallY + BALL_RADIUS, newBallY - BALL_RADIUS);
+      // console.log(Paddle1Position.y, Paddle1Position.y + PADDLE_HEIGHT);
+      // console.log(Paddle1Position.x, Paddle1Position.x + PADDLE_WIDTH);
+      // console.log('/////////////');
       resetBall();
       // BOARD_HEIGHT - BOARD_OFFSET
     }
@@ -226,7 +226,6 @@ const PongAi = ({
     checkWallCollision();
     checkPaddleCollision();
     checkNewScore();
-    console.log(newBallX, newBallX + BALL_RADIUS, newBallX - BALL_RADIUS);
     setBallPosition({ x: newBallX, y: newBallY });
     chaseBall();
     // if (newBallY < BOARD_HEIGHT / 8) {
@@ -240,8 +239,8 @@ const PongAi = ({
     // console.log(Paddle1Position.y + PADDLE_HEIGHT, ballPosition.y);
     //
     //
-    //
-    GAME_INTERVAL = setInterval(gameUpdate, 1000 / 60);
+    // GAME_INTERVAL = setInterval(gameUpdate, 1000 / 60);
+    GAME_INTERVAL = setInterval(gameUpdate, 100);
     // window.addEventListener('click', gameUpdate);
     return () => {
       clearInterval(GAME_INTERVAL);

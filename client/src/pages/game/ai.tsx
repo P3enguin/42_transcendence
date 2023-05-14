@@ -40,7 +40,7 @@ const Ai = () => {
         <PongAi
           gameRef={gameRef}
           newScore={newScore}
-          isSimulation={false}
+          isSimulation={true}
           isContact={false}
           isRotated={false}
         />
