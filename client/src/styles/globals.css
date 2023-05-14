@@ -159,7 +159,6 @@ button:hover .friend-text {
     border-radius: 0.25rem;
     display: flex;
     flex-direction: column;
-    font-family: "SanFrancisco";
     font-size: 1.25rem;
     margin: auto 0.5rem;
     max-width: 600px;
@@ -190,21 +189,20 @@ p.from-me {
 }
 
 p.from-me::before {
-    /* border-bottom-left-radius: 0.8rem 0.7rem;
+    border-bottom-left-radius: 0.8rem 0.7rem;
     border-right: 1rem solid #248bf5;
     right: -0.35rem;
-    transform: translate(0, -0.1rem); */
+    transform: translate(0, -0.1rem);
     clip-path: url('../../public/Subtract.svg');
 }
 
-
-/* p.from-me::after {
+p.from-me::after {
     background-color: #101B4B;
     border-bottom-left-radius: 0.5rem;
     right: -40px;
     transform: translate(-30px, -2px);
     width: 10px;
-} */
+}
 
 p[class^="from-"] {
     margin: 0.5rem 0;
@@ -271,17 +269,6 @@ p[class^="from-"].emoji::before {
 
 
 /* general styling */
-
-@font-face {
-    font-family: "SanFrancisco";
-    src: url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff2") format("woff2"), url("https://cdn.rawgit.com/AllThingsSmitty/fonts/25983b71/SanFrancisco/sanfranciscodisplay-regular-webfont.woff") format("woff");
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    font-weight: normal;
-    margin: 0;
-}
 
 .container {
     margin: 0 auto;
