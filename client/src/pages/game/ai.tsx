@@ -49,26 +49,26 @@ const Ai = () => {
   );
 };
 
-export async function getServerSideProps({ req }: NextApiRequest) {
-  const jwt_token = req.cookies['jwt_token'];
+// export async function getServerSideProps({ req }: NextApiRequest) {
+//   const jwt_token = req.cookies['jwt_token'];
 
-  if (jwt_token) {
-    const res = await verifyToken(req.headers.cookie);
-    if (res.ok) {
-      return {
-        props: {
-          jwt_token: jwt_token,
-        },
-      };
-    }
-  }
-  return {
-    redirect: {
-      destination: '/',
-      permanent: true,
-    },
-  };
-}
+//   if (jwt_token) {
+//     const res = await verifyToken(req.headers.cookie);
+//     if (res.ok) {
+//       return {
+//         props: {
+//           jwt_token: jwt_token,
+//         },
+//       };
+//     }
+//   }
+//   return {
+//     redirect: {
+//       destination: '/',
+//       permanent: true,
+//     },
+//   };
+// }
 
 Ai.getLayout = function getLayout(page: React.ReactNode) {
   return <Layout>{page}</Layout>;

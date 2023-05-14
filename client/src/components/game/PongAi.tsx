@@ -10,13 +10,18 @@ import {
 } from 'react';
 import Simulation from '../home/Simulation';
 
-const BOARD_WIDHT = 700;
-const BOARD_HEIGHT = BOARD_WIDHT * 1.4;
+const BOARD_WIDTH = 700;
+const BOARD_HEIGHT = BOARD_WIDTH * 1.4;
+const BOARD_OFFSET = 5;
 const PADDLE_OFFSET = 10;
-const PADDLE_WIDTH = BOARD_WIDHT / 8;
+const PADDLE_WIDTH = BOARD_WIDTH / 8;
 const PADDLE_HEIGHT = PADDLE_WIDTH / 5;
 const BALL_DIAMETER = PADDLE_HEIGHT;
 const BALL_RADIUS = BALL_DIAMETER / 2;
+const angleRad = Math.PI / 2; // 45 degrees
+let newBallX: number;
+let newBallY: number;
+let GAME_INTERVAL: NodeJS.Timeout;
 
 interface PongAiProps {
   gameRef: React.RefObject<HTMLDivElement>;
@@ -39,21 +44,27 @@ const PongAi = ({
   const UserScoreRef = useRef<HTMLAudioElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const ballRef = useRef<HTMLDivElement>(null);
-  const [ballPosition, setBallPosition] = useState({ x: 400, y: 565 });
-  const [ballVelocity, setBallVelocity] = useState({ x: 1, y: -1 });
-  const [ballSpeed, setBallSpeed] = useState(5);
-  const [Paddle1Position, setPaddle1Position] = useState({
-    x: 350,
-    y: PADDLE_OFFSET,
+  const [ballPosition, setBallPosition] = useState({
+    x: BOARD_WIDTH / 2,
+    y: BOARD_HEIGHT / 2,
   });
-  const [Paddle2Position, setPaddle2Position] = useState({
-    x: 350,
+  const [ballSpeed, setBallSpeed] = useState(13);
+  const [ballVelocity, setBallVelocity] = useState({
+    x: ballSpeed * Math.cos(angleRad),
+    y: ballSpeed * Math.sin(angleRad),
+  });
+  const [Paddle0Position, setPaddle0Position] = useState({
+    x: 350 - PADDLE_WIDTH / 2,
     y: BOARD_HEIGHT - PADDLE_OFFSET - PADDLE_HEIGHT,
+  });
+  const [Paddle1Position, setPaddle1Position] = useState({
+    x: 350 - PADDLE_WIDTH / 2,
+    y: PADDLE_OFFSET,
   });
 
   const PlayAudio = (audio: React.RefObject<HTMLAudioElement>) => {
     if (audio.current && !isSimulation) {
-      audio.current.play().catch(() => {});
+      // audio.current.play().catch(() => {});
     }
   };
 
@@ -64,7 +75,7 @@ const PongAi = ({
         (700 * (e.clientX - rec.left)) / boardRef.current.offsetWidth -
         PADDLE_WIDTH / 2;
       if (mousePosition < 0 || mousePosition > 700 - PADDLE_WIDTH) return;
-      setPaddle2Position((prev) => ({ x: mousePosition, y: prev.y }));
+      setPaddle0Position((prev) => ({ x: mousePosition, y: prev.y }));
     }
   };
 
@@ -80,89 +91,45 @@ const PongAi = ({
         touchPosition > 700 - PADDLE_WIDTH / 2
       )
         return;
-      // setPaddle2Position((prev) => ({ x: touchPosition, y: prev.y }));
+      // setPaddle0Position((prev) => ({ x: touchPosition, y: prev.y }));
     }
   };
 
-  function resetBall() {
-    console.log('GOOOOOOOAAAAALLLLLLL!!!');
-    if (ballPosition.y > BOARD_HEIGHT / 2) {
-      console.log(ballPosition, Paddle2Position);
-      PlayAudio(ComScoreRef);
-      newScore('AI');
-    } else {
-      console.log(ballPosition, Paddle1Position);
-      PlayAudio(UserScoreRef);
-      newScore('Player');
-    }
-    setBallPosition((prev) => ({ x: prev.x, y: BOARD_HEIGHT / 2 }));
-  }
-
-  function checkWallCollision() {
-    if (
-      ballPosition.x + ballVelocity.x <= 5 ||
-      ballPosition.x + BALL_DIAMETER + ballVelocity.x >= 695
-    ) {
-      PlayAudio(WallRef);
-      setBallVelocity((prev) => ({ x: -prev.x, y: prev.y }));
-    }
-    if (
-      ballPosition.y + ballVelocity.y <= 5 ||
-      ballPosition.y + BALL_DIAMETER + ballVelocity.y >= 975
-    ) {
-      // setBallVelocity((prev) => ({ x: prev.x, y: -prev.y }));
-      resetBall();
-    }
-  }
-
-  function checkPaddleCollision() {
-    if (
-      ballPosition.x + BALL_DIAMETER + ballVelocity.x >= Paddle2Position.x &&
-      ballPosition.x + ballVelocity.x <= Paddle2Position.x + PADDLE_WIDTH
-    ) {
-      if (
-        ballPosition.y + ballVelocity.y >=
-        Paddle2Position.y - BALL_DIAMETER
-      ) {
-        PlayAudio(HitRef);
-        setBallVelocity((prev) => ({ x: prev.x, y: Math.abs(prev.y) * -1 }));
-      }
-    }
-    if (
-      ballPosition.x + BALL_DIAMETER + ballVelocity.x >= Paddle1Position.x &&
-      ballPosition.x + ballVelocity.x <= Paddle1Position.x + PADDLE_WIDTH
-    ) {
-      if (
-        ballPosition.y + ballVelocity.y <=
-        Paddle1Position.y + PADDLE_HEIGHT
-      ) {
-        PlayAudio(HitRef);
-        setBallVelocity((prev) => ({ x: prev.x, y: Math.abs(prev.y) }));
-      }
-    }
-  }
+  // function resetBall() {
+  //   console.log('GOOOOOOOAAAAALLLLLLL!!!');
+  //   if (ballPosition.y > BOARD_HEIGHT / 2) {
+  //     console.log(ballPosition, Paddle0Position);
+  //     PlayAudio(ComScoreRef);
+  //     newScore('AI');
+  //   } else {
+  //     console.log(ballPosition, Paddle1Position);
+  //     PlayAudio(UserScoreRef);
+  //     newScore('Player');
+  //   }
+  //   setBallPosition((prev) => ({ x: prev.x, y: BOARD_HEIGHT / 2 }));
+  // }
 
   function chaseBall() {
     if (ballVelocity.y < 0) {
       if (
-        ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
-        ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
+        newBallX > PADDLE_WIDTH / 2 &&
+        newBallX < BOARD_WIDTH - PADDLE_WIDTH / 2
       ) {
         setPaddle1Position((prev) => ({
-          x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.05,
+          x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
           y: prev.y,
         }));
       }
     }
     // FOR SECOND PADDLE 'BOTTOM'
-    else {
+    else if (ballVelocity.y > 0) {
       if (isSimulation) {
         if (
-          ballPosition.x > PADDLE_WIDTH / 2 - BALL_RADIUS &&
-          ballPosition.x < BOARD_WIDHT - PADDLE_WIDTH / 2 - BALL_RADIUS
+          newBallX > PADDLE_WIDTH / 2 &&
+          newBallX < BOARD_WIDTH - PADDLE_WIDTH / 2
         ) {
-          setPaddle2Position((prev) => ({
-            x: prev.x + (ballPosition.x - (prev.x + PADDLE_WIDTH / 2)) * 0.05,
+          setPaddle0Position((prev) => ({
+            x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
             y: prev.y,
           }));
         }
@@ -170,20 +137,114 @@ const PongAi = ({
     }
   }
 
+  const checkWallCollision = () => {
+    // calculate the intersection point _x _y form y=mx+b
+    if (newBallX - BALL_RADIUS <= BOARD_OFFSET) {
+      const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
+      const b = newBallY - m * newBallX;
+      newBallX = BOARD_OFFSET + BALL_RADIUS;
+      newBallY = m * newBallX + b;
+
+      setBallVelocity((prev) => ({ x: Math.abs(prev.x), y: prev.y }));
+    } else if (newBallX + BALL_RADIUS >= BOARD_WIDTH - BOARD_OFFSET) {
+      const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
+      const b = newBallY - m * newBallX;
+      newBallX = BOARD_WIDTH - BOARD_OFFSET - BALL_RADIUS;
+      newBallY = m * newBallX + b;
+      setBallVelocity((prev) => ({ x: -Math.abs(prev.x), y: prev.y }));
+    }
+  };
+
+  const isCollision = (paddlePos: { x: number; y: number }) => {
+    let collidePoint = newBallX - (paddlePos.x + PADDLE_WIDTH / 2);
+    collidePoint = collidePoint / (PADDLE_WIDTH / 2);
+    const angle = collidePoint * angleRad;
+    let direction = newBallY < BOARD_HEIGHT / 2 ? 1 : -1;
+    setBallVelocity({
+      x: ballSpeed * Math.sin(angle),
+      y: direction * ballSpeed * Math.cos(angle),
+    });
+  };
+
+  const checkPaddleCollision = () => {
+    // fix ball position with y = mx + b
+    if (
+      newBallX + BALL_RADIUS >= Paddle0Position.x &&
+      newBallX - BALL_RADIUS <= Paddle0Position.x + PADDLE_WIDTH
+    ) {
+      console.log('here');
+      if (newBallY + BALL_RADIUS >= Paddle0Position.y) {
+        const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
+        const b = newBallY - m * newBallX;
+        console.log(m, b);
+        newBallY = Paddle0Position.y - BALL_RADIUS;
+        newBallX = (newBallY - b) / m;
+        isCollision(Paddle0Position);
+        return;
+      }
+    }
+    if (
+      newBallX + BALL_RADIUS >= Paddle1Position.x &&
+      newBallX - BALL_RADIUS <= Paddle1Position.x + PADDLE_WIDTH
+    ) {
+      if (newBallY - BALL_RADIUS <= Paddle1Position.y + PADDLE_HEIGHT) {
+        const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
+        const b = newBallY - m * newBallX;
+        newBallY = Paddle1Position.y + PADDLE_HEIGHT + BALL_RADIUS;
+        newBallX = (newBallY - b) / m;
+        isCollision(Paddle1Position);
+        return;
+      }
+    }
+  };
+
+  const checkNewScore = () => {
+    if (
+      newBallY - BALL_RADIUS <= BOARD_OFFSET ||
+      newBallY + BALL_RADIUS >= BOARD_HEIGHT - BOARD_OFFSET
+    ) {
+      console.log(newBallX, newBallX + BALL_RADIUS, newBallX - BALL_RADIUS);
+      console.log(newBallY, newBallY + BALL_RADIUS, newBallY - BALL_RADIUS);
+      console.log(Paddle1Position.y, Paddle1Position.y + PADDLE_HEIGHT);
+      console.log(Paddle1Position.x, Paddle1Position.x + PADDLE_WIDTH);
+      console.log('/////////////');
+      resetBall();
+      // BOARD_HEIGHT - BOARD_OFFSET
+    }
+  };
+
+  const resetBall = () => {
+    newBallX = BOARD_WIDTH / 2;
+    newBallY = BOARD_HEIGHT / 2;
+    // setBallVelocity({ x: 0, y: 0 });
+  };
+
+  const gameUpdate = () => {
+    newBallX = ballPosition.x + ballVelocity.x;
+    newBallY = ballPosition.y + ballVelocity.y;
+
+    checkWallCollision();
+    checkPaddleCollision();
+    checkNewScore();
+    console.log(newBallX, newBallX + BALL_RADIUS, newBallX - BALL_RADIUS);
+    setBallPosition({ x: newBallX, y: newBallY });
+    chaseBall();
+    // if (newBallY < BOARD_HEIGHT / 8) {
+    //   console.log(newBallY, newBallY + BALL_RADIUS, newBallY - BALL_RADIUS);
+    //   console.log(Paddle1Position.y + PADDLE_HEIGHT);
+    //   console.log(Paddle1Position.x, Paddle1Position.x + PADDLE_WIDTH);
+    // }
+  };
+
   useEffect(() => {
     // console.log(Paddle1Position.y + PADDLE_HEIGHT, ballPosition.y);
-
-    const interval = setInterval(() => {
-      setBallPosition((prev) => ({
-        x: prev.x + ballVelocity.x,
-        y: prev.y + ballVelocity.y,
-      }));
-      checkWallCollision();
-      checkPaddleCollision();
-      chaseBall();
-    }, 1000 / 550);
+    //
+    //
+    //
+    GAME_INTERVAL = setInterval(gameUpdate, 1000 / 60);
+    // window.addEventListener('click', gameUpdate);
     return () => {
-      clearInterval(interval);
+      clearInterval(GAME_INTERVAL);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ballPosition, ballVelocity]);
@@ -205,10 +266,17 @@ const PongAi = ({
       >
         <PaddleAi position={Paddle1Position} boardRef={boardRef} />
         <BallAi position={ballPosition} ballRef={ballRef} />
-        <PaddleAi position={Paddle2Position} boardRef={boardRef} />
+        <PaddleAi position={Paddle0Position} boardRef={boardRef} />
       </Board>
     </>
   );
 };
 
 export default PongAi;
+
+/*
+
+
+
+
+*/

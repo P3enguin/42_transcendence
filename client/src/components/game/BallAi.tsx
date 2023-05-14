@@ -27,7 +27,8 @@ const BallAi = ({ boardRef, position, ballRef }: ballProps) => {
   useEffect(() => {
     const resizeBall = () => {
       if (ballRef.current && boardRef && boardRef.current) {
-        ballRef.current.style.width = boardRef.current?.offsetWidth / 35 + 'px';
+        ballRef.current.style.width =
+          boardRef.current?.offsetWidth / 8 / 5 + 'px';
         ballRef.current.style.height = ballRef.current.offsetWidth + 'px';
       }
     };
@@ -43,7 +44,7 @@ const BallAi = ({ boardRef, position, ballRef }: ballProps) => {
   return (
     <div
       ref={ballRef}
-      className="absolute bg-center bg-no-repeat"
+      className="absolute translate-x-[-50%] translate-y-[-50%] border border-black bg-center bg-no-repeat"
       style={{
         backgroundImage: "url('../game/Ball.svg')",
         backgroundSize: '100%',

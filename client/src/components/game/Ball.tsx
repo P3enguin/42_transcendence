@@ -36,7 +36,7 @@ const Ball = ({ boardRef, ws }: ballProps) => {
     const resizeBall = () => {
       if (ballRef.current && boardRef && boardRef.current) {
         ballRef.current.style.width =
-          boardRef.current?.offsetWidth / 8 / 5 + 'px';
+          (boardRef.current?.offsetWidth / 8) / 5 + 'px';
         ballRef.current.style.height = ballRef.current.offsetWidth + 'px';
       }
     };
