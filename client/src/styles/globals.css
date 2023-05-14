@@ -188,21 +188,21 @@ p.from-me {
     color: #fff;
 }
 
-p.from-me::before {
+/* p.from-me::before {
     border-bottom-left-radius: 0.8rem 0.7rem;
     border-right: 1rem solid #248bf5;
     right: -0.35rem;
     transform: translate(0, -0.1rem);
-    clip-path: url('../../public/Subtract.svg');
-}
+    clip-path: url(#clipping-mask);
+} */
 
-p.from-me::after {
+/* p.from-me::after {
     background-color: #101B4B;
     border-bottom-left-radius: 0.5rem;
     right: -40px;
     transform: translate(-30px, -2px);
     width: 10px;
-}
+} */
 
 p[class^="from-"] {
     margin: 0.5rem 0;
