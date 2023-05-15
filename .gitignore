@@ -68,6 +68,7 @@ todo
 **/uploads/rooms/*
 
 !**/uploads/avatars/default.png
+!**/uploads/avatars/Ponginator-v2.png
 !**/uploads/wallpapers/wallpaper.png
 
 
