@@ -10,30 +10,36 @@ import { generate } from 'shortid';
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  async getAllChat(_player: Player) {
+  async getAllChat(_player: Player, page: number) {
     const player = await this.prisma.player.findUnique({
       where: {
-        id:_player.id,
+        id: _player.id,
       },
-      select:{
-        rooms:{
-          select:{
+      select: {
+        rooms: {
+          select: {
             channelId: true,
             name: true,
             privacy: true,
             avatar: true,
             messages: {
-              select:{
-                  sender: true,
-                  message: true,
-                  sendAt: true,
+              select: {
+                sender: true,
+                message: true,
+                sendAt: true,
               },
+              orderBy: {
+                sendAt: 'desc',
+              },
+              take: 1,
             },
           },
+          skip: 6 * page,
+          take: 6,
         },
       },
     });
-    console.log("==>",player.rooms[0]); 
+
     if (!player)
       return {
           status: 404,
