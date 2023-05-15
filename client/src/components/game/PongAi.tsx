@@ -4,12 +4,13 @@ import BallAi from './BallAi';
 import {
   MouseEventHandler,
   TouchEventHandler,
+  use,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import Simulation from '../home/Simulation';
 
+//CONSTANTS AND VARIABLES
 const BOARD_WIDTH = 700;
 const BOARD_HEIGHT = BOARD_WIDTH * 1.4;
 const BOARD_OFFSET = 5;
@@ -22,13 +23,16 @@ const angleRad = Math.PI / 4; // 45 degrees
 let newBallX: number;
 let newBallY: number;
 let GAME_INTERVAL: NodeJS.Timeout;
+let P0Score: number = 0;
+let P1Score: number = 0;
 
 interface PongAiProps {
   gameRef: React.RefObject<HTMLDivElement>;
-  newScore: (player: string) => void;
+  newScore: (player: string, score: number) => void;
   isSimulation: boolean;
   isRotated: boolean;
   isContact: boolean;
+  gamePaused: boolean;
 }
 
 const PongAi = ({
@@ -37,21 +41,25 @@ const PongAi = ({
   isSimulation,
   isRotated,
   isContact,
+  gamePaused,
 }: PongAiProps) => {
+  //SOUNDS
   const HitRef = useRef<HTMLAudioElement>(null);
   const WallRef = useRef<HTMLAudioElement>(null);
   const ComScoreRef = useRef<HTMLAudioElement>(null);
   const UserScoreRef = useRef<HTMLAudioElement>(null);
+
+  //STATE
   const boardRef = useRef<HTMLDivElement>(null);
   const ballRef = useRef<HTMLDivElement>(null);
   const [ballPosition, setBallPosition] = useState({
     x: BOARD_WIDTH / 2,
     y: BOARD_HEIGHT / 2,
   });
-  const [ballSpeed, setBallSpeed] = useState(15);
+  const [ballSpeed, setBallSpeed] = useState(10);
   const [ballVelocity, setBallVelocity] = useState({
-    x: ballSpeed * Math.cos(angleRad),
-    y: ballSpeed * Math.sin(angleRad),
+    x: ballSpeed * Math.sin(angleRad),
+    y: ballSpeed * Math.cos(angleRad),
   });
   const [Paddle0Position, setPaddle0Position] = useState({
     x: 350 - PADDLE_WIDTH / 2,
@@ -86,28 +94,10 @@ const PongAi = ({
         (700 * (e.touches[0].clientX - rec.left)) /
           boardRef.current.offsetWidth -
         PADDLE_WIDTH / 2;
-      if (
-        touchPosition < 0 + PADDLE_WIDTH / 2 ||
-        touchPosition > 700 - PADDLE_WIDTH / 2
-      )
-        return;
-      // setPaddle0Position((prev) => ({ x: touchPosition, y: prev.y }));
+      if (touchPosition < 0 || touchPosition > 700 - PADDLE_WIDTH) return;
+      setPaddle0Position((prev) => ({ x: touchPosition, y: prev.y }));
     }
   };
-
-  // function resetBall() {
-  //   console.log('GOOOOOOOAAAAALLLLLLL!!!');
-  //   if (ballPosition.y > BOARD_HEIGHT / 2) {
-  //     console.log(ballPosition, Paddle0Position);
-  //     PlayAudio(ComScoreRef);
-  //     newScore('AI');
-  //   } else {
-  //     console.log(ballPosition, Paddle1Position);
-  //     PlayAudio(UserScoreRef);
-  //     newScore('Player');
-  //   }
-  //   setBallPosition((prev) => ({ x: prev.x, y: BOARD_HEIGHT / 2 }));
-  // }
 
   function chaseBall() {
     if (ballVelocity.y < 0) {
@@ -160,6 +150,7 @@ const PongAi = ({
     collidePoint = collidePoint / (PADDLE_WIDTH / 2);
     const angle = collidePoint * angleRad;
     let direction = newBallY < BOARD_HEIGHT / 2 ? 1 : -1;
+    setBallSpeed((prev) => prev + 0.1);
     setBallVelocity({
       x: ballSpeed * Math.sin(angle),
       y: direction * ballSpeed * Math.cos(angle),
@@ -170,83 +161,87 @@ const PongAi = ({
     // fix ball position with y = mx + b
     if (newBallY + BALL_RADIUS >= Paddle0Position.y) {
       if (
-        newBallX + BALL_RADIUS >= Paddle0Position.x &&
-        newBallX - BALL_RADIUS <= Paddle0Position.x + PADDLE_WIDTH
+        newBallX + BALL_RADIUS >= Paddle0Position.x - BALL_RADIUS &&
+        newBallX - BALL_RADIUS <= Paddle0Position.x + PADDLE_WIDTH + BALL_RADIUS
       ) {
-        console.log('here');
-        const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
-        const b = newBallY - m * newBallX;
-        console.log(m, b);
-        newBallY = Paddle0Position.y - BALL_RADIUS;
-        newBallX = (newBallY - b) / m;
+        if (newBallX !== ballPosition.x) {
+          // Ball direction is vetical so m is infinity
+          const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
+          const b = newBallY - m * newBallX;
+          newBallY = Paddle0Position.y - BALL_RADIUS;
+          newBallX = (newBallY - b) / m;
+        } else newBallY = Paddle0Position.y - BALL_RADIUS;
         isCollision(Paddle0Position);
-        return;
       }
+      return;
     }
     if (newBallY - BALL_RADIUS <= Paddle1Position.y + PADDLE_HEIGHT) {
       if (
-        newBallX + BALL_RADIUS >= Paddle1Position.x &&
-        newBallX - BALL_RADIUS <= Paddle1Position.x + PADDLE_WIDTH
+        newBallX + BALL_RADIUS >= Paddle1Position.x - BALL_RADIUS &&
+        newBallX - BALL_RADIUS <= Paddle1Position.x + PADDLE_WIDTH + BALL_RADIUS
       ) {
-        const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
-        const b = newBallY - m * newBallX;
-        newBallY = Paddle1Position.y + PADDLE_HEIGHT + BALL_RADIUS;
-        newBallX = (newBallY - b) / m;
+        if (newBallX !== ballPosition.x) {
+          // Ball direction is vetical so m is infinity
+          const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
+          const b = newBallY - m * newBallX;
+          newBallY = Paddle1Position.y + PADDLE_HEIGHT + BALL_RADIUS;
+          newBallX = (newBallY - b) / m;
+        } else newBallY = Paddle1Position.y + PADDLE_HEIGHT + BALL_RADIUS;
         isCollision(Paddle1Position);
-        return;
       }
+      return;
     }
   };
 
   const checkNewScore = () => {
-    if (
-      newBallY - BALL_RADIUS <= BOARD_OFFSET ||
-      newBallY + BALL_RADIUS >= BOARD_HEIGHT - BOARD_OFFSET
-    ) {
-      // console.log(newBallX, newBallX + BALL_RADIUS, newBallX - BALL_RADIUS);
-      // console.log(newBallY, newBallY + BALL_RADIUS, newBallY - BALL_RADIUS);
-      // console.log(Paddle1Position.y, Paddle1Position.y + PADDLE_HEIGHT);
-      // console.log(Paddle1Position.x, Paddle1Position.x + PADDLE_WIDTH);
-      // console.log('/////////////');
+    if (newBallY - BALL_RADIUS <= BOARD_OFFSET) {
+      P0Score++;
+      newScore('Player', P0Score);
       resetBall();
-      // BOARD_HEIGHT - BOARD_OFFSET
+    }
+    if (newBallY + BALL_RADIUS >= BOARD_HEIGHT - BOARD_OFFSET) {
+      P1Score++;
+      newScore('AI', P1Score);
+      resetBall();
     }
   };
 
   const resetBall = () => {
-    newBallX = BOARD_WIDTH / 2;
+    // newBallX = BOARD_WIDTH / 2;
     newBallY = BOARD_HEIGHT / 2;
-    // setBallVelocity({ x: 0, y: 0 });
+    setBallSpeed(10);
+    setBallVelocity({
+      x: ballSpeed * Math.sin(angleRad),
+      y: -ballSpeed * Math.cos(angleRad),
+    });
   };
 
   const gameUpdate = () => {
     newBallX = ballPosition.x + ballVelocity.x;
     newBallY = ballPosition.y + ballVelocity.y;
 
+    chaseBall();
     checkWallCollision();
     checkPaddleCollision();
     checkNewScore();
     setBallPosition({ x: newBallX, y: newBallY });
-    chaseBall();
-    // if (newBallY < BOARD_HEIGHT / 8) {
-    //   console.log(newBallY, newBallY + BALL_RADIUS, newBallY - BALL_RADIUS);
-    //   console.log(Paddle1Position.y + PADDLE_HEIGHT);
-    //   console.log(Paddle1Position.x, Paddle1Position.x + PADDLE_WIDTH);
-    // }
   };
 
   useEffect(() => {
-    // console.log(Paddle1Position.y + PADDLE_HEIGHT, ballPosition.y);
-    //
-    //
-    // GAME_INTERVAL = setInterval(gameUpdate, 1000 / 60);
-    GAME_INTERVAL = setInterval(gameUpdate, 100);
-    // window.addEventListener('click', gameUpdate);
+    P0Score = 0;
+    P1Score = 0;
+  }, []);
+
+  useEffect(() => {
+    if (!gamePaused) {
+      GAME_INTERVAL = setInterval(gameUpdate, 1000 / 60);
+    }
+
     return () => {
       clearInterval(GAME_INTERVAL);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ballPosition, ballVelocity]);
+  }, [ballPosition, ballVelocity, gamePaused]);
 
   return (
     <>
@@ -272,10 +267,3 @@ const PongAi = ({
 };
 
 export default PongAi;
-
-/*
-
-
-
-
-*/

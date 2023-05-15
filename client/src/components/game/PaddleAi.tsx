@@ -7,8 +7,8 @@ interface paddleProps {
 
 const PaddleAi = ({ boardRef, position }: paddleProps) => {
   const [paddleOffset, setPaddleOffset] = useState<number>(0);
-  const [paddleX, setPaddleX] = useState<number>(0);
-  const [paddleY, setPaddleY] = useState<number>(0);
+  // const [paddleX, setPaddleX] = useState<number>(0);
+  // const [paddleY, setPaddleY] = useState<number>(0);
   const paddleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -19,8 +19,8 @@ const PaddleAi = ({ boardRef, position }: paddleProps) => {
         paddleRef.current.style.height =
           paddleRef.current.offsetWidth / 5 + 'px';
         setPaddleOffset(paddleRef.current.offsetHeight / 1.5);
-        setPaddleX((position.x * 100) / 700);
-        setPaddleY((position.y * 100) / 980);
+        // setPaddleX((position.x * 100) / 700);
+        // setPaddleY((position.y * 100) / 980);
       }
     };
     resizePaddle();
@@ -30,12 +30,12 @@ const PaddleAi = ({ boardRef, position }: paddleProps) => {
       window.removeEventListener('resize', resizePaddle);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current, position]);
+  }, [boardRef?.current]);
 
-  const paddleStyle = {
-    top: paddleY + '%',
-    left: paddleX + '%',
-  };
+  // const paddleStyle = {
+  //   top: paddleY + '%',
+  //   left: paddleX + '%',
+  // };
   return (
     <div
       ref={paddleRef}
@@ -43,7 +43,9 @@ const PaddleAi = ({ boardRef, position }: paddleProps) => {
       style={{
         backgroundImage: "url('../game/Paddle.svg')",
         backgroundSize: '100%',
-        ...paddleStyle,
+        // ...paddleStyle,
+        top: (position.y * 100) / 980 + '%',
+        left: (position.x * 100) / 700 + '%',
       }}
     ></div>
   );

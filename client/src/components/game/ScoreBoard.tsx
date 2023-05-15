@@ -1,28 +1,65 @@
+import Game from '@/pages/game';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 interface ScoreBoardProps {
-  player1: string;
-  player1Score: number;
-  player2: string;
-  player2Score: number;
+  gameOn: boolean;
+  player1: {
+    nickname: string;
+    avatar: string;
+    score: number;
+  };
+  player2: {
+    nickname: string;
+    avatar: string;
+    score: number;
+  };
 }
 
 const START_DATE = new Date().getTime();
 
 const ScoreBoard = (props: ScoreBoardProps) => {
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [redirectTime, setRedirectTime] = useState(3);
+  const router = useRouter();
 
   useEffect(() => {
-    const startTime = Date.now();
-    const intervalId = setInterval(() => {
-      const currentTime = Date.now();
-      const elapsed = currentTime - startTime;
-      setElapsedTime(elapsed);
-    }, 10);
+    const redirectAfter = (seconds: number) => {
+      setTimeout(() => {
+        if (seconds >= 0) {
+          setRedirectTime(seconds);
+          redirectAfter(seconds - 1);
+        } else 
+          router.push('/game');
+      }, 1000);
+    };
+
+    let intervalId: NodeJS.Timeout;
+    if (props.gameOn) {
+      const startTime = Date.now();
+      intervalId = setInterval(() => {
+        const currentTime = Date.now();
+        const elapsed = currentTime - startTime;
+        setElapsedTime(elapsed);
+      }, 10);
+    } else {
+      redirectAfter(3);
+    }
 
     // cleanup function to clear the interval when the component unmounts
     return () => clearInterval(intervalId);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.gameOn]);
+
+  const getWinner = () => {
+    if (props.player1.score > props.player2.score) {
+      return props.player1;
+    } else {
+      return props.player2;
+    }
+  };
 
   const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600000);
@@ -36,19 +73,57 @@ const ScoreBoard = (props: ScoreBoardProps) => {
 
   return (
     <>
-      <div className="felx min-w-[300px] flex-col">
-        <p className="text-center">{formatTime(elapsedTime)}</p>
-        <div className="flex flex-row justify-between">
-          <div>
-            <p>{props.player1}</p>
-            <p>{props.player1Score}</p>
-          </div>
-          <div>
-            <p>{props.player2}</p>
-            <p>{props.player2Score}</p>
+      {props.gameOn && (
+        <div className="felx mb-5 w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3">
+          <p className="text-center text-xl ">{formatTime(elapsedTime)}</p>
+          <div className="flex justify-between">
+            <div className="flex flex-col items-center">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player1.avatar}`}
+                alt=""
+                width={50}
+                height={50}
+                className="w-12 rounded-full"
+              />
+              <p>{props.player1.nickname}</p>
+              <p>{props.player1.score}</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player2.avatar}`}
+                alt=""
+                width={50}
+                height={50}
+                className="w-12 rounded-full"
+              />
+              <p>{props.player2.nickname}</p>
+              <p>{props.player2.score}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+      {!props.gameOn && (
+        <div className="flex h-1/5 w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
+          <div>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${
+                getWinner().avatar
+              }`}
+              alt=""
+              width={50}
+              height={50}
+              className="m-auto mb-3 w-32 rounded-full"
+            />
+
+            <p className="">
+              The winner is &ldquo;{getWinner().nickname}&rdquo;
+            </p>
+          </div>
+          <p className="w-full text-right text-[13px]">
+            redirecting after {redirectTime} seconds...
+          </p>
+        </div>
+      )}
     </>
   );
 };
