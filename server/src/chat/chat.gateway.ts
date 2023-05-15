@@ -75,7 +75,7 @@ export class ChatGateway
     @MessageBody() data: any,
   ) {
     var time = new Date();
-    const receivedTime = time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds();
+    const receivedTime = time.getHours() + ":" + time.getMinutes();
     console.log(data.id);
     console.log(player);
 

@@ -4,6 +4,7 @@ import { SendIcon, SettingIcon } from '../icons/Icons';
 import axios from 'axios';
 import Message from './Message';
 import { verifyToken } from '../VerifyToken';
+import Image from 'next/image';
 
 let socket: any;
 interface Message {
@@ -14,12 +15,8 @@ interface Message {
 }
 
 
-function Conversation({ nickname, jwt_token, id }: any) {
- 
-useEffect(()=>{
-  
-  console.log("from conv : ",nickname);
-},[nickname])
+function Conversation({ player, jwt_token, id }: any) {
+
 
 
   const [showTopic, setShowTopic] = useState(true);
@@ -65,12 +62,12 @@ useEffect(()=>{
       },
     });
     socket.on('connected', () => {
-      console.log(nickname, ' : connected to the socket with : ', socket.id);
-      clientsMap.set(socket.id, nickname);
+      console.log(player.nickname, ' : connected to the socket with : ', socket.id);
+      clientsMap.set(socket.id, player.nickname);
       socket.emit('joinChat', { id });
 
       socket.on('disconnect', () => {
-        console.log(nickname, ' : disconnected');
+        console.log(player.nickname, ' : disconnected');
         clientsMap.delete(socket.id);
       });
 
@@ -81,7 +78,7 @@ useEffect(()=>{
           time: messageInfo.time,
           message: messageInfo.message,
         };
-        console.log("sender :",message.sender, "receiver :",nickname);
+        console.log("sender :",message.sender, "receiver :",player.nickname);
         setMessages(prevMessages => [message, ...prevMessages]);
         handelReceivedMessage(message);
       });
@@ -103,7 +100,7 @@ useEffect(()=>{
         <div className="mt-3 flex w-full flex-row items-center justify-between px-3 py-2 sm:mt-0">
           <div className="flex w-full flex-row border-b border-red-500 pb-2 pt-2 md:border">
             <div className="min-w[300px] text-lg ml-2 flex flex-row justify-between">
-              <img
+              <Image
                 className="rounded-full border"
                 src={picture}
                 alt="avatar"
@@ -131,15 +128,16 @@ useEffect(()=>{
             items-center"
             >
         {/* from-them */}
-        <div className="h-[90%] w-full flex flex-col-reverse border border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
+        <div className="h-[90%] px-12 w-full flex flex-col-reverse border pb-10 border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
           {messages.map((msg: any, key: number) => {
-            let side = "from-them"
-            if (msg.sender ===  nickname)
-              side = "from-me";
-              return <Message message={msg} side="from-me" key={key} />; 
+            let side = false;
+            if (msg.sender ===  player.nickname)
+              side = true;
+            console.log("from conv",player.nickname);
+              return <Message message={msg} side={side} key={key} />; 
             })}
         </div>
-        <div className="relative mb-2 w-[90%]  flex-col items-center border sm:flex">
+        <div className="relative mb-2 w-[90%]  flex-col items-center sm:flex">
         <input
             type="text"
             name="nickname"

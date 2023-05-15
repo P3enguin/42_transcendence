@@ -178,7 +178,7 @@ model Room {
   createdAt DateTime @default(now())
 }
 
-model Chat {
+model Message {
   MsgId Int @id @default(autoincrement())
 
   sender  Int

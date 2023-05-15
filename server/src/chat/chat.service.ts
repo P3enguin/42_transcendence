@@ -10,25 +10,40 @@ import { generate } from 'shortid';
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  // check if the receiver blocked, the player can send to anyone else
-  SendPrivMessage(friendId: string, message: string) {
-    return 'SendPrivMessage';
+  async getAllChat(_player: Player) {
+    const player = await this.prisma.player.findUnique({
+      where: {
+        id:_player.id,
+      },
+      select:{
+        rooms:{
+          select:{
+            channelId: true,
+            name: true,
+            privacy: true,
+            avatar: true,
+            messages: {
+              select:{
+                  sender: true,
+                  message: true,
+                  sendAt: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    console.log("==>",player.rooms[0]); 
+    if (!player)
+      return {
+          status: 404,
+          data: {error: 'Invalid'}
+      }
+    return ({
+      status: 201,
+      data: player,
+    })
   }
-
-  SendPublicMessage(channelId: number, message: string) {
-    return 'SendPublicMessage';
-  }
-
-  GetChannelMessage(channelId: number) {
-    return 'GetChannelMessage';
-  }
-  GetPrivMessage(player: Player, friendId: any) {
-    return '7oet_d9Z';
-  }
-
-  GetChatById(id: string) {}
-
-  GetChat(player: Player) {}
 
   async createChannel(player: Player, createChannelDto: CreateChannelDto) {
     const { name, topic, key, memberLimit, privacy } = createChannelDto;
