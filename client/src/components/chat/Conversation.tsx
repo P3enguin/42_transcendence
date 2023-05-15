@@ -128,7 +128,7 @@ function Conversation({ player, jwt_token, id }: any) {
             items-center"
             >
         {/* from-them */}
-        <div className="h-[90%] pr-12 w-full flex flex-col-reverse border pb-10 border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
+        <div className="h-[90%] px-12 w-full flex flex-col-reverse border pb-10 border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
           {messages.map((msg: any, key: number) => {
             let side = false;
             if (msg.sender ===  player.nickname)

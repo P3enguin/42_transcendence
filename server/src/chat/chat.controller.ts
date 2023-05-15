@@ -22,37 +22,20 @@ import { BanMemberDto, CreateChannelDto, JoinChannelDto } from './dto';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  @Post('sendMessage')
-  SendPrivMessage(friendId: string, message: string) {
-    return this.chatService.SendPrivMessage(friendId, message);
-  }
-
-  @Post('ChannelMessage')
-  SendPublicMessage(channelId: number, message: string) {
-    return this.chatService.SendPublicMessage(channelId, message);
-  }
-
-  @Get('privateMessages')
-  GetPrivMessage(
-    @GetPlayer() player: Player,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    return this.chatService.GetPrivMessage(player, req.query.friendId);
-  }
-
-  @Get('channelMessages')
-  GetChannelMessage(channelId: number) {
-    return this.chatService.GetChannelMessage(channelId);
-  }
-
-  @Get('messages')
-  GetChatById(id: string) {
-    return this.chatService.GetChatById(id);
-  }
-
   @Get('allChat')
-  GetChat(@GetPlayer() player: Player) {}
+  async GetChat(
+    @GetPlayer() player: Player,
+    @Res() res: Response,
+    ) {
+    try {
+      console.log("Get All Chat");
+      const allChat = await this.chatService.getAllChat(player);     
+      res.status(allChat.status).json(allChat);
+    }catch (err) {
+      console.log(err.message);
+      return res.status(404).json({ error: 'An error has occurred' });
+    }
+  }
 
   @Post('create')
   async createChannel(
@@ -60,6 +43,7 @@ export class ChatController {
     @Body() createChannelDto: CreateChannelDto,
     @Res() res: Response,
   ) {
+
     try {
       const result = await this.chatService.createChannel(
         player,
@@ -67,6 +51,7 @@ export class ChatController {
       );
       res.status(result.status).json(result.data);
     } catch (error) {
+      
       return res.status(500).json({ error: 'An error has occurred' });
     }
   }
@@ -93,6 +78,8 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
+      console.log("create DM");
+      
       const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {

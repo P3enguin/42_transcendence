@@ -34,15 +34,10 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
         },
       )
       .then((res) => {
-        router.push(/chat/ + res.data.channelId);
+        router.push(`/chat/${res.data.channelId}`);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("error : ",err));
   }
-
-  // useEffect(() => {
-  //   wdt =
-  //   if ()
-  // })
 
   async function createRoom(event: React.FormEvent) {
     event.preventDefault();
@@ -206,7 +201,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
           </div>
           // </div>
         }
-        {!name && (
+        { (
           <div className="mb-0 flex h-[20%]  w-full flex-col lg:h-[85%] lg:w-[70%] lg:items-center lg:pt-0  ">
             <InputBtn
               name="nickname"
