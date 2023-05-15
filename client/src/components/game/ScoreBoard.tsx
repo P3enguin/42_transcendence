@@ -22,7 +22,7 @@ const START_DATE = new Date().getTime();
 
 const ScoreBoard = (props: ScoreBoardProps) => {
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [redirectTime, setRedirectTime] = useState(3);
+  const [redirectTime, setRedirectTime] = useState(5);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,8 +31,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         if (seconds >= 0) {
           setRedirectTime(seconds);
           redirectAfter(seconds - 1);
-        } else 
-          router.push('/game');
+        } else router.push('/game');
       }, 1000);
     };
 
@@ -45,7 +44,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         setElapsedTime(elapsed);
       }, 10);
     } else {
-      redirectAfter(3);
+      redirectAfter(redirectTime);
     }
 
     // cleanup function to clear the interval when the component unmounts
@@ -103,7 +102,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         </div>
       )}
       {!props.gameOn && (
-        <div className="flex h-1/5 w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
+        <div className="flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
           <div>
             <Image
               src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${
