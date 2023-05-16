@@ -14,11 +14,7 @@ interface Message {
   message: string;
 }
 
-
 function Conversation({ player, jwt_token, id }: any) {
-
-
-
   const [showTopic, setShowTopic] = useState(true);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -30,13 +26,7 @@ function Conversation({ player, jwt_token, id }: any) {
 
   async function getRoomData(id: any) {
     try {
-      const response = await axios.get(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/channels/${id}`,
-        {
-          withCredentials: true,
-          headers: { Authorization: `Bearer ${jwt_token}` },
-        },
-      );
+      const response = await axios.get(`/chat/channels/${id}`);
       const channel = response.data;
       console.log(channel);
       setChannel(channel);
@@ -62,7 +52,11 @@ function Conversation({ player, jwt_token, id }: any) {
       },
     });
     socket.on('connected', () => {
-      console.log(player.nickname, ' : connected to the socket with : ', socket.id);
+      console.log(
+        player.nickname,
+        ' : connected to the socket with : ',
+        socket.id,
+      );
       clientsMap.set(socket.id, player.nickname);
       socket.emit('joinChat', { id });
 
@@ -78,8 +72,8 @@ function Conversation({ player, jwt_token, id }: any) {
           time: messageInfo.time,
           message: messageInfo.message,
         };
-        console.log("sender :",message.sender, "receiver :",player.nickname);
-        setMessages(prevMessages => [message, ...prevMessages]);
+        console.log('sender :', message.sender, 'receiver :', player.nickname);
+        setMessages((prevMessages) => [message, ...prevMessages]);
         handelReceivedMessage(message);
       });
     });
@@ -126,19 +120,18 @@ function Conversation({ player, jwt_token, id }: any) {
       <div
         className="flex h-[95%] w-[100%] flex-col
             items-center"
-            >
+      >
         {/* from-them */}
-        <div className="h-[90%] px-12 w-full flex flex-col-reverse border pb-10 border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
+        <div className="flex h-[90%] w-full flex-col-reverse overflow-hidden overflow-y-auto border border-blue-600 px-12 pb-10 scrollbar-hide">
           {messages.map((msg: any, key: number) => {
             let side = false;
-            if (msg.sender ===  player.nickname)
-              side = true;
-            console.log("from conv",player.nickname);
-              return <Message message={msg} side={side} key={key} />; 
-            })}
+            if (msg.sender === player.nickname) side = true;
+            console.log('from conv', player.nickname);
+            return <Message message={msg} side={side} key={key} />;
+          })}
         </div>
         <div className="relative mb-2 w-[90%]  flex-col items-center sm:flex">
-        <input
+          <input
             type="text"
             name="nickname"
             id="nickname"
@@ -147,14 +140,14 @@ function Conversation({ player, jwt_token, id }: any) {
             required
             value={message}
             onChange={(e) => {
-                e.preventDefault();
-                setMessage(e.target.value)
-              }}
+              e.preventDefault();
+              setMessage(e.target.value);
+            }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && message != '') {
+              if (e.key === 'Enter' && message != '') {
                 e.preventDefault();
                 sendMessage(message);
-                setMessage("");
+                setMessage('');
               }
             }}
           />
@@ -165,8 +158,8 @@ function Conversation({ player, jwt_token, id }: any) {
             onClick={(e) => {
               e.preventDefault();
               if (message != '') {
-              sendMessage(message);
-              setMessage("");
+                sendMessage(message);
+                setMessage('');
               }
             }}
           >

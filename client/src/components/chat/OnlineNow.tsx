@@ -2,6 +2,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 function OnlineNow ({player, token, ws}: any)
 {
@@ -70,7 +71,7 @@ function OnlineNow ({player, token, ws}: any)
 
           return (
             <div key={key} onClick={(event) => getRoom(event, friend.nickname, player)}>
-                <img
+                <Image
                   className="h-14 w-14 md:w-16 md:h-16 cursor-pointer rounded-full border"
                   src={picture}
                   alt="Avatar"

@@ -36,7 +36,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
       .then((res) => {
         router.push(`/chat/${res.data.channelId}`);
       })
-      .catch((err) => console.log("error : ",err));
+      .catch((err) => console.log('error : ', err));
   }
 
   async function createRoom(event: React.FormEvent) {
@@ -159,7 +159,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                       </div>
                     </div>
                   </div>
-                  <div className=" max-w-[60%] text-ellipsis pl-2 pt-7 text-xs">
+                  <div className=" text-xs max-w-[60%] text-ellipsis pl-2 pt-7">
                     {privacy.description}
                   </div>
                 </div>
@@ -188,11 +188,9 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                 <button
                   name="create"
                   className=" hover:text-s absolute mx-auto mt-1 transform 
-                    rounded-full rounded-full bg-[#0097E2] px-9 py-2
+                    rounded-full bg-[#0097E2] px-9 py-2
                     text-[10px] font-bold uppercase text-white 
-                    shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]
-                    
-                    "
+                    shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]"
                 >
                   Create
                 </button>
@@ -201,7 +199,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
           </div>
           // </div>
         }
-        { (
+        {
           <div className="mb-0 flex h-[20%]  w-full flex-col lg:h-[85%] lg:w-[70%] lg:items-center lg:pt-0  ">
             <InputBtn
               name="nickname"
@@ -211,7 +209,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
               createPrivateChat={createPrivateChat}
             />
           </div>
-        )}
+        }
       </div>
     </div>
   );
