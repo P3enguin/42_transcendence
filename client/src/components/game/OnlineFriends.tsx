@@ -4,27 +4,26 @@ import axios from 'axios';
 import { RadioInput } from './StartGame';
 import { useRouter } from 'next/router';
 
-const OnlineFriends = ({ data }: { data: [] }) => {
+const OnlineFriends = () => {
   const [friends, setFriends] = useState([]);
   const [gameType, setGameType] = useState('NORMAL');
   const router = useRouter();
+
   const inviteFriend = (user: {
     nickname: string;
     avatar: string;
     id: number;
   }) => {
-    axios.get('/game/gameInvite', {
-      params: {
-        user: user,
-        gameType,
-      },
-    }).then((res) => {
-      console.log(res.data);
-      router.push('/game/' + res.data);
-    }).catch((err) => {
-      console.log(err.message);
-      
-    });
+    console.log(user);
+    axios
+      .get('/game/invite', { params: { user: user, gameType } })
+      .then((res) => {
+        console.log(res.data);
+        router.push('/game/' + res.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   useEffect(() => {
@@ -37,7 +36,7 @@ const OnlineFriends = ({ data }: { data: [] }) => {
   }, []);
 
   return (
-    <div className="flex h-1/2 flex-col p-2 md:h-1/2 md:p-5">
+    <div className="flex h-[50%] flex-col p-2 md:h-1/2 md:p-5">
       <h2 className="text-lg m-2 font-bold md:text-2xl">
         INVITE YOUR ONLINE FRIENDS TO PLAY:
       </h2>
@@ -47,7 +46,6 @@ const OnlineFriends = ({ data }: { data: [] }) => {
           id="invite-normal"
           label="Normal Game"
           onChange={(e: any) => {
-            e.preventDefault();
             setGameType('NORMAL');
           }}
           className="mx-3 font-normal"
@@ -56,16 +54,14 @@ const OnlineFriends = ({ data }: { data: [] }) => {
           id="invite-time"
           label="Time Attack"
           onChange={(e: any) => {
-            e.preventDefault();
             setGameType('TIME_ATTACK');
           }}
           className="mx-3 font-normal"
         />
         <RadioInput
           id="invite-survival"
-          label="Survival"
+          label="Survival Mode"
           onChange={(e: any) => {
-            e.preventDefault();
             setGameType('SURVIVAL');
           }}
           className="mx-3 font-normal"

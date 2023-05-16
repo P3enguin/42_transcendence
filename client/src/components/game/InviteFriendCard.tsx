@@ -12,7 +12,7 @@ interface invteFriendsProps {
 
 const InviteFriendCard = ({ user, inviteFriend }: invteFriendsProps) => {
   return (
-    <div className="sm:px-8 m-3 flex  flex-col items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 px-5 py-3 sm:mb-10">
+    <div className="sm:px-8 m-3 flex  flex-col items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 px-5 py-3 md:mb-10">
       <Image
         src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${user.avatar}`}
         alt="Avatar"

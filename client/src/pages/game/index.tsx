@@ -7,7 +7,7 @@ import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
 
-function Game({ data }: { data: [] }) {
+function Game() {
 
   return (
     <>
@@ -15,8 +15,8 @@ function Game({ data }: { data: [] }) {
         <title>Ponginator | Start Game</title>
       </Head>
 
-      <div className="m-5 flex h-[70%]  min-h-[600px] flex-col rounded-2xl border border-neutral-300 sm:m-20 lg:min-w-[60%]">
-        <OnlineFriends data={data} />
+      <div className="m-5 flex h-[70%]  min-h-[700px] flex-col rounded-2xl border border-neutral-300 sm:m-20 lg:min-w-[60%]">
+        <OnlineFriends />
         <div className="sm:m-4 min-h-[1px] w-1/2 self-center bg-neutral-300"></div>
         <div className="flex h-full w-full flex-col  md:h-1/3 md:flex-row">
           <StartGame />
@@ -34,28 +34,10 @@ export async function getServerSideProps({ req }: NextApiRequest) {
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
-      try {
-        const resp = await axios.get('http://localhost:4444/online', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwt_token}`,
-          },
-        });
-        const data = resp.data;
         return {
           props: {
-            data,
             jwt_token: jwt_token,
           },
-        };
-      } catch (error: any) {
-        console.error(error.message);
-        return {
-          props: {
-            data: [],
-            jwt_token: jwt_token,
-          },
-        };
       }
     }
   }
