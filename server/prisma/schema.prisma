@@ -170,7 +170,7 @@ model Room {
 
   admins    Player[] @relation("room_admins")
   members   Player[] @relation("room_members")
-  messages  Chat[]
+  messages  Message[]
   bans      Ban[]
 
   avatar String @default("eg.jpeg")

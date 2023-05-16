@@ -13,36 +13,36 @@ export class ChatService {
   async getAllChat(_player: Player) {
     const player = await this.prisma.player.findUnique({
       where: {
-        id:_player.id,
+        id: _player.id,
       },
-      select:{
-        rooms:{
-          select:{
+      select: {
+        rooms: {
+          select: {
             channelId: true,
             name: true,
             privacy: true,
             avatar: true,
             messages: {
-              select:{
-                  sender: true,
-                  message: true,
-                  sendAt: true,
+              select: {
+                sender: true,
+                message: true,
+                sendAt: true,
               },
             },
           },
         },
       },
     });
-    console.log("==>",player.rooms[0]); 
+    console.log('==>', player.rooms[0]);
     if (!player)
       return {
-          status: 404,
-          data: {error: 'Invalid'}
-      }
-    return ({
+        status: 404,
+        data: { error: 'Invalid' },
+      };
+    return {
       status: 201,
       data: player,
-    })
+    };
   }
 
   async createChannel(player: Player, createChannelDto: CreateChannelDto) {
@@ -137,15 +137,14 @@ export class ChatService {
 
   async createDM(player: Player, nickname: string) {
     const existingDM = await this.prisma.room.findFirst({
-      select:{
-        channelId:true,
-        members:{
+      select: {
+        channelId: true,
+        members: {
           select: {
             nickname: true,
             avatar: true,
           },
         },
-        
       },
       where: {
         isChannel: false,
