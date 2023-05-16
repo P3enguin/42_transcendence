@@ -340,6 +340,7 @@ export class PlayerService {
         include: {
           friends: {
             select: {
+              id: true,
               nickname: true,
               avatar: true,
             }
