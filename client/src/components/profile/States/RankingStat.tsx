@@ -8,7 +8,6 @@ function RankingStat({ nickname }: { nickname: string }) {
   const [rankStat, setRankStat] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(nickname);
   useEffect(() => {
     const fetchData = async () => {
       const resp = await fetch(
@@ -44,6 +43,7 @@ function RankingStat({ nickname }: { nickname: string }) {
     fetchData();
   }, []);
   const ranks = [
+    'Unranked',
     'Iron',
     'Bronze',
     'Silver',
@@ -67,52 +67,52 @@ function RankingStat({ nickname }: { nickname: string }) {
             ></div>
             <div className="relative -left-[2.5px] -top-9 flex w-[920px] flex-row justify-between">
               <Rank
-                rank={ranks[0]}
+                rank={ranks[1]}
                 width="w-[50px]"
                 isVisible={rankStat?.rankId >= 1 ? true : false}
               />
               <Rank
-                rank={ranks[1]}
+                rank={ranks[2]}
                 width="w-[50px]"
                 isVisible={rankStat?.rankId >= 2 ? true : false}
               />
               <Rank
-                rank={ranks[2]}
+                rank={ranks[3]}
                 width="w-[50px]"
                 isVisible={rankStat?.rankId >= 3 ? true : false}
               />
               <Rank
-                rank={ranks[3]}
+                rank={ranks[4]}
                 width="w-[50px]"
                 isVisible={rankStat?.rankId >= 4 ? true : false}
               />
               <Rank
-                rank={ranks[4]}
+                rank={ranks[5]}
                 width="w-[55px]"
                 isVisible={rankStat?.rankId >= 5 ? true : false}
               />
               <Rank
-                rank={ranks[5]}
+                rank={ranks[6]}
                 width="w-[55px]"
                 isVisible={rankStat?.rankId >= 6 ? true : false}
               />
               <Rank
-                rank={ranks[6]}
-                width="w-[50px]"
-                isVisible={rankStat?.rankId >= 7 ? true : false}
-              />
-              <Rank
                 rank={ranks[7]}
-                width="w-[50px]"
-                isVisible={rankStat?.rankId >= 8 ? true : false}
+                width="w-[60px]"
+                isVisible={rankStat?.rankId >= 7 ? true : false}
               />
               <Rank
                 rank={ranks[8]}
                 width="w-[60px]"
-                isVisible={rankStat?.rankId >= 9 ? true : false}
+                isVisible={rankStat?.rankId >= 8 ? true : false}
               />
               <Rank
                 rank={ranks[9]}
+                width="w-[60px]"
+                isVisible={rankStat?.rankId >= 9 ? true : false}
+              />
+              <Rank
+                rank={ranks[10]}
                 width="w-[70px]"
                 isVisible={rankStat?.rankId >= 10 ? true : false}
               />
@@ -130,17 +130,30 @@ function RankingStat({ nickname }: { nickname: string }) {
                       lg:w-[50%] lg:border-r-2"
           >
             <h1>STATS:</h1>
-            <div className="flex w-1/2 flex-row items-center  justify-evenly lg:w-2/3 gap-3">
-              <img src="/star.svg" alt="startIcon" className="ml-2 w-[20px] "></img>
-              <p className='w-[150px] '>Rank Point : { rankStat.current_points + " RP"} </p>
+            <div className="flex w-1/2 flex-row items-center  justify-evenly gap-3 lg:w-2/3">
+              <img
+                src="/star.svg"
+                alt="startIcon"
+                className="ml-2 w-[20px] "
+              ></img>
+              <p className="w-[150px] ">
+                Rank Point : {rankStat.current_points + ' RP'}{' '}
+              </p>
             </div>
             <div className="flex w-1/2 flex-row items-center justify-evenly lg:w-2/3">
               <RankingIconFix />
-              <p className='w-[150px] '>Current Rank :{ranks[rankStat.rankId]}</p>
+              <p className="w-[150px] ">
+                Current Rank :{ranks[rankStat.rankId]}
+              </p>
             </div>
             <div className="flex w-1/2 flex-row items-center justify-evenly lg:w-2/3">
               <RankingIconFix />
-              <p className='w-[150px] '>Next Rank : {rankStat.rankId + 1 < 9 ? ranks[rankStat.rankId + 1] : "Congratz"}</p>
+              <p className="w-[150px] ">
+                Next Rank :{' '}
+                {rankStat.rankId + 1 < 9
+                  ? ranks[rankStat.rankId + 1]
+                  : 'Congratz'}
+              </p>
             </div>
           </div>
           <div className="mt-9 flex  w-full flex-col items-center">

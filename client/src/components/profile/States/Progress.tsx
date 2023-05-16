@@ -1,9 +1,24 @@
 import { Rank } from './StateComps';
 interface PlayerProgress {
   coins: number;
+  rankId: number;
+  winRatio: string;
 }
 
-function PlayerProgress({ coins }: PlayerProgress) {
+function PlayerProgress({ coins, rankId, winRatio }: PlayerProgress) {
+  const ranks = [
+    'Unranked',
+    'Iron',
+    'Bronze',
+    'Silver',
+    'Gold',
+    'Platinum',
+    'Diamond',
+    'Amethyst',
+    'RedStar',
+    'Master',
+    'King',
+  ];
   return (
     <div
       className="flex w-full items-center justify-around gap-10 
@@ -11,9 +26,11 @@ function PlayerProgress({ coins }: PlayerProgress) {
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:gap-10">
         <div className="flex items-center gap-2 ">
-          <Rank rank="Gold" width="w-[35px]" isVisible={true} />
+          <Rank rank={ranks[rankId]} width="w-[35px]" isVisible={true} />
           <div className="flex  flex-col  ">
-            <strong className="  text-gray-100">GOLD</strong>
+            <strong className="  text-gray-100">
+              {ranks[rankId]}
+            </strong>
             <span className=" text-gray-400">Ranking</span>
           </div>
         </div>
@@ -36,7 +53,7 @@ function PlayerProgress({ coins }: PlayerProgress) {
         <div className="flex items-center gap-2">
           <img src="/champion.svg" alt="champIcon" className="w-[27px] "></img>
           <div className="flex  flex-col ">
-            <strong className="  text-gray-100">91 %</strong>
+            <strong className="  text-gray-100">{winRatio + '%'}</strong>
             <span className=" text-gray-400">win ratio</span>
           </div>
         </div>

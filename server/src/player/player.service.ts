@@ -33,6 +33,13 @@ export class PlayerService {
               id: true,
             },
           },
+          wins: true,
+          loss: true,
+          status: {
+            select: {
+              rank: true,
+            },
+          },
         },
       });
       if (!player) throw new Error('Nickname not found');
@@ -53,8 +60,14 @@ export class PlayerService {
           id: true,
         },
       });
-      console.log(request);
-      return res.status(200).json({ player, request, isFriend });
+      const rankId = player.status.rank.rankId;
+      const winRatio = (
+        (player.wins.length / (player.wins.length + player.loss.length)) *
+        100
+      ).toFixed(2);
+      return res
+        .status(200)
+        .json({ player, request, isFriend, rankId, winRatio });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -433,9 +446,22 @@ export class PlayerService {
           wallpaper: true,
           joinAt: true,
           Is2FAEnabled: true,
+          wins: true,
+          loss: true,
+          status: {
+            select: {
+              rank: true,
+            },
+          },
         },
       });
-      return res.status(200).json({ player });
+
+      const rankId = player.status.rank.rankId;
+      const winRatio = (
+        (player.wins.length / (player.wins.length + player.loss.length)) *
+        100
+      ).toFixed(2);
+      return res.status(200).json({ player,rankId,winRatio });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -816,7 +842,6 @@ export class PlayerService {
           },
         },
       });
-      console.log(player.status.rank);
       if (!player) {
         // Handle the case when the player is not found
         return res.status(404).json({ message: 'Player not found' });
