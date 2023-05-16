@@ -104,6 +104,8 @@ export async function getServerSideProps({ params, req }: any) {
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );
+    console.log(data.isFriend);
+    console.log(data.request);
     return {
       // modify this to return anything you want before your page load
       props: {
