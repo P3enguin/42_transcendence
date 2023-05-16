@@ -62,6 +62,8 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
       boardRef={boardRef}
       mouseHandler={handleMouseMove}
       touchHandler={handleTouchMove}
+      isContact={false}
+      isRotated={false}
     >
       <Paddle position="Top" ws={socket} boardRef={boardRef} />
       <Ball ws={socket} boardRef={boardRef} />

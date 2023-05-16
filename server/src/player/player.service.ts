@@ -43,6 +43,7 @@ export class PlayerService {
       const request = await this.prisma.request.findFirst({
         where: {
           fromPlayerId: senderId,
+          toPlayerId:player.id,
           NOT :{
             status:"rejected",
           }
@@ -52,6 +53,7 @@ export class PlayerService {
           id: true,
         },
       });
+      console.log(request)
       return res.status(200).json({ player, request, isFriend });
     } catch (err) {
       console.log(err);

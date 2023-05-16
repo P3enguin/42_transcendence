@@ -74,7 +74,7 @@ export class Ball {
     this.radius = this.diameter / 2;
     this.x = 700 / 2 - this.radius;
     this.y = (700 * 1.4) / 2 - this.radius;
-    this.speed = 10;
+    this.speed = 7;
     this.velocityX = this.speed * Math.cos(Math.PI / 4);
     this.velocityY = this.speed * Math.sin(Math.PI / 4);
   }
@@ -96,6 +96,7 @@ export class Game {
   winner: Player | null;
   looser: Player | null;
   paddle: [Paddle, Paddle];
+  angleRad: number;
   ball: Ball;
   board: Board;
   type: GameType;
@@ -112,6 +113,7 @@ export class Game {
     this.looser = null;
     this.spectator = [];
     this.type = gameType;
+    this.angleRad = Math.PI / 4;
     this.createdAt = new Date();
     this.updatedAt = new Date();
     this.board = new Board();
@@ -131,8 +133,10 @@ export class Game {
   getPlayersInfo() {
     return {
       p1: this.players[0].nickname,
+      p1Avatar: this.players[0].avatar,
       pScore1: this.players[0].score,
       p2: this.players[1].nickname,
+      p2Avatar: this.players[1].avatar,
       pScore2: this.players[1].score,
     };
   }
@@ -167,48 +171,92 @@ export class Game {
   }
 
   checkWallCollision(): void {
-    if (
-      this.ball.newX <= this.board.offset ||
-      this.ball.newX + this.ball.diameter >=
-        this.board.width - this.board.offset
+    if (this.ball.newX - this.ball.radius <= this.board.offset) {
+      const m = this.ball.velocityY / this.ball.velocityX;
+      const b = this.ball.newY - m * this.ball.newX;
+      this.ball.newX = this.board.offset + this.ball.radius;
+      this.ball.newY = m * this.ball.newX + b;
+      this.ball.velocityX = Math.abs(this.ball.velocityX);
+    } else if (
+      this.ball.newX + this.ball.radius >=
+      this.board.width - this.board.offset
     ) {
-      this.ball.velocityX = -this.ball.velocityX;
+      const m = this.ball.velocityY / this.ball.velocityX;
+      const b = this.ball.newY - m * this.ball.newX;
+      this.ball.newX = this.board.width - this.board.offset - this.ball.radius;
+      this.ball.newY = m * this.ball.newX + b;
+      this.ball.velocityX = -Math.abs(this.ball.velocityX);
     }
+  }
+
+  isCollision(paddle: Paddle) {
+    let collidePoint = this.ball.newX - (paddle.x + paddle.width / 2);
+    collidePoint = collidePoint / (paddle.width / 2);
+    const angle = collidePoint * this.angleRad;
+    let direction = this.ball.newY < this.board.height / 2 ? 1 : -1;
+    this.ball.velocityX = this.ball.speed * Math.sin(angle);
+    this.ball.velocityY = direction * this.ball.speed * Math.cos(angle);
   }
 
   checkPaddleCollision(): void {
-    // bottom paddle
-    if (
-      this.ball.newX + this.ball.diameter >= this.paddle[0].x &&
-      this.ball.newX <= this.paddle[0].x + this.paddle[0].width
-    ) {
-      if (this.ball.newY >= this.paddle[0].y - this.ball.diameter) {
-        this.ball.velocityY = -Math.abs(this.ball.velocityY);
+    if (this.ball.newY + this.ball.radius >= this.paddle[0].y) {
+      if (
+        this.ball.newX + this.ball.radius >=
+          this.paddle[0].x - this.ball.radius &&
+        this.ball.newX - this.ball.radius <=
+          this.paddle[0].x + this.paddle[0].width + this.ball.radius
+      ) {
+        if (this.ball.velocityX) {
+          const m = this.ball.velocityY / this.ball.velocityX;
+          const b = this.ball.newY - m * this.ball.newX;
+          this.ball.newY = this.paddle[0].y - this.ball.radius;
+          this.ball.newX = (this.ball.newY - b) / m;
+        } else this.ball.newY = this.paddle[0].y - this.ball.radius;
+        this.isCollision(this.paddle[0]);
       }
-    }
-
-    // top paddle
-    if (
-      this.ball.newX + this.ball.diameter >= this.paddle[1].x &&
-      this.ball.newX <= this.paddle[1].x + this.paddle[1].width
+    } else if (
+      this.ball.newY - this.ball.radius <=
+      this.paddle[1].y + this.paddle[1].height
     ) {
-      if (this.ball.newY <= this.paddle[1].y + this.paddle[1].height) {
-        this.ball.velocityY = Math.abs(this.ball.velocityY);
+      if (
+        this.ball.newX + this.ball.radius >=
+          this.paddle[1].x - this.ball.radius &&
+        this.ball.newX - this.ball.radius <=
+          this.paddle[1].x + this.paddle[1].width + this.ball.radius
+      ) {
+        if (this.ball.velocityX) {
+          const m = this.ball.velocityY / this.ball.velocityX;
+          const b = this.ball.newY - m * this.ball.newX;
+          this.ball.newY =
+            this.paddle[1].y + this.paddle[1].height + this.ball.radius;
+          this.ball.newX = (this.ball.newY - b) / m;
+        } else
+          this.ball.newY =
+            this.paddle[1].y + this.paddle[1].height + this.ball.radius;
+        this.isCollision(this.paddle[1]);
       }
     }
   }
 
+  resetBall() {
+    this.ball.newY = this.board.height / 2;
+    // this.ball.newX = this.board.width / 2;
+    this.ball.velocityY = -this.ball.speed * Math.cos(this.angleRad);
+    this.ball.velocityX = this.ball.speed * Math.sin(this.angleRad);
+  }
+
   checkNewScore(): boolean {
-    if (this.ball.newY <= this.board.offset) {
-      this.ball.newY = this.board.height / 2 - this.ball.radius;
+    if (this.ball.newY - this.ball.radius <= this.board.offset) {
       this.players[0].score++;
+     this.resetBall();
       return true;
-    } else if (
-      this.ball.newY + this.ball.diameter >=
+    }
+    if (
+      this.ball.newY + this.ball.radius >=
       this.board.height - this.board.offset
     ) {
-      this.ball.newY = this.board.height / 2 - this.ball.radius;
       this.players[1].score++;
+      this.resetBall();
       return true;
     }
     return false;

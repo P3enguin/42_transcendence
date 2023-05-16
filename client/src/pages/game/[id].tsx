@@ -13,21 +13,17 @@ let socket: Socket;
 const PlayGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
   const [Position, setPosition] = useState('');
-  const [player1, setPlayer1] = useState('');
-  const [player2, setPlayer2] = useState('');
-  const [player1Score, setPlayer1Score] = useState<number>(0);
-  const [player2Score, setPlayer2Score] = useState<number>(0);
+  const [player1, setPlayer1] = useState({
+    nickname: '',
+    avatar: '',
+    score: 0,
+  });
+  const [player2, setPlayer2] = useState({
+    nickname: '',
+    avatar: '',
+    score: 0,
+  });
   const [gameOn, setGameOn] = useState<boolean>(false);
-
-  const getResult = (): string => {
-    if (player1Score > player2Score) {
-      if (Position === 'Bottom') return 'You win!';
-      else return `${player1} wins!`;
-    } else {
-      if (Position === 'Top') return 'You win!';
-      else return `${player2} wins!`;
-    }
-  };
 
   useEffect(() => {
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
@@ -48,23 +44,46 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
 
           setPosition(position);
           setGameOn(true);
-          setPlayer1(info.p1);
-          setPlayer1Score(info.pScore1);
-          setPlayer2(info.p2);
-          setPlayer2Score(info.pScore2);
+          setPlayer1({
+            nickname: info.p1,
+            avatar: info.p1Avatar,
+            score: info.pScore1,
+          });
+          setPlayer2({
+            nickname: info.p2,
+            avatar: info.p2Avatar,
+            score: info.pScore2,
+          });
           socket.on(
             'updateScore',
             (data: { [key: string]: number | string }) => {
-              setPlayer1Score(data[info.p1] as number);
-              setPlayer2Score(data[info.p2] as number);
+              setPlayer1((prev) => ({
+                ...prev,
+                score: data[info.p1] as number,
+              }));
+              setPlayer2((prev) => ({
+                ...prev,
+                score: data[info.p2] as number,
+              }));
+              
             },
-          );
-          socket.on('gameOver', (data: any) => {
-            console.log('gameOver: ', data, info.p1, info.p2);
-            setPlayer1Score(data[info.p1]);
-            setPlayer2Score(data[info.p2]);
+            );
+            socket.on('gameOver', (data: any) => {
+              console.log('gameOver: ', data, info.p1, info.p2);
+              setPlayer1((prev) => ({
+                ...prev,
+                score: data[info.p1] as number,
+              }));
+              setPlayer2((prev) => ({
+                ...prev,
+                score: data[info.p2] as number,
+              }));
             setGameOn(false);
           });
+        });
+        socket.on('disconnect', () => {
+          setGameOn(false);
+          socket.disconnect();
         });
       });
     }
@@ -83,18 +102,16 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         className="flex h-full w-full flex-col items-center justify-around"
         ref={gameRef}
       >
-        {gameOn && (
+        {Position && (
           <ScoreBoard
+            gameOn={gameOn}
             player1={player1}
-            player1Score={player1Score}
             player2={player2}
-            player2Score={player2Score}
           />
         )}
         {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
         )}
-        {!gameOn && Position && <div>Game Over {getResult()}</div>}
       </div>
     </>
   );
