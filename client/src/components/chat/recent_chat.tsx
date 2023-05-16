@@ -11,9 +11,10 @@ function RecentChat({ avatar, player, friendId }: any) {
   const [RecentChat, setRecentChat] = useState([]);
 
   async function getRecent() {
-
+    console.log('Recent Conversation');
     await axios
-    .get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/allChat', {
+    .get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/allChat?page={1}', 
+    {
       withCredentials: true,
     })
     .then((response) => {

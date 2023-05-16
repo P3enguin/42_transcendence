@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 function RecentConversation(room: any) {
+    console.log('Recent Conversation');
     return (
         <div>
             <div className="w-[72%] flex flex-row space-x-2">

@@ -26,10 +26,11 @@ export class ChatController {
   async GetChat(
     @GetPlayer() player: Player,
     @Res() res: Response,
+    @Query('page') page: number,
     ) {
     try {
       console.log("Get All Chat");
-      const allChat = await this.chatService.getAllChat(player);     
+      const allChat = await this.chatService.getAllChat(player, page);     
       res.status(allChat.status).json(allChat);
     }catch (err) {
       console.log(err.message);
