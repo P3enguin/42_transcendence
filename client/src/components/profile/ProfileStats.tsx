@@ -111,7 +111,7 @@ function ProfileStats({
         ) : selected == 2 ? (
           <MatchHistoryStat nickname={nickname} />
         ) : selected == 3 ? (
-          <RankingStat />
+          <RankingStat nickname={nickname} />
         ) : (
           <div></div>
         )}

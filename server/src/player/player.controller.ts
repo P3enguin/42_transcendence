@@ -231,6 +231,11 @@ export class PlayerController {
 
   @Get('ranked')
   getRankedGames(@Res() res: Response, @Query() query: querySearchParam) {
-    return this.playerService.getGamesPlayed(res, query.search);
+    return this.playerService.getRankedGames(res, query.search);
+  }
+
+  @Get('rankStat')
+  getRankStats(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getRankStats(res, query.search);
   }
 }

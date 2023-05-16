@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { MatchData, OverViewData } from './StateComps';
-import Player from '../Player';
+import { calculateTimeElapsed } from '@/components/tools/functions';
 import { useEffect, useState } from 'react';
 
 function MatchHistoryStat({ nickname }: { nickname: string }) {
   const [games, setGames] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(1);
 
   useEffect(() => {
@@ -50,27 +50,6 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
   if (currentStreak.length > 0) {
     winStreak.push(currentStreak);
   }
-  console.log(winStreak);
-  const calculateTimeElapsed = (date: string): string => {
-    const gamePlayedAt = new Date(date);
-    const currentTime = new Date();
-    const timeDiff = Math.abs(currentTime.getTime() - gamePlayedAt.getTime());
-
-    const seconds = Math.floor(timeDiff / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (seconds < 60) {
-      return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
-    } else if (minutes < 60) {
-      return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
-    } else if (hours < 24) {
-      return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-    } else {
-      return `${days} day${days !== 1 ? 's' : ''} ago`;
-    }
-  };
 
   if (isLoading) return <div>Loading data...</div>;
   else {
@@ -161,9 +140,10 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
           {selected == 3 &&
             winStreak.map((arr: any, i: number) => {
               return (
-                <>
+                <div key={i} className="w-full flex flex-col gap-5 items-center ">
                   {arr.map((game: any, j: number) => (
                     <MatchData
+                      key={i + j + 100}
                       player1={game.winnerId.nickname}
                       player2={game.loserId.nickname}
                       status={true}
@@ -176,7 +156,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
                   {i !== winStreak.length - 1 && (
                     <div>-----------------------------------</div>
                   )}
-                </>
+                </div>
               );
             })}
           {selected == 4 &&

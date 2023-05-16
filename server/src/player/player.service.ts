@@ -649,7 +649,7 @@ export class PlayerService {
           wins: {
             select: {
               playerAt: true,
-              score:true,
+              score: true,
               winnerId: {
                 select: {
                   id: true,
@@ -669,7 +669,7 @@ export class PlayerService {
           loss: {
             select: {
               playerAt: true,
-              score:true,  
+              score: true,
               winnerId: {
                 select: {
                   id: true,
@@ -731,10 +731,42 @@ export class PlayerService {
             where: {
               type: 'RANKED',
             },
+            include: {
+              winnerId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+              loserId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+            },
           },
           loss: {
             where: {
               type: 'RANKED',
+            },
+            include: {
+              winnerId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+              loserId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
             },
           },
         },
@@ -748,8 +780,8 @@ export class PlayerService {
       const allGames = [...player.wins, ...player.loss];
 
       const gamesPlayed = allGames.map((game) => {
-        const isPlayerWinner = game.winner === player.id;
-        const isPlayerLoser = game.loser === player.id;
+        const isPlayerWinner = game.winnerId.id === player.id;
+        const isPlayerLoser = game.loserId.id === player.id;
 
         return {
           ...game,
@@ -762,6 +794,35 @@ export class PlayerService {
       const sortedGamesPlayed = gamesPlayed.sort(
         (a, b) => b.playerAt.getTime() - a.playerAt.getTime(),
       );
+      return res.status(200).json(sortedGamesPlayed);
+    } catch (error) {
+      // Handle the error appropriately
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async getRankStats(res: Response, nickname: string) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname,
+        },
+        include: {
+          status: {
+            select: {
+              rank: true,
+            },
+          },
+        },
+      });
+      console.log(player.status.rank);
+      if (!player) {
+        // Handle the case when the player is not found
+        return res.status(404).json({ message: 'Player not found' });
+      }
+      return res.status(200).json(player.status.rank);
+      // return res.status(200).json(sortedGamesPlayed);
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
