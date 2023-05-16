@@ -33,6 +33,13 @@ export class PlayerService {
               id: true,
             },
           },
+          wins: true,
+          loss: true,
+          status: {
+            select: {
+              rank: true,
+            },
+          },
         },
       });
       if (!player) throw new Error('Nickname not found');
@@ -43,18 +50,24 @@ export class PlayerService {
       const request = await this.prisma.request.findFirst({
         where: {
           fromPlayerId: senderId,
-          toPlayerId:player.id,
-          NOT :{
-            status:"rejected",
-          }
+          toPlayerId: player.id,
+          NOT: {
+            status: 'rejected',
+          },
         },
         select: {
           status: true,
           id: true,
         },
       });
-      console.log(request)
-      return res.status(200).json({ player, request, isFriend });
+      const rankId = player.status.rank.rankId;
+      const winRatio = (
+        (player.wins.length / (player.wins.length + player.loss.length)) *
+        100
+      ).toFixed(2);
+      return res
+        .status(200)
+        .json({ player, request, isFriend, rankId, winRatio });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -107,12 +120,16 @@ export class PlayerService {
           },
         },
       });
+
+      // Put all strings in an array
       const allRequests = [...requestsFrom, ...requestsTo];
 
+      // sort requests by date
       const sortedRequests = allRequests.sort(
         (a, b) => b.receivedAt.getTime() - a.receivedAt.getTime(),
       );
 
+      // adding types (from or to) .
       const requestsWithType = sortedRequests.map((request) => {
         if (request.fromPlayerId === playerId) {
           return {
@@ -149,9 +166,9 @@ export class PlayerService {
         where: {
           toPlayerId: receiverId.id,
           fromPlayerId: player.id,
-          NOT : {
-            status : "rejected",
-          }
+          NOT: {
+            status: 'rejected',
+          },
         },
       });
       if (existingRequest) throw new Error('Request already sent');
@@ -273,7 +290,6 @@ export class PlayerService {
     res: Response,
   ) {
     try {
-      
       // change request status to accpeted
       await this.prisma.request.update({
         where: {
@@ -344,7 +360,7 @@ export class PlayerService {
             select: {
               nickname: true,
               avatar: true,
-            }
+            },
           },
         },
       });
@@ -430,9 +446,22 @@ export class PlayerService {
           wallpaper: true,
           joinAt: true,
           Is2FAEnabled: true,
+          wins: true,
+          loss: true,
+          status: {
+            select: {
+              rank: true,
+            },
+          },
         },
       });
-      return res.status(200).json({ player });
+
+      const rankId = player.status.rank.rankId;
+      const winRatio = (
+        (player.wins.length / (player.wins.length + player.loss.length)) *
+        100
+      ).toFixed(2);
+      return res.status(200).json({ player,rankId,winRatio });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -633,6 +662,196 @@ export class PlayerService {
       return res.status(200).json({ players: data });
     } catch (error) {
       return res.status(400).json({ error: 'An Error has occurred' });
+    }
+  }
+
+  async getGamesPlayed(res: Response, nickname: string) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname,
+        },
+        include: {
+          wins: {
+            select: {
+              playerAt: true,
+              score: true,
+              winnerId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+              loserId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+          loss: {
+            select: {
+              playerAt: true,
+              score: true,
+              winnerId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+              loserId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!player) {
+        // Handle the case when the player is not found
+        return res.status(404).json({ message: 'Player not found' });
+      }
+
+      const allGames = [...player.wins, ...player.loss];
+
+      const gamesPlayed = allGames.map((game) => {
+        const isPlayerWinner = game.winnerId.id === player.id;
+        const isPlayerLoser = game.loserId.id === player.id;
+
+        return {
+          ...game,
+          isPlayerWinner,
+          isPlayerLoser,
+        };
+      });
+
+      // Sort gamesPlayed by date
+      const sortedGamesPlayed = gamesPlayed.sort(
+        (a, b) => b.playerAt.getTime() - a.playerAt.getTime(),
+      );
+
+      return res.status(200).json(sortedGamesPlayed);
+    } catch (error) {
+      // Handle the error appropriately
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async getRankedGames(res: Response, nickname: string) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname,
+        },
+        include: {
+          wins: {
+            where: {
+              type: 'RANKED',
+            },
+            include: {
+              winnerId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+              loserId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+          loss: {
+            where: {
+              type: 'RANKED',
+            },
+            include: {
+              winnerId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+              loserId: {
+                select: {
+                  id: true,
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!player) {
+        // Handle the case when the player is not found
+        return res.status(404).json({ message: 'Player not found' });
+      }
+
+      const allGames = [...player.wins, ...player.loss];
+
+      const gamesPlayed = allGames.map((game) => {
+        const isPlayerWinner = game.winnerId.id === player.id;
+        const isPlayerLoser = game.loserId.id === player.id;
+
+        return {
+          ...game,
+          isPlayerWinner,
+          isPlayerLoser,
+        };
+      });
+
+      // Sort gamesPlayed by date
+      const sortedGamesPlayed = gamesPlayed.sort(
+        (a, b) => b.playerAt.getTime() - a.playerAt.getTime(),
+      );
+      return res.status(200).json(sortedGamesPlayed);
+    } catch (error) {
+      // Handle the error appropriately
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async getRankStats(res: Response, nickname: string) {
+    try {
+      const player = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname,
+        },
+        include: {
+          status: {
+            select: {
+              rank: true,
+            },
+          },
+        },
+      });
+      if (!player) {
+        // Handle the case when the player is not found
+        return res.status(404).json({ message: 'Player not found' });
+      }
+      return res.status(200).json(player.status.rank);
+      // return res.status(200).json(sortedGamesPlayed);
+    } catch (error) {
+      // Handle the error appropriately
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
   }
 }
