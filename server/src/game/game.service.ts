@@ -16,6 +16,7 @@ export class GameService {
     const game = this.createGame(gametype);
     game.players.push(player1);
     game.players.push(player2);
+    console.log(game.players);
     return game.id;
   }
 

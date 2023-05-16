@@ -17,10 +17,10 @@ export class Player {
 }
 
 export enum GameType {
-  'RANKED',
   'NORMAL',
+  'RANKED',
   'TIME_ATTACK',
-  'SURVIVAL_MODE',
+  'SURVIVAL',
 }
 export class Board {
   width: number;
@@ -67,14 +67,14 @@ export class Ball {
   speed: number;
   velocityX: number;
   velocityY: number;
-  constructor() {
+  constructor(speed: number) {
     this.width = 700 / 8 / 5;
     this.height = this.width;
     this.diameter = this.width;
     this.radius = this.diameter / 2;
     this.x = 700 / 2 - this.radius;
     this.y = (700 * 1.4) / 2 - this.radius;
-    this.speed = 13;
+    this.speed = speed;
     this.velocityX = this.speed * Math.cos(Math.PI / 4);
     this.velocityY = this.speed * Math.sin(Math.PI / 4);
   }
@@ -89,7 +89,6 @@ export class Ball {
     this.y = this.newY;
   }
 }
-
 export class Game {
   id: string;
   players: [Player?, Player?]; // 0: bottom, 1: top
@@ -118,8 +117,27 @@ export class Game {
     this.updatedAt = new Date();
     this.board = new Board();
     this.paddle = [new Paddle('bottom'), new Paddle('top')];
-    this.ball = new Ball();
+    if (this.isSurvival()) this.ball = new Ball(10);
+    else this.ball = new Ball(13);
+    this.gameOn = false;
     this.inteval = null;
+    console.log(this.type.toString() === GameType[3]);
+  }
+
+  isNormal(): boolean {
+    return this.type.toString() === GameType[0];
+  }
+
+  isRanked(): boolean {
+    return this.type.toString() === GameType[1];
+  }
+
+  isTimeAttack(): boolean {
+    return this.type.toString() === GameType[2];
+  }
+
+  isSurvival(): boolean {
+    return this.type.toString() === GameType[3];
   }
 
   isFull(): boolean {
@@ -194,6 +212,8 @@ export class Game {
     collidePoint = collidePoint / (paddle.width / 2);
     const angle = collidePoint * this.angleRad;
     let direction = this.ball.newY < this.board.height / 2 ? 1 : -1;
+    if (this.isSurvival()) this.ball.speed += 0.1;
+    console.log('speed', this.ball.speed);
     this.ball.velocityX = this.ball.speed * Math.sin(angle);
     this.ball.velocityY = direction * this.ball.speed * Math.cos(angle);
   }
@@ -239,6 +259,7 @@ export class Game {
   }
 
   resetBall() {
+    if (this.isSurvival()) this.ball.speed = 10;
     this.ball.newY = this.board.height / 2;
     // this.ball.newX = this.board.width / 2;
     this.ball.velocityY = -this.ball.speed * Math.cos(this.angleRad);
@@ -248,7 +269,7 @@ export class Game {
   checkNewScore(): boolean {
     if (this.ball.newY - this.ball.radius <= this.board.offset) {
       this.players[0].score++;
-     this.resetBall();
+      this.resetBall();
       return true;
     }
     if (
@@ -290,6 +311,7 @@ export class Game {
 
   start(): void {
     this.gameOn = true;
+    this.createdAt = new Date();
   }
 
   End(): void {
@@ -306,14 +328,21 @@ export class Game {
   }
 
   checkWin(): boolean {
-    return this.players.some((p) => p.score === 5);
+    if (this.isNormal()|| this.isRanked())
+      return this.players.some((p) => p.score === 5);
+    else if (this.isSurvival())
+      return this.players.some((p) => p.score === 1);
+    else if (this.isTimeAttack()) {
+      const time = new Date().getTime() - this.createdAt.getTime();
+      return time > 60000; // 1 min
+    }
   }
 
-  getWinner(): Player | null {
-    if (this.players[0].score === 5) return this.players[0];
-    if (this.players[1].score === 5) return this.players[1];
-    return null;
+  getWinner(): Player {
+    //return the palayer with higher score
+    return this.players.reduce((p1, p2) => (p1.score > p2.score ? p1 : p2));
   }
+
   getLooser(): Player | null {
     if (this.players[0].score === 5) return this.players[1];
     if (this.players[1].score === 5) return this.players[0];

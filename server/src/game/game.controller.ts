@@ -40,16 +40,17 @@ export class GameController {
     return res.status(200).json(id);
   }
 
-  @Get('gameInvite')
+  @Get('invite')
   gameInvite(
     @GetPlayer() player: PlayerDB,
     @Res() res: Response,
-    @Query() invetee: any,
+    @Query() invite: any,
   ) {
+    console.log(invite);
     const gameId = this.gameService.inviteGame(
       new Player(player.id, player.nickname, player.avatar),
-      new Player(invetee.id, invetee.nickname, invetee.avatar),
-      invetee.gametype,
+      new Player(Number(invite.user.id), invite.user.nickname, invite.user.avatar),
+      invite.gameType,
     );
     return res.status(200).json(gameId);
   }

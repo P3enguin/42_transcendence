@@ -163,7 +163,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
       // check if the game reached 5 score
       if (game.checkWin()) {
-        this.server.to(game.id).to('LiveGames').emit('gameOver', game.getScore());
+        this.server
+          .to(game.id)
+          .to('LiveGames')
+          .emit('gameOver', game.getScore());
         clearInterval(game.inteval);
         this.gameService.saveGame(game);
       }
