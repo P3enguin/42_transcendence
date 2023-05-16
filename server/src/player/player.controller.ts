@@ -221,4 +221,16 @@ export class PlayerController {
   getDataSearch(@Res() res: Response, @Query() query: querySearchParam) {
     return this.playerService.getDataSearch(res, query.search);
   }
+
+  //----------------------------------{Games}------------------------------
+
+  @Get('games')
+  getGamesPlayer(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getGamesPlayed(res, query.search);
+  }
+
+  @Get('ranked')
+  getRankedGames(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getGamesPlayed(res, query.search);
+  }
 }

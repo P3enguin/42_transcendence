@@ -109,7 +109,7 @@ function ProfileStats({
         ) : selected == 1 ? (
           <AchievementStats />
         ) : selected == 2 ? (
-          <MatchHistoryStat />
+          <MatchHistoryStat nickname={nickname} />
         ) : selected == 3 ? (
           <RankingStat />
         ) : (
