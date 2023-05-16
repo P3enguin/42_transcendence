@@ -17,7 +17,7 @@ function Game({ data }: { data: [] }) {
 
       <div className="m-5 flex h-[70%]  min-h-[600px] flex-col rounded-2xl border border-neutral-300 sm:m-20 lg:min-w-[60%]">
         <OnlineFriends data={data} />
-        <div className="m-4 min-h-[1px] w-1/2 self-center bg-neutral-300"></div>
+        <div className="sm:m-4 min-h-[1px] w-1/2 self-center bg-neutral-300"></div>
         <div className="flex h-full w-full flex-col  md:h-1/3 md:flex-row">
           <StartGame />
           <div className=" min-h-[1px] w-1/2 min-w-[1px] self-center bg-neutral-300 md:h-2/3 md:w-[1px]"></div>
