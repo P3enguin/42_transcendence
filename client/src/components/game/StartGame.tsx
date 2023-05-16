@@ -2,11 +2,11 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-export const RadioInput = ({ id, label, onChange }: any) => {
+export const RadioInput = ({ id, label, onChange, className }: any) => {
   return (
-    <div className="mr-6 inline-flex items-center self-center whitespace-nowrap">
+    <div className={"mr-6 sm:inline-flex items-center self-center whitespace-nowrap "+className}>
       <input type="radio" id={id} name="type" onChange={onChange} />
-      <label htmlFor={id} className="m-1 whitespace-nowrap">
+      <label htmlFor={id} className="m-1 whitespace-nowrap cursor-pointer">
         {label}
       </label>
     </div>
@@ -24,7 +24,7 @@ const StartGame = () => {
       {
         withCredentials: true,
         params: {
-          gametype: gametype,
+          gametype,
         },
       },
     );

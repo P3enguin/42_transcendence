@@ -72,7 +72,7 @@ const PongAi = ({
 
   const PlayAudio = (audio: React.RefObject<HTMLAudioElement>) => {
     if (audio.current && !isSimulation) {
-      // audio.current.play().catch(() => {});
+      audio.current.play().catch(() => {});
     }
   };
 
@@ -106,7 +106,7 @@ const PongAi = ({
         newBallX < BOARD_WIDTH - PADDLE_WIDTH / 2
       ) {
         setPaddle1Position((prev) => ({
-          x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+          x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.3,
           y: prev.y,
         }));
       }
@@ -119,7 +119,7 @@ const PongAi = ({
           newBallX < BOARD_WIDTH - PADDLE_WIDTH / 2
         ) {
           setPaddle0Position((prev) => ({
-            x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+            x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.3,
             y: prev.y,
           }));
         }
@@ -134,23 +134,26 @@ const PongAi = ({
       const b = newBallY - m * newBallX;
       newBallX = BOARD_OFFSET + BALL_RADIUS;
       newBallY = m * newBallX + b;
-
+      PlayAudio(WallRef);
+      
       setBallVelocity((prev) => ({ x: Math.abs(prev.x), y: prev.y }));
     } else if (newBallX + BALL_RADIUS >= BOARD_WIDTH - BOARD_OFFSET) {
       const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
       const b = newBallY - m * newBallX;
       newBallX = BOARD_WIDTH - BOARD_OFFSET - BALL_RADIUS;
       newBallY = m * newBallX + b;
+      PlayAudio(WallRef);
       setBallVelocity((prev) => ({ x: -Math.abs(prev.x), y: prev.y }));
     }
   };
 
   const isCollision = (paddlePos: { x: number; y: number }) => {
+    PlayAudio(HitRef);
     let collidePoint = newBallX - (paddlePos.x + PADDLE_WIDTH / 2);
     collidePoint = collidePoint / (PADDLE_WIDTH / 2);
     const angle = collidePoint * angleRad;
     let direction = newBallY < BOARD_HEIGHT / 2 ? 1 : -1;
-    setBallSpeed((prev) => prev + 0.1);
+    setBallSpeed((prev) => prev + 0.2);
     setBallVelocity({
       x: ballSpeed * Math.sin(angle),
       y: direction * ballSpeed * Math.cos(angle),
@@ -197,10 +200,12 @@ const PongAi = ({
     if (newBallY - BALL_RADIUS <= BOARD_OFFSET) {
       P0Score++;
       newScore('Player', P0Score);
+      PlayAudio(UserScoreRef)
       resetBall();
     }
     if (newBallY + BALL_RADIUS >= BOARD_HEIGHT - BOARD_OFFSET) {
       P1Score++;
+      PlayAudio(ComScoreRef)
       newScore('AI', P1Score);
       resetBall();
     }

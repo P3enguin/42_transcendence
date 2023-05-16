@@ -79,10 +79,10 @@ const ScoreBoard = (props: ScoreBoardProps) => {
             <div className="flex flex-col items-center">
               <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player1.avatar}`}
-                alt=""
+                alt={`Avatar of ${props.player1.nickname}`}
                 width={50}
                 height={50}
-                className="w-12 rounded-full"
+                className="w-[50px] rounded-full"
               />
               <p>{props.player1.nickname}</p>
               <p>{props.player1.score}</p>
@@ -90,10 +90,10 @@ const ScoreBoard = (props: ScoreBoardProps) => {
             <div className="flex flex-col items-center">
               <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player2.avatar}`}
-                alt=""
+                alt={`Avatar of ${props.player2.nickname}`}
                 width={50}
                 height={50}
-                className="w-12 rounded-full"
+                className="w-[50px] rounded-full"
               />
               <p>{props.player2.nickname}</p>
               <p>{props.player2.score}</p>
@@ -105,13 +105,13 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         <div className="flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
           <div>
             <Image
-              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${
-                getWinner().avatar
-              }`}
-              alt=""
-              width={50}
-              height={50}
-              className="m-auto mb-3 w-32 rounded-full"
+              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${getWinner().avatar
+                }`}
+              alt={`Avatar of ${getWinner().nickname}`}
+              width={200}
+              height={200}
+              className="m-auto mb-3 rounded-full"
+              quality={100}
             />
 
             <p className="">
