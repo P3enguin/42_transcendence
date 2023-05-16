@@ -74,7 +74,7 @@ export class Ball {
     this.radius = this.diameter / 2;
     this.x = 700 / 2 - this.radius;
     this.y = (700 * 1.4) / 2 - this.radius;
-    this.speed = 7;
+    this.speed = 13;
     this.velocityX = this.speed * Math.cos(Math.PI / 4);
     this.velocityY = this.speed * Math.sin(Math.PI / 4);
   }

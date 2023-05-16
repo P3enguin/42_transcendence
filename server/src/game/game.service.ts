@@ -9,13 +9,14 @@ export class GameService {
   players = new Map<string, Player>();
 
   constructor(private prisma: PrismaService) {
-    // const game = new Game(GameType.RANKED);
-    // game.players[0] = new Player(1, '4reha', 'default.png', 'Zzz');
-    // game.players[0].score = 5;
-    // game.players[1] = new Player(2, 'ar.eha', 'default.png', 'Zzz');
-    // game.players[1].score = 0;
-    // this.games.set(game.id, game);
-    // this.saveGame(game);
+
+  }
+
+  inviteGame(player1: Player, player2: Player, gametype: GameType) {
+    const game = this.createGame(gametype);
+    game.players.push(player1);
+    game.players.push(player2);
+    return game.id;
   }
 
   joinGame(player: Player, gametype: GameType) {

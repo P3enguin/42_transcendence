@@ -8,6 +8,7 @@ import {
   Res,
   Query,
   Param,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { GameService } from './game.service';
@@ -19,7 +20,12 @@ import { GameType, Player } from './interfaces';
 @UseGuards(JwtGuard)
 @Controller('game')
 export class GameController {
-  constructor(private gameService: GameService) {}
+  constructor(
+    private gameService: GameService,
+    private readonly logger: Logger,
+  ) {
+    this.logger = new Logger(GameController.name, { timestamp: true });
+  }
 
   @Get('join')
   joinGame(
@@ -32,6 +38,20 @@ export class GameController {
       gametype,
     );
     return res.status(200).json(id);
+  }
+
+  @Get('gameInvite')
+  gameInvite(
+    @GetPlayer() player: PlayerDB,
+    @Res() res: Response,
+    @Query() invetee: any,
+  ) {
+    const gameId = this.gameService.inviteGame(
+      new Player(player.id, player.nickname, player.avatar),
+      new Player(invetee.id, invetee.nickname, invetee.avatar),
+      invetee.gametype,
+    );
+    return res.status(200).json(gameId);
   }
 
   @Get(':id')
