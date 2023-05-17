@@ -32,10 +32,12 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
       const mousePosition = e.clientX - rec.left;
-      let x = Math.round((700 * mousePosition) / boardRef.current.offsetWidth);
+      let x = Math.round(
+        (BOARD_WIDHT * mousePosition) / boardRef.current.offsetWidth,
+      );
       x = position === 'Top' ? x + PADDLE_WIDTH / 2 : x - PADDLE_WIDTH / 2;
-      if (position === 'Top') x = (x - 700) * -1;
-      if (x < 0 || x > 700 - PADDLE_WIDTH) return;
+      if (position === 'Top') x = (x - BOARD_WIDHT) * -1;
+      if (x < 0 || x > BOARD_WIDHT - PADDLE_WIDTH) return;
       if (x === prevX) return;
       prevX = x;
       socket.emit('move', { x, position });
@@ -46,9 +48,12 @@ const Pong = ({ gameRef, socket, position }: PongProps) => {
     if (boardRef.current && position !== 'spectator') {
       const rec = boardRef.current.getBoundingClientRect();
       const touchPosition = e.touches[0].clientX - rec.left;
-      let x = Math.round((700 * touchPosition) / boardRef.current.offsetWidth);
-      if (x < 0 || x > 700) return;
-      if (position === 'Top') x = Math.abs(x - 700);
+      let x = Math.round(
+        (BOARD_WIDHT * touchPosition) / boardRef.current.offsetWidth,
+      );
+      x = position === 'Top' ? x + PADDLE_WIDTH / 2 : x - PADDLE_WIDTH / 2;
+      if (position === 'Top') x = (x - BOARD_WIDHT) * -1;
+      if (x < 0 || x > BOARD_WIDHT - PADDLE_WIDTH) return;
       if (x === prevX) return;
       prevX = x;
       socket.emit('move', { x, position });

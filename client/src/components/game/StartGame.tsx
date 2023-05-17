@@ -69,7 +69,7 @@ const StartGame = () => {
         />
       </div>
       <button
-        className="m-auto mb-2 w-[200px] rounded-xl bg-[#0097E2] p-1 sm:mt-5"
+        className="m-auto mt-1 w-[200px] rounded-xl bg-[#0097E2] p-1"
         onClick={(e) => {
           e.preventDefault();
           joinMatchmaking(gametype);

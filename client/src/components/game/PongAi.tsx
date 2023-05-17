@@ -56,7 +56,7 @@ const PongAi = ({
     x: BOARD_WIDTH / 2,
     y: BOARD_HEIGHT / 2,
   });
-  const [ballSpeed, setBallSpeed] = useState(10);
+  let [ballSpeed, setBallSpeed] = useState(10);
   const [ballVelocity, setBallVelocity] = useState({
     x: ballSpeed * Math.sin(angleRad),
     y: ballSpeed * Math.cos(angleRad),
@@ -101,28 +101,44 @@ const PongAi = ({
 
   function chaseBall() {
     if (ballVelocity.y < 0) {
-      if (
-        newBallX > PADDLE_WIDTH / 2 &&
-        newBallX < BOARD_WIDTH - PADDLE_WIDTH / 2
+      if (Paddle1Position.x < BOARD_OFFSET) {
+        setPaddle1Position((prev) => ({ x: BOARD_OFFSET, y: prev.y }));
+        return;
+      } else if (
+        Paddle1Position.x >
+        BOARD_WIDTH - PADDLE_WIDTH - BOARD_OFFSET
       ) {
         setPaddle1Position((prev) => ({
-          x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.3,
+          x: BOARD_WIDTH - PADDLE_WIDTH - BOARD_OFFSET,
           y: prev.y,
         }));
+        return;
       }
+      setPaddle1Position((prev) => ({
+        x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+        y: prev.y,
+      }));
     }
     // FOR SECOND PADDLE 'BOTTOM'
     else if (ballVelocity.y > 0) {
       if (isSimulation) {
-        if (
-          newBallX > PADDLE_WIDTH / 2 &&
-          newBallX < BOARD_WIDTH - PADDLE_WIDTH / 2
-        ) {
-          setPaddle0Position((prev) => ({
-            x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.3,
-            y: prev.y,
-          }));
-        }
+         if (Paddle0Position.x < BOARD_OFFSET) {
+           setPaddle0Position((prev) => ({ x: BOARD_OFFSET, y: prev.y }));
+           return;
+         } else if (
+           Paddle0Position.x >
+           BOARD_WIDTH - PADDLE_WIDTH - BOARD_OFFSET
+         ) {
+           setPaddle0Position((prev) => ({
+             x: BOARD_WIDTH - PADDLE_WIDTH - BOARD_OFFSET,
+             y: prev.y,
+           }));
+           return;
+         }
+        setPaddle0Position((prev) => ({
+          x: prev.x + (newBallX - (prev.x + PADDLE_WIDTH / 2)) * 0.2,
+          y: prev.y,
+        }));
       }
     }
   }
@@ -135,7 +151,7 @@ const PongAi = ({
       newBallX = BOARD_OFFSET + BALL_RADIUS;
       newBallY = m * newBallX + b;
       PlayAudio(WallRef);
-      
+
       setBallVelocity((prev) => ({ x: Math.abs(prev.x), y: prev.y }));
     } else if (newBallX + BALL_RADIUS >= BOARD_WIDTH - BOARD_OFFSET) {
       const m = (newBallY - ballPosition.y) / (newBallX - ballPosition.x);
@@ -153,7 +169,7 @@ const PongAi = ({
     collidePoint = collidePoint / (PADDLE_WIDTH / 2);
     const angle = collidePoint * angleRad;
     let direction = newBallY < BOARD_HEIGHT / 2 ? 1 : -1;
-    setBallSpeed((prev) => prev + 0.2);
+    setBallSpeed((prev) => prev + 0.3);
     setBallVelocity({
       x: ballSpeed * Math.sin(angle),
       y: direction * ballSpeed * Math.cos(angle),
@@ -199,13 +215,15 @@ const PongAi = ({
   const checkNewScore = () => {
     if (newBallY - BALL_RADIUS <= BOARD_OFFSET) {
       P0Score++;
+      setBallSpeed(10);
       newScore('Player', P0Score);
-      PlayAudio(UserScoreRef)
+      PlayAudio(UserScoreRef);
       resetBall();
     }
     if (newBallY + BALL_RADIUS >= BOARD_HEIGHT - BOARD_OFFSET) {
       P1Score++;
-      PlayAudio(ComScoreRef)
+      setBallSpeed(10);
+      PlayAudio(ComScoreRef);
       newScore('AI', P1Score);
       resetBall();
     }
@@ -214,10 +232,12 @@ const PongAi = ({
   const resetBall = () => {
     // newBallX = BOARD_WIDTH / 2;
     newBallY = BOARD_HEIGHT / 2;
+    let direction = ballVelocity.y < 0 ? 1 : -1;
+    ballSpeed = 10;
     setBallSpeed(10);
     setBallVelocity({
       x: ballSpeed * Math.sin(angleRad),
-      y: -ballSpeed * Math.cos(angleRad),
+      y: direction * ballSpeed * Math.cos(angleRad),
     });
   };
 
@@ -246,7 +266,7 @@ const PongAi = ({
       clearInterval(GAME_INTERVAL);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ballPosition, ballVelocity, gamePaused]);
+  }, [ballPosition, ballVelocity, gamePaused, ballSpeed]);
 
   return (
     <>
