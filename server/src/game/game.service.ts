@@ -8,15 +8,12 @@ export class GameService {
   games = new Map<string, Game>();
   players = new Map<string, Player>();
 
-  constructor(private prisma: PrismaService) {
-
-  }
+  constructor(private prisma: PrismaService) {}
 
   inviteGame(player1: Player, player2: Player, gametype: GameType) {
     const game = this.createGame(gametype);
     game.players.push(player1);
     game.players.push(player2);
-    console.log(game.players);
     return game.id;
   }
 
@@ -48,23 +45,23 @@ export class GameService {
 
   getMyGame(id: string, nickname: string) {
     const game = this.games.get(id);
-    if (game && game.players.find((player) => player.nickname === nickname)) {
+    if (game && game.isPlayer(nickname)) {
       return game;
     }
     return null;
   }
 
-  removePlayerFromGame(id: string, nickname: string) {
-    const game = this.games.get(id);
-    if (game) {
-      clearInterval(game.inteval);
-      if (!game.players.length) {
-        this.games.delete(id);
-        return;
-      }
-    }
-    this.games.set(id, game);
-  }
+  // removePlayerFromGame(id: string, nickname: string) {
+  //   const game = this.games.get(id);
+  //   if (game) {
+  //     clearInterval(game.inteval);
+  //     if (!game.players.length) {
+  //       this.games.delete(id);
+  //       return;
+  //     }
+  //   }
+  //   this.games.set(id, game);
+  // }
 
   getActiveGame(id: string) {
     const game = this.games.get(id);
@@ -100,9 +97,7 @@ export class GameService {
   getLiveGames() {
     let activeGames = [];
     Array.from(this.games.values()).forEach((game) => {
-      if (game && game.players.length === 2) {
-        activeGames.push(this.getLiveGame(game));
-      }
+      if (game.isActive()) activeGames.push(this.getLiveGame(game));
     });
     return activeGames;
   }
@@ -126,25 +121,15 @@ export class GameService {
 
   deleteGame(id: string) {
     this.games.delete(id);
-    return 'This action deletes a game';
   }
 
-  getRequiedLevelXP(level: number): number {
-    let XP = 100;
-    for (let i = 1; i < level; i++) {
-      // 160% from the previous level
-      XP = Math.round(XP * 1.6);
-    }
-    return XP;
+  getRequiredLevelXP(level: number) {
+    return Math.floor(100 * Math.pow(1.6, level - 1));
   }
 
-  getLevelFromXP(XP: bigint): number {
-    let level = 1;
-    let requiredXP = 100;
-    while (XP > requiredXP) {
-      level++;
-      requiredXP = this.getRequiedLevelXP(level);
-    }
+  getLevelFromXP(XP: number) {
+    const requiredXP = 100;
+    const level = Math.floor(Math.log(XP / requiredXP) / Math.log(1.6)) + 1;
     return level;
   }
 
@@ -153,14 +138,14 @@ export class GameService {
     winnerscore: number,
     looserscore: number,
   ): bigint {
-    const requiredXP = this.getRequiedLevelXP(level);
+    const requiredXP = this.getRequiredLevelXP(level);
     const EarnedXP = Math.round(requiredXP * 0.7);
     const bonusXP = (winnerscore - looserscore) * Math.round(requiredXP * 0.02);
     return BigInt(Math.round((EarnedXP + bonusXP) / level));
   }
 
   calculateLooserXP(level: number, looserscore): bigint {
-    const requiredXP = this.getRequiedLevelXP(level);
+    const requiredXP = this.getRequiredLevelXP(level);
     const EarnedXP = Math.round(requiredXP * 0.3);
     const bonusXP = looserscore * Math.round(requiredXP * 0.01);
 
@@ -173,12 +158,12 @@ export class GameService {
       winnerScore,
       LooserScore,
     );
-    const winnerLevel = this.getLevelFromXP(winner.status.XP);
+    const winnerLevel = this.getLevelFromXP(Number(winner.status.XP));
     looser.status.XP += this.calculateLooserXP(
       looser.status.level,
       LooserScore,
     );
-    const looserLevel = this.getLevelFromXP(looser.status.XP);
+    const looserLevel = this.getLevelFromXP(Number(looser.status.XP));
 
     await this.prisma.status.update({
       where: {
@@ -200,20 +185,19 @@ export class GameService {
     });
   }
 
-  async rankUp(_winner, _looser) {
-    let winnerRank = _winner.status.rank.rank;
-    let looserRank = _looser.status.rank.rank;
-    let winner_RP = _winner.status.rank.current_points;
-    let looser_RP = _looser.status.rank.current_points;
+  async rankUp(__winner, __looser) {
+    let winnerRank = __winner.status.rank.rank;
+    let looserRank = __looser.status.rank.rank;
+    let winner_RP = __winner.status.rank.current_points;
+    let looser_RP = __looser.status.rank.current_points;
     winner_RP += 10 / (winnerRank.id ? winnerRank.id : 1);
     looser_RP -= looserRank.id;
     if (looser_RP < 0) looser_RP = 0;
     if (winner_RP > winnerRank.points) winnerRank.id++;
     if (looser_RP < looserRank.points) looserRank.id--;
-    Logger.log(winner_RP);
     await this.prisma.rank_status.update({
       where: {
-        statusId: _winner.status.id,
+        statusId: __winner.status.id,
       },
       data: {
         current_points: winner_RP,
@@ -222,7 +206,7 @@ export class GameService {
     });
     await this.prisma.rank_status.update({
       where: {
-        statusId: _looser.status.id,
+        statusId: __looser.status.id,
       },
       data: {
         current_points: looser_RP,
@@ -232,20 +216,20 @@ export class GameService {
   }
 
   async saveGame(game: Game) {
-    const _winner = game.getWinner();
-    const _looser = game.getLooser();
+    const __winner = game.getWinner();
+    const __looser = game.getLooser();
 
     await this.prisma.match.create({
       data: {
         type: game.type.toString(),
-        winner: _winner.id,
-        loser: _looser.id,
-        score: [_winner.score, _looser.score].toString(),
+        winner: __winner.id,
+        loser: __looser.id,
+        score: __winner.score + '-' + __looser.score,
       },
     });
     const winner = await this.prisma.player.findUnique({
       where: {
-        id: _winner.id,
+        id: __winner.id,
       },
       include: {
         status: {
@@ -261,7 +245,7 @@ export class GameService {
     });
     const looser = await this.prisma.player.findUnique({
       where: {
-        id: _looser.id,
+        id: __looser.id,
       },
       include: {
         status: {
@@ -276,7 +260,7 @@ export class GameService {
       },
     });
 
-    await this.levelUp(winner, _winner.score, looser, _looser.score);
+    await this.levelUp(winner, __winner.score, looser, __looser.score);
     if (game.type.toString() === 'RANKED') await this.rankUp(winner, looser);
     this.deleteGame(game.id);
   }

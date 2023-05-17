@@ -102,8 +102,10 @@ export class Game {
   spectator: Player[];
   createdAt: Date;
   updatedAt: Date;
-  inteval: NodeJS.Timeout;
+  interval: NodeJS.Timeout;
+  pausedInterval: NodeJS.Timeout;
   gameOn: boolean;
+  paused: boolean;
 
   constructor(gameType: GameType) {
     this.id = generateID();
@@ -118,10 +120,11 @@ export class Game {
     this.board = new Board();
     this.paddle = [new Paddle('bottom'), new Paddle('top')];
     if (this.isSurvival()) this.ball = new Ball(10);
-    else this.ball = new Ball(13);
+    else this.ball = new Ball(12);
     this.gameOn = false;
-    this.inteval = null;
-    console.log(this.type.toString() === GameType[3]);
+    this.interval = null;
+    this.pausedInterval = null;
+    this.paused = false;
   }
 
   isNormal(): boolean {
@@ -141,11 +144,7 @@ export class Game {
   }
 
   isFull(): boolean {
-    return (
-      this.players.length === 2 &&
-      this.players[0].socketId != null &&
-      this.players[1].socketId != null
-    );
+    return this.players.length === 2;
   }
 
   getPlayersInfo() {
@@ -162,14 +161,22 @@ export class Game {
   isActive(): boolean {
     return (
       this.players.length === 2 &&
-      this.players[0].socketId != '' &&
-      this.players[1].socketId != ''
+      this.players[0].socketId !== null &&
+      this.players[1].socketId !== null
     );
   }
 
   connectPlayer(nickname: string, socketId: string): void {
     const player = this.isPlayer(nickname);
     if (player) player.socketId = socketId;
+    clearInterval(this.pausedInterval)
+    this.paused = false;
+  }
+  
+  disconnectPlayer(nickname: string): void {
+    this.paused = true;
+    const player = this.isPlayer(nickname);
+    if (player) player.socketId = null;
   }
 
   isPlayer(nickname: string): Player | undefined {
@@ -180,12 +187,8 @@ export class Game {
     this.spectator.push(spectator);
   }
 
-  movePaddle(position: string, x: number): void {
-    if (position === 'Bottom') {
-      this.paddle[0].updatePosition(x);
-    } else if (position === 'Top') {
-      this.paddle[1].updatePosition(x);
-    }
+  movePaddle(player: Player, x: number): void {
+    this.paddle[this.players.indexOf(player)].updatePosition(x);
   }
 
   checkWallCollision(): void {
@@ -213,7 +216,6 @@ export class Game {
     const angle = collidePoint * this.angleRad;
     let direction = this.ball.newY < this.board.height / 2 ? 1 : -1;
     if (this.isSurvival()) this.ball.speed += 0.1;
-    console.log('speed', this.ball.speed);
     this.ball.velocityX = this.ball.speed * Math.sin(angle);
     this.ball.velocityY = direction * this.ball.speed * Math.cos(angle);
   }
@@ -261,9 +263,10 @@ export class Game {
   resetBall() {
     if (this.isSurvival()) this.ball.speed = 10;
     this.ball.newY = this.board.height / 2;
-    // this.ball.newX = this.board.width / 2;
-    this.ball.velocityY = -this.ball.speed * Math.cos(this.angleRad);
+    let direction = this.ball.velocityY < 0 ? 1 : -1;
+    this.ball.velocityY = direction * this.ball.speed * Math.cos(this.angleRad);
     this.ball.velocityX = this.ball.speed * Math.sin(this.angleRad);
+    this.pauseGame(1);
   }
 
   checkNewScore(): boolean {
@@ -310,6 +313,9 @@ export class Game {
   }
 
   start(): void {
+    setTimeout(() => {
+      this.paused = false;
+    }, 1000);
     this.gameOn = true;
     this.createdAt = new Date();
   }
@@ -319,22 +325,33 @@ export class Game {
   }
 
   playerLeft(nickname: string): void {
-    const winner = this.players.find((p) => p.nickname !== nickname);
-    if (winner) {
-      winner.score = 5;
-      this.winner = winner;
-      this.looser = this.players.find((p) => p.nickname === nickname);
-    }
+    this.disconnectPlayer(nickname);
+    // clearInterval(this.interval);
+    this.pausedInterval = setTimeout(() => {
+      const winner = this.players.find((p) => p.nickname !== nickname);
+      if (winner) {
+        winner.score = 5;
+        this.winner = winner;
+        this.looser = this.players.find((p) => p.nickname === nickname);
+      }
+      this.paused = false;
+    }, 5000);
   }
 
   checkWin(): boolean {
-    if (this.isNormal()|| this.isRanked())
+    if (this.isNormal() || this.isRanked() || this.isSurvival())
       return this.players.some((p) => p.score === 5);
-    else if (this.isSurvival())
-      return this.players.some((p) => p.score === 1);
     else if (this.isTimeAttack()) {
       const time = new Date().getTime() - this.createdAt.getTime();
-      return time > 60000; // 1 min
+      // check if a player has score higher than the other
+
+      return (
+        time > 60000 &&
+        this.players.some(
+          (player) =>
+            player.score > this.players[1 - this.players.indexOf(player)].score,
+        )
+      );
     }
   }
 
@@ -343,9 +360,14 @@ export class Game {
     return this.players.reduce((p1, p2) => (p1.score > p2.score ? p1 : p2));
   }
 
-  getLooser(): Player | null {
-    if (this.players[0].score === 5) return this.players[1];
-    if (this.players[1].score === 5) return this.players[0];
-    return null;
+  getLooser(): Player {
+    return this.players.reduce((p1, p2) => (p1.score < p2.score ? p1 : p2));
+  }
+
+  pauseGame(time: number): void {
+    this.paused = true;
+    setTimeout(() => {
+      this.paused = false;
+    }, time * 1000);
   }
 }

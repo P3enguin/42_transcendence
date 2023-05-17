@@ -46,7 +46,6 @@ export class GameController {
     @Res() res: Response,
     @Query() invite: any,
   ) {
-    console.log(invite);
     const gameId = this.gameService.inviteGame(
       new Player(player.id, player.nickname, player.avatar),
       new Player(Number(invite.user.id), invite.user.nickname, invite.user.avatar),
@@ -61,11 +60,11 @@ export class GameController {
     @Param('id') gameId: string,
     @Res() res: Response,
   ) {
-    if (this.gameService.getActiveGame(gameId)) {
-      return res.status(200).json('0ki');
-    } else if (this.gameService.getMyGame(gameId, player)) {
-      return res.status(200).json('0ki');
-    }
-    return res.status(400).json('N0 game :P');
+    if (this.gameService.getMyGame(gameId, player))
+    return res.status(200).json({message: 'Oki', isPlayer: true});
+    else if (this.gameService.getActiveGame(gameId))
+      return res.status(200).json({ message: 'Oki', isPlayer: false });
+    return res.status(404).json({ message: 'Game Not Found'});
   }
 }
+
