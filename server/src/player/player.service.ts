@@ -675,7 +675,7 @@ export class PlayerService {
         include: {
           wins: {
             select: {
-              playerAt: true,
+              playedAt: true,
               score: true,
               winnerId: {
                 select: {
@@ -695,7 +695,7 @@ export class PlayerService {
           },
           loss: {
             select: {
-              playerAt: true,
+              playedAt: true,
               score: true,
               winnerId: {
                 select: {
@@ -736,7 +736,7 @@ export class PlayerService {
 
       // Sort gamesPlayed by date
       const sortedGamesPlayed = gamesPlayed.sort(
-        (a, b) => b.playerAt.getTime() - a.playerAt.getTime(),
+        (a, b) => b.playedAt.getTime() - a.playedAt.getTime(),
       );
 
       return res.status(200).json(sortedGamesPlayed);
@@ -819,7 +819,7 @@ export class PlayerService {
 
       // Sort gamesPlayed by date
       const sortedGamesPlayed = gamesPlayed.sort(
-        (a, b) => b.playerAt.getTime() - a.playerAt.getTime(),
+        (a, b) => b.playedAt.getTime() - a.playedAt.getTime(),
       );
       return res.status(200).json(sortedGamesPlayed);
     } catch (error) {
