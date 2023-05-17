@@ -79,9 +79,7 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-
       console.log("create DM");
-      
       const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {
@@ -159,4 +157,15 @@ export class ChatController {
       return res.status(500).json({ error: 'An error has occurred' });
     }
   }
+  // async saveMessage(
+  //   @GetPlayer('id') id: number,
+  //   messageInfo: any,
+  //   roomId: string,
+  // ) {
+  //   try{
+  //     const result = await this.chatService.saveMessage(messageInfo, roomId);
+  //   }catch(error) {
+  //     return  'An error has occurred';
+  //   }
+  // }
 }

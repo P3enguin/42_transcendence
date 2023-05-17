@@ -185,8 +185,8 @@ model Message {
   message String
   sendAt  DateTime @default(now())
 
-  roomId Int
-  room   Room @relation(fields: [roomId], references: [id])
+  roomId String
+  room   Room @relation(fields: [roomId], references: [channelId])
 }
 
 model Ban {
