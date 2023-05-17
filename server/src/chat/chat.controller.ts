@@ -20,6 +20,7 @@ import {
   KickMemberDto,
   MuteMemberDto,
   BanMemberDto,
+  UnmuteMemberDto,
 } from './dto';
 
 @UseGuards(JwtGuard)
@@ -188,6 +189,24 @@ export class ChatController {
   ) {
     try {
       const result = await this.chatService.muteMember(player, muteMemberDto);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Delete('mute')
+  async unmuteMember(
+    @GetPlayer() player: Player,
+    @Body() unmuteMemberDto: UnmuteMemberDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.unmuteMember(
+        player,
+        unmuteMemberDto,
+      );
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
