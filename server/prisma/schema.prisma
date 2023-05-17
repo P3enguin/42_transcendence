@@ -151,7 +151,7 @@ model Match {
   loserId  Player @relation(fields: [loser], references: [id], name: "loss")
 
   score    String
-  playerAt DateTime @default(now())
+  playedAt DateTime @default(now())
 }
 
 model Room {
