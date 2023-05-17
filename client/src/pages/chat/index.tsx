@@ -67,7 +67,7 @@ function Chat({
         {showRecentChat && (
           <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px]">
             <div className="flex h-[5%] w-[100%] items-center border-b pl-5 ">
-              <Link href={`/chat`}>Chat Room </Link>
+              <Link href={`/chat`} className='text-2xl p-1 '>Chat Room </Link>
             </div>
             {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
 
@@ -86,7 +86,7 @@ function Chat({
                   Start New
                 </div>
               </div>
-              <div className="mt-2 h-full flex-col space-y-3 overflow-hidden overflow-y-auto border scrollbar-hide">
+              <div className="mt-2 h-full flex-col space-y-3 overflow-hidden overflow-y-auto scrollbar-hide">
                 {showRecentChat && (
                   <RecentChat avatar={data.avatar} player={data.nickname} />
                 )}

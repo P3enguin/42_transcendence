@@ -9,9 +9,8 @@ function RecentChat({ avatar, player, friendId }: any) {
   const router = useRouter();
 
   const [RecentChat, setRecentChat] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   async function getRecent() {
-    console.log('Recent Conversation');
     await axios
     .get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/allChat?page={1}', 
     {
@@ -19,50 +18,68 @@ function RecentChat({ avatar, player, friendId }: any) {
     })
     .then((response) => {
       const conversation = response.data.data.rooms;
-      setRecentChat(conversation);
-      console.log(conversation);
+
+// Sort th    e conversation rooms based on the presence of messages and the time of the latest message
+        conversation.sort((roomA: any, roomB: any) => {
+        const latestMessageTimeA = roomA.messages[0];
+        const latestMessageTimeB = roomB.messages[0];
+        
+        // Sort rooms with messages first
+        if (latestMessageTimeA && !latestMessageTimeB) {
+          return -1;
+        } else if (!latestMessageTimeA && latestMessageTimeB) {
+          return 1;
+        }else if (!latestMessageTimeB && !latestMessageTimeA) {
+          return 0;
+        }
+        const TimeA = roomA.messages[0].sendAt;
+        const TimeB = roomB.messages[0].sendAt;
+          return TimeB - TimeA;
+      });
+
+      console.log("conver  :",conversation);
       
+      setRecentChat(conversation);
+      setLoading(false);
+      console.log("=>",RecentChat);
     })
     .catch((err) => console.log(err));
   }
 
-
-  async function talk() {
-    console.log('resent chat');
-
-    // const res = await axios.get(
-    //   process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/privateMessages',
-    //   {
-    //     params: {
-      //       friendId: 2,
-    //     },
-    //   },
-    // );
-    // router.push('/chat/' + res.data.id);
+  async function talk(channelId: string) {
+    if (channelId)
+      router.push('/chat/' + channelId);
   }
 
   useEffect( ()=> {
     getRecent();
   }, [])
 
-  const picture = process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar;
-  
   return (
     <>
       {
-        RecentChat.map((chat: any, key: number)=> {
-        <div
-          className="item-start 
+        loading ? (
+          <p>Loading...</p>
+        ) : 
+        (
+          RecentChat.map((chat: any, index: number) =>
+          <div
+          className="item-start relative self-center
           flex h-[70px] w-[100%] cursor-pointer 
-              flex-row rounded-2xl border bg-[#8BD9FF] bg-opacity-20
-              text-sm shadow-xl tx:max-w-[350px]"
-              onClick={(e) => {
-                talk();
-              }}
-        >
-          <RecentConversation room={chat} key={key} />
+          flex-row rounded-2xl border bg-[#53bd9c] bg-opacity-20
+          text-sm shadow-xl tx:max-w-[350px] mt-1"
+          onClick={(e) => {
+            if (chat)
+              talk(chat.channelId);
+            else
+              console.log('empty');
+          }}
+          key={index}
+          >
+
+          <RecentConversation room={chat} />
         </div>
-        })
+        ))
       }
     </>
   );

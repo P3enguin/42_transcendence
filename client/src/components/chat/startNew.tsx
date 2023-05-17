@@ -27,10 +27,11 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
     const res = await axios
       .post(
         process.env.NEXT_PUBLIC_BACKEND_HOST +
-          `/chat/create/dm?nickname=${player1}`,
+          `/chat/create/dm`,
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${token}` },
+          param: nickname,
         },
       )
       .then((res) => {
@@ -159,7 +160,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                       </div>
                     </div>
                   </div>
-                  <div className=" w-full md:max-w-[60%] text-ellipsis pl-2 pt-7 text-ss">
+                  <div className=" w-full md:max-w-[60%] text-ellipsis pl-2 pt-7 text-[10px]">
                     {privacy.description}
                   </div>
                 </div>
