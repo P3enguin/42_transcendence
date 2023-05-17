@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
-import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { BanMemberDto, CreateChannelDto, JoinChannelDto } from './dto';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  KickMemberDto,
+  BanMemberDto,
+} from './dto';
 import { generate } from 'shortid';
 
 @Injectable()
@@ -83,6 +87,42 @@ export class ChatService {
     };
   }
 
+  async deleteChannel(player: Player, channelId: string) {
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        owner: true,
+      },
+      where: {
+        channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    if (channel.owner.id !== player.id) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to delete this channel" },
+      };
+    }
+
+    await this.prisma.room.delete({
+      where: {
+        channelId,
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully deleted the channel' },
+    };
+  }
+
   async getChannel(player: Player, channelId: string) {
     let channel = await this.prisma.room.findFirst({
       select: {
@@ -157,9 +197,9 @@ export class ChatService {
       },
     });
 
-    if (existingDM) {
+    if (existingDM && existingDM.members.length === 2) {
       return {
-        status: 201,
+        status: 200,
         data: existingDM,
       };
     }
@@ -338,6 +378,94 @@ export class ChatService {
     };
   }
 
+  async kickMember(player: Player, kickMemberDto: KickMemberDto) {
+    const { channelId, memberNickname } = kickMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to kick users" },
+      };
+    }
+
+    // Find if the user to kick exists
+    const member = await this.prisma.player.findUnique({
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the user is a member of the room
+    if (
+      !channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is not a member of the channel' },
+      };
+    }
+
+    // Prevent admins from kicking owner and other admins
+    if (
+      channel.owner.id === member.id ||
+      (channel.owner.id !== player.id &&
+        channel.admins.find((channelAdmin) => channelAdmin.id === member.id))
+    ) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to kick this user" },
+      };
+    }
+
+    // Remove user from the room
+    await this.prisma.room.update({
+      where: { channelId: channelId },
+      data: {
+        members: { disconnect: { id: member.id } },
+      },
+    });
+
+    await this.prisma.player.update({
+      where: { id: member.id },
+      data: {
+        rooms: { disconnect: { channelId: channelId } },
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully kicked member from the channel' },
+    };
+  }
+
   async banMember(player: Player, banMemberDto: BanMemberDto) {
     const { channelId, memberNickname, reason } = banMemberDto;
 
@@ -420,7 +548,7 @@ export class ChatService {
 
     if (!ban) {
       return {
-        status: 500,
+        status: 400,
         data: { error: 'An error occurred while banning the member' },
       };
     }

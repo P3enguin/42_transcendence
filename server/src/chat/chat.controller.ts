@@ -12,10 +12,15 @@ import {
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetPlayer } from 'src/auth/decorator';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
-import { BanMemberDto, CreateChannelDto, JoinChannelDto } from './dto';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  KickMemberDto,
+  BanMemberDto,
+} from './dto';
 
 @UseGuards(JwtGuard)
 @Controller('chat')
@@ -23,16 +28,12 @@ export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @Get('allChat')
-  async GetChat(
-    @GetPlayer() player: Player,
-    @Res() res: Response,
-    ) {
+  async GetChat(@GetPlayer() player: Player, @Res() res: Response) {
     try {
-      console.log("Get All Chat");
-      const allChat = await this.chatService.getAllChat(player);     
+      const allChat = await this.chatService.getAllChat(player);
       res.status(allChat.status).json(allChat);
-    }catch (err) {
-      console.log(err.message);
+    } catch (error) {
+      console.log(error);
       return res.status(404).json({ error: 'An error has occurred' });
     }
   }
@@ -43,7 +44,6 @@ export class ChatController {
     @Body() createChannelDto: CreateChannelDto,
     @Res() res: Response,
   ) {
-
     try {
       const result = await this.chatService.createChannel(
         player,
@@ -51,8 +51,22 @@ export class ChatController {
       );
       res.status(result.status).json(result.data);
     } catch (error) {
-      
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Delete('channels/:id')
+  async deleteChannel(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.deleteChannel(player, channelId);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -67,7 +81,7 @@ export class ChatController {
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -78,12 +92,11 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      console.log("create DM");
-      
       const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {
-      return res.status(500).json({ error: 'An error has occurred' });
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -98,7 +111,7 @@ export class ChatController {
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -113,7 +126,7 @@ export class ChatController {
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -128,7 +141,22 @@ export class ChatController {
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Delete('members/:id')
+  async kickMember(
+    @GetPlayer() player: Player,
+    @Body() kickMemberDto: KickMemberDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.kickMember(player, kickMemberDto);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -143,7 +171,7 @@ export class ChatController {
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -154,7 +182,7 @@ export class ChatController {
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'An error has occurred' });
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 }

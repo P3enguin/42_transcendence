@@ -29,6 +29,14 @@ export class JoinChannelDto {
   key?: string;
 }
 
+export class KickMemberDto {
+  @IsString()
+  channelId: string;
+
+  @IsString()
+  memberNickname: string;
+}
+
 export class BanMemberDto {
   @IsString()
   channelId: string;
