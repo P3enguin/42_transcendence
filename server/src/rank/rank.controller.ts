@@ -1,14 +1,18 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { RankService } from './rank.service';
+import { Response } from 'express';
 
 @Controller('rank')
 export class RankController {
-    constructor(
-        private rank: RankService,
-    ) {}
+  constructor(private rankService: RankService) {}
 
-    @Post('ranks')
-    async fillRanks() {
-        return this.rank.fillRanks();
-    }
+  @Post('ranks')
+  async fillRanks() {
+    return this.rankService.fillRanks();
+  }
+
+  @Get('leaderboard')
+  getLeaderBoardByRank(@Res() res: Response, @Query('limit') limit: number) {
+    return this.rankService.getLeaderBoardByRank(res, limit);
+  }
 }

@@ -43,9 +43,9 @@ export class PlayerService {
       const request = await this.prisma.request.findFirst({
         where: {
           fromPlayerId: senderId,
-          NOT :{
-            status:"rejected",
-          }
+          NOT: {
+            status: 'rejected',
+          },
         },
         select: {
           status: true,
@@ -147,9 +147,9 @@ export class PlayerService {
         where: {
           toPlayerId: receiverId.id,
           fromPlayerId: player.id,
-          NOT : {
-            status : "rejected",
-          }
+          NOT: {
+            status: 'rejected',
+          },
         },
       });
       if (existingRequest) throw new Error('Request already sent');
@@ -271,7 +271,6 @@ export class PlayerService {
     res: Response,
   ) {
     try {
-      
       // change request status to accpeted
       await this.prisma.request.update({
         where: {
@@ -342,7 +341,7 @@ export class PlayerService {
             select: {
               nickname: true,
               avatar: true,
-            }
+            },
           },
         },
       });
@@ -629,6 +628,42 @@ export class PlayerService {
         },
       });
       return res.status(200).json({ players: data });
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occurred' });
+    }
+  }
+
+  //----------------------------------{LeaderBoard}-----------------------------------
+  async getLeaderBoardByLevel(res: Response, limit: number) {
+    try {
+      const data = await this.prisma.status.findMany({
+        select: {
+          player: {
+            select: {
+              nickname: true,
+              avatar: true,
+            },
+          },
+          level: true,
+          XP: true,
+        },
+        take: limit,
+        orderBy: [
+          {
+            level: 'desc',
+          },
+          {
+            XP: 'desc',
+          },
+        ],
+      });
+
+      const serializedData = data.map((item) => ({
+        ...item,
+        XP: item.XP.toString(),
+      }));
+
+      return res.status(200).json(serializedData);
     } catch (error) {
       return res.status(400).json({ error: 'An Error has occurred' });
     }
