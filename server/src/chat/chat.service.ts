@@ -33,13 +33,17 @@ export class ChatService {
               },
               take: 1,
             },
+            
           },
-          skip: 6 * page,
-          take: 6,
+          skip: 12 * page,
+          take: 12,
         },
       },
     });
-
+    console.log('Player Rooms Messages:');
+    player.rooms.forEach((room) => {
+      console.log(room.messages);
+    });
     if (!player)
       return {
           status: 404,
@@ -481,4 +485,45 @@ export class ChatService {
       data: channels,
     };
   }
+
+  async saveMessage(
+    messageInfo: any,
+    roomId: string,
+  ) {
+    try {
+
+      const sender = await this.prisma.player.findUnique({
+        where :{
+          nickname: messageInfo.sender,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const msg = await this.prisma.message.create({
+        data:{
+          sender:sender.id,
+          message:messageInfo.message,
+          roomId: roomId,
+        }
+      })
+      
+      const channel = await this.prisma.room.update({
+        where:{
+          channelId: roomId,
+        },
+      data: {
+        messages:{
+          connect:{
+            MsgId: msg.MsgId,
+          },
+        },
+      },
+    });
+  }catch(err) {
+    console.log('cant create message', err.message);
+  }
+  }
+
 }
