@@ -1,34 +1,25 @@
-export interface LeaderBoard {
-  level: {
+export interface Level {
+  player: {
+    nickname: string;
+    avatar: string;
+  };
+  level: number;
+  XP: number;
+}
+
+export interface Rank {
+  status: {
     player: {
-      id: number;
       nickname: string;
       avatar: string;
     };
-    level: number;
-    rank: {
-      ranks: {
-        id: number;
-        name: string;
-        points: number;
-        avatar: string;
-      };
-    }[];
-  }[];
+  };
   rank: {
-    player: {
-      id: number;
-      nickname: string;
-      avatar: string;
-    };
-    level: number;
-    rank: {
-      ranks: {
-        id: number;
-        name: string;
-        points: number;
-        avatar: string;
-      };
-    }[];
-  }[];
+    name: string;
+  };
+}
+
+export interface LeaderBoard {
+  level: Level[];
+  rank: Rank[];
 }

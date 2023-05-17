@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
-import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { BanMemberDto, CreateChannelDto, JoinChannelDto } from './dto';
+import {
+  CreateChannelDto,
+  JoinChannelDto,
+  KickMemberDto,
+  BanMemberDto,
+  MuteMemberDto,
+  UnmuteMemberDto,
+  UnbanMemberDto,
+} from './dto';
 import { generate } from 'shortid';
 
 @Injectable()
@@ -33,7 +40,6 @@ export class ChatService {
               },
               take: 1,
             },
-            
           },
           skip: 12 * page,
           take: 12,
@@ -46,13 +52,13 @@ export class ChatService {
     });
     if (!player)
       return {
-          status: 404,
-          data: {error: 'Invalid'}
-      }
-    return ({
+        status: 404,
+        data: { error: 'Invalid' },
+      };
+    return {
       status: 201,
       data: player,
-    })
+    };
   }
 
   async createChannel(player: Player, createChannelDto: CreateChannelDto) {
@@ -90,6 +96,42 @@ export class ChatService {
     return {
       status: 201,
       data: channel,
+    };
+  }
+
+  async deleteChannel(player: Player, channelId: string) {
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        owner: true,
+      },
+      where: {
+        channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    if (channel.owner.id !== player.id) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to delete this channel" },
+      };
+    }
+
+    await this.prisma.room.delete({
+      where: {
+        channelId,
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully deleted the channel' },
     };
   }
 
@@ -147,15 +189,14 @@ export class ChatService {
 
   async createDM(player: Player, nickname: string) {
     const existingDM = await this.prisma.room.findFirst({
-      select:{
-        channelId:true,
-        members:{
+      select: {
+        channelId: true,
+        members: {
           select: {
             nickname: true,
             avatar: true,
           },
         },
-        
       },
       where: {
         isChannel: false,
@@ -168,9 +209,9 @@ export class ChatService {
       },
     });
 
-    if (existingDM) {
+    if (existingDM && existingDM.members.length === 2) {
       return {
-        status: 201,
+        status: 200,
         data: existingDM,
       };
     }
@@ -349,6 +390,94 @@ export class ChatService {
     };
   }
 
+  async kickMember(player: Player, kickMemberDto: KickMemberDto) {
+    const { channelId, memberNickname } = kickMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to kick users" },
+      };
+    }
+
+    // Find if the user to kick exists
+    const member = await this.prisma.player.findUnique({
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the user is a member of the room
+    if (
+      !channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is not a member of the channel' },
+      };
+    }
+
+    // Prevent admins from kicking owner and other admins
+    if (
+      channel.owner.id === member.id ||
+      (channel.owner.id !== player.id &&
+        channel.admins.find((channelAdmin) => channelAdmin.id === member.id))
+    ) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to kick this user" },
+      };
+    }
+
+    // Remove user from the room
+    await this.prisma.room.update({
+      where: { channelId: channelId },
+      data: {
+        members: { disconnect: { id: member.id } },
+      },
+    });
+
+    await this.prisma.player.update({
+      where: { id: member.id },
+      data: {
+        rooms: { disconnect: { channelId: channelId } },
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully kicked member from the channel' },
+    };
+  }
+
   async banMember(player: Player, banMemberDto: BanMemberDto) {
     const { channelId, memberNickname, reason } = banMemberDto;
 
@@ -382,6 +511,10 @@ export class ChatService {
 
     // Find if the user to ban exists
     const member = await this.prisma.player.findUnique({
+      select: {
+        id: true,
+        bans: true,
+      },
       where: {
         nickname: memberNickname,
       },
@@ -394,13 +527,11 @@ export class ChatService {
       };
     }
 
-    // Check if the user is a member of the room
-    if (
-      !channel.members.find((channelMember) => channelMember.id === member.id)
-    ) {
+    // Check if the user is already banned
+    if (member.bans.find((mute) => mute.channelId === channel.id)) {
       return {
-        status: 404,
-        data: { error: 'User is not a member of the channel' },
+        status: 401,
+        data: { error: 'Member is already banned' },
       };
     }
 
@@ -431,7 +562,7 @@ export class ChatService {
 
     if (!ban) {
       return {
-        status: 500,
+        status: 400,
         data: { error: 'An error occurred while banning the member' },
       };
     }
@@ -454,6 +585,276 @@ export class ChatService {
     return {
       status: 204,
       data: { message: 'Successfully banned member from the channel' },
+    };
+  }
+
+  async unbanMember(player: Player, unbanMemberDto: UnbanMemberDto) {
+    const { channelId, memberNickname } = unbanMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to unban users" },
+      };
+    }
+
+    // Find if the user to unban exists
+    const member = await this.prisma.player.findUnique({
+      select: {
+        id: true,
+        bans: true,
+      },
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the member is not banned
+    if (!member.bans.find((mute) => mute.channelId === channel.id)) {
+      return {
+        status: 401,
+        data: { error: 'Member is not banned' },
+      };
+    }
+
+    // Performing the unban on the channel member
+    const unban = await this.prisma.ban.deleteMany({
+      where: {
+        channelId: channel.id,
+        playerId: member.id,
+      },
+    });
+
+    if (!unban || !unban.count) {
+      return {
+        status: 400,
+        data: { error: 'An error occurred while unbanning the member' },
+      };
+    }
+
+    return {
+      status: 204,
+      data: { message: 'Successfully unbanned member from the channel' },
+    };
+  }
+
+  async muteMember(player: Player, muteMemberDto: MuteMemberDto) {
+    const { channelId, memberNickname, duration } = muteMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to mute users" },
+      };
+    }
+
+    // Find if the user to mute exists
+    const member = await this.prisma.player.findUnique({
+      select: {
+        id: true,
+        mutes: true,
+      },
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the user is a member of the room
+    if (
+      !channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is not a member of the channel' },
+      };
+    }
+
+    // Check if the user is already muted
+    if (member.mutes.find((mute) => mute.channelId === channel.id)) {
+      return {
+        status: 401,
+        data: { error: 'Member is already muted' },
+      };
+    }
+
+    // Prevent admins from muting owner and other admins
+    if (
+      channel.owner.id === member.id ||
+      (channel.owner.id !== player.id &&
+        channel.admins.find((channelAdmin) => channelAdmin.id === member.id))
+    ) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to mute this user" },
+      };
+    }
+
+    // Performing the mute on the channel member
+    const mute = await this.prisma.mute.create({
+      data: {
+        channel: {
+          connect: { id: channel.id },
+        },
+        player: {
+          connect: { id: member.id },
+        },
+        expirationDate: new Date(Date.now() + duration),
+      },
+    });
+
+    if (!mute) {
+      return {
+        status: 400,
+        data: { error: 'An error occurred while muting the member' },
+      };
+    }
+
+    return {
+      status: 204,
+      data: { message: 'Successfully muted member from the channel' },
+    };
+  }
+
+  async unmuteMember(player: Player, unmuteMemberDto: UnmuteMemberDto) {
+    const { channelId, memberNickname } = unmuteMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to unmute users" },
+      };
+    }
+
+    // Find if the user to unmute exists
+    const member = await this.prisma.player.findUnique({
+      select: {
+        id: true,
+        mutes: true,
+      },
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the user is a member of the room
+    if (
+      !channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is not a member of the channel' },
+      };
+    }
+
+    // Check if the member is not muted
+    if (!member.mutes.find((mute) => mute.channelId === channel.id)) {
+      return {
+        status: 401,
+        data: { error: 'Member is not muted' },
+      };
+    }
+
+    // Performing the unmute on the channel member
+    const unmute = await this.prisma.mute.deleteMany({
+      where: {
+        channelId: channel.id,
+        playerId: member.id,
+      },
+    });
+
+    if (!unmute || !unmute.count) {
+      return {
+        status: 400,
+        data: { error: 'An error occurred while unmuting the member' },
+      };
+    }
+
+    return {
+      status: 204,
+      data: { message: 'Successfully unmuted member from the channel' },
     };
   }
 
@@ -486,14 +887,10 @@ export class ChatService {
     };
   }
 
-  async saveMessage(
-    messageInfo: any,
-    roomId: string,
-  ) {
+  async saveMessage(messageInfo: any, roomId: string) {
     try {
-
       const sender = await this.prisma.player.findUnique({
-        where :{
+        where: {
           nickname: messageInfo.sender,
         },
         select: {
@@ -502,28 +899,27 @@ export class ChatService {
       });
 
       const msg = await this.prisma.message.create({
-        data:{
-          sender:sender.id,
-          message:messageInfo.message,
+        data: {
+          sender: sender.id,
+          message: messageInfo.message,
           roomId: roomId,
-        }
-      })
-      
+        },
+      });
+
       const channel = await this.prisma.room.update({
-        where:{
+        where: {
           channelId: roomId,
         },
-      data: {
-        messages:{
-          connect:{
-            MsgId: msg.MsgId,
+        data: {
+          messages: {
+            connect: {
+              MsgId: msg.MsgId,
+            },
           },
         },
-      },
-    });
-  }catch(err) {
-    console.log('cant create message', err.message);
+      });
+    } catch (err) {
+      console.log('cant create message', err.message);
+    }
   }
-  }
-
 }

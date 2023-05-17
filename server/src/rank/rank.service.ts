@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Response } from 'express';
 import * as fs from 'fs';
 @Injectable()
 export class RankService {
@@ -41,5 +42,39 @@ export class RankService {
         statusId: statusId,
       },
     });
+  }
+
+  async getLeaderBoardByRank(res: Response, limit: number) {
+    try {
+      const data = await this.prisma.rank_status.findMany({
+        select: {
+          status: {
+            select: {
+              player: {
+                select: {
+                  nickname: true,
+                  avatar: true,
+                },
+              },
+            },
+          },
+          rank: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        take: limit,
+        orderBy: [
+          {
+            current_points: 'desc',
+          },
+        ],
+      });
+
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occurred' });
+    }
   }
 }

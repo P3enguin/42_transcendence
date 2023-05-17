@@ -22,7 +22,7 @@ function HomePlayer({
       </Head>
       <div className="my-[55px] flex w-full flex-col items-center gap-[65px]">
         <DiscoverChannels channels={channels} />
-        <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap">
+        <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap 2xl:w-[1323px]">
           <LiveGames jwt_token={jwt_token} />
           <Leaderboard leaderBoard={leaderBoard} />
         </div>
@@ -45,7 +45,7 @@ export async function getServerSideProps({ req }: any) {
     const channelsData = await channelsRes.json();
 
     const levelLeaderBoardRes = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/leaderboard/level',
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/leaderboard',
       {
         headers: {
           Cookie: req.headers.cookie,
@@ -55,7 +55,7 @@ export async function getServerSideProps({ req }: any) {
     const levelLeaderBoardData = await levelLeaderBoardRes.json();
 
     const rankLeaderBoardRes = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/leaderboard/rank',
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/rank/leaderboard',
       {
         headers: {
           Cookie: req.headers.cookie,

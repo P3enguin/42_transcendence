@@ -462,7 +462,7 @@ export class PlayerService {
         (player.wins.length / (player.wins.length + player.loss.length)) *
         100
       ).toFixed(2);
-      return res.status(200).json({ player,rankId,winRatio });
+      return res.status(200).json({ player, rankId, winRatio });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });
@@ -661,6 +661,42 @@ export class PlayerService {
         },
       });
       return res.status(200).json({ players: data });
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occurred' });
+    }
+  }
+
+  //----------------------------------{LeaderBoard}-----------------------------------
+  async getLeaderBoardByLevel(res: Response, limit: number) {
+    try {
+      const data = await this.prisma.status.findMany({
+        select: {
+          player: {
+            select: {
+              nickname: true,
+              avatar: true,
+            },
+          },
+          level: true,
+          XP: true,
+        },
+        take: limit,
+        orderBy: [
+          {
+            level: 'desc',
+          },
+          {
+            XP: 'desc',
+          },
+        ],
+      });
+
+      const serializedData = data.map((item) => ({
+        ...item,
+        XP: item.XP.toString(),
+      }));
+
+      return res.status(200).json(serializedData);
     } catch (error) {
       return res.status(400).json({ error: 'An Error has occurred' });
     }

@@ -32,10 +32,12 @@ export default function LeaderboardPlayerRank({
         />
         <p className={`truncate font-semibold`}>{nickname}</p>
       </Link>
-      {rankName !== 'none' && (
+      {rankName !== 'UnRanked' && (
         <Image
-          src={`/ranks/${rankName}.svg`}
-          alt="rankAvatar"
+          src={
+            process.env.NEXT_PUBLIC_BACKEND_HOST + '/ranks/' + rankName + '.png'
+          }
+          alt="rankName"
           width={56}
           height={56}
         />

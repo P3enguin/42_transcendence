@@ -17,7 +17,7 @@ import { PlayerService } from './player.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { query, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { GetPlayer } from 'src/auth/decorator';
 
 interface queryParam {
@@ -237,5 +237,12 @@ export class PlayerController {
   @Get('rankStat')
   getRankStats(@Res() res: Response, @Query() query: querySearchParam) {
     return this.playerService.getRankStats(res, query.search);
+  }
+
+  //----------------------------------{LeaderBoard}------------------------------
+
+  @Get('leaderboard')
+  getLeaderBoardByLevel(@Res() res: Response, @Query('limit') limit: number) {
+    return this.playerService.getLeaderBoardByLevel(res, limit);
   }
 }
