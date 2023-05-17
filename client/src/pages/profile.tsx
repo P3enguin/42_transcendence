@@ -13,6 +13,8 @@ interface player {
   avatar: string;
   wallpaper: string;
   joinDate: string;
+  winRatio: string;
+  rankId: number;
 }
 
 function PlayerProfile({
@@ -23,6 +25,8 @@ function PlayerProfile({
   avatar,
   wallpaper,
   joinDate,
+  winRatio,
+  rankId,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(false);
@@ -36,8 +40,10 @@ function PlayerProfile({
         </Head>
         <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
           <ProfileDisplay
-            wp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper }
-            pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' +   avatar }
+            wp={
+              process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper
+            }
+            pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}
@@ -45,8 +51,10 @@ function PlayerProfile({
             exp={1500}
             MaxExp={2500}
             userProfile={true}
+            winRatio={winRatio}
+            rankId={rankId}
           />
-          <ProfileStats nickname={nickname}  userProfile={true}/>
+          <ProfileStats nickname={nickname} userProfile={true} />
         </div>
       </>
     );
@@ -66,10 +74,9 @@ export async function getServerSideProps({ req }: any) {
         },
       },
     );
-    if (res.ok)
-    {
+    if (res.ok) {
       const data = await res.json();
-  
+
       const timeFormat: Intl.DateTimeFormatOptions = {
         year: 'numeric',
         month: 'long',
@@ -88,6 +95,8 @@ export async function getServerSideProps({ req }: any) {
           avatar: data.player.avatar,
           wallpaper: data.player.wallpaper,
           joinDate: date,
+          rankId: data.rankId,
+          winRatio: data.winRatio,
         },
       };
     }

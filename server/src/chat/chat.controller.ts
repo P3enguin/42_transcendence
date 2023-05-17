@@ -26,10 +26,11 @@ export class ChatController {
   async GetChat(
     @GetPlayer() player: Player,
     @Res() res: Response,
+    @Query('page') page: number,
     ) {
     try {
       console.log("Get All Chat");
-      const allChat = await this.chatService.getAllChat(player);     
+      const allChat = await this.chatService.getAllChat(player, 0);     
       res.status(allChat.status).json(allChat);
     }catch (err) {
       console.log(err.message);
@@ -78,6 +79,7 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
+
       console.log("create DM");
       
       const result = await this.chatService.createDM(player, nickname);

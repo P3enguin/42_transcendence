@@ -394,7 +394,7 @@ export function InputDefault({
         className={`absolute top-8 -z-10 origin-[0]
                       -translate-y-8 scale-100 transform pl-3
                      text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
-                      peer-focus:scale-100 peer-focus:font-medium 
+                      peer-focus:scale-100 peer-focus:font-large 
                       peer-focus:text-blue-600 md:text-sm `}
       >
         {description}
@@ -418,7 +418,7 @@ export function InputKey({
   return (
     <div className="group relative z-0 mb-6 w-3/4 min-w-[170px]">
       <input
-        type="input"
+        type="password"
         name={name}
         id={id}
         className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
@@ -437,8 +437,9 @@ export function InputKey({
         htmlFor={name}
         className={`absolute top-7 -z-10 origin-[0]
                       -translate-y-8 scale-100 transform pl-3
-                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
-                      peer-focus:scale-100 peer-focus:font-medium
+                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0
+                     peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+                      peer-focus:scale-100 peer-focus:font-large
                       peer-focus:text-blue-600 md:text-sm `}
       >
         {description}
@@ -486,7 +487,7 @@ export function InputBtn({
                     createPrivateChat();
                   }}
                   className=" hover:text-s absolute top-[66.5%] right-[6px] mx-auto
-                                      translate-y-[-50%] transform rounded-full rounded-full
+                                      translate-y-[-50%] transform rounded-full
                                       bg-[#0097E2] px-[12px] py-2 text-[10px] 
                                       font-bold uppercase  text-white shadow transition
                                       duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]"
@@ -497,7 +498,8 @@ export function InputBtn({
         htmlFor={name}
         className={`absolute top-8 -z-10 origin-[0]
                       -translate-y-8 scale-100 transform pl-3
-                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0
+                     peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
                       peer-focus:scale-100 peer-focus:font-large peer-focus:uppercase
                       peer-focus:text-blue-600 md:text-sm `}
       >

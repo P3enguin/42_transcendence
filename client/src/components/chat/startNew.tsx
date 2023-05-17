@@ -69,17 +69,17 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   }
 
   return (
-    <div className=" flex h-[95%] w-[100%] flex-col pl-5 pt-5 md:pl-10 ">
-      <div className="h-[15%] w-[100%] text-3xl sm:items-center md:h-[30%] lg:flex lg:text-start">
+    <div className=" flex p-1 h-[95%] w-[100%] flex-col lg:pl-10 ">
+      <div className="h-[15%] w-[100%] text-3xl sm:items-center md:h-[30%] pl-5 lg:flex lg:text-start">
         Select a Chat or <br />
         Start a New:
       </div>
-      <div className=" flex h-full w-full flex-col-reverse items-start lg:flex-row lg:p-2">
+      <div className="flex h-full w-full flex-col-reverse xl:flex-row lg:p-2">
         {
-          <div className="mb-0 flex h-[85%] w-full flex-col md:w-[50%] lg:ml-4">
+          <div className="mb-0 flex h-[85%] w-100% flex-col xl:w-[50%] ">
             {/* <div className=" h-[10%] w-[90%] flex-col sm:h-[2%] lg:flex border border-red-600"> */}
             <form onSubmit={createRoom}>
-              <div className="flex lg:justify-end">
+              <div className="flex xl:justify-end max-w-[400px]">
                 <InputDefault
                   name="name"
                   id="name"
@@ -89,8 +89,8 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
               </div>
 
               {
-                <div className="flex flex-row pr-1 md:p-2 xl:ml-20">
-                  <div className=" max-w-[300px]">
+                <div className="flex flex-row w-full">
+                  <div className=" xl:pl-10 ">
                     <h3 className="">type: </h3>
                     <div className=" flex flex-col pl-10 pr-5 md:pr-0 ">
                       <div className=" flex flex-row items-center whitespace-nowrap">
@@ -159,13 +159,13 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                       </div>
                     </div>
                   </div>
-                  <div className=" text-xs max-w-[60%] text-ellipsis pl-2 pt-7">
+                  <div className=" w-full md:max-w-[60%] text-ellipsis pl-2 pt-7 text-ss">
                     {privacy.description}
                   </div>
                 </div>
               }
               {privacy.privacy === 'private' && (
-                <div className="flex lg:justify-end">
+                <div className="flex xl:justify-end max-w-[400px]">
                   <InputKey
                     name="key"
                     id="key"
@@ -175,7 +175,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                 </div>
               )}
               {
-                <div className="flex lg:justify-end">
+                <div className="flex xl:justify-end max-w-[400px]">
                   <InputDefault
                     name="topic"
                     id="topic"
@@ -184,13 +184,14 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                   />
                 </div>
               }
-              <div className="flex lg:justify-end">
+              <div className="flex xl:justify-end ">
                 <button
                   name="create"
                   className=" hover:text-s absolute mx-auto mt-1 transform 
                     rounded-full bg-[#0097E2] px-9 py-2
                     text-[10px] font-bold uppercase text-white 
-                    shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]"
+                    shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]
+                    "
                 >
                   Create
                 </button>
@@ -199,8 +200,8 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
           </div>
           // </div>
         }
-        {
-          <div className="mb-0 flex h-[20%]  w-full flex-col lg:h-[85%] lg:w-[70%] lg:items-center lg:pt-0  ">
+        { (
+          <div className="mb-0 flex h-[15%] w-full xl:w-[50%] flex-col xl:h-[85%] max-w-[400px] xl:items-center lg:pt-0  ">
             <InputBtn
               name="nickname"
               id="nickname"

@@ -36,28 +36,26 @@ function MatchData({
              status ? 'from-[#01fd91a8]' : 'from-[#ff0d3ea8]'
            } to-[#2C3B7C] p-2`}
     >
-      <div className="flex lg:w-[45%] w-[40%] items-center gap-[13px]">
+      <div className="flex w-[40%] items-center gap-[13px] lg:w-[45%]">
         <img
           className="rounded-full bg-[#8bd9ffb3]"
-          src={P1Avatar}
+          src={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + P1Avatar}
           alt="pfp"
           width={56}
           height={56}
         />
         <div className="truncate text-sm font-semibold">{player1}</div>
       </div>
-      <div className="flex lg:w-[20%]  w-[10%] flex-col items-center justify-center">
+      <div className="flex w-[10%]  flex-col items-center justify-center lg:w-[20%]">
         <div className="text-lg font-bold">{status ? 'WIN' : 'LOSS'}</div>
         <div className="text-sm font-semibold">{score}</div>
-        <div className="text-xs font-semibold text-[#CFCFCF]">
-          {date + 'min ago'}{' '}
-        </div>
+        <div className="text-xs font-semibold text-[#CFCFCF]">{date} </div>
       </div>
-      <div className="flex lg:w-[45%]  w-[40%] items-center justify-end gap-[13px]">
+      <div className="flex w-[40%]  items-center justify-end gap-[13px] lg:w-[45%]">
         <div className="truncate text-sm font-semibold">{player2}</div>
         <img
           className="rounded-full bg-[#8bd9ffb3]"
-          src={P2Avatar}
+          src={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + P2Avatar}
           alt="pfp"
           width={56}
           height={56}

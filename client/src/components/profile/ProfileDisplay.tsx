@@ -34,6 +34,8 @@ interface profileProps {
       id: string | undefined;
     }>
   >;
+  rankId: number;
+  winRatio: string;
 }
 
 function ProfileDisplay({
@@ -49,6 +51,8 @@ function ProfileDisplay({
   requestFriend,
   setRequest,
   isFriend,
+  rankId,
+  winRatio,
 }: profileProps) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -224,7 +228,7 @@ function ProfileDisplay({
           {userProfile && (
             <label
               htmlFor="wallpaper"
-              className="absolute mt-5 mr-5 cursor-pointer"
+              className="absolute mr-5 mt-5 cursor-pointer"
             >
               <EditIconWallpaper />
             </label>
@@ -249,7 +253,7 @@ function ProfileDisplay({
             ) : (
               <strong
                 id="titleUser"
-                className=" w-[100px] text-end  text-xs
+                className=" text-xs w-[100px]  text-end
                  leading-3 text-white xl:hidden"
               >
                 the title
@@ -318,8 +322,8 @@ function ProfileDisplay({
                         <button
                           onClick={SendFriendRequest}
                           type="button"
-                          className=" left-20  flex gap-1 rounded-lg bg-[#102272]
-                          px-2  py-1 text-xs 
+                          className=" text-xs  left-20 flex gap-1 rounded-lg
+                          bg-[#102272]  px-2 py-1 
                           font-medium text-white hover:bg-[#0e1949] focus:outline-none"
                         >
                           Add friend <AddFriendIcon />
@@ -329,8 +333,8 @@ function ProfileDisplay({
                           <button
                             onClick={CancelFriendRequest}
                             type="button"
-                            className=" left-20 flex  items-center rounded-lg bg-red-700
-                                      px-2  py-1 text-xs font-medium text-white hover:bg-red-600 focus:outline-none"
+                            className=" text-xs left-20  flex items-center rounded-lg
+                                      bg-red-700  px-2 py-1 font-medium text-white hover:bg-red-600 focus:outline-none"
                           >
                             Cancel Request <CancelIcon />
                           </button>
@@ -338,8 +342,8 @@ function ProfileDisplay({
                       ) : requestFriend?.status === 'accepted' || isFriend ? (
                         <>
                           <div
-                            className=" left-20 flex  items-center rounded-lg bg-[#39ce77]
-                                    px-2  py-1 text-xs font-medium text-white "
+                            className=" text-xs left-20  flex items-center rounded-lg
+                                    bg-[#39ce77]  px-2 py-1 font-medium text-white "
                           >
                             Friend <IsFriendIcon />
                           </div>
@@ -354,7 +358,7 @@ function ProfileDisplay({
             </div>
           </div>
           {/* player progress  */}
-          <PlayerProgress coins={coins} />
+          <PlayerProgress coins={coins} rankId={rankId} winRatio={winRatio}  />
         </div>
       </div>
     </>

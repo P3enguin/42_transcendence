@@ -38,30 +38,8 @@ function Chat({
     setShowStartNew(true);
   };
 
-  const [Recent, setRecent] = useState([]);
-
-  async function getRecent() {
-    console.log('Get Recent Chat');
-
-    await axios
-    .get(process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/allChat', {
-      withCredentials: true,
-    })
-    .then((response) => {
-      const conversation = response.data;
-      if (Array.isArray(conversation)) {
-        conversation.map((chat: any, key: number) => {
-          console.log(chat, ' key : ', key);
-        });
-      } else {
-        console.log('Conversation is not an array.');
-      }
-    })
-    .catch((err) => console.log(err));
-  }
 
   useEffect(() => {
-    getRecent();
     const MobilView = () => {
       if (document.body.offsetWidth < 800) {
         if (!showMobile) {
