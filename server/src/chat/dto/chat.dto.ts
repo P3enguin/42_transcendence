@@ -1,4 +1,4 @@
-import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateChannelDto {
   @IsString()
@@ -47,4 +47,16 @@ export class BanMemberDto {
   @IsString()
   @IsOptional()
   reason?: string;
+}
+
+export class MuteMemberDto {
+  @IsString()
+  channelId: string;
+
+  @IsString()
+  memberNickname: string;
+
+  @IsInt()
+  @IsOptional()
+  duration?: number;
 }

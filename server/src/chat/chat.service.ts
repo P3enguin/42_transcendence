@@ -7,6 +7,7 @@ import {
   JoinChannelDto,
   KickMemberDto,
   BanMemberDto,
+  MuteMemberDto,
 } from './dto';
 import { generate } from 'shortid';
 
@@ -571,6 +572,99 @@ export class ChatService {
     return {
       status: 204,
       data: { message: 'Successfully banned member from the channel' },
+    };
+  }
+
+  async muteMember(player: Player, muteMemberDto: MuteMemberDto) {
+    const { channelId, memberNickname, duration } = muteMemberDto;
+
+    // Find if room exists
+    const channel = await this.prisma.room.findUnique({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (!channel) {
+      return {
+        status: 404,
+        data: { error: 'Unknown Channel' },
+      };
+    }
+
+    // Checking if user is an administrator
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to ban users" },
+      };
+    }
+
+    // Find if the user to mute exists
+    const member = await this.prisma.player.findUnique({
+      where: {
+        nickname: memberNickname,
+      },
+    });
+
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'Unknown User' },
+      };
+    }
+
+    // Check if the user is a member of the room
+    if (
+      !channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is not a member of the channel' },
+      };
+    }
+
+    // Prevent admins from muting owner and other admins
+    if (
+      channel.owner.id === member.id ||
+      (channel.owner.id !== player.id &&
+        channel.admins.find((channelAdmin) => channelAdmin.id === member.id))
+    ) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to mute this user" },
+      };
+    }
+
+    // Performing the mute on the channel member
+    const mute = await this.prisma.mute.create({
+      data: {
+        channel: {
+          connect: { id: channel.id },
+        },
+        player: {
+          connect: { id: member.id },
+        },
+        expirationDate: new Date(Date.now() + duration),
+      },
+    });
+
+    if (!mute) {
+      return {
+        status: 400,
+        data: { error: 'An error occurred while muting the member' },
+      };
+    }
+
+    return {
+      status: 204,
+      data: { message: 'Successfully muted member from the channel' },
     };
   }
 

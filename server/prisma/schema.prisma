@@ -38,6 +38,7 @@ model Player {
   admins  Room[] @relation(name: "room_admins")
   rooms   Room[] @relation(name: "room_members")
   bans    Ban[]
+  mutes   Mute[]
 
   equipedTitle Int       @default(0)
   requestsFrom Request[] @relation("requestFrom")
@@ -172,6 +173,7 @@ model Room {
   members   Player[] @relation("room_members")
   messages  Message[]
   bans      Ban[]
+  mutes     Mute[]
 
   avatar String @default("eg.jpeg")
 
@@ -199,6 +201,18 @@ model Ban {
   player    Player @relation(fields: [playerId], references: [id])
 
   reason  String?
+}
+
+model Mute {
+  id  Int @id @default(autoincrement())
+
+  channelId Int
+  channel   Room @relation(fields: [channelId], references: [id])
+
+  playerId  Int
+  player    Player @relation(fields: [playerId], references: [id])
+
+  expirationDate  DateTime?
 }
 
 model InvalidToken {

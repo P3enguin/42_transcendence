@@ -19,6 +19,7 @@ import {
   CreateChannelDto,
   JoinChannelDto,
   KickMemberDto,
+  MuteMemberDto,
   BanMemberDto,
 } from './dto';
 
@@ -168,6 +169,21 @@ export class ChatController {
   ) {
     try {
       const result = await this.chatService.banMember(player, banMemberDto);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Post('mute')
+  async muteMember(
+    @GetPlayer() player: Player,
+    @Body() muteMemberDto: MuteMemberDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.muteMember(player, muteMemberDto);
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
