@@ -1,96 +1,195 @@
 import { MatchData, Rank } from './StateComps';
 import { RankingIconFix } from '@/components/icons/Icons';
-function RankingStat() {
-  return (
-    <div className="flex flex-col p-8 pb-0">
-      <div className="flex h-[100px] w-full items-center  overflow-x-auto ">
-        <div className="relative mb-4 h-4 w-[900px] rounded-full bg-[#0D1743]  ">
-          <div
-            className="h-4 rounded-full bg-[#01FD91]"
-            style={{ width: '45%' }}
-          ></div>
-          <div className="relative -top-9 flex w-[920px] flex-row justify-between -left-[2.5px]">
-            <Rank rank="Iron" width="w-[50px]" isVisible={true} />
-            <Rank rank="Bronze" width="w-[50px]" isVisible={true} />
-            <Rank rank="Silver" width="w-[50px]" isVisible={true} />
-            <Rank rank="Gold" width="w-[50px]" isVisible={true} />
-            <Rank rank="Platinum" width="w-[55px]" isVisible={true} />
-            <Rank rank="Diamond" width="w-[55px]" isVisible={false} />
-            <Rank rank="Amethyst" width="w-[50px]" isVisible={false} />
-            <Rank rank="RedStar" width="w-[50px]" isVisible={false} />
-            <Rank rank="Master" width="w-[60px]" isVisible={false} />
-            <Rank rank="King" width="w-[70px]" isVisible={false} />
-          </div>
-        </div>
-      </div>
+import { useState, useEffect } from 'react';
+import { calculateTimeElapsed } from '@/components/tools/functions';
 
-      <div
-        className="flex h-[250px] flex-col  justify-between lg:gap-10 border-t-2 border-gray-100 
-                     border-opacity-70 text-sm lg:flex-row"
-      >
-        <div
-          className="mt-10 flex flex-col items-center justify-start gap-5  
-                    border-0 border-gray-100 border-opacity-70 text-sm 
-                    lg:w-[50%] lg:border-r-2"
-        >
-          <h1>STATS:</h1>
-          <div className="flex flex-row items-center justify-evenly  lg:w-2/3 w-1/2">
-            <img src="/star.svg" alt="startIcon" className="w-[20px]"></img>
-            <p>Rank Point : 120RP</p>
-          </div>
-          <div className="flex flex-row items-center justify-evenly lg:w-2/3 w-1/2">
-            <RankingIconFix />
-            <p>Current Rank : Platin</p>
-          </div>
-          <div className="flex flex-row items-center justify-evenly lg:w-2/3 w-1/2">
-            <RankingIconFix />
-            <p>Next Rank : Platinum</p>
+function RankingStat({ nickname }: { nickname: string }) {
+  const [games, setGames] = useState([]);
+  const [rankStat, setRankStat] = useState<any>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const resp = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST +
+          '/players/ranked?' +
+          new URLSearchParams({ search: nickname }),
+        {
+          credentials: 'include',
+        },
+      );
+
+      if (resp.ok) {
+        const games = await resp.json();
+        setGames(games);
+        const resp2 = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_HOST +
+            '/players/rankStat?' +
+            new URLSearchParams({ search: nickname }),
+          {
+            credentials: 'include',
+          },
+        );
+        if (resp2.ok) {
+          const stats = await resp2.json();
+          setRankStat(stats);
+          setIsLoading(false);
+        }
+      } else {
+        // make div to return an error or something
+        return;
+      }
+    };
+    fetchData();
+  }, []);
+  const ranks = [
+    'Unranked',
+    'Iron',
+    'Bronze',
+    'Silver',
+    'Gold',
+    'Platinum',
+    'Diamond',
+    'Amethyst',
+    'RedStar',
+    'Master',
+    'King',
+  ];
+  if (isLoading) return <div>Loading Data...</div>;
+  else {
+    return (
+      <div className="flex flex-col p-8 pb-0">
+        <div className="flex h-[100px] w-full items-center  overflow-x-auto ">
+          <div className="relative mb-4 h-4 w-[900px] rounded-full bg-[#0D1743]  ">
+            <div
+              className="h-4 rounded-full bg-[#01FD91]"
+              style={{ width: rankStat.current_points }}
+            ></div>
+            <div className="relative -left-[2.5px] -top-9 flex w-[920px] flex-row justify-between">
+              <Rank
+                rank={ranks[1]}
+                width="w-[50px]"
+                isVisible={rankStat?.rankId >= 1 ? true : false}
+              />
+              <Rank
+                rank={ranks[2]}
+                width="w-[50px]"
+                isVisible={rankStat?.rankId >= 2 ? true : false}
+              />
+              <Rank
+                rank={ranks[3]}
+                width="w-[50px]"
+                isVisible={rankStat?.rankId >= 3 ? true : false}
+              />
+              <Rank
+                rank={ranks[4]}
+                width="w-[50px]"
+                isVisible={rankStat?.rankId >= 4 ? true : false}
+              />
+              <Rank
+                rank={ranks[5]}
+                width="w-[55px]"
+                isVisible={rankStat?.rankId >= 5 ? true : false}
+              />
+              <Rank
+                rank={ranks[6]}
+                width="w-[55px]"
+                isVisible={rankStat?.rankId >= 6 ? true : false}
+              />
+              <Rank
+                rank={ranks[7]}
+                width="w-[60px]"
+                isVisible={rankStat?.rankId >= 7 ? true : false}
+              />
+              <Rank
+                rank={ranks[8]}
+                width="w-[60px]"
+                isVisible={rankStat?.rankId >= 8 ? true : false}
+              />
+              <Rank
+                rank={ranks[9]}
+                width="w-[60px]"
+                isVisible={rankStat?.rankId >= 9 ? true : false}
+              />
+              <Rank
+                rank={ranks[10]}
+                width="w-[70px]"
+                isVisible={rankStat?.rankId >= 10 ? true : false}
+              />
+            </div>
           </div>
         </div>
-        <div className="mt-9 flex  w-full flex-col items-center">
-          <h1>RECENT RANK GAMES:</h1>
-          <div className="mt-4 flex h-[250px] w-full flex-col items-center  gap-5  overflow-auto">
-            <MatchData
-              player1={'hhmangol'}
-              player2={'3absslam'}
-              status={true}
-              date={'5'}
-              score={'12-1'}
-              P1Avatar={'mangol'}
-              P2Avatar={'3abslam'}
-            />
-            <MatchData
-              player1={'hhmangol'}
-              player2={'3absslam mol'}
-              status={false}
-              date={'5'}
-              score={'12-1'}
-              P1Avatar={'mangol'}
-              P2Avatar={'3abslam'}
-            />
-            <MatchData
-              player1={'hhmangol'}
-              player2={'3absslam'}
-              status={true}
-              date={'5'}
-              score={'12-1'}
-              P1Avatar={'mangol'}
-              P2Avatar={'3abslam'}
-            />
-            <MatchData
-              player1={'hhmangol'}
-              player2={'3absslam'}
-              status={false}
-              date={'5'}
-              score={'12-1'}
-              P1Avatar={'mangol'}
-              P2Avatar={'3abslam'}
-            />
+
+        <div
+          className="flex h-[250px] flex-col  justify-between border-t-2 border-gray-100 border-opacity-70 
+                       text-sm lg:flex-row lg:gap-10"
+        >
+          <div
+            className="mt-10 flex flex-col items-center justify-start gap-5  
+                      border-0 border-gray-100 border-opacity-70 text-sm 
+                      lg:w-[50%] lg:border-r-2"
+          >
+            <h1>STATS:</h1>
+            <div className="flex w-1/2 flex-row items-center  justify-evenly gap-3 lg:w-2/3">
+              <img
+                src="/star.svg"
+                alt="startIcon"
+                className="ml-2 w-[20px] "
+              ></img>
+              <p className="w-[150px] ">
+                Rank Point : {rankStat.current_points + ' RP'}{' '}
+              </p>
+            </div>
+            <div className="flex w-1/2 flex-row items-center justify-evenly lg:w-2/3">
+              <RankingIconFix />
+              <p className="w-[150px] ">
+                Current Rank :{ranks[rankStat.rankId]}
+              </p>
+            </div>
+            <div className="flex w-1/2 flex-row items-center justify-evenly lg:w-2/3">
+              <RankingIconFix />
+              <p className="w-[150px] ">
+                Next Rank :{' '}
+                {rankStat.rankId + 1 < 9
+                  ? ranks[rankStat.rankId + 1]
+                  : 'Congratz'}
+              </p>
+            </div>
+          </div>
+          <div className="mt-9 flex  w-full flex-col items-center">
+            <h1>RECENT RANK GAMES:</h1>
+            <div className="mt-4 flex h-[250px] w-full flex-col items-center  gap-5  overflow-auto">
+              {games.map((game: any, i: number) => {
+                return game.isPlayerWinner ? (
+                  <MatchData
+                    key={i}
+                    player1={game.winnerId.nickname}
+                    player2={game.loserId.nickname}
+                    status={true}
+                    date={calculateTimeElapsed(game.playerAt)}
+                    score={game.score}
+                    P1Avatar={game.winnerId.avatar}
+                    P2Avatar={game.loserId.avatar}
+                  />
+                ) : (
+                  <MatchData
+                    key={i + 10}
+                    player1={game.loserId.nickname}
+                    player2={game.winnerId.nickname}
+                    status={false}
+                    date={calculateTimeElapsed(game.playerAt)}
+                    score={game.score}
+                    P1Avatar={game.loserId.avatar}
+                    P2Avatar={game.winnerId.avatar}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 export default RankingStat;

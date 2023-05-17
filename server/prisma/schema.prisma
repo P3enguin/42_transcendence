@@ -33,11 +33,11 @@ model Player {
   wins Match[] @relation(name: "wins")
   loss Match[] @relation(name: "loss")
 
-  ownedRooms  Room[]
+  ownedRooms Room[]
 
-  admins  Room[] @relation(name: "room_admins")
-  rooms   Room[] @relation(name: "room_members")
-  bans    Ban[]
+  admins Room[] @relation(name: "room_admins")
+  rooms  Room[] @relation(name: "room_members")
+  bans   Ban[]
 
   equipedTitle Int       @default(0)
   requestsFrom Request[] @relation("requestFrom")
@@ -65,9 +65,9 @@ model Status {
 
   player Player?
 
-  level Int @default(1)
+  level Int    @default(1)
   // change to BigInt
-  XP BigInt @default(0)
+  XP    BigInt @default(0)
 
   achivement Achivement_status[]
   title      Titles_status[]
@@ -109,10 +109,10 @@ model Rank {
 }
 
 model Rank_status {
-  rank    Rank  @relation(fields: [rankId], references: [id])
-  rankId   Int @default(0)
+  rank     Rank   @relation(fields: [rankId], references: [id])
+  rankId   Int    @default(0)
   status   Status @relation(fields: [statusId], references: [id])
-  statusId Int @unique()
+  statusId Int    @unique()
 
   current_points Int @default(0)
 
@@ -142,7 +142,7 @@ model Titles_status {
 }
 
 model Match {
-  id Int @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
   type String
 
   winner   Int
@@ -166,12 +166,12 @@ model Room {
   isChannel Boolean @default(false)
 
   ownerId Int
-  owner   Player?  @relation(fields: [ownerId], references: [id])
+  owner   Player? @relation(fields: [ownerId], references: [id])
 
-  admins    Player[] @relation("room_admins")
-  members   Player[] @relation("room_members")
-  messages  Message[]
-  bans      Ban[]
+  admins   Player[]  @relation("room_admins")
+  members  Player[]  @relation("room_members")
+  messages Message[]
+  bans     Ban[]
 
   avatar String @default("eg.jpeg")
 
@@ -190,15 +190,15 @@ model Message {
 }
 
 model Ban {
-  id  Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   channelId Int
   channel   Room @relation(fields: [channelId], references: [id])
 
-  playerId  Int
-  player    Player @relation(fields: [playerId], references: [id])
+  playerId Int
+  player   Player @relation(fields: [playerId], references: [id])
 
-  reason  String?
+  reason String?
 }
 
 model InvalidToken {
