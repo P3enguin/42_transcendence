@@ -49,6 +49,14 @@ export class BanMemberDto {
   reason?: string;
 }
 
+export class UnbanMemberDto {
+  @IsString()
+  channelId: string;
+
+  @IsString()
+  memberNickname: string;
+}
+
 export class MuteMemberDto {
   @IsString()
   channelId: string;

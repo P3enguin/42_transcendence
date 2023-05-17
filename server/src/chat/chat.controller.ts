@@ -18,8 +18,9 @@ import {
   CreateChannelDto,
   JoinChannelDto,
   KickMemberDto,
-  MuteMemberDto,
   BanMemberDto,
+  UnbanMemberDto,
+  MuteMemberDto,
   UnmuteMemberDto,
 } from './dto';
 
@@ -174,6 +175,21 @@ export class ChatController {
   ) {
     try {
       const result = await this.chatService.banMember(player, banMemberDto);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Delete('ban')
+  async unbanMember(
+    @GetPlayer() player: Player,
+    @Body() unbanMemberDto: UnbanMemberDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.unbanMember(player, unbanMemberDto);
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
