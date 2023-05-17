@@ -210,7 +210,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
               createPrivateChat={createPrivateChat}
             />
           </div>
-        }
+        )}
       </div>
     </div>
   );

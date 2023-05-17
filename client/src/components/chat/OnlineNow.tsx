@@ -75,8 +75,8 @@ function OnlineNow ({player, token, ws}: any)
                   className="h-14 w-14 md:w-16 md:h-16 cursor-pointer rounded-full border"
                   src={picture}
                   alt="Avatar"
-                  width={12}
-                  height={12}
+                  width={100}
+                  height={100}
                 />
             </div>
           );
