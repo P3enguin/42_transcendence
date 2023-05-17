@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
 interface ballProps {
-  boardRef?: React.RefObject<HTMLDivElement>;
+  boardRef: React.RefObject<HTMLDivElement>;
   ws?: Socket;
 }
 
@@ -34,7 +34,7 @@ const Ball = ({ boardRef, ws }: ballProps) => {
 
   useEffect(() => {
     const resizeBall = () => {
-      if (ballRef.current && boardRef && boardRef.current) {
+      if (ballRef.current && boardRef.current) {
         ballRef.current.style.width =
           (boardRef.current?.offsetWidth / 8) / 5 + 'px';
         ballRef.current.style.height = ballRef.current.offsetWidth + 'px';

@@ -15,7 +15,7 @@ import { generate } from 'shortid';
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  async getAllChat(_player: Player) {
+  async getAllChat(_player: Player, page: number) {
     const player = await this.prisma.player.findUnique({
       where: {
         id: _player.id,
@@ -33,12 +33,21 @@ export class ChatService {
                 message: true,
                 sendAt: true,
               },
+              orderBy: {
+                sendAt: 'desc',
+              },
+              take: 1,
             },
           },
+          skip: 12 * page,
+          take: 12,
         },
       },
     });
-    console.log('==>', player.rooms[0]);
+    console.log('Player Rooms Messages:');
+    player.rooms.forEach((room) => {
+      console.log(room.messages);
+    });
     if (!player)
       return {
         status: 404,
@@ -695,5 +704,41 @@ export class ChatService {
       status: 200,
       data: channels,
     };
+  }
+
+  async saveMessage(messageInfo: any, roomId: string) {
+    try {
+      const sender = await this.prisma.player.findUnique({
+        where: {
+          nickname: messageInfo.sender,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const msg = await this.prisma.message.create({
+        data: {
+          sender: sender.id,
+          message: messageInfo.message,
+          roomId: roomId,
+        },
+      });
+
+      const channel = await this.prisma.room.update({
+        where: {
+          channelId: roomId,
+        },
+        data: {
+          messages: {
+            connect: {
+              MsgId: msg.MsgId,
+            },
+          },
+        },
+      });
+    } catch (err) {
+      console.log('cant create message', err.message);
+    }
   }
 }

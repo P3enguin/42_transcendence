@@ -7,18 +7,22 @@ import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
 import { useEffect, useRef, useState } from 'react';
+import { DotLoader } from 'react-spinners';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
 const PlayGame = ({ jwt_token, res, params }: any) => {
   const gameRef = useRef<HTMLDivElement>(null);
+  const [spectators, setSpectators] = useState<number>(0);
+  const [error, setError] = useState<string>('');
   const [Position, setPosition] = useState('');
-  const [player1, setPlayer1] = useState({
+  const [loading, setLoading] = useState(false);
+  const [player0, setPlayer0] = useState({
     nickname: '',
     avatar: '',
     score: 0,
   });
-  const [player2, setPlayer2] = useState({
+  const [player1, setPlayer1] = useState({
     nickname: '',
     avatar: '',
     score: 0,
@@ -26,30 +30,46 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
   const [gameOn, setGameOn] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log(res);
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
       auth: {
         token: jwt_token,
       },
     });
-    if (res === '0ki') {
+    if (res.message === 'Oki') {
+      setLoading(true);
+
       socket.on('connected', () => {
         console.log('connected');
-        socket.emit('joinGame', { gameId: params.id });
+        console.log('isPlayer: ', res.isPlayer);
+        if (res.isPlayer)
+          socket.emit('joinGame', { gameId: params.id }, (res: any) => {});
+        else socket.emit('watchGame', { gameId: params.id });
+
         socket.on('joined', (data: any) => {
-          console.log('joined: ', data);
+          if (data.isPlayer) {
+            setLoading(false);
+            setError('');
+          } else setSpectators((prev) => prev + 1);
+          console.log('joined', data.message);
         });
+        socket.on('left', (nickname: string) => {
+          console.log('left', nickname);
+          setError(`waiting for ${nickname} to reconnect...`);
+        });
+
         socket.on('startGame', ({ position, info }: any) => {
           console.log('startGame');
           console.log('position: ', position);
 
           setPosition(position);
           setGameOn(true);
-          setPlayer1({
+          setPlayer0({
             nickname: info.p1,
             avatar: info.p1Avatar,
             score: info.pScore1,
           });
-          setPlayer2({
+          setPlayer1({
             nickname: info.p2,
             avatar: info.p2Avatar,
             score: info.pScore2,
@@ -57,35 +77,39 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
           socket.on(
             'updateScore',
             (data: { [key: string]: number | string }) => {
-              setPlayer1((prev) => ({
+              setPlayer0((prev) => ({
                 ...prev,
                 score: data[info.p1] as number,
               }));
-              setPlayer2((prev) => ({
+              setPlayer1((prev) => ({
                 ...prev,
                 score: data[info.p2] as number,
               }));
-              
             },
-            );
-            socket.on('gameOver', (data: any) => {
-              console.log('gameOver: ', data, info.p1, info.p2);
-              setPlayer1((prev) => ({
-                ...prev,
-                score: data[info.p1] as number,
-              }));
-              setPlayer2((prev) => ({
-                ...prev,
-                score: data[info.p2] as number,
-              }));
+          );
+          socket.on('gameOver', (data: any) => {
+            console.log('gameOver: ', data, info.p1, info.p2);
+            setPlayer0((prev) => ({
+              ...prev,
+              score: data[info.p1] as number,
+            }));
+            setPlayer1((prev) => ({
+              ...prev,
+              score: data[info.p2] as number,
+            }));
             setGameOn(false);
+            setError('')
           });
         });
+
         socket.on('disconnect', () => {
           setGameOn(false);
           socket.disconnect();
         });
       });
+    } else {
+      socket.disconnect();
+      setError(res.message);
     }
     return () => {
       socket.disconnect();
@@ -99,18 +123,26 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         <title>Ponginator | Play Game</title>
       </Head>
       <div
-        className="flex h-full w-full flex-col items-center justify-around"
+        className="flex h-full w-full flex-col items-center justify-start"
         ref={gameRef}
-      >
+        >
+        {error && <div>{error}</div>}
         {Position && (
-          <ScoreBoard
-            gameOn={gameOn}
-            player1={player1}
-            player2={player2}
-          />
+          <ScoreBoard gameOn={gameOn} player1={player0} player2={player1} />
         )}
         {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
+        )}
+        {loading && (
+          <div className="flex flex-col items-center m-auto">
+            <DotLoader
+              color="#ffffff"
+              loading={loading}
+              size={100}
+              className="mb-10"
+            />
+            <p className="text-xl">Waiting for other player to join ...</p>
+          </div>
         )}
       </div>
     </>
@@ -129,9 +161,8 @@ export async function getServerSideProps({
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
-      let data: string = '';
       try {
-        const resp = await axios.get(
+        const res = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_HOST}/game/${params.id}`,
           {
             headers: {
@@ -139,18 +170,22 @@ export async function getServerSideProps({
             },
           },
         );
-        data = resp.data;
+        return {
+          props: {
+            params,
+            res: res.data,
+            jwt_token,
+          },
+        };
       } catch (e: any) {
-        console.error(e.message);
-        data = e.response.data;
+        return {
+          props: {
+            params,
+            res: e.response.data,
+            jwt_token,
+          },
+        };
       }
-      return {
-        props: {
-          params,
-          res: data,
-          jwt_token,
-        },
-      };
     }
   }
   return {

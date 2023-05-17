@@ -52,6 +52,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
     )) as connectedPlayer;
+    if (!player) client.disconnect(true);
     player.socketId = client.id;
     client.handshake.query.user = JSON.stringify(player);
     this.logger.log(`player connected: ${player.nickname} ${player.socketId}`);
@@ -61,9 +62,11 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
     const player = this.getPlayer(client);
     const game = this.gameService.getGameById(player.gameId);
-    if (player && game && game.gameOn) {
-      game.playerLeft(player.nickname);
-      this.server.to(player.gameId).emit('left', player.nickname);
+    if (player && game) {
+      if (game.gameOn) {
+        game.playerLeft(player.nickname);
+        this.server.to(player.gameId).emit('left', player.nickname);
+      } else this.gameService.deleteGame(player.gameId);
     }
     this.logger.log(
       `player disconnected: ${player.nickname} ${player.socketId}`,
@@ -78,7 +81,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('joinGame')
-  handleMessage(
+  handlejoinGame(
     @GetPlayer() player: connectedPlayer,
     @ConnectedSocket() client: Socket,
     @MessageBody() { gameId }: { gameId: string },
@@ -86,16 +89,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const game = this.gameService.getGameById(gameId);
     if (game) {
       if (game.isPlayer(player.nickname)) {
-        if (!game.isFull()) {
+        if (!game.isActive()) {
           game.connectPlayer(player.nickname, client.id);
-          client.join(gameId);
           player.gameId = gameId;
           client.handshake.query.user = JSON.stringify(player);
-          this.server
-            .to(gameId)
-            .emit('joined', `${player.nickname} has joined the game`);
+          client.join(gameId);
         }
-        if (game.isFull()) {
+        if (game.isActive()) {
           this.server.to(game.players[0].socketId).emit('startGame', {
             position: 'Bottom',
             info: game.getPlayersInfo(),
@@ -103,6 +103,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           this.server.to(game.players[1].socketId).emit('startGame', {
             position: 'Top',
             info: game.getPlayersInfo(),
+          });
+          this.server.to(gameId).emit('joined', {
+            isPlayer: true,
+            message: `${player.nickname} has joined the game`,
           });
           this.server
             .to('LiveGames')
@@ -113,65 +117,86 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         }
         return { status: 200, message: 'Joined' };
       } else {
-        if (game.gameOn) {
-          game.addSpectator(
-            new gamePlayer(
-              player.id,
-              player.nickname,
-              player.avatar,
-              client.id,
-            ),
-          );
-          this.server
-            .to(gameId)
-            .emit('joined', `${player.nickname} is spectating`);
-          client.join(gameId);
-          this.server.to(client.id).emit('startGame', {
-            position: 'spectator',
-            info: game.getPlayersInfo(),
-          });
-          return { status: 200, message: 'Spectating' };
-        } else {
-          return { status: 401, message: 'This game not satrted yet' };
-        }
+        return { status: 401, message: 'You are not a player in  this game' };
       }
     } else {
       return { status: 404, message: 'Game not found' };
     }
   }
 
+  @SubscribeMessage('watchGame')
+  handleWatchGame(
+    @GetPlayer() player: connectedPlayer,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() { gameId }: { gameId: string },
+  ) {
+    const game = this.gameService.getGameById(gameId);
+    if (game) {
+      if (game.gameOn) {
+        game.addSpectator(
+          new gamePlayer(player.id, player.nickname, player.avatar, client.id),
+        );
+        this.server.to(gameId).emit('joined', {
+          isPlayer: false,
+          message: `${player.nickname} is spectating`,
+        });
+        client.join(gameId);
+        this.server.to(client.id).emit('startGame', {
+          position: 'spectator',
+          info: game.getPlayersInfo(),
+        });
+        return { status: 200, message: 'Spectating' };
+      } else {
+        client.join(gameId);
+        return { status: 401, message: 'This game not satrted yet' };
+      }
+    }
+  }
+
   @SubscribeMessage('move')
   handleMove(@GetPlayer() player: connectedPlayer, @MessageBody() data: any) {
     const game = this.gameService.getGameById(player.gameId);
-    if (game) game.movePaddle(data.position, data.x);
+    if (game) {
+      const __player = game.isPlayer(player.nickname);
+      if (__player) {
+        game.movePaddle(__player, data.x);
+      }
+    }
   }
 
   startGame(game) {
-    game.start();
-    game.inteval = setInterval(() => {
-      game.ball.setNextPosition();
-      // check if ball is colliding with Wall
-      game.checkWallCollision();
-      // check if ball is colliding with paddle
-      game.checkPaddleCollision();
-      // check if ball scored
-      if (game.checkNewScore()) {
-        this.server
-          .to(game.id)
-          .to('LiveGames')
-          .emit('updateScore', game.getScore());
-      }
-      // check if the game reached 5 score
-      if (game.checkWin()) {
-        this.server.to(game.id).to('LiveGames').emit('gameOver', game.getScore());
-        clearInterval(game.inteval);
-        this.gameService.saveGame(game);
-      }
-      // update ball position
-      game.ball.updatePosition();
-      this.server.to(game.id).emit('updateBall', game.getBallPos());
-      this.server.to(game.id).emit('updatePaddle', game.getPaddlePos());
-    }, 1000 / 60);
+    if (!game.gameOn) {
+      game.start();
+      game.interval = setInterval(() => {
+        if (!game.paused) {
+          game.ball.setNextPosition();
+          // check if ball is colliding with Wall
+          game.checkWallCollision();
+          // check if ball is colliding with paddle
+          game.checkPaddleCollision();
+          // check if ball scored
+          if (game.checkNewScore()) {
+            this.server
+              .to(game.id)
+              .to('LiveGames')
+              .emit('updateScore', game.getScore());
+          }
+          // check if the game reached 5 score
+          if (game.checkWin()) {
+            this.server
+              .to(game.id)
+              .to('LiveGames')
+              .emit('gameOver', game.getScore());
+            clearInterval(game.interval);
+            this.gameService.saveGame(game);
+          }
+          // update ball position
+          game.ball.updatePosition();
+          this.server.to(game.id).emit('updateBall', game.getBallPos());
+          this.server.to(game.id).emit('updatePaddle', game.getPaddlePos());
+        }
+      }, 1000 / 60);
+    }
   }
 
   getPlayer(client: Socket): connectedPlayer | undefined {

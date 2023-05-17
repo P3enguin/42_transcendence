@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 
 interface paddleProps {
-  boardRef?: React.RefObject<HTMLDivElement>;
+  boardRef: React.RefObject<HTMLDivElement>;
   position: { x: number; y: number };
 }
 
@@ -13,7 +13,7 @@ const PaddleAi = ({ boardRef, position }: paddleProps) => {
 
   useEffect(() => {
     const resizePaddle = () => {
-      if (paddleRef.current && boardRef && boardRef.current) {
+      if (paddleRef.current && boardRef.current) {
         paddleRef.current.style.width =
           boardRef.current?.offsetWidth / 8 + 'px';
         paddleRef.current.style.height =
@@ -30,7 +30,7 @@ const PaddleAi = ({ boardRef, position }: paddleProps) => {
       window.removeEventListener('resize', resizePaddle);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current]);
+  }, [boardRef?.current, paddleRef.current]);
 
   // const paddleStyle = {
   //   top: paddleY + '%',

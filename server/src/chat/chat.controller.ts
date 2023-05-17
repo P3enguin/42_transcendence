@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Query,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -29,9 +28,14 @@ export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @Get('allChat')
-  async GetChat(@GetPlayer() player: Player, @Res() res: Response) {
+  async GetChat(
+    @GetPlayer() player: Player,
+    @Res() res: Response,
+    @Query('page') page: number,
+  ) {
     try {
-      const allChat = await this.chatService.getAllChat(player);
+      console.log('Get All Chat');
+      const allChat = await this.chatService.getAllChat(player, 0);
       res.status(allChat.status).json(allChat);
     } catch (error) {
       console.log(error);
@@ -201,4 +205,16 @@ export class ChatController {
       return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
+
+  // async saveMessage(
+  //   @GetPlayer('id') id: number,
+  //   messageInfo: any,
+  //   roomId: string,
+  // ) {
+  //   try {
+  //     const result = await this.chatService.saveMessage(messageInfo, roomId);
+  //   } catch (error) {
+  //     return 'An error has occurred';
+  //   }
+  // }
 }

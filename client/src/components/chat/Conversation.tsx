@@ -14,16 +14,16 @@ interface Message {
   message: string;
 }
 
-
 function Conversation({ player, jwt_token, id }: any) {
-
-
-
   const [showTopic, setShowTopic] = useState(true);
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [channel, setChannel] = useState(null);
+  const [channel, setChannel] = useState<{
+    avatar: string,
+    name: string,
+    topic: string,
+  }>();
   const [message, setMessage] = useState('');
 
   const clientsMap = new Map();
@@ -35,7 +35,7 @@ function Conversation({ player, jwt_token, id }: any) {
         {
           withCredentials: true,
           headers: { Authorization: `Bearer ${jwt_token}` },
-        },
+        }
       );
       const channel = response.data;
       console.log(channel);
@@ -54,6 +54,7 @@ function Conversation({ player, jwt_token, id }: any) {
   };
 
   useEffect(() => {
+    // setChannel(NULL);
     getRoomData(id);
 
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
@@ -62,7 +63,11 @@ function Conversation({ player, jwt_token, id }: any) {
       },
     });
     socket.on('connected', () => {
-      console.log(player.nickname, ' : connected to the socket with : ', socket.id);
+      console.log(
+        player.nickname,
+        ' : connected to the socket with : ',
+        socket.id,
+      );
       clientsMap.set(socket.id, player.nickname);
       socket.emit('joinChat', { id });
 
@@ -78,8 +83,8 @@ function Conversation({ player, jwt_token, id }: any) {
           time: messageInfo.time,
           message: messageInfo.message,
         };
-        console.log("sender :",message.sender, "receiver :",player.nickname);
-        setMessages(prevMessages => [message, ...prevMessages]);
+        console.log('sender :', message.sender, 'receiver :', player.nickname);
+        setMessages((prevMessages) => [message, ...prevMessages]);
         handelReceivedMessage(message);
       });
     });
@@ -88,7 +93,7 @@ function Conversation({ player, jwt_token, id }: any) {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [id]);
   if (!channel) {
     return <div className="self-center">Loading...</div>;
   }
@@ -98,7 +103,8 @@ function Conversation({ player, jwt_token, id }: any) {
     <div className="flex h-full w-full flex-col justify-between ">
       <div className="flex h-[8%] w-full items-center justify-between p-2 sm:border-b">
         <div className="mt-3 flex w-full flex-row items-center justify-between px-3 py-2 sm:mt-0">
-          <div className="flex w-full flex-row border-b border-red-500 pb-2 pt-2 md:border">
+          <div className="flex w-full flex-row bo≈cvb./
+          'rder-b pb-2 pt-2 md:border-none">
             <div className="min-w[300px] text-lg ml-2 flex flex-row justify-between">
               <Image
                 className="rounded-full border"
@@ -107,8 +113,8 @@ function Conversation({ player, jwt_token, id }: any) {
                 width={45}
                 height={45}
               />
-              <div className="ml-4 flex flex-col items-center">
-                <h3 className=" text-sx font-bold text-red-500">
+              <div className=" flex flex-col pl-2">
+                <h3 className=" text-sx font-bold text-green-500">
                   {channel.name}
                 </h3>
                 <h4 className="flex text-ss md:text-sm">{channel.topic}</h4>
@@ -126,35 +132,33 @@ function Conversation({ player, jwt_token, id }: any) {
       <div
         className="flex h-[95%] w-[100%] flex-col
             items-center"
-            >
+      >
         {/* from-them */}
-        <div className="h-[90%] px-12 w-full flex flex-col-reverse border pb-10 border-blue-600 overflow-hidden overflow-y-auto scrollbar-hide">
+        <div className="flex h-[90%] w-full flex-col-reverse overflow-hidden overflow-y-auto px-12 pb-9 scrollbar-hide">
           {messages.map((msg: any, key: number) => {
             let side = false;
-            if (msg.sender ===  player.nickname)
-              side = true;
-            console.log("from conv",player.nickname);
-              return <Message message={msg} side={side} key={key} />; 
-            })}
+            if (msg.sender === player.nickname) side = true;
+            return <Message message={msg} side={side} key={key} />;
+          })}
         </div>
-        <div className="relative mb-2 w-[90%]  flex-col items-center sm:flex">
-        <input
+        <div className="relative mb-2 w-[90%] flex-col items-center sm:flex">
+          <input
             type="text"
             name="nickname"
             id="nickname"
-            className="text-xs peer block w-[70%] w-full appearance-none overflow-hidden rounded-full border-2 border-white bg-transparent px-3 py-2.5 text-white focus:border-blue-600 focus:outline-none focus:ring-0 sm:text-sm"
+            className="text-xs peer block pr-10 w-full appearance-none overflow-hidden rounded-full border-2 border-white bg-transparent px-3 py-2.5 text-white focus:border-blue-600 focus:outline-none focus:ring-0 sm:text-sm"
             placeholder="Message . . ."
             required
             value={message}
             onChange={(e) => {
-                e.preventDefault();
-                setMessage(e.target.value)
-              }}
+              e.preventDefault();
+              setMessage(e.target.value);
+            }}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && message != '') {
+              if (e.key === 'Enter' && message != '') {
                 e.preventDefault();
                 sendMessage(message);
-                setMessage("");
+                setMessage('');
               }
             }}
           />
@@ -165,8 +169,8 @@ function Conversation({ player, jwt_token, id }: any) {
             onClick={(e) => {
               e.preventDefault();
               if (message != '') {
-              sendMessage(message);
-              setMessage("");
+                sendMessage(message);
+                setMessage('');
               }
             }}
           >

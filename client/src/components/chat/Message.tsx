@@ -25,11 +25,12 @@ function Message({ message, side }: { message: any; side: boolean }) {
             className="absolute bottom-0 right-0 h-[40px] w-[40px] translate-x-[107%] translate-y-[50%] rounded-full"
           />
           <p className="absolute -top-3 right-3.5 text-ss ">{message.sender}</p>
-          <p className="break-words text-left text-black" style={
-            {
-              wordBreak : "break-word"
-            }
-          }>
+          <p
+            className="break-words text-left text-black"
+            style={{
+              wordBreak: 'break-word',
+            }}
+          >
             {message.message}
           </p>
           <p className="absolute bottom-0 left-3 text-ss text-black">
@@ -56,7 +57,12 @@ function Message({ message, side }: { message: any; side: boolean }) {
             {' '}
             {message.sender}{' '}
           </p>
-          <p className=" break-words text-left text-black">
+          <p
+            className=" break-words text-left text-black"
+            style={{
+              wordBreak: 'break-word',
+            }}
+          >
             {' '}
             {message.message}{' '}
           </p>

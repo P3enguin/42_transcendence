@@ -22,12 +22,13 @@ const START_DATE = new Date().getTime();
 
 const ScoreBoard = (props: ScoreBoardProps) => {
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [redirectTime, setRedirectTime] = useState(5);
+  const [redirectTime, setRedirectTime] = useState(3);
   const router = useRouter();
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout;
     const redirectAfter = (seconds: number) => {
-      setTimeout(() => {
+      intervalId = setTimeout(() => {
         if (seconds >= 0) {
           setRedirectTime(seconds);
           redirectAfter(seconds - 1);
@@ -35,7 +36,6 @@ const ScoreBoard = (props: ScoreBoardProps) => {
       }, 1000);
     };
 
-    let intervalId: NodeJS.Timeout;
     if (props.gameOn) {
       const startTime = Date.now();
       intervalId = setInterval(() => {
@@ -73,16 +73,16 @@ const ScoreBoard = (props: ScoreBoardProps) => {
   return (
     <>
       {props.gameOn && (
-        <div className="felx mb-5 w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3">
+        <div className="felx w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3 my-6">
           <p className="text-center text-xl ">{formatTime(elapsedTime)}</p>
           <div className="flex justify-between">
             <div className="flex flex-col items-center">
               <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player1.avatar}`}
-                alt=""
+                alt={`Avatar of ${props.player1.nickname}`}
                 width={50}
                 height={50}
-                className="w-12 rounded-full"
+                className="w-[50px] rounded-full"
               />
               <p>{props.player1.nickname}</p>
               <p>{props.player1.score}</p>
@@ -90,10 +90,10 @@ const ScoreBoard = (props: ScoreBoardProps) => {
             <div className="flex flex-col items-center">
               <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player2.avatar}`}
-                alt=""
+                alt={`Avatar of ${props.player2.nickname}`}
                 width={50}
                 height={50}
-                className="w-12 rounded-full"
+                className="w-[50px] rounded-full"
               />
               <p>{props.player2.nickname}</p>
               <p>{props.player2.score}</p>
@@ -102,16 +102,16 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         </div>
       )}
       {!props.gameOn && (
-        <div className="flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
+        <div className="flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl m-auto">
           <div>
             <Image
-              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${
-                getWinner().avatar
-              }`}
-              alt=""
-              width={50}
-              height={50}
-              className="m-auto mb-3 w-32 rounded-full"
+              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${getWinner().avatar
+                }`}
+              alt={`Avatar of ${getWinner().nickname}`}
+              width={200}
+              height={200}
+              className="m-auto mb-3 rounded-full"
+              quality={100}
             />
 
             <p className="">

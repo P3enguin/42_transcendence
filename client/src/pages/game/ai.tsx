@@ -49,7 +49,7 @@ const Ai = ({ player }: any) => {
         <title>Ponginator | Play with AI</title>
       </Head>
       <div
-        className="flex h-full w-full flex-col items-center justify-start pt-3 md:pt-32"
+        className="flex h-full w-full flex-col items-center justify-start pt-3 md:pt-20"
         ref={gameRef}
       >
         <ScoreBoard
@@ -68,7 +68,7 @@ const Ai = ({ player }: any) => {
         {gameOn && (<PongAi
           gameRef={gameRef}
           newScore={newScore}
-          isSimulation={false}
+          isSimulation={true}
           isContact={false}
           isRotated={false}
           gamePaused={gamePaused}

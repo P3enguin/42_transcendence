@@ -16,7 +16,9 @@ interface player {
     status: string | undefined;
     id: string | undefined;
   };
-  isFriend?:boolean;
+  isFriend?: boolean;
+  rankId: number;
+  winRatio: string;
 }
 
 function UserProfile({
@@ -30,9 +32,9 @@ function UserProfile({
   exist,
   request,
   isFriend,
+  rankId,
+  winRatio,
 }: player) {
-  // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
-  const list = ['hh', 'hh2', 'hh3'];
   if (!exist)
     return (
       <p className="mt-[400px]  text-xl text-red-600">Player does not exist!</p>
@@ -61,6 +63,8 @@ function UserProfile({
             requestFriend={requestFriend}
             setRequest={setRequest}
             isFriend={isFriend}
+            rankId={rankId}
+            winRatio={winRatio}
           />
           <ProfileStats nickname={nickname} userProfile={false} />
         </div>
@@ -104,6 +108,7 @@ export async function getServerSideProps({ params, req }: any) {
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );
+
     return {
       // modify this to return anything you want before your page load
       props: {
@@ -117,6 +122,8 @@ export async function getServerSideProps({ params, req }: any) {
         exist: true,
         request: data.request,
         isFriend: data.isFriend,
+        rankId: data.rankId,
+        winRatio: data.winRatio,
       },
     };
   }

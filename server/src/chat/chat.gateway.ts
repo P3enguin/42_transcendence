@@ -87,7 +87,7 @@ export class ChatGateway
     };
   
     this.server.to(data.id).emit('message', messageInfo);
-    // this.chatservice.SendPrivMessage(RoomId, payload.message, player.id)
+    this.chatservice.saveMessage(messageInfo, data.id)
   }
 
 }

@@ -222,6 +222,23 @@ export class PlayerController {
     return this.playerService.getDataSearch(res, query.search);
   }
 
+  //----------------------------------{Games}------------------------------
+
+  @Get('games')
+  getGamesPlayer(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getGamesPlayed(res, query.search);
+  }
+
+  @Get('ranked')
+  getRankedGames(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getRankedGames(res, query.search);
+  }
+
+  @Get('rankStat')
+  getRankStats(@Res() res: Response, @Query() query: querySearchParam) {
+    return this.playerService.getRankStats(res, query.search);
+  }
+
   //----------------------------------{LeaderBoard}------------------------------
 
   @Get('leaderboard')
