@@ -19,8 +19,13 @@ export default function Leaderboard({
         />
         <h1 className="pl-2 text-xl font-bold uppercase">Leaderboard:</h1>
       </div>
-      <div className="scrollbar max-h-[580px] overflow-auto">
-        <ol className="flex flex-col py-4 px-9">
+      <div className="scrollbar h-[580px] overflow-auto">
+        <ol className="flex h-full flex-col px-9 py-4">
+          {leaderBoard.rank.length == 0 && (
+            <div className="flex h-full w-full items-center justify-center">
+              <p>No users</p>
+            </div>
+          )}
           {leaderBoard.rank.map((player: Rank, i: number) => (
             <li key={i} className="p-2">
               <LeaderboardPlayerRank

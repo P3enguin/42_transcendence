@@ -22,7 +22,7 @@ function HomePlayer({
       </Head>
       <div className="my-[55px] flex w-full flex-col items-center gap-[65px]">
         <DiscoverChannels channels={channels} />
-        <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap 2xl:w-[1323px]">
+        <div className="flex w-[90%] flex-wrap gap-[65px] xl:flex-nowrap 2xl:w-[1495px]">
           <LiveGames jwt_token={jwt_token} />
           <Leaderboard leaderBoard={leaderBoard} />
         </div>
