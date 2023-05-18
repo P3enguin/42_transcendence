@@ -22,8 +22,10 @@ export default function LiveGames({ jwt_token }: { jwt_token: string }) {
         setGames((prevGames) => [...prevGames, newGame]);
       });
 
-      socket.on('gameOver', (gameId: string) => {
-        setGames((prevGames) => prevGames.filter((game) => game.id !== gameId));
+      socket.on('gameOver', (data: { [key: string]: number | string }) => {
+        setGames((prevGames) =>
+          prevGames.filter((game) => game.id !== data.gameId),
+        );
       });
 
       socket.on('updateScore', (data: { [key: string]: number | string }) => {

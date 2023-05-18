@@ -1,6 +1,7 @@
 import Image from 'next/image';
+import { Level, Rank, LeaderBoard } from '@/interfaces/LeaderBoard';
+import LeaderboardPlayerLevel from './LeaderboardPlayerLevel';
 import LeaderboardPlayerRank from './LeaderboardPlayerRank';
-import { LeaderBoard } from '@/interfaces/LeaderBoard';
 
 export default function Leaderboard({
   leaderBoard,
@@ -19,10 +20,25 @@ export default function Leaderboard({
         <h1 className="pl-2 text-xl font-bold uppercase">Leaderboard:</h1>
       </div>
       <div className="scrollbar max-h-[580px] overflow-auto">
-        {/* <ol className="flex flex-col py-4 px-9">
-          {leaderBoard.level.map((player: any, i: number) => (
+        <ol className="flex flex-col py-4 px-9">
+          {leaderBoard.rank.map((player: Rank, i: number) => (
             <li key={i} className="p-2">
               <LeaderboardPlayerRank
+                nickname={player.status.player.nickname}
+                avatar={
+                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  '/avatars/' +
+                  player.status.player.avatar
+                }
+                rankNo={i + 1}
+                rankName={player.rank.name}
+                rankColor="#8A19D4"
+              />
+            </li>
+          ))}
+          {/* {leaderBoard.level.map((player: Level, i: number) => (
+            <li key={i} className="p-2">
+              <LeaderboardPlayerLevel
                 nickname={player.player.nickname}
                 avatar={
                   process.env.NEXT_PUBLIC_BACKEND_HOST +
@@ -30,12 +46,11 @@ export default function Leaderboard({
                   player.player.avatar
                 }
                 rankNo={i + 1}
-                rankName={player.rank.avatar}
-                rankColor="#8A19D4"
+                level={player.level}
               />
             </li>
-          ))}
-        </ol> */}
+          ))} */}
+        </ol>
       </div>
     </div>
   );

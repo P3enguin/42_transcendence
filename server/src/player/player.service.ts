@@ -669,6 +669,42 @@ export class PlayerService {
     }
   }
 
+  //----------------------------------{LeaderBoard}-----------------------------------
+  async getLeaderBoardByLevel(res: Response, limit: number) {
+    try {
+      const data = await this.prisma.status.findMany({
+        select: {
+          player: {
+            select: {
+              nickname: true,
+              avatar: true,
+            },
+          },
+          level: true,
+          XP: true,
+        },
+        take: limit,
+        orderBy: [
+          {
+            level: 'desc',
+          },
+          {
+            XP: 'desc',
+          },
+        ],
+      });
+
+      const serializedData = data.map((item) => ({
+        ...item,
+        XP: item.XP.toString(),
+      }));
+
+      return res.status(200).json(serializedData);
+    } catch (error) {
+      return res.status(400).json({ error: 'An Error has occurred' });
+    }
+  }
+
   async getGamesPlayed(res: Response, nickname: string) {
     try {
       const player = await this.prisma.player.findUnique({
