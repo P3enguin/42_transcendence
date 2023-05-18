@@ -7,6 +7,9 @@ import React from 'react';
 import Router from 'next/router';
 import { LayoutProps } from './layout';
 import { Socket, io } from 'socket.io-client';
+import { verifyToken } from '../VerifyToken';
+
+import NextApiRequest from 'next';
 let socket: Socket;
 
 function SideNavBar({ children }: LayoutProps) {
@@ -32,14 +35,31 @@ function SideNavBar({ children }: LayoutProps) {
   }
 
   useEffect(() => {
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/player`, {
+    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/`, {
       auth: {
-        // token: jwt_token,
+        token: children.props.jwt_token,
       },
     });
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        socket.emit('away', {});
+      } else {
+        socket.emit('online', {});
+      }
+    };
+    socket.on('connected', (data) => {
+      handleVisibilityChange();
+      console.log('connected');
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    });
+
     return () => {
       socket.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // socket emmit everytime route cahnges

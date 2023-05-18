@@ -3,7 +3,7 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
