@@ -43,7 +43,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private gameService: GameService,
     private readonly jwt: JwtGuard,
-    private logger: Logger,
+    private readonly logger: Logger,
   ) {
     this.logger = new Logger(GameGateway.name, { timestamp: true });
   }

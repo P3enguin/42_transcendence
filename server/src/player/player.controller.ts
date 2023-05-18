@@ -146,7 +146,7 @@ export class PlayerController {
     @Res() res: Response,
     @GetPlayer() player: Player,
   ) {
-    return this.playerService.GetFriends(req, res, player.nickname);
+    return this.playerService.GetFriendsIds(player.nickname, true, req, res);
   }
 
   @Patch('block')
