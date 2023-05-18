@@ -68,7 +68,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
           <div
             ref={simRef}
             className={`relative flex  h-[100%] flex-col-reverse items-center
-                      justify-end gap-12 border
+                      justify-end gap-12 
                       ${
                         join ? 'xl:flex-row-reverse' : 'xl:flex-row'
                       } xl:justify-center

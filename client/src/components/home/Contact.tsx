@@ -70,7 +70,13 @@ function Contact({
           className="block h-[100%] max-w-full opacity-20 transition-opacity duration-700  ease-in hover:opacity-100"
           href=""
         >
-                  </a>
+         <img
+            className="block h-full max-w-full"
+            src="https://badge.mediaplus.ma/darkblue/ybensell"
+            alt="ael-hadd's 42 stats"
+            loading="eager"
+          />
+          </a>
       </motion.div>
       <motion.div
         ref={contact4Ref}
