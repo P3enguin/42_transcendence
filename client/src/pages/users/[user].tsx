@@ -39,38 +39,32 @@ function UserProfile({
     return (
       <p className="mt-[400px]  text-xl text-red-600">Player does not exist!</p>
     );
-  const [isLoading, setLoading] = useState(false);
   const [requestFriend, setRequest] = useState(request);
   const titles = ['hh', 'hh2', 'hh3'];
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!isLoading) {
-    return (
-      <>
-        <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
-          <ProfileDisplay
-            wp={
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper
-            }
-            pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
-            fullname={firstname + ' ' + lastname}
-            nickname={nickname}
-            joinDate={joinDate}
-            coins={coins}
-            exp={1800}
-            MaxExp={2500}
-            userProfile={false}
-            requestFriend={requestFriend}
-            setRequest={setRequest}
-            isFriend={isFriend}
-            rankId={rankId}
-            winRatio={winRatio}
-          />
-          <ProfileStats nickname={nickname} userProfile={false} />
-        </div>
-      </>
-    );
-  }
+  return (
+    <>
+      <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
+        <ProfileDisplay
+          wp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper}
+          pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
+          fullname={firstname + ' ' + lastname}
+          nickname={nickname}
+          joinDate={joinDate}
+          coins={coins}
+          exp={1800}
+          MaxExp={2500}
+          userProfile={false}
+          requestFriend={requestFriend}
+          setRequest={setRequest}
+          isFriend={isFriend}
+          rankId={rankId}
+          winRatio={winRatio}
+        />
+        <ProfileStats nickname={nickname} userProfile={false} />
+      </div>
+    </>
+  );
 }
 
 export async function getServerSideProps({ params, req }: any) {

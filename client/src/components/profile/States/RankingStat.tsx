@@ -60,12 +60,12 @@ function RankingStat({ nickname }: { nickname: string }) {
     return (
       <div className="flex flex-col p-8 pb-0">
         <div className="flex h-[100px] w-full items-center  overflow-x-auto ">
-          <div className="relative mb-4 h-4 w-[900px] rounded-full bg-[#0D1743]  ">
+          <div className="relative mb-4 h-4 w-[980px] rounded-full bg-[#0D1743]  ">
             <div
-              className="h-4 rounded-full bg-[#01FD91]"
+              className="h-4 rounded-full bg-[#01FD91] "
               style={{ width: rankStat.current_points }}
             ></div>
-            <div className="relative -left-[2.5px] -top-9 flex w-[920px] flex-row justify-between">
+            <div className="relative -left-[2.5px] -top-9 flex w-[1000px] flex-row justify-between ">
               <Rank
                 rank={ranks[1]}
                 width="w-[50px]"
