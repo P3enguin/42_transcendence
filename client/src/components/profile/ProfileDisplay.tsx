@@ -36,6 +36,7 @@ interface profileProps {
   >;
   rankId: number;
   winRatio: string;
+  level: number;
 }
 
 function ProfileDisplay({
@@ -53,6 +54,7 @@ function ProfileDisplay({
   isFriend,
   rankId,
   winRatio,
+  level,
 }: profileProps) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -272,7 +274,7 @@ function ProfileDisplay({
                   className="level absolute flex
                   h-[33px] w-[29px] items-center justify-center rounded-full  bg-[#2C3B7C]"
                 >
-                  2
+                  {level}
                 </div>
               </div>
               <AvatarProfileComp
@@ -318,7 +320,7 @@ function ProfileDisplay({
                       >
                         the title
                       </strong>
-                      {!requestFriend?.status && !isFriend ? (
+                      {!requestFriend?.status || !isFriend ? (
                         <button
                           onClick={SendFriendRequest}
                           type="button"
@@ -339,7 +341,7 @@ function ProfileDisplay({
                             Cancel Request <CancelIcon />
                           </button>
                         </>
-                      ) : requestFriend?.status === 'accepted' || isFriend ? (
+                      ) : isFriend ? (
                         <>
                           <div
                             className=" text-xs left-20  flex items-center rounded-lg
@@ -358,7 +360,7 @@ function ProfileDisplay({
             </div>
           </div>
           {/* player progress  */}
-          <PlayerProgress coins={coins} rankId={rankId} winRatio={winRatio}  />
+          <PlayerProgress coins={coins} rankId={rankId} winRatio={winRatio} exp={exp} maxExp={MaxExp} />
         </div>
       </div>
     </>

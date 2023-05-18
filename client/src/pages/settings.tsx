@@ -365,7 +365,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         {succes && <Success reply={reply} />}
       </AnimatePresence>
       <div
-        className="mt-[40px] flex h-[750px] w-11/12 flex-col
+        className="mt-[40px] flex sm:h-[750px] h-[850px] w-11/12 flex-col
            gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
       >
         <h1 className="mt-5 text-center text-[35px]">Settings</h1>

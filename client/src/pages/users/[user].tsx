@@ -19,6 +19,11 @@ interface player {
   isFriend?: boolean;
   rankId: number;
   winRatio: string;
+  level:number
+  xp : {
+    XP:number;
+    requiredXP:number;
+  }
 }
 
 function UserProfile({
@@ -34,6 +39,8 @@ function UserProfile({
   isFriend,
   rankId,
   winRatio,
+  level,
+  xp,
 }: player) {
   if (!exist)
     return (
@@ -52,14 +59,15 @@ function UserProfile({
           nickname={nickname}
           joinDate={joinDate}
           coins={coins}
-          exp={1800}
-          MaxExp={2500}
+          exp={xp.XP}
+          MaxExp={xp.requiredXP}
           userProfile={false}
           requestFriend={requestFriend}
           setRequest={setRequest}
           isFriend={isFriend}
           rankId={rankId}
           winRatio={winRatio}
+          level={level}
         />
         <ProfileStats nickname={nickname} userProfile={false} />
       </div>
@@ -102,7 +110,7 @@ export async function getServerSideProps({ params, req }: any) {
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );
-
+      console.log(data);
     return {
       // modify this to return anything you want before your page load
       props: {
@@ -118,6 +126,8 @@ export async function getServerSideProps({ params, req }: any) {
         isFriend: data.isFriend,
         rankId: data.rankId,
         winRatio: data.winRatio,
+        level:data.level,
+        xp:data.xp,
       },
     };
   }

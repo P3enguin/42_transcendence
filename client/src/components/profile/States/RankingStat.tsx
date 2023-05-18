@@ -143,13 +143,13 @@ function RankingStat({ nickname }: { nickname: string }) {
             <div className="flex w-1/2 flex-row items-center justify-evenly lg:w-2/3">
               <RankingIconFix />
               <p className="w-[150px] ">
-                Current Rank :{ranks[rankStat.rankId]}
+                Current Rank:&nbsp; {ranks[rankStat.rankId]}
               </p>
             </div>
             <div className="flex w-1/2 flex-row items-center justify-evenly lg:w-2/3">
               <RankingIconFix />
               <p className="w-[150px] ">
-                Next Rank :{' '}
+                Next Rank: &nbsp;
                 {rankStat.rankId + 1 < 9
                   ? ranks[rankStat.rankId + 1]
                   : 'Congratz'}
@@ -166,7 +166,7 @@ function RankingStat({ nickname }: { nickname: string }) {
                     player1={game.winnerId.nickname}
                     player2={game.loserId.nickname}
                     status={true}
-                    date={calculateTimeElapsed(game.playerAt)}
+                    date={calculateTimeElapsed(game.playedAt)}
                     score={game.score}
                     P1Avatar={game.winnerId.avatar}
                     P2Avatar={game.loserId.avatar}
@@ -177,7 +177,7 @@ function RankingStat({ nickname }: { nickname: string }) {
                     player1={game.loserId.nickname}
                     player2={game.winnerId.nickname}
                     status={false}
-                    date={calculateTimeElapsed(game.playerAt)}
+                    date={calculateTimeElapsed(game.playedAt)}
                     score={game.score}
                     P1Avatar={game.loserId.avatar}
                     P2Avatar={game.winnerId.avatar}
