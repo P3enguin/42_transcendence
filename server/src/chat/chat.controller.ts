@@ -45,6 +45,14 @@ export class ChatController {
     }
   }
 
+  @Get('msg/:id')
+  async getMessages(
+    @Param('id') channelId: string,
+
+  ) {
+    const result = await this.chatService.getMessages(channelId);
+  } 
+
   @Post('create')
   async createChannel(
     @GetPlayer() player: Player,

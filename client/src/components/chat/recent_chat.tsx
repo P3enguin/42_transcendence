@@ -34,7 +34,7 @@ function RecentChat({ avatar, player, friendId }: any) {
         }
         const TimeA = roomA.messages[0].sendAt;
         const TimeB = roomB.messages[0].sendAt;
-          return TimeB - TimeA;
+          return TimeA - TimeB;
       });
 
       console.log("conver  :",conversation);
