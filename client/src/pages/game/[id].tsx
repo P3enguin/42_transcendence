@@ -6,12 +6,15 @@ import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { DotLoader } from 'react-spinners';
 import { io, Socket } from 'socket.io-client';
 let socket: Socket;
 
-const PlayGame = ({ jwt_token, res, params }: any) => {
+const PlayGame = ({ jwt_token, res, params, ws }: any) => {
+  const router = useRouter();
+  const [redirectTime, setRedirectTime] = useState(3);
   const gameRef = useRef<HTMLDivElement>(null);
   const [spectators, setSpectators] = useState<number>(0);
   const [error, setError] = useState<string>('');
@@ -36,6 +39,16 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
         token: jwt_token,
       },
     });
+
+    const redirectAfter = (seconds: number) => {
+      let intervalId = setTimeout(() => {
+        if (seconds >= 0) {
+          setRedirectTime(seconds);
+          redirectAfter(seconds - 1);
+        } else router.push('/game');
+      }, 1000);
+    };
+
     if (res.message === 'Oki') {
       setLoading(true);
 
@@ -98,7 +111,7 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
               score: data[info.p2] as number,
             }));
             setGameOn(false);
-            setError('')
+            setError('');
           });
         });
 
@@ -107,8 +120,17 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
           socket.disconnect();
         });
       });
+
+      if (ws) {
+        ws.on('denyInvitation', (data: any) => {
+          console.log('denyInvitation', data);
+          redirectAfter(redirectTime);
+          setError(`${data.user.nickname} has denied your invitation`);
+        });
+      }
     } else {
       socket.disconnect();
+      redirectAfter(redirectTime);
       setError(res.message);
     }
     return () => {
@@ -125,16 +147,23 @@ const PlayGame = ({ jwt_token, res, params }: any) => {
       <div
         className="flex h-full w-full flex-col items-center justify-start"
         ref={gameRef}
-        >
-        {error && <div>{error}</div>}
+      >
+        {error && (
+          <div className="m-auto flex h-[100px] w-[250px]  flex-col text-center text-xl">
+            {error}
+            <p className="self-end text-sm ">
+              redirecting after {redirectTime}...
+            </p>
+          </div>
+        )}
         {Position && (
           <ScoreBoard gameOn={gameOn} player1={player0} player2={player1} />
         )}
         {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
         )}
-        {loading && (
-          <div className="flex flex-col items-center m-auto">
+        {loading && !error && (
+          <div className="m-auto flex flex-col items-center">
             <DotLoader
               color="#ffffff"
               loading={loading}
