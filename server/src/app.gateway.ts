@@ -157,7 +157,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
     // console.log('getOnlineFriends', player.nickname);
-    const friends = await this.playerService.GetFriendsIds(user.nickname, true);
+    const friends = await this.playerService.GetFriends(user.nickname);
     if (isArray(friends)) {
       const onlineFirends = [];
       friends.forEach((friend) => {

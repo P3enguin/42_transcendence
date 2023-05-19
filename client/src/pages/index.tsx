@@ -50,7 +50,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
 
   useEffect(() => {
     if (authenticated) Router.push('/profile');
-  }, []);
+  }, [authenticated]);
 
   if (!authenticated) {
     return (
@@ -64,11 +64,11 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
         {/* Navigation bar component */}
         <NavBar state={state} handleClick={handleClick} />
         {/* Home Content components */}
-        <div className="h-[calc(100vh-80px)] min-h-[400px] pt-10 xl:p-0 overflow-hidden">
+        <div className="h-[calc(100vh-80px)] min-h-[400px] overflow-hidden pt-10 xl:p-0">
           <div
             ref={simRef}
             className={`relative flex  h-[100%] flex-col-reverse items-center
-                      justify-end gap-12 border
+                      justify-end gap-12 
                       ${
                         join ? 'xl:flex-row-reverse' : 'xl:flex-row'
                       } xl:justify-center
@@ -79,7 +79,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
               layoutId="test"
               initial={true}
               animate={animate}
-              transition={{ type: 'Tween', ease: 'easeOut',duration:0.5 }}
+              transition={{ type: 'Tween', ease: 'easeOut', duration: 0.5 }}
               exit={{ opacity: 0 }}
               className=""
             >

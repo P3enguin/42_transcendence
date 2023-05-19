@@ -331,7 +331,7 @@ function UpdateProfile({
   useEffect(() => {
     if (state.every(allTrue)) setEnabled(true);
     else setEnabled(false);
-  });
+  }, [state]);
 
   return (
     <div className="mg-top w-5/6 max-w-4xl rounded-md border-2 border-gray-300 p-12 md:w-2/3">
@@ -339,7 +339,7 @@ function UpdateProfile({
         <div className="flex flex-col items-center justify-center">
           <span
             id="wp-span"
-            className="justify-even ml-4 mt-2 flex text-lg text-red-700"
+            className="justify-even text-lg ml-4 mt-2 flex text-red-700"
           ></span>
           <div className="pfp-container">
             <img
@@ -350,7 +350,7 @@ function UpdateProfile({
             />
             <label
               htmlFor="wallpaper"
-              className="absolute top-[10px] right-[10px] cursor-pointer "
+              className="absolute right-[10px] top-[10px] cursor-pointer "
             >
               <EditIconWallpaper />
             </label>
@@ -387,7 +387,7 @@ function UpdateProfile({
           />
           <span
             id="pfp-span"
-            className="justify-even ml-4 mt-2 mb-4 flex text-sm text-red-700"
+            className="justify-even mb-4 ml-4 mt-2 flex text-sm text-red-700"
           ></span>
         </div>
         <SvgShapingMethod />
@@ -415,7 +415,7 @@ function UpdateProfile({
             <button
               disabled={!isEnabled}
               type="submit"
-              className={`hover:text-md w-full rounded-full bg-[#0097E2] py-2 px-12  text-center text-xs  
+              className={`hover:text-md text-xs w-full rounded-full bg-[#0097E2] px-12  py-2 text-center  
                   uppercase text-white md:text-base 
             ${
               isEnabled
