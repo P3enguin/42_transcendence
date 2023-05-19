@@ -40,7 +40,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'Tween' }}
-              className="border-r-1 ]w-[64px] absolute  top-0 left-0 flex
+              className="border-r-1 w-[64px] absolute  top-0 left-0 flex
           h-[64px] items-center justify-center rounded-tr-3xl border 
               border-b-0  border-[#0097E2]  bg-[#2A3568] sm:hidden"
             ></motion.div>
