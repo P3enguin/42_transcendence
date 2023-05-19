@@ -102,8 +102,7 @@ function Chat({
         )}
         {showConversation && (
           <div className="flex w-full flex-col justify-between">
-            <div className="flex h-[5%] w-full items-center border-b "></div>
-            {<Conversation player={data} jwt_token={jwt_token} id={id} />}
+            { <Conversation player={data} jwt_token={jwt_token} id={id} /> }
           </div>
         )}
       </div>

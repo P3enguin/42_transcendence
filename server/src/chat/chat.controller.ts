@@ -47,10 +47,18 @@ export class ChatController {
 
   @Get('msg/:id')
   async getMessages(
+    @GetPlayer() player: Player,
     @Param('id') channelId: string,
-
+    @Res() res: Response,
   ) {
-    const result = await this.chatService.getMessages(channelId);
+    try{
+      console.log("channelId : ",channelId);
+      const result = await this.chatService.getMessages(channelId, player);
+      console.log("messages: ", result.data);
+      res.status(result.status).json(result.data);
+    }catch(err){
+      return res.status(404).json({error: 'can not get messages'});
+    }
   } 
 
   @Post('create')

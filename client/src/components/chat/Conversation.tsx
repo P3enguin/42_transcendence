@@ -57,6 +57,37 @@ function Conversation({ player, jwt_token, id }: any) {
     // setChannel(NULL);
     getRoomData(id);
 
+    const LoadOldMessages = async () => {
+      try {
+        const response = await axios.get(
+          process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/msg/${id}`,
+          {
+            withCredentials: true,
+            headers: { Authorization: `Bearer ${jwt_token}` },
+          }
+          );
+          const messageData = response.data;
+
+        // Transform the response data into Message objects
+        const NewMessage = messageData.map((message: any) => ({
+          sender: message.sender,
+          senderAvatar: message.senderAvatar,
+          time: message.time,
+          message: message.message,
+        }));
+        console.log("messages : ",messages);
+        
+        // Append the new messages to the existing messages in state
+        setMessages(() => []);
+        setMessages((prevMessages) => [...prevMessages, ...NewMessage]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    LoadOldMessages();
+
+    //----------------------------------------------------------------
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
       auth: {
         token: jwt_token,
@@ -103,9 +134,8 @@ function Conversation({ player, jwt_token, id }: any) {
     <div className="flex h-full w-full flex-col justify-between ">
       <div className="flex h-[8%] w-full items-center justify-between p-2 sm:border-b">
         <div className="mt-3 flex w-full flex-row items-center justify-between px-3 py-2 sm:mt-0">
-          <div className="flex w-full flex-row bo≈cvb./
-          'rder-b pb-2 pt-2 md:border-none">
-            <div className="min-w[300px] text-lg ml-2 flex flex-row justify-between">
+          <div className="flex w-full flex-row border-b pb-2 pt-2 md:border-none">
+            <div className="min-w[300px] text-lg ml-2 flex flex-row justify-between ">
               <Image
                 className="rounded-full border"
                 src={picture}
@@ -130,7 +160,7 @@ function Conversation({ player, jwt_token, id }: any) {
         </div>
       </div>
       <div
-        className="flex h-[95%] w-[100%] flex-col
+        className="flex h-[90%] w-[100%] flex-col 
             items-center"
       >
         {/* from-them */}
@@ -146,7 +176,9 @@ function Conversation({ player, jwt_token, id }: any) {
             type="text"
             name="nickname"
             id="nickname"
-            className="text-xs peer block pr-10 w-full appearance-none overflow-hidden rounded-full border-2 border-white bg-transparent px-3 py-2.5 text-white focus:border-blue-600 focus:outline-none focus:ring-0 sm:text-sm"
+            className="text-xs peer block pr-10 w-full appearance-none overflow-hidden rounded-full 
+                        border-2 border-white bg-transparent px-3 py-2.5 text-white focus:border-blue-600 
+                        focus:outline-none focus:ring-0 sm:text-sm"
             placeholder="Message . . ."
             required
             value={message}

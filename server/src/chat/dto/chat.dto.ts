@@ -76,3 +76,18 @@ export class UnmuteMemberDto {
   @IsString()
   memberNickname: string;
 }
+
+export class MessageInfo {
+  
+  @IsString()
+  sender: string;
+
+  @IsString()
+  senderAvatar: string;
+
+  @IsString()
+  time: string;
+
+  @IsString()
+  message: string;
+}

@@ -10,12 +10,62 @@ import {
   MuteMemberDto,
   UnmuteMemberDto,
   UnbanMemberDto,
+  MessageInfo,
 } from './dto';
 import { generate } from 'shortid';
 
 @Injectable()
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
+
+  async getMessages(channelId: string, player: Player) {
+    const messageInfo : MessageInfo[]=[];
+    try{
+      const result = await this.prisma.room.findUnique({
+        where: { channelId: channelId},
+        select: 
+          {
+            messages: {
+              select: {
+                sender: true,
+                sendAt: true,
+                message: true,
+              },
+              orderBy: {
+                sendAt: 'desc',
+              },
+            },
+          },
+      });
+      for (const element of result.messages) {
+        const sender = await  this.prisma.player.findUnique({
+          where: {
+            id: element.sender,
+          },
+          select:{
+            nickname: true,
+            avatar: true,
+          },
+        });
+        const msg: MessageInfo = {
+          sender: sender.nickname,
+          senderAvatar: sender.avatar,
+          time: element.sendAt.getHours() + ":" + element.sendAt.getMinutes(),
+          message: element.message,
+        };
+        messageInfo.push(msg);
+      };
+
+      console.log("from server chat side : ", messageInfo); // <----- empty
+      return {
+        status : 201,
+        data: messageInfo,
+      };
+    }catch (e) {
+      console.error(e);
+      throw new Error("Error retrieving messages");
+    }
+  }
 
   async getAllChat(_player: Player, page: number) {
     const player = await this.prisma.player.findUnique({
