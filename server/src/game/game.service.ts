@@ -129,7 +129,8 @@ export class GameService {
 
   getLevelFromXP(XP: number) {
     const requiredXP = 100;
-    const level = Math.floor(Math.log(XP / requiredXP) / Math.log(1.6)) + 1;
+    let level = Math.floor(Math.log(XP / requiredXP) / Math.log(1.6)) + 2;
+    if (XP < requiredXP) level = 1;
     return level;
   }
 
@@ -158,13 +159,13 @@ export class GameService {
       winnerScore,
       LooserScore,
     );
+
     const winnerLevel = this.getLevelFromXP(Number(winner.status.XP));
     looser.status.XP += this.calculateLooserXP(
       looser.status.level,
       LooserScore,
     );
     const looserLevel = this.getLevelFromXP(Number(looser.status.XP));
-
     await this.prisma.status.update({
       where: {
         id: winner.status.id,
