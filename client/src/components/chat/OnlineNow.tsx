@@ -26,23 +26,22 @@ function OnlineNow({ player, token, ws }: any) {
         setFriends(res);
       });
       ws.on('statusChange', (data: Status) => {
-        setFriends((prev) => {
-          const updatedFriends = prev.map((iter) => {
-            if (iter.friend.id === data.friend.id) {
-              return { ...iter, status: data.status };
-            } else {
-              return iter;
-            }
+        if (data.status === 'OFFLINE') {
+          setFriends((prev) => {
+            return prev.filter((friend) => friend.friend.id !== data.friend.id);
           });
-
-          if (data.status === 'OFFLINE') {
-            return updatedFriends.filter(
-              (friend) => friend.friend.id !== data.friend.id,
-            );
-          } else {
-            return updatedFriends;
-          }
-        });
+        } else {
+          setFriends((prev) => {
+            if (prev.find((friend) => friend.friend.id === data.friend.id)) {
+              return prev.map((friend) => {
+                if (friend.friend.id === data.friend.id) {
+                  return data;
+                }
+                return friend;
+              });
+            } else return [...prev, data];
+          });
+        }
       });
     }
     return () => {
