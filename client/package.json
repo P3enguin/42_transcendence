@@ -23,7 +23,7 @@
         "eslint-config-next": "13.2.3",
         "flowbite": "^1.6.3",
         "flowbite-react": "^0.4.1",
-        "framer-motion": "^10.2.1",
+        "framer-motion": "10.2.3",
         "mdb-react-ui-kit": "^6.0.0",
         "next": "13.2.3",
         "react": "18.2.0",

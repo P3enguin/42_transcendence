@@ -1,11 +1,20 @@
+import exp from 'constants';
 import { Rank } from './StateComps';
 interface PlayerProgress {
   coins: number;
   rankId: number;
   winRatio: string;
+  exp: number;
+  maxExp: number;
 }
 
-function PlayerProgress({ coins, rankId, winRatio }: PlayerProgress) {
+function PlayerProgress({
+  coins,
+  rankId,
+  winRatio,
+  exp,
+  maxExp,
+}: PlayerProgress) {
   const ranks = [
     'Unranked',
     'Iron',
@@ -28,9 +37,7 @@ function PlayerProgress({ coins, rankId, winRatio }: PlayerProgress) {
         <div className="flex items-center gap-2 ">
           <Rank rank={ranks[rankId]} width="w-[35px]" isVisible={true} />
           <div className="flex  flex-col  ">
-            <strong className="  text-gray-100">
-              {ranks[rankId]}
-            </strong>
+            <strong className="  text-gray-100">{ranks[rankId]}</strong>
             <span className=" text-gray-400">Ranking</span>
           </div>
         </div>
@@ -46,7 +53,9 @@ function PlayerProgress({ coins, rankId, winRatio }: PlayerProgress) {
         <div className="flex items-center gap-2">
           <img src="/star.svg" alt="startIcon" className="w-[27px] "></img>
           <div className="flex  flex-col ">
-            <strong className="  text-gray-100">1800/2500 XP</strong>
+            <strong className="  text-gray-100">
+              {exp}/{maxExp} XP
+            </strong>
             <span className=" text-gray-400">player XP</span>
           </div>
         </div>

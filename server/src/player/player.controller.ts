@@ -17,7 +17,7 @@ import { PlayerService } from './player.service';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { Request, Response } from 'express';
+import { Request, Response, query } from 'express';
 import { GetPlayer } from 'src/auth/decorator';
 
 interface queryParam {
@@ -144,18 +144,22 @@ export class PlayerController {
   GetFriends(
     @Req() req: Request,
     @Res() res: Response,
-    @GetPlayer() player: Player,
+    @Query() query :queryParam,
   ) {
-    return this.playerService.GetFriends(req, res, player.nickname);
+    return this.playerService.GetFriends(req, res, query.nickname);
   }
 
   @Patch('block')
-  BlockFriend(@Req() req: Request, friendId: number) {
-    return this.playerService.BlockFriend(req, 2);
+  BlockFriend(
+    @Res() res: Response,
+    @GetPlayer() player: Player,
+    @Req() req: Request,
+  ) {
+    return this.playerService.BlockFriend(player, req.body.nickname,res);
   }
   @Get('blocked')
-  GetBlockedFriends(@Req() req: Request) {
-    return this.playerService.GetBlockedFriends(req);
+  GetBlockedFriends(@Res() res: Response, @Query() query: queryParam) {
+    return this.playerService.GetBlockedFriends(query.nickname,res);
   }
 
   //------------------------------{ Avatar and Wallpaper }----------------------------------

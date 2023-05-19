@@ -7,7 +7,7 @@ export interface handleFunc {
 
 function HomeText({ handleJoin }: handleFunc) {
   return (
-    <div className="lg:mb-[100px]  w-auto text-center xl:w-1/4 xl:text-left ">
+    <div className="xl:mb-[150px]  w-auto text-center xl:w-1/4 xl:text-left ">
       <motion.div
         key="text1"
         initial={{ opacity: 0 }}
@@ -15,10 +15,10 @@ function HomeText({ handleJoin }: handleFunc) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <h3 className=" mb-1 text-3xl text-white md:mb-10 xl:text-6xl">
+        <h3 className=" mb-1 text-white lg:mb-10  text-4xl lg:text-5xl">
           Ponigator
         </h3>
-        <p className="mt-4 mb-1 text-xl leading-relaxed text-white md:mb-10 md:text-3xl  xl:text-4xl ">
+        <p className="mt-4 mb-1 2xl:text-3xl  md:max-2xl:text-2xl text-xl leading-relaxed text-white lg:mb-10  ">
           The Ultimate Exprerience For The Mighty Ping Context!
         </p>
         <div className="pt-5">

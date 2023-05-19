@@ -29,7 +29,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
       }
     };
     fetchData();
-  }, []);
+  }, [nickname]);
 
   const wins = games.filter((game: any) => game.isPlayerWinner);
   const loss = games.filter((game: any) => game.isPlayerLoser);
@@ -104,7 +104,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
                   player1={game.winnerId.nickname}
                   player2={game.loserId.nickname}
                   status={true}
-                  date={calculateTimeElapsed(game.playerAt)}
+                  date={calculateTimeElapsed(game.playedAt)}
                   score={game.score}
                   P1Avatar={game.winnerId.avatar}
                   P2Avatar={game.loserId.avatar}
@@ -115,7 +115,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
                   player1={game.loserId.nickname}
                   player2={game.winnerId.nickname}
                   status={false}
-                  date={calculateTimeElapsed(game.playerAt)}
+                  date={calculateTimeElapsed(game.playedAt)}
                   score={game.score}
                   P1Avatar={game.loserId.avatar}
                   P2Avatar={game.winnerId.avatar}
@@ -130,7 +130,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
                   player1={game.winnerId.nickname}
                   player2={game.loserId.nickname}
                   status={true}
-                  date={calculateTimeElapsed(game.playerAt)}
+                  date={calculateTimeElapsed(game.playedAt)}
                   score={game.score}
                   P1Avatar={game.winnerId.avatar}
                   P2Avatar={game.loserId.avatar}
@@ -140,14 +140,17 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
           {selected == 3 &&
             winStreak.map((arr: any, i: number) => {
               return (
-                <div key={i} className="w-full flex flex-col gap-5 items-center ">
+                <div
+                  key={i}
+                  className="flex w-full flex-col items-center gap-5 "
+                >
                   {arr.map((game: any, j: number) => (
                     <MatchData
                       key={i + j + 100}
                       player1={game.winnerId.nickname}
                       player2={game.loserId.nickname}
                       status={true}
-                      date={calculateTimeElapsed(game.playerAt)}
+                      date={calculateTimeElapsed(game.playedAt)}
                       score={game.score}
                       P1Avatar={game.winnerId.avatar}
                       P2Avatar={game.loserId.avatar}
@@ -167,7 +170,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
                   player1={game.loserId.nickname}
                   player2={game.winnerId.nickname}
                   status={false}
-                  date={calculateTimeElapsed(game.playerAt)}
+                  date={calculateTimeElapsed(game.playedAt)}
                   score={game.score}
                   P1Avatar={game.loserId.avatar}
                   P2Avatar={game.winnerId.avatar}
