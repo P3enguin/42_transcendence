@@ -31,7 +31,7 @@ const BallAi = ({ boardRef, position, ballRef }: ballProps) => {
       window.removeEventListener('resize', resizeBall);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current]);
+  }, [boardRef?.current, position, ballRef.current]);
 
   return (
     <div
