@@ -37,6 +37,14 @@ export class ChatService {
             },
           },
       });
+      const blocked = await this.prisma.player.findUnique({
+        where: {
+          id: player.id
+        },
+        select: {
+          block:true,
+        },
+      });
       for (const element of result.messages) {
         const sender = await  this.prisma.player.findUnique({
           where: {
@@ -47,7 +55,13 @@ export class ChatService {
             avatar: true,
           },
         });
-        const msg: MessageInfo = {
+        let found = false;
+        for (const findSender of blocked.block){
+          if (sender.nickname === findSender.nickname)
+            found = true;
+        }
+        if (!found){
+          const msg: MessageInfo = {
           sender: sender.nickname,
           senderAvatar: sender.avatar,
           time: element.sendAt.getHours() + ":" + element.sendAt.getMinutes(),
@@ -55,8 +69,7 @@ export class ChatService {
         };
         messageInfo.push(msg);
       };
-
-      console.log("from server chat side : ", messageInfo); // <----- empty
+    }// <----- empty
       return {
         status : 201,
         data: messageInfo,
