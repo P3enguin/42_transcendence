@@ -158,8 +158,8 @@ export class PlayerController {
     return this.playerService.BlockFriend(player, req.body.nickname,res);
   }
   @Get('blocked')
-  GetBlockedFriends(@Req() req: Request, @GetPlayer() player: Player) {
-    return this.playerService.GetBlockedFriends(player);
+  GetBlockedFriends(@Res() res: Response, @Query() query: queryParam) {
+    return this.playerService.GetBlockedFriends(query.nickname,res);
   }
 
   //------------------------------{ Avatar and Wallpaper }----------------------------------

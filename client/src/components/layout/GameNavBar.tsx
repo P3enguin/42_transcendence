@@ -53,7 +53,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               border-[#0097E2] bg-[#2A3568]"
       >
         <Link className="" href="/home">
-          <img className="" src="/logo.svg" alt="logo" width={39} height={41} />
+          <Image className="" src="/logo.svg" alt="logo" width={39} height={41} />
         </Link>
       </div>
       <div

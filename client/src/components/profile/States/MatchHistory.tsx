@@ -29,7 +29,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
       }
     };
     fetchData();
-  }, []);
+  }, [nickname]);
 
   const wins = games.filter((game: any) => game.isPlayerWinner);
   const loss = games.filter((game: any) => game.isPlayerLoser);

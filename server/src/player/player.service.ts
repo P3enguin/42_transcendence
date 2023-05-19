@@ -7,6 +7,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { Response } from 'express';
 import * as argon2 from 'argon2';
 import * as fs from 'fs';
+import { send } from 'process';
 
 function calculateXP(level: number, totalXP: BigInt) {
   const requiredXP = Math.floor(100 * Math.pow(1.6, level - 1));
@@ -113,9 +114,7 @@ export class PlayerService {
         where: {
           toPlayerId: receiverId.id,
           fromPlayerId: player.id,
-          NOT: {
-            status: 'rejected',
-          },
+          status: 'pending',
         },
       });
       if (existingRequest) throw new Error('Request already sent');
@@ -129,8 +128,7 @@ export class PlayerService {
       });
       return res.json({ requestId: request.id });
     } catch (err) {
-      if (err instanceof Error)
-      {
+      if (err instanceof Error) {
         console.log(err.message);
         return res.status(400).json({ error: err.message });
       }
@@ -380,16 +378,21 @@ export class PlayerService {
     }
   }
 
-  async GetBlockedFriends(player: Player) {
-    const BlockedList = await this.prisma.player.findUnique({
-      where: {
-        id: player.id,
-      },
-      include: {
-        block: true,
-      },
-    });
-    return BlockedList;
+  async GetBlockedFriends(nickname: string, res: Response) {
+    try {
+      const BlockedList = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname,
+        },
+        include: {
+          block: true,
+        },
+      });
+      res.status(200).json({ BlockedList });
+    } catch (error) {
+      console.error('Error getting blocked :', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
 
   //-----------------------{ Fetching and changing Data }----------------------
@@ -462,6 +465,11 @@ export class PlayerService {
               id: true,
             },
           },
+          block: {
+            select: {
+              id: true,
+            },
+          },
           wins: true,
           loss: true,
           status: {
@@ -475,9 +483,31 @@ export class PlayerService {
         },
       });
       if (!playerStatus) throw new Error('Nickname not found');
+
       let isFriend = false;
       if (playerStatus.friends)
         isFriend = playerStatus.friends.some((f) => f.id === senderId);
+
+      let blockedByFriend = false;
+      if (playerStatus.block)
+        blockedByFriend = playerStatus.block.some((f) => f.id === senderId);
+
+      const sender = await this.prisma.player.findUnique({
+        where: {
+          id: senderId,
+        },
+        select: {
+          block: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      let blockedByPlayer = false;
+      if (sender.block)
+        blockedByPlayer = sender.block.some((f) => f.id == playerStatus.id);
 
       const request = await this.prisma.request.findFirst({
         where: {
@@ -500,10 +530,18 @@ export class PlayerService {
           (playerStatus.wins.length + playerStatus.loss.length)) *
         100
       ).toFixed(2);
-      const { status, ...player } = playerStatus;
-      return res
-        .status(200)
-        .json({ player, request, isFriend, rankId, winRatio, level, xp });
+      const { status, friends, block, wins, loss, ...player } = playerStatus;
+      return res.status(200).json({
+        player,
+        request,
+        isFriend,
+        blockedByPlayer,
+        blockedByFriend,
+        rankId,
+        winRatio,
+        level,
+        xp,
+      });
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err });

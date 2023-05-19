@@ -41,7 +41,7 @@ function RankingStat({ nickname }: { nickname: string }) {
       }
     };
     fetchData();
-  }, []);
+  }, [nickname]);
   const ranks = [
     'Unranked',
     'Iron',

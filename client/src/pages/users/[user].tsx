@@ -19,11 +19,13 @@ interface player {
   isFriend?: boolean;
   rankId: number;
   winRatio: string;
-  level:number
-  xp : {
-    XP:number;
-    requiredXP:number;
-  }
+  level: number;
+  xp: {
+    XP: number;
+    requiredXP: number;
+  };
+  blockedByPlayer: boolean;
+  blockedByFriend: boolean;
 }
 
 function UserProfile({
@@ -41,13 +43,15 @@ function UserProfile({
   winRatio,
   level,
   xp,
+  blockedByFriend,
+  blockedByPlayer,
 }: player) {
+  const [requestFriend, setRequest] = useState(request);
+  const titles = ['hh', 'hh2', 'hh3'];
   if (!exist)
     return (
       <p className="mt-[400px]  text-xl text-red-600">Player does not exist!</p>
     );
-  const [requestFriend, setRequest] = useState(request);
-  const titles = ['hh', 'hh2', 'hh3'];
 
   return (
     <>
@@ -68,8 +72,11 @@ function UserProfile({
           rankId={rankId}
           winRatio={winRatio}
           level={level}
+          blockedByFriend={blockedByFriend}
+          blockedByPlayer={blockedByPlayer}
         />
-        <ProfileStats nickname={nickname} userProfile={false} />
+        <ProfileStats nickname={nickname} userProfile={false}blockedByFriend={blockedByFriend}
+          blockedByPlayer={blockedByPlayer}/>
       </div>
     </>
   );
@@ -110,7 +117,7 @@ export async function getServerSideProps({ params, req }: any) {
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );
-      console.log(data);
+    console.log(data);
     return {
       // modify this to return anything you want before your page load
       props: {
@@ -126,8 +133,10 @@ export async function getServerSideProps({ params, req }: any) {
         isFriend: data.isFriend,
         rankId: data.rankId,
         winRatio: data.winRatio,
-        level:data.level,
-        xp:data.xp,
+        level: data.level,
+        xp: data.xp,
+        blockedByPlayer: data.blockedByPlayer,
+        blockedByFriend: data.blockedByFriend,
       },
     };
   }

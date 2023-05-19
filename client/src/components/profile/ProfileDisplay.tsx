@@ -12,6 +12,7 @@ import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
 import Success from '../tools/Reply/Success';
 import Error from '../tools/Reply/Error';
+import { request } from 'http';
 interface profileProps {
   wp: string;
   pfp: string;
@@ -37,6 +38,8 @@ interface profileProps {
   rankId: number;
   winRatio: string;
   level: number;
+  blockedByFriend?: boolean;
+  blockedByPlayer?: boolean;
 }
 
 function ProfileDisplay({
@@ -55,11 +58,13 @@ function ProfileDisplay({
   rankId,
   winRatio,
   level,
+  blockedByFriend,
+  blockedByPlayer,
 }: profileProps) {
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [reply, setreply] = useState('');
-
+  console.log(requestFriend);
   async function SendFriendRequest(event: React.MouseEvent) {
     event.preventDefault();
     const response = await fetch(
@@ -74,6 +79,7 @@ function ProfileDisplay({
     if (response.ok) {
       const result = await response.json();
       const updatedValue = { status: 'pending', id: result.requestId };
+      console.log(updatedValue);
       setRequest?.(updatedValue);
       setreply('Friend Request Sent !');
       setSuccess(true);
@@ -320,7 +326,27 @@ function ProfileDisplay({
                       >
                         the title
                       </strong>
-                      {!requestFriend?.status || !isFriend ? (
+                      {blockedByPlayer ? (
+                        <>
+                          <button
+                            // onClick={}
+                            type="button"
+                            className=" text-xs left-20  flex items-center rounded-lg
+                                  bg-red-700  px-2 py-1 font-medium text-white hover:bg-red-600 focus:outline-none"
+                          >
+                            unblock {nickname} <CancelIcon />
+                          </button>
+                        </>
+                      ) : blockedByFriend ? (
+                        <>
+                          <div
+                            className=" text-xs left-20  flex items-center rounded-lg
+                                bg-red-500  px-2 py-1 font-medium text-white "
+                          >
+                            you are blocked
+                          </div>
+                        </>
+                      ) : !requestFriend?.status && !isFriend ? (
                         <button
                           onClick={SendFriendRequest}
                           type="button"
@@ -360,7 +386,14 @@ function ProfileDisplay({
             </div>
           </div>
           {/* player progress  */}
-          <PlayerProgress coins={coins} rankId={rankId} winRatio={winRatio} exp={exp} maxExp={MaxExp} />
+          <PlayerProgress
+            coins={coins}
+            rankId={rankId}
+            winRatio={winRatio}
+            exp={exp}
+            maxExp={MaxExp}
+            
+          />
         </div>
       </div>
     </>

@@ -164,14 +164,12 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
     if (state.every(allTrue) && !state.every(touched)) {
       setEnabled(true);
     } else setEnabled(false);
-  }),
-    [state];
+  }, [state]);
 
   useEffect(() => {
     if (statePass.every(allTrue)) setEnabledSecond(true);
     else setEnabledSecond(false);
-  }),
-    [statePass];
+  }, [statePass]);
 
   function mutateArray(
     index: number,
@@ -365,8 +363,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         {succes && <Success reply={reply} />}
       </AnimatePresence>
       <div
-        className="mt-[40px] flex sm:h-[750px] h-[850px] w-11/12 flex-col
-           gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
+        className="mt-[40px] flex h-[850px] w-11/12 flex-col gap-5
+           rounded-3xl bg-[#2F3B78] sm:h-[750px] md:max-xl:w-5/6 xl:w-[1000px] "
       >
         <h1 className="mt-5 text-center text-[35px]">Settings</h1>
         <form onSubmit={handleDataSave}>
@@ -394,7 +392,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
               <button
                 disabled={!isEnabled}
                 type="submit"
-                className={`hover:text-md w-full rounded-full bg-[#0097E2] py-2 px-12  text-center text-xs  
+                className={`hover:text-md text-xs w-full rounded-full bg-[#0097E2] px-12  py-2 text-center  
                   uppercase text-white md:text-base 
             ${
               isEnabled
@@ -426,7 +424,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
               <button
                 disabled={!isEnabledSecond}
                 type="submit"
-                className={`hover:text-md w-full rounded-full bg-[#0097E2] py-2 px-12  text-center text-xs  
+                className={`hover:text-md text-xs w-full rounded-full bg-[#0097E2] px-12  py-2 text-center  
                   uppercase text-white md:text-base 
             ${
               isEnabledSecond
@@ -441,8 +439,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         </form>
         {!activated && (
           <button
-            className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
-                  px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
+            className={`hover:text-md hover:text-l text-xs w-3/5 transform self-center  rounded-full bg-[#3ea1d2] 
+                  px-12 py-2 text-center uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
                   md:text-base
                   `}
             onClick={activate2FA}
@@ -452,8 +450,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
         )}
         {activated && (
           <button
-            className={`hover:text-md hover:text-l w-3/5 transform self-center rounded-full  bg-[#3ea1d2] py-2 
-                    px-12 text-center text-xs uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
+            className={`hover:text-md hover:text-l text-xs w-3/5 transform self-center  rounded-full bg-[#3ea1d2] 
+                    px-12 py-2 text-center uppercase  text-white transition duration-300 hover:scale-110 hover:bg-[#354690] md:mt-10
                     md:text-base
                     `}
             onClick={deactivate2FA}

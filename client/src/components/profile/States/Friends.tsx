@@ -33,7 +33,8 @@ function FriendStats({
       }
     };
     fetchData();
-  }, []);
+  }, [nickname]);
+
   if (isLoading) return <div className="text-center">Loading Data...</div>;
   else {
     if (friends.length === 0) {
