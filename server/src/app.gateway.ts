@@ -8,7 +8,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { AppService, UserStatus } from './app.service';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { JwtGuard } from './auth/guard';
 import { GetPlayer } from './game/decorator';
@@ -38,7 +38,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket) {
     const user = await this.jwt.verifyToken(client.handshake.auth.token);
-    if (!user) client.disconnect(true);
+    if (!user) {
+      client.disconnect(true);
+      return;
+    }
     client.handshake.query.user = JSON.stringify(user);
     this.logger.log(`${user.nickname} connected: ${client.id}`);
     this.appService.socketStatus.set(client.id, UserStatus.ONLINE);
@@ -58,84 +61,160 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    const player = JSON.parse(client.handshake.query.user as string);
-    this.logger.log(`${player.nickname} disconnected: ${client.id}`);
-    if (this.userStatus(player.nickname) === UserStatus.OFFLINE)
-      // console.log(this.server.sockets.adapter.rooms.get(user.nickname));
-    this.appService.socketStatus.delete(client.id);
-    this.server.to(`${player.id}_status`).emit('statusChange', {
+    let user: Player;
+    if (client.handshake.query.user as string)
+      user = JSON.parse(client.handshake.query.user as string);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    this.logger.log(`${user.nickname} disconnected: ${client.id}`);
+    if (this.userStatus(user.nickname) === UserStatus.OFFLINE)
+      this.appService.socketStatus.delete(client.id);
+    this.server.to(`${user.id}_status`).emit('statusChange', {
       friend: {
-        id: player.id,
-        nickname: player.nickname,
-        avatar: player.avatar,
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
       },
-      status: this.userStatus(player.nickname),
+      status: this.userStatus(user.nickname),
     });
-  }
-
-  @SubscribeMessage('route')
-  handleRoute(client: Socket, payload: string) {
-    this.logger.log(`route: ${payload}`);
   }
 
   @SubscribeMessage('away')
   handleAway(
-    @GetPlayer() player: Player,
-    @ConnectedSocket() socket: Socket,
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
     // this.logger.log(`${player.nickname} is away`);
-    this.appService.socketStatus.set(socket.id, UserStatus.AWAY);
-    this.server.to(`${player.id}_status`).emit('statusChange', {
+    this.appService.socketStatus.set(client.id, UserStatus.AWAY);
+    this.server.to(`${user.id}_status`).emit('statusChange', {
       friend: {
-        id: player.id,
-        nickname: player.nickname,
-        avatar: player.avatar,
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
       },
-      status: this.userStatus(player.nickname),
+      status: this.userStatus(user.nickname),
+    });
+  }
+
+  @SubscribeMessage('inGame')
+  handleInGame(
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    // this.logger.log(`${player.nickname} is away`);
+    this.appService.socketStatus.set(client.id, UserStatus.IN_GAME);
+    this.server.to(`${user.id}_status`).emit('statusChange', {
+      friend: {
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
+      },
+      status: this.userStatus(user.nickname),
     });
   }
 
   @SubscribeMessage('online')
   handleOnline(
-    @GetPlayer() Player: Player,
-    @ConnectedSocket() socket: Socket,
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
     // this.logger.log(`${Player.nickname} is online`);
-    this.appService.socketStatus.set(socket.id, UserStatus.ONLINE);
-    this.server.to(`${Player.id}_status`).emit('statusChange', {
+    this.appService.socketStatus.set(client.id, UserStatus.ONLINE);
+    this.server.to(`${user.id}_status`).emit('statusChange', {
       friend: {
-        id: Player.id,
-        nickname: Player.nickname,
-        avatar: Player.avatar,
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
       },
-      status: this.userStatus(Player.nickname),
+      status: this.userStatus(user.nickname),
     });
   }
 
   @SubscribeMessage('getOnlineFriends')
   async handleGetOnlineFriends(
-    @GetPlayer() player: Player,
-    @ConnectedSocket() socket: Socket,
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
   ) {
-    console.log('getOnlineFriends', player.nickname);
-    const friends = await this.playerService.GetFriendsIds(
-      player.nickname,
-      true,
-    );
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    // console.log('getOnlineFriends', player.nickname);
+    const friends = await this.playerService.GetFriendsIds(user.nickname, true);
     if (isArray(friends)) {
       const onlineFirends = [];
       friends.forEach((friend) => {
-        socket.join(`${friend.id}_status`);
+        client.join(`${friend.id}_status`);
         onlineFirends.push({
           friend: friend,
           status: this.userStatus(friend.nickname),
         });
       });
-      console.log(onlineFirends);
+      // console.log(onlineFirends);
       return onlineFirends;
     }
+  }
+
+  @SubscribeMessage('gameInvite')
+  handleGameInvite(
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    console.log('gameInvite', data);
+    this.server.to(data.user.nickname).emit('gameInvite', {
+      user: {
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
+      },
+      gameType: data.gameType,
+      gameId: data.gameId,
+    });
+  }
+
+  @SubscribeMessage('denyInvitation')
+  habdleDenyInvitation(
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    // console.log('denyInvitation', data);
+
+    this.server.to(data.user.nickname).emit('denyInvitation', {
+      user: {
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
+      },
+      gameType: data.gameType,
+      gameId: data.gameId,
+    });
   }
 
   userStatus(nickname: string) {
