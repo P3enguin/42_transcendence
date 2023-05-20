@@ -39,7 +39,7 @@ const StatusBubble = ({ data, className, onClick }: StatusBubbleProps) => {
             : data.status === 'AWAY'
             ? 'bg-[#FFA500]'
             : data.status === 'IN_GAME'
-            ? 'bg-[#9747FF]'
+            ? 'bg-[#C969F6]'
             : 'bg-[#B4B4B4]'
         }`}
       ></div>

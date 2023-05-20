@@ -17,12 +17,6 @@
         "effect": "+2% rp"
     },
     {
-        "name": "Toxic",
-        "description": "send 30 emote",
-        "requirement": "send 30 emote",
-        "effect": "+1 free emote"
-    },
-    {
         "name": "Cold-Blooded",
         "description": "win 30 game streak against the same enemy",
         "requirement": "win 30 game streak against the same enemy",
@@ -44,12 +38,6 @@
         "name": "strong castle",
         "description": "win 30 game without acception any goal",
         "requirement": "win 30 game without acception any goal",
-        "effect": "non"
-    },
-    {
-        "name": "Hacker",
-        "description": "mare a goal without  moving",
-        "requirement": "mare a goal withou moving",
         "effect": "non"
     },
     {
