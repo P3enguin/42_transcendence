@@ -26,8 +26,8 @@ const StatusBubble = ({ data, className, onClick }: StatusBubbleProps) => {
       <Image
         src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${data.friend.avatar}`}
         alt="Avatar"
-        width={100}
-        height={100}
+        width={200}
+        height={200}
         className="h-[60px] w-[60px] rounded-full border-2 border-[#0097E2]
         border-opacity-50 transition duration-300 ease-in hover:border-opacity-100"
         onClick={onClick}
