@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import RecentConversation from './RecentConversation';
 
-function RecentChat({ avatar, player, friendId }: any) {
+function RecentChat({hasChanged, setHasChanged}:any) {
   const router = useRouter();
 
   const [RecentChat, setRecentChat] = useState([]);
@@ -19,12 +19,9 @@ function RecentChat({ avatar, player, friendId }: any) {
     .then((response) => {
       const conversation = response.data.data.rooms;
 
-// Sort th    e conversation rooms based on the presence of messages and the time of the latest message
         conversation.sort((roomA: any, roomB: any) => {
         const latestMessageTimeA = roomA.messages[0];
         const latestMessageTimeB = roomB.messages[0];
-        
-        // Sort rooms with messages first
         if (latestMessageTimeA && !latestMessageTimeB) {
           return -1;
         } else if (!latestMessageTimeA && latestMessageTimeB) {
@@ -32,13 +29,13 @@ function RecentChat({ avatar, player, friendId }: any) {
         }else if (!latestMessageTimeB && !latestMessageTimeA) {
           return 0;
         }
+        console.log('comparing times');
+        
         const TimeA = roomA.messages[0].sendAt;
         const TimeB = roomB.messages[0].sendAt;
-          return TimeA - TimeB;
+          return -(TimeB - TimeA);
       });
-
-      console.log("conver  :",conversation);
-      
+     
       setRecentChat(conversation);
       setLoading(false);
       console.log("=>",RecentChat);
@@ -53,7 +50,11 @@ function RecentChat({ avatar, player, friendId }: any) {
 
   useEffect( ()=> {
     getRecent();
-  }, [])
+    console.log("hasChanged : ",hasChanged);
+    
+    if (hasChanged)
+      setHasChanged(false);
+  }, [hasChanged])
 
   return (
     <>

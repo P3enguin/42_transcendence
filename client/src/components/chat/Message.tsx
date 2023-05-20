@@ -24,7 +24,7 @@ function Message({ message, side }: { message: any; side: boolean }) {
             height={40}
             className="absolute bottom-0 right-0 h-[40px] w-[40px] translate-x-[107%] translate-y-[50%] rounded-full"
           />
-          <p className="absolute -top-3 right-3.5 text-ss ">{message.sender}</p>
+          <p className="absolute -top-4 right-3.5 text-sm ">{message.sender}</p>
           <p
             className="break-words text-left text-black"
             style={{
@@ -53,7 +53,7 @@ function Message({ message, side }: { message: any; side: boolean }) {
             height={40}
             className="absolute bottom-0 left-0 h-[40px] w-[40px] -translate-x-11 translate-y-[50%] rounded-full"
           />
-          <p className="absolute -top-3 left-3.5 flex text-ss ">
+          <p className="absolute -top-4 left-3.5 flex text-sm ">
             {' '}
             {message.sender}{' '}
           </p>

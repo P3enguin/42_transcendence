@@ -24,11 +24,14 @@ function Chat({
   id: string;
   ws: Socket;
 }) {
-  console.log('room Id', data.nickname);
-
+  
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
   const [showConversation, setShowConversation] = useState(true);
+  const [hasChanged, setHasChanged] = useState(false);
+
+
+  console.log('hasChangd : ', hasChanged);
 
   const handleRecentChatClick = () => {
     setShowRecentChat(true);
@@ -41,14 +44,10 @@ function Chat({
     setShowRecentChat(false);
     setShowConversation(true);
   };
+
   useEffect(() => {
     const MobilView = () => {
       if (document.body.offsetWidth < 800) {
-        // console.log('show mobile==>', showMobile);
-        // console.log('show StartNew==>', showStartNew);
-        // console.log('show RecentChat==>', showRecentChat);
-        console.log('////////////////////////////////////////////////////////');
-
         if (!showMobile)  {
           setShowMobile(true);
           setShowConversation(false);
@@ -66,13 +65,13 @@ function Chat({
       window.removeEventListener('resize', MobilView);
     };
     // eslint-disable-next-line
-  }, []);
+  }, [hasChanged]);
   return (
     <>
       <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
         {showRecentChat && (
           <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px] ">
-            <div className="flex h-[5%] w-[100%] items-center border-b pl-5 ">
+            <div className="flex h-[8%] w-[100%] items-center border-b pl-5 text-xl">
               <Link href={`/chat`}>Chat Room </Link>
             </div>
             {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
@@ -94,7 +93,7 @@ function Chat({
               </div>
               <div className="mt-2 h-full flex-col overflow-hidden overflow-y-auto scrollbar-hide">
                 {showRecentChat && (
-                  <RecentChat avatar={data.avatar} player={data.nickname} />
+                  <RecentChat hasChangd={hasChanged} setHasChanged={setHasChanged} />
                 )}
               </div>
             </div>
@@ -102,7 +101,7 @@ function Chat({
         )}
         {showConversation && (
           <div className="flex w-full flex-col justify-between">
-            { <Conversation player={data} jwt_token={jwt_token} id={id} /> }
+            { <Conversation player={data} jwt_token={jwt_token} id={id} fct={setHasChanged} /> }
           </div>
         )}
       </div>

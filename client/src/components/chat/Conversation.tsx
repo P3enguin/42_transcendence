@@ -14,7 +14,7 @@ interface Message {
   message: string;
 }
 
-function Conversation({ player, jwt_token, id }: any) {
+function Conversation({ player, jwt_token, id, fct }: any) {
   const [showTopic, setShowTopic] = useState(true);
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -108,6 +108,7 @@ function Conversation({ player, jwt_token, id }: any) {
       });
 
       socket.on('message', (messageInfo: any) => {
+        fct(true);
         const message: Message = {
           sender: messageInfo.sender,
           senderAvatar: messageInfo.senderAvatar,
@@ -116,11 +117,11 @@ function Conversation({ player, jwt_token, id }: any) {
         };
         console.log('sender :', message.sender, 'receiver :', player.nickname);
         setMessages((prevMessages) => [message, ...prevMessages]);
-        handelReceivedMessage(message);
+        // handelReceivedMessage(message);
       });
     });
 
-    const handelReceivedMessage = (message: any) => {};
+    // const handelReceivedMessage = (message: any) => {};
     return () => {
       socket.disconnect();
     };
