@@ -55,7 +55,7 @@ const Paddle = ({ boardRef, position, ws }: paddleProps) => {
           paddleRef.current.offsetWidth / 5 + 'px';
       }
     };
-    setPaddlePosition((prev) => ({ x: prev.x, y: prev.y }));
+    // setPaddlePosition((prev) => ({ x: prev.x, y: prev.y }));
     resizePaddle();
     window.addEventListener('resize', resizePaddle);
 
@@ -63,7 +63,7 @@ const Paddle = ({ boardRef, position, ws }: paddleProps) => {
       window.removeEventListener('resize', resizePaddle);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef.current, paddleRef.current]);
+  }, [boardRef.current, paddleRef.current, PaddlePosition]);
 
   return (
     <div

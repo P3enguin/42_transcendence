@@ -9,11 +9,11 @@ import * as argon2 from 'argon2';
 import * as fs from 'fs';
 import { send } from 'process';
 
-function calculateXP(level: number, totalXP: BigInt) {
+function calculateXP(level: number, totalXP: number) {
   const requiredXP = Math.floor(100 * Math.pow(1.6, level - 1));
-  const XP = level === 1 ? totalXP : Number(totalXP) - requiredXP;
+  const XP = level === 1 ? totalXP : totalXP - requiredXP;
   return {
-    XP,
+    XP: Math.abs(XP),
     requiredXP,
   };
 }
@@ -300,7 +300,7 @@ export class PlayerService {
 
   //----------------{ get the list if all friends }--------------------
 
-  async GetFriends(req: Request, res: Response, nickname: string) {
+  async GetFriends(nickname: string, req?: Request, res?: Response) {
     // const player = this.Get_Player(req);
     try {
       const FriendList = await this.prisma.player.findUnique({
@@ -317,13 +317,16 @@ export class PlayerService {
           },
         },
       });
-      return res.status(200).json(FriendList.friends);
+      if (res) return res.status(200).json(FriendList.friends);
+      else return FriendList.friends;
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        console.log(error.message);
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(400).json({ error: 'Unexpected error has occurred' });
+      if (res) {
+        if (error instanceof PrismaClientKnownRequestError) {
+          console.log(error.message);
+          return res.status(400).json({ error: error.message });
+        }
+        return res.status(400).json({ error: 'Unexpected error has occurred' });
+      } else return null;
     }
   }
   //-----------------------------------{ Block }-----------------------------------\\
@@ -484,7 +487,7 @@ export class PlayerService {
       const rankId = playerStatus.status.rank.rankId;
       const level = playerStatus.status.level;
 
-      const xp = calculateXP(level, playerStatus.status.XP);
+      const xp = calculateXP(level, Number(playerStatus.status.XP));
 
       const winRatio = (
         (playerStatus.wins.length /
@@ -580,7 +583,7 @@ export class PlayerService {
       });
       const level = playerStatus.status.level;
       const rankId = playerStatus.status.rank.rankId;
-      const xp = calculateXP(level, playerStatus.status.XP);
+      const xp = calculateXP(level, Number(playerStatus.status.XP));
       const winRatio = (
         (playerStatus.wins.length /
           (playerStatus.wins.length + playerStatus.loss.length)) *

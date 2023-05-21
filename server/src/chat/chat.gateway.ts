@@ -64,7 +64,7 @@ export class ChatGateway
 
   @SubscribeMessage('joinChat')
   handleJoinChat(client: Socket, payload: any) {
-    console.log(payload);
+    // console.log(payload);
     client.join(payload.id);
   }
 
@@ -76,8 +76,8 @@ export class ChatGateway
   ) {
     var time = new Date();
     const receivedTime = time.getHours() + ":" + time.getMinutes();
-    console.log(data.id);
-    console.log(player);
+    // console.log(data.id);
+    // console.log(player);
 
     const messageInfo= {
       sender: player.nickname,

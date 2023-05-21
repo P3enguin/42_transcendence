@@ -30,7 +30,7 @@ const PaddleAi = ({ boardRef, position }: paddleProps) => {
       window.removeEventListener('resize', resizePaddle);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current, paddleRef.current]);
+  }, [boardRef?.current, paddleRef.current, position]);
 
   // const paddleStyle = {
   //   top: paddleY + '%',

@@ -64,11 +64,12 @@ const Ai = ({ player }: any) => {
             score: AIScore,
           }}
           gameOn={gameOn}
+          spectators={0}
         />
         {gameOn && (<PongAi
           gameRef={gameRef}
           newScore={newScore}
-          isSimulation={true}
+          isSimulation={false}
           isContact={false}
           isRotated={false}
           gamePaused={gamePaused}

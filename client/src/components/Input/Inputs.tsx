@@ -22,8 +22,8 @@ export function FirstNameInput({
             : state.touched && !state.valid
             ? 'border-red-600'
             : 'border-gray-300'
-        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
-              py-2.5 px-3 text-xs text-white
+        } text-xs peer block w-full appearance-none rounded-full border-2 
+              bg-transparent px-3 py-2.5 text-white
                 focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         required
@@ -38,9 +38,9 @@ export function FirstNameInput({
             : state.touched && !state.valid
             ? 'text-red-600'
             : 'text-gray-500'
-        } absolute top-3 -z-10
-                origin-[0] -translate-y-8 scale-100 transform
-               pl-3 text-xs duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+        } text-xs absolute top-3
+                -z-10 origin-[0] -translate-y-8 scale-100
+               transform pl-3 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
                 peer-focus:scale-100 peer-focus:font-medium 
                 peer-focus:text-blue-600 md:text-sm `}
       >
@@ -48,7 +48,7 @@ export function FirstNameInput({
       </label>
       <span
         id="fnspan"
-        className="justify-even ml-4 mt-2 flex text-xs text-red-700 md:text-sm"
+        className="justify-even text-xs ml-4 mt-2 flex text-red-700 md:text-sm"
       ></span>
     </div>
   );
@@ -75,8 +75,8 @@ export function LastNameInput({
             : state.touched && !state.valid
             ? 'border-red-600'
             : 'border-gray-300'
-        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3  text-xs text-white
+        } text-xs peer block w-full appearance-none rounded-full border-2 
+                    bg-transparent px-3  py-2.5 text-white
                       focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         defaultValue={defaultValue}
@@ -93,9 +93,9 @@ export function LastNameInput({
             : state.touched && !state.valid
             ? 'text-red-600'
             : 'text-gray-500'
-        } absolute top-3 -z-10
-                      origin-[0] -translate-y-8 scale-100 transform
-                     pl-3 text-xs duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+        } text-xs absolute top-3
+                      -z-10 origin-[0] -translate-y-8 scale-100
+                     transform pl-3 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
                       peer-focus:scale-100 peer-focus:font-medium 
                       peer-focus:text-blue-600 md:text-sm `}
       >
@@ -103,7 +103,7 @@ export function LastNameInput({
       </label>
       <span
         id="lnspan"
-        className="justify-even ml-4 mt-2 flex text-xs text-red-700 md:text-sm"
+        className="justify-even text-xs ml-4 mt-2 flex text-red-700 md:text-sm"
       ></span>
     </div>
   );
@@ -130,8 +130,8 @@ export function NickNameInput({
             : state.touched && !state.valid
             ? 'border-red-600'
             : 'border-gray-300'
-        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
-              py-2.5 px-3  text-xs text-white 
+        } text-xs peer block w-full appearance-none rounded-full border-2 
+              bg-transparent px-3  py-2.5 text-white 
                 focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         defaultValue={defaultValue}
@@ -147,9 +147,9 @@ export function NickNameInput({
             : state.touched && !state.valid
             ? 'text-red-600'
             : 'text-gray-500'
-        } absolute top-3 -z-10
-              origin-[0] -translate-y-8 scale-100 transform
-             pl-3 text-xs duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+        } text-xs absolute top-3
+              -z-10 origin-[0] -translate-y-8 scale-100
+             transform pl-3 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
               peer-focus:scale-100 peer-focus:font-medium 
               peer-focus:text-blue-600 md:text-sm `}
       >
@@ -157,7 +157,7 @@ export function NickNameInput({
       </label>
       <span
         id="nickspan"
-        className="justify-even ml-4 mt-2 flex text-xs text-red-700 md:text-sm"
+        className="justify-even text-xs ml-4 mt-2 flex text-red-700 md:text-sm"
       ></span>
     </div>
   );
@@ -184,8 +184,8 @@ export function PasswordInput({
             : state.touched && !state.valid
             ? 'border-red-600'
             : 'border-gray-300'
-        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
-            py-2.5 px-3  text-xs text-white 
+        } text-xs peer block w-full appearance-none rounded-full border-2 
+            bg-transparent px-3  py-2.5 text-white 
               focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         required
@@ -199,9 +199,9 @@ export function PasswordInput({
             : state.touched && !state.valid
             ? 'text-red-600'
             : 'text-gray-500'
-        } absolute top-3 -z-10
-              origin-[0] -translate-y-8 scale-100 transform
-             pl-3 text-xs duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+        } text-xs absolute top-3
+              -z-10 origin-[0] -translate-y-8 scale-100
+             transform pl-3 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
               peer-focus:scale-100 peer-focus:font-medium 
               peer-focus:text-blue-600 md:text-sm `}
       >
@@ -209,7 +209,7 @@ export function PasswordInput({
       </label>
       <span
         id="pwdspan"
-        className="justify-even ml-4 mt-2 flex text-xs text-red-700 md:text-sm"
+        className="justify-even text-xs ml-4 mt-2 flex text-red-700 md:text-sm"
       ></span>
     </div>
   );
@@ -236,8 +236,8 @@ export function RePasswordInput({
             : state.touched && !state.valid
             ? 'border-red-600'
             : 'border-gray-300'
-        } peer block w-full appearance-none rounded-full border-2 bg-transparent 
-              py-2.5 px-3  text-xs text-white 
+        } text-xs peer block w-full appearance-none rounded-full border-2 
+              bg-transparent px-3  py-2.5 text-white 
                 focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         required
@@ -251,9 +251,9 @@ export function RePasswordInput({
             : state.touched && !state.valid
             ? 'text-red-600'
             : 'text-gray-500'
-        } absolute top-3 -z-10
-                origin-[0] -translate-y-8 scale-100 transform
-               pl-3 text-xs duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
+        } text-xs absolute top-3
+                -z-10 origin-[0] -translate-y-8 scale-100
+               transform pl-3 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
                 peer-focus:scale-100 peer-focus:font-medium 
                 peer-focus:text-blue-600 md:text-sm `}
       >
@@ -261,7 +261,7 @@ export function RePasswordInput({
       </label>
       <span
         id="repwdspan"
-        className="justify-even ml-4 mt-2 flex text-xs text-red-700 md:text-sm"
+        className="justify-even text-xs ml-4 mt-2 flex text-red-700 md:text-sm"
       ></span>
     </div>
   );
@@ -342,7 +342,7 @@ export function OTPInput() {
         return (
           <div key={value} className="h-[50px] w-16 sm:h-16 ">
             <input
-              className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-sm outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1 sm:text-lg"
+              className="sm:text-lg flex h-full w-full flex-col items-center justify-center rounded-xl border border-gray-200 bg-white px-5 text-center text-sm outline-none ring-blue-700 focus:bg-gray-50 focus:ring-1"
               type="text"
               maxLength={1}
               pattern="[0-9]"
@@ -361,85 +361,43 @@ export function OTPInput() {
 export function InputDefault({
   name,
   id,
+  type,
   defaultValue,
   description,
   setName,
+  className,
 }: {
-  setName: Dispatch<SetStateAction<string>>,
+  setName: Dispatch<SetStateAction<string>>;
   name: string;
   id: string;
-  description:string;
+  type: string;
+  description: string;
+  className?: string;
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-6 w-3/4 min-w-[170px]">
+    <div className={`${className ? className : ''}`}>
       <input
-        type="input"
+        type={type}
         name={name}
         id={id}
-        className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3  text-xs text-white mt-5
+        className={`text-xs  peer mt-5 block w-full appearance-none rounded-full border-2 
+                    border-gray-300 bg-transparent  px-3 py-2.5 text-white
                       focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         defaultValue={defaultValue}
-        onChange={ (e)=>{
+        onChange={(e) => {
           e.preventDefault();
           setName(e.target.value);
           console.log(e.target.value);
-        }
-        }
+        }}
       />
       <label
         htmlFor={name}
-        className={`absolute top-8 -z-10 origin-[0]
-                      -translate-y-8 scale-100 transform pl-3
-                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
-                      peer-focus:scale-100 peer-focus:font-large 
-                      peer-focus:text-blue-600 md:text-sm `}
-      >
-        {description}
-      </label>
-    </div>
-  );
-}
-export function InputKey({
-  name,
-  id,
-  defaultValue,
-  description,
-  setKey,
-}: {
-  setKey: Dispatch<SetStateAction<string>>,
-  name: string;
-  id: string;
-  description:string;
-  defaultValue?: string;
-}) {
-  return (
-    <div className="group relative z-0 mb-6 w-3/4 min-w-[170px]">
-      <input
-        type="password"
-        name={name}
-        id={id}
-        className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3  text-xs text-white mt-5
-                      focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
-        placeholder=" "
-        defaultValue={defaultValue}
-        onChange={ (e)=>{
-          e.preventDefault();
-          setKey(e.target.value);
-          console.log(e.target.value);
-        }
-        }
-      />
-      <label
-        htmlFor={name}
-        className={`absolute top-7 -z-10 origin-[0]
-                      -translate-y-8 scale-100 transform pl-3
-                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0
-                     peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
-                      peer-focus:scale-100 peer-focus:font-large
+        className={`text-xs peer-focus:font-large absolute top-8
+                      -z-10 origin-[0] -translate-y-8 scale-100
+                     transform pl-3 text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+                      peer-focus:-translate-y-8 peer-focus:scale-100 
                       peer-focus:text-blue-600 md:text-sm `}
       >
         {description}
@@ -456,52 +414,50 @@ export function InputBtn({
   setName,
   createPrivateChat,
 }: {
-  setName: Dispatch<SetStateAction<string>>,
-  createPrivateChat: () =>{},
+  setName: Dispatch<SetStateAction<string>>;
+  createPrivateChat: () => {};
   name: string;
   id: string;
-  description:string;
+  description: string;
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-6 w-3/4 min-w-[170px] max-w-[350px]">
+    <div className="group relative z-0 mb-0 w-[90%] xl:w-3/4 min-w-[170px] max-w-[350px]">
       <input
         type="input"
         name={name}
         id={id}
-        className={` 'border-gray-300  peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3  text-xs text-white mt-5
-                      focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
+        className={` 'border-gray-300  text-xs peer mt-5 block w-full appearance-none rounded-full 
+          border-2 bg-transparent  px-3 py-2.5 text-white
+          focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
         placeholder=" "
         defaultValue={defaultValue}
-        onChange={ (e)=>{
+        onChange={(e) => {
           e.preventDefault();
           setName(e.target.value);
           console.log(e.target.value);
-        }
-        }
+        }}
       />
       <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    createPrivateChat();
-                  }}
-                  className=" hover:text-s absolute top-[66.5%] right-[6px] mx-auto
-                                      translate-y-[-50%] transform rounded-full
-                                      bg-[#0097E2] px-[12px] py-2 text-[10px] 
-                                      font-bold uppercase  text-white shadow transition
-                                      duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]"
-                >
-                  start
-                </button>
+        onClick={(e) => {
+          e.preventDefault();
+          createPrivateChat();
+        }}
+        className=" hover:text-s absolute bottom-[13%] right-2 transform 
+          rounded-full bg-[#0097E2] px-[12px] py-2 text-[10px] font-bold 
+          uppercase text-white  shadow transition duration-300
+          hover:scale-[115%] hover:bg-[#2C3B7C] tx:bottom-[10%]"
+      >
+        start
+      </button>
       <label
         htmlFor={name}
-        className={`absolute top-8 -z-10 origin-[0]
-                      -translate-y-8 scale-100 transform pl-3
-                     text-xs text-gray-500 duration-300 peer-placeholder-shown:translate-y-0
-                     peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-8
-                      peer-focus:scale-100 peer-focus:font-large peer-focus:uppercase
-                      peer-focus:text-blue-600 md:text-sm `}
+        className={`text-xs peer-focus:font-large absolute top-8
+          -z-10 origin-[0] -translate-y-8 scale-100
+          transform pl-3 text-gray-500 duration-300
+          peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0
+          peer-focus:-translate-y-8 peer-focus:scale-100
+          peer-focus:text-blue-600 md:text-sm `}
       >
         {description}
       </label>

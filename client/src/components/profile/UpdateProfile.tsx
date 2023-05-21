@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
+
 import {
   EditIconProfile,
   EditIconWallpaper,
@@ -36,6 +37,8 @@ function UpdateProfile({
   image: string;
   coins: number;
 }) {
+  const [wallpaper, setWallpaper] = useState('/wallpaper.png');
+  const [avatar, setAvatar] = useState('/pfp1.png');
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -288,7 +291,7 @@ function UpdateProfile({
       }
       const pfp = document.getElementById('pfp-holder') as HTMLImageElement;
       if (uploads.pfp) window.URL.revokeObjectURL(pfp.src);
-      pfp.src = window.URL.createObjectURL(avatar);
+      setAvatar(window.URL.createObjectURL(avatar));
       handleImage((item) => ({
         ...item,
         ...{ pfp: true, wp: uploads.wp },
@@ -314,7 +317,7 @@ function UpdateProfile({
         'wallpaper-holder',
       ) as HTMLImageElement;
       if (uploads.wp) window.URL.revokeObjectURL(pfp.src);
-      pfp.src = window.URL.createObjectURL(wallpaper);
+      setWallpaper(window.URL.createObjectURL(wallpaper));
       handleImage((item) => ({
         ...item,
         ...{ pfp: uploads.pfp, wp: true },
@@ -342,8 +345,10 @@ function UpdateProfile({
             className="justify-even text-lg ml-4 mt-2 flex text-red-700"
           ></span>
           <div className="pfp-container">
-            <img
-              src="/wallpaper.png"
+            <Image
+              width={700}
+              height={80}
+              src={wallpaper}
               alt="wallpaper"
               id="wallpaper-holder"
               className="h-[140px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl object-cover object-center lg:h-[200px]"
@@ -364,8 +369,10 @@ function UpdateProfile({
             onChange={handleWpChange}
           />
           <div className="pfp-container">
-            <img
-              src="/pfp1.png"
+            <Image
+              width={100}
+              height={100}
+              src={avatar}
               alt="pfp"
               id="pfp-holder"
               className="pfp -mt-10  h-[100px] w-[100px] object-cover object-center"

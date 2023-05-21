@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { OTPInput } from '@/components/Input/Inputs';
 import { verifyOTP } from '../tools/functions';
+import Image from 'next/image';
 interface QrCodeProps {
   qrPath?: string;
   activated: boolean | undefined;
@@ -21,7 +22,7 @@ function ModalActivate2FA({
 
   return (
     <div
-      className="absolute top-0 right-0  left-0  z-20  flex h-full 
+      className="absolute left-0 right-0  top-0  z-20  flex h-full 
                w-full items-center justify-center bg-gray-500  bg-opacity-75 p-4 transition-opacity md:inset-0 md:h-full"
     >
       <div className="relative h-full w-full max-w-2xl  md:h-auto">
@@ -59,7 +60,12 @@ function ModalActivate2FA({
               <p className="text-base leading-relaxed text-gray-500 ">
                 Please Scan The QR code first !
               </p>
-              <img src={qrPath}></img>
+              <Image
+                width={212}
+                height={212}
+                alt="QR code"
+                src={qrPath!}
+              ></Image>
               <p className="text-center text-base leading-relaxed text-gray-500 ">
                 Then Enter the 6 digits found in your Google Authenticator app
                 below 👇
@@ -69,7 +75,7 @@ function ModalActivate2FA({
                   <OTPInput />
                   <span
                     id="errorSpan"
-                    className="mt-2 flex text-center text-xs text-red-700 md:text-sm"
+                    className="text-xs mt-2 flex text-center text-red-700 md:text-sm"
                   ></span>
                 </div>
                 {/* <!-- Modal footer --> */}
@@ -148,7 +154,7 @@ function ModalDeactivate2FA({
 
   return (
     <div
-      className="absolute top-0 right-0  left-0  z-20  flex h-[calc(100%-1rem)] 
+      className="absolute left-0 right-0  top-0  z-20  flex h-[calc(100%-1rem)] 
                w-full items-center justify-center bg-gray-500  bg-opacity-75 p-4 transition-opacity md:inset-0 md:h-full"
     >
       <div className="relative h-full w-full max-w-2xl md:mb-[400px] md:h-auto">
@@ -191,15 +197,15 @@ function ModalDeactivate2FA({
                     id="password2FA"
                     className={` 
                     'border-gray-300'
-                    peer block w-full appearance-none rounded-full border-2 bg-transparent 
-                    py-2.5 px-3 text-center text-xs text-black
+                    text-xs peer block w-full appearance-none rounded-full border-2 
+                    bg-transparent px-3 py-2.5 text-center text-black
                   focus:border-blue-600 focus:outline-none focus:ring-0 md:text-sm`}
                     placeholder="Password"
                   />
 
                   <span
                     id="password2FASpan"
-                    className="justify-even ml-4 mt-2 flex text-center text-xs text-red-700 md:text-sm"
+                    className="justify-even text-xs ml-4 mt-2 flex text-center text-red-700 md:text-sm"
                   ></span>
                 </div>
                 {/* <!-- Modal footer --> */}

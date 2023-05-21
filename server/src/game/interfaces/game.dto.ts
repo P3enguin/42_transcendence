@@ -99,21 +99,25 @@ export class Game {
   ball: Ball;
   board: Board;
   type: GameType;
+  rankId: number;
   spectator: Player[];
   createdAt: Date;
   updatedAt: Date;
   interval: NodeJS.Timeout;
   pausedInterval: NodeJS.Timeout;
+  ruleInterval: NodeJS.Timeout;
   gameOn: boolean;
   paused: boolean;
 
-  constructor(gameType: GameType) {
+  constructor(gameType: GameType, rankId: number) {
     this.id = generateID();
     this.players = [];
     this.winner = null;
     this.looser = null;
     this.spectator = [];
     this.type = gameType;
+    this.rankId = 0;
+    if (gameType === GameType.RANKED) this.rankId = rankId;
     this.angleRad = Math.PI / 4;
     this.createdAt = new Date();
     this.updatedAt = new Date();
@@ -169,14 +173,22 @@ export class Game {
   connectPlayer(nickname: string, socketId: string): void {
     const player = this.isPlayer(nickname);
     if (player) player.socketId = socketId;
-    clearInterval(this.pausedInterval)
+    clearInterval(this.pausedInterval);
     this.paused = false;
   }
-  
+
   disconnectPlayer(nickname: string): void {
     this.paused = true;
     const player = this.isPlayer(nickname);
     if (player) player.socketId = null;
+  }
+
+  removePlayer(nickname: string) {
+    this.players = this.players.filter((p) => p.nickname !== nickname) as [
+      Player?,
+      Player?,
+    ];
+    console.log(this.players);
   }
 
   isPlayer(nickname: string): Player | undefined {
@@ -325,17 +337,17 @@ export class Game {
   }
 
   playerLeft(nickname: string): void {
-    this.disconnectPlayer(nickname);
+    // this.disconnectPlayer(nickname);
     // clearInterval(this.interval);
-    this.pausedInterval = setTimeout(() => {
-      const winner = this.players.find((p) => p.nickname !== nickname);
-      if (winner) {
-        winner.score = 5;
-        this.winner = winner;
-        this.looser = this.players.find((p) => p.nickname === nickname);
-      }
-      this.paused = false;
-    }, 5000);
+    // this.pausedInterval = setTimeout(() => {
+    const winner = this.players.find((p) => p.nickname !== nickname);
+    if (winner) {
+      winner.score = 5;
+      this.winner = winner;
+      this.looser = this.players.find((p) => p.nickname === nickname);
+    }
+    this.paused = false;
+    // }, 5000);
   }
 
   checkWin(): boolean {
@@ -369,5 +381,39 @@ export class Game {
     setTimeout(() => {
       this.paused = false;
     }, time * 1000);
+  }
+
+  getGameRules() {
+    if (this.isNormal()) {
+      return {
+        type: 'Normal',
+        description: 'The first player to reach 5 points wins',
+        effects: 'N/A',
+        time: 'N/A',
+      };
+    } else if (this.isRanked()) {
+      return {
+        type: 'Ranked',
+        description: 'The first player to reach 5 points wins',
+        effects: 'N/A',
+        time: 'N/A',
+      };
+    }
+    if (this.isTimeAttack()) {
+      return {
+        type: 'Time Attack',
+        description: 'The first player score at least 1 point in 1 minute wins',
+        effects: 'N/A',
+        time: '1 minute',
+      };
+    }
+    if (this.isSurvival()) {
+      return {
+        type: 'Survival',
+        description: 'The first player to reach 5 points wins',
+        effects: 'Ball speed increases every time it hits a paddle',
+        time: 'N/A',
+      };
+    }
   }
 }

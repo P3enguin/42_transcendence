@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { InputBtn, InputDefault, InputKey } from '../Input/Inputs';
+import { InputBtn, InputDefault } from '../Input/Inputs';
 
 function StartNew({ nickname, token }: { nickname: string; token: string }) {
   const router = useRouter();
@@ -25,15 +25,11 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
 
   async function createPrivateChat() {
     const res = await axios
-      .post(
-        process.env.NEXT_PUBLIC_BACKEND_HOST +
-          `/chat/create/dm`,
-        {
-          withCredentials: true,
-          headers: { Authorization: `Bearer ${token}` },
-          param: nickname,
-        },
-      )
+      .post(process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/create/dm`, {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+        param: nickname,
+      })
       .then((res) => {
         router.push(`/chat/${res.data.channelId}`);
       })
@@ -70,31 +66,38 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   }
 
   return (
-    <div className=" flex p-1 h-[95%] w-[100%] flex-col lg:pl-10 ">
-      <div className="h-[15%] w-[100%] text-3xl sm:items-center md:h-[30%] pl-5 lg:flex lg:text-start">
+    <div className=" flex h-[95%] w-[100%] flex-col p-1 lg:pl-10 ">
+      <div className="sm:items-cente5  h-[15%] w-[100%] pl-5 text-2xl sx:text-3xl md:h-[30%] lg:flex  lg:text-start">
         Select a Chat or <br />
         Start a New:
       </div>
-      <div className="flex h-full w-full flex-col-reverse xl:flex-row lg:p-2">
+      <div className="flex h-full w-full flex-col-reverse lg:p-2 xl:flex-row">
         {
-          <div className="mb-0 flex h-[85%] w-100% flex-col xl:w-[50%] ">
+          <div className="w-100% mb-0 flex h-[85%] flex-col pl-5 xl:w-[50%]">
             {/* <div className=" h-[10%] w-[90%] flex-col sm:h-[2%] lg:flex border border-red-600"> */}
             <form onSubmit={createRoom}>
-              <div className="flex xl:justify-end max-w-[400px]">
-                <InputDefault
-                  name="name"
-                  id="name"
-                  description="channel name"
-                  setName={setName}
-                />
+              <div className="mt-5 flex max-w-[400px] flex-col xl:mt-0 ">
+                <div className="flex flex-col xl:ml-[10%]">
+                  <p className="text-[14px] font-semibold uppercase  md:text-base">
+                    Channel:
+                  </p>
+                  <InputDefault
+                    className="group relative z-0 mb-2 w-[85.7%] min-w-[170px]"
+                    name="name"
+                    id="name"
+                    type="input"
+                    description="Channel name"
+                    setName={setName}
+                  />
+                </div>
               </div>
 
               {
-                <div className="flex flex-row w-full">
+                <div className="flex w-full flex-row">
                   <div className=" xl:pl-10 ">
                     <h3 className="">type: </h3>
-                    <div className=" flex flex-col pl-10 pr-5 md:pr-0 ">
-                      <div className=" flex flex-row items-center whitespace-nowrap">
+                    <div className=" flex flex-col px-1 sx:pl-10 sx:pr-5 md:pr-0">
+                      <div className=" flex flex-row items-center whitespace-nowrap ">
                         <input
                           type="radio"
                           id="public"
@@ -109,8 +112,10 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                           }}
                         />
                         <label
-                          htmlFor="normal"
-                          className=" whitespace-nowrap pl-2"
+                          htmlFor="public"
+                          className={`whitespace-nowrap pl-2 ${
+                            name === '' ? '' : 'cursor-pointer'
+                          }`}
                         >
                           public
                         </label>
@@ -131,8 +136,10 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                           // disable if secret radio button is selected
                         />
                         <label
-                          htmlFor="normal"
-                          className=" whitespace-nowrap pl-2"
+                          htmlFor="private"
+                          className={`whitespace-nowrap pl-2 ${
+                            name === '' ? '' : 'cursor-pointer'
+                          }`}
                         >
                           private
                         </label>
@@ -152,66 +159,79 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                           }} // disable if private radio button is selected
                         />
                         <label
-                          htmlFor="normal"
-                          className=" whitespace-nowrap pl-2 "
+                          htmlFor="secret"
+                          className={`whitespace-nowrap pl-2  ${
+                            name === '' ? '' : 'cursor-pointer'
+                          }`}
                         >
                           secret
                         </label>
                       </div>
                     </div>
                   </div>
-                  <div className=" w-full md:max-w-[60%] text-ellipsis pl-2 pt-7 text-[10px]">
+                  <div className=" w-full text-ellipsis pl-2 pt-7 text-[10px] md:max-w-[60%]">
                     {privacy.description}
                   </div>
                 </div>
               }
               {privacy.privacy === 'private' && (
-                <div className="flex xl:justify-end max-w-[400px]">
-                  <InputKey
-                    name="key"
-                    id="key"
-                    description="channel's Key"
-                    setKey={setKey}
+                <div className="flex max-w-[400px] xl:justify-center">
+                  <InputDefault
+                    className="group relative z-0 mb-2 w-[86%] xl:w-3/4 min-w-[170px]"
+                    name="name"
+                    id="name"
+                    type="password"
+                    description="Enter a key"
+                    setName={setName}
                   />
                 </div>
               )}
               {
-                <div className="flex xl:justify-end max-w-[400px]">
+                <div className="flex max-w-[400px] xl:justify-center ">
                   <InputDefault
+                    className="group relative z-0 mb-2 w-[86%] xl:w-3/4 min-w-[170px]"
                     name="topic"
+                    type="input"
                     id="topic"
-                    description="channel's Topic"
+                    description="Channel topic"
                     setName={setTopic}
                   />
                 </div>
               }
-              <div className="flex xl:justify-end ">
-                <button
-                  name="create"
-                  className=" hover:text-s absolute mx-auto mt-1 transform 
-                    rounded-full bg-[#0097E2] px-9 py-2
-                    text-[10px] font-bold uppercase text-white 
-                    shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]
-                    "
-                >
-                  Create
-                </button>
+              <div className="flex max-w-[400px] pr-10 xl:justify-end mt-3">
+                <div className="">
+                  <button
+                    name="create"
+                    className=" hover:text-s mx-auto mt-1 transform 
+                  rounded-full bg-[#0097E2] px-9 py-2
+                  text-[10px] font-bold uppercase text-white 
+                  shadow transition  duration-300 hover:scale-[115%] hover:bg-[#2C3B7C]
+                  "
+                  >
+                    Create
+                  </button>
+                </div>
               </div>
             </form>
           </div>
           // </div>
         }
-        { (
-          <div className="mb-0 flex h-[15%] w-full xl:w-[50%] flex-col xl:h-[85%] max-w-[400px] xl:items-center lg:pt-0  ">
-            <InputBtn
-              name="nickname"
-              id="nickname"
-              description="Direct Message"
-              setName={setPlayer1}
-              createPrivateChat={createPrivateChat}
-            />
+        {
+          <div className="mb-0 flex h-[15%] w-full max-w-[400px] flex-col pl-5 lg:pt-0 xl:h-[85%] xl:w-[50%] xl:items-center  ">
+            <div className="flex h-full w-full flex-col">
+              <p className="self-start text-[14px] font-semibold uppercase  md:text-base">
+                Direct Message:
+              </p>
+              <InputBtn
+                name="nickname"
+                id="nickname"
+                description="nickname"
+                setName={setPlayer1}
+                createPrivateChat={createPrivateChat}
+              />
+            </div>
           </div>
-        )}
+        }
       </div>
     </div>
   );

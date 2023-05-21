@@ -1,4 +1,5 @@
 import exp from 'constants';
+import Image from 'next/image';
 import { Rank } from './StateComps';
 interface PlayerProgress {
   coins: number;
@@ -42,7 +43,13 @@ function PlayerProgress({
           </div>
         </div>
         <div className="flex items-center  gap-2">
-          <img src="/coin.svg" alt="coinIcon" className="w-[27px]"></img>
+          <Image
+            width={27}
+            height={27}
+            src="/coin.svg"
+            alt="coinIcon"
+            className="h-full w-[27px]"
+          ></Image>
           <div className="flex  flex-col ">
             <strong className="  text-gray-100">{coins + ' ₳'} </strong>
             <span className=" text-gray-400">cache earned</span>
@@ -51,7 +58,13 @@ function PlayerProgress({
       </div>
       <div className="flex flex-col  gap-4 sm:flex-row sm:gap-10">
         <div className="flex items-center gap-2">
-          <img src="/star.svg" alt="startIcon" className="w-[27px] "></img>
+          <Image
+            width={27}
+            height={27}
+            src="/star.svg"
+            alt="startIcon"
+            className="h-full w-[27px] "
+          ></Image>
           <div className="flex  flex-col ">
             <strong className="  text-gray-100">
               {exp}/{maxExp} XP
@@ -60,7 +73,13 @@ function PlayerProgress({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <img src="/champion.svg" alt="champIcon" className="w-[27px] "></img>
+          <Image
+            width={27}
+            height={27}
+            src="/champion.svg"
+            alt="champIcon"
+            className="h-full w-[27px] "
+          ></Image>
           <div className="flex  flex-col ">
             <strong className="  text-gray-100">{winRatio + '%'}</strong>
             <span className=" text-gray-400">win ratio</span>

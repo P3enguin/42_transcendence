@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
 import Router from 'next/router';
+import Image from 'next/image';
 interface NotifInterface {
   nickname: string;
   image: string;
@@ -92,7 +93,9 @@ function NotiAddFriend({
   return (
     <div className="-mx-2 flex items-center border-b px-4 py-3 hover:bg-[#8fd4f6]">
       <div className="w-1/5">
-        <img
+        <Image
+          width={200}
+          height={200}
           className="h-12 w-12 rounded-full border border-gray-100 shadow-sm"
           src={image}
           alt="user image"
@@ -125,7 +128,9 @@ function NotiAccepted({
   return (
     <div className="-mx-2 flex items-center border-b px-4 py-3 hover:bg-[#8fd4f6]">
       <div className="w-1/5">
-        <img
+        <Image
+          width={200}
+          height={200}
           className="h-12 w-12 rounded-full border border-gray-100 shadow-sm"
           src={image}
           alt="user image"
@@ -153,7 +158,9 @@ function NotiRejected({
   return (
     <div className="-mx-2 flex items-center border-b px-4 py-3 hover:bg-[#8fd4f6]">
       <div className="w-1/5">
-        <img
+        <Image
+          width={200}
+          height={200}
           className="h-12 w-12 rounded-full border border-gray-100 shadow-sm"
           src={image}
           alt="user image"

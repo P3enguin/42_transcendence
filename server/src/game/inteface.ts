@@ -17,6 +17,7 @@ export interface ServerToClientEvents {
   gameOver: (data: any) => void;
   newGame: (data: any) => void;
   LiveGames: (data: any) => void;
+  gameRules: (data: any) => void;
 }
 
 export interface ClientToServerEvents {

@@ -36,19 +36,19 @@ const Ball = ({ boardRef, ws }: ballProps) => {
     const resizeBall = () => {
       if (ballRef.current && boardRef.current) {
         ballRef.current.style.width =
-          (boardRef.current?.offsetWidth / 8) / 5 + 'px';
+          boardRef.current?.offsetWidth / 8 / 5 + 'px';
         ballRef.current.style.height = ballRef.current.offsetWidth + 'px';
       }
     };
     resizeBall();
-    setPosition((prev) => ({ x: prev.x, y: prev.y }));
+    // setPosition((prev) => ({ x: prev.x, y: prev.y }));
     window.addEventListener('resize', resizeBall);
 
     return () => {
       window.removeEventListener('resize', resizeBall);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current, ballRef.current]);
+  }, [boardRef?.current, ballRef.current, Position]);
 
   return (
     <div

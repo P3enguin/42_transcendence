@@ -1,6 +1,5 @@
 import UpdateProfile from '@/components/profile/UpdateProfile';
 import { verifyToken, verifySession } from '@/components/VerifyToken';
-
 function loginPage({
   email,
   firstName,
@@ -14,6 +13,7 @@ function loginPage({
   image: string;
   coins: number;
 }) {
+
   return (
     <div className="grid h-screen place-items-center items-start ">
       <UpdateProfile

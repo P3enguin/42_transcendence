@@ -3,6 +3,8 @@ import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import AvatarProfileComp from './Avatar';
 import AddFriend from './Button/Buttons';
+import Image from 'next/image';
+import Router from 'next/router';
 import {
   AvatarLevelCounter,
   AddFriendIcon,
@@ -68,7 +70,6 @@ function ProfileDisplay({
 
   console.log(requestFriend);
 
-
   async function handleWpChange(event: React.ChangeEvent) {
     const wallpaper = (event.target as HTMLInputElement).files?.[0];
     if (wallpaper) {
@@ -91,13 +92,9 @@ function ProfileDisplay({
         credentials: 'include',
       });
       if (resp.ok) {
-        const pfp = document.getElementById(
-          'wallpaper-holder',
-        ) as HTMLImageElement;
-        if (wp) window.URL.revokeObjectURL(pfp.src);
-        pfp.src = window.URL.createObjectURL(wallpaper);
         setreply('Wallpaper updated!');
         setSuccess(true);
+        Router.reload();
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
@@ -133,11 +130,9 @@ function ProfileDisplay({
         credentials: 'include',
       });
       if (resp.ok) {
-        const pfp = document.getElementById('pfp-holder') as HTMLImageElement;
-        if (wp) window.URL.revokeObjectURL(pfp.src);
-        pfp.src = window.URL.createObjectURL(avatar);
-        setSuccess(true);
         setreply('Avatar updated !');
+        setSuccess(true);
+        Router.reload();
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
@@ -170,11 +165,13 @@ function ProfileDisplay({
         rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1100px]"
       >
         <div className="flex justify-end">
-          <img
+          <Image
+            width={700}
+            height={160}
             src={wp}
             alt="wallpaper"
             id="wallpaper-holder"
-            className="h-[160px] min-h-[80px] w-full min-w-[200px] 
+            className="h-[160px] min-h-[80px] w-full min-w-[200px]
              rounded-t-3xl object-cover object-center sm:h-[220px] xl:h-[250px]"
           />
           {userProfile && (

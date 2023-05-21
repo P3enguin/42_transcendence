@@ -2,7 +2,7 @@ import { MatchData, Rank } from './StateComps';
 import { RankingIconFix } from '@/components/icons/Icons';
 import { useState, useEffect } from 'react';
 import { calculateTimeElapsed } from '@/components/tools/functions';
-
+import Image from 'next/image';
 function RankingStat({ nickname }: { nickname: string }) {
   const [games, setGames] = useState([]);
   const [rankStat, setRankStat] = useState<any>();
@@ -131,11 +131,13 @@ function RankingStat({ nickname }: { nickname: string }) {
           >
             <h1>STATS:</h1>
             <div className="flex w-1/2 flex-row items-center  justify-evenly gap-3 lg:w-2/3">
-              <img
+              <Image
+                width={20}
+                height={20}
                 src="/star.svg"
                 alt="startIcon"
-                className="ml-2 w-[20px] "
-              ></img>
+                className="ml-2 w-[20px] h-full"
+              ></Image>
               <p className="w-[150px] ">
                 Rank Point : {rankStat.current_points + ' RP'}{' '}
               </p>

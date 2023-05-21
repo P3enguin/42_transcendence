@@ -1,11 +1,23 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InviteFriendCard from './InviteFriendCard';
 import axios from 'axios';
 import { RadioInput } from './StartGame';
 import { useRouter } from 'next/router';
+import { Socket } from 'socket.io-client';
 
-const OnlineFriends = () => {
-  const [friends, setFriends] = useState([]);
+export interface friend {
+  nickname: string;
+  avatar: string;
+  id: number;
+}
+
+export interface Status {
+  friend: friend;
+  status: string;
+}
+
+const OnlineFriends = ({ ws }: { ws: Socket }) => {
+  const [onlineFriends, setOnlineFriends] = useState<Status[]>([]);
   const [gameType, setGameType] = useState('NORMAL');
   const router = useRouter();
 
@@ -20,20 +32,47 @@ const OnlineFriends = () => {
       .then((res) => {
         console.log(res.data);
         router.push('/game/' + res.data);
+        if (ws) {
+          ws.emit('gameInvite', { user, gameType, gameId: res.data });
+        }
       })
       .catch((err) => {
         console.log(err.message);
       });
+    
   };
 
   useEffect(() => {
-    axios
-      .get('/players/friends')
-      .then((res) => {
-        setFriends(res.data);
-      })
-      .catch((err) => {});
-  }, []);
+    if (ws) {
+      ws.emit('getOnlineFriends', (res: []) => {
+        setOnlineFriends(res);
+      });
+
+      ws.on('statusChange', (data: Status) => {
+        if (data.status === 'OFFLINE') {
+          setOnlineFriends((prev) => {
+            return prev.filter((friend) => friend.friend.id !== data.friend.id);
+          });
+        } else {
+          setOnlineFriends((prev) => {
+            if (prev.find((friend) => friend.friend.id === data.friend.id)) {
+              return prev.map((friend) => {
+                if (friend.friend.id === data.friend.id) {
+                  return data;
+                }
+                return friend;
+              });
+            } else return [...prev, data];
+          });
+        }
+      });
+    }
+    return () => {
+      if (ws) {
+        ws.off('statusChange');
+      }
+    };
+  }, [ws]);
 
   return (
     <div className="flex h-[50%] flex-col p-2 md:h-1/2 md:p-5">
@@ -68,12 +107,12 @@ const OnlineFriends = () => {
         />
       </div>
 
-      {friends && (
+      {onlineFriends && (
         <div className="scrollbar flex flex-wrap justify-center overflow-y-auto">
-          {friends.map((user: any, index: number) => (
+          {onlineFriends.map((user: any, index: number) => (
             <InviteFriendCard
               key={index}
-              user={user}
+              data={user}
               inviteFriend={inviteFriend}
             />
           ))}

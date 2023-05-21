@@ -30,15 +30,56 @@ export class GameService {
     }
   }
 
-  createGame(gametype: GameType) {
-    const game = new Game(gametype);
+  async joinRankedGame(user: Player) {
+    const player = await this.prisma.player.findUnique({
+      where: {
+        id: user.id,
+      },
+      include: {
+        status: {
+          include: {
+            rank: {
+              include: {
+                rank: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    console.log(player.status.rank.rankId);
+    const game = this.getAvailableRankedGame(player.status.rank.rankId);
+    if (game) {
+      game.players.push(user);
+      return game.id;
+    } else {
+      const game = this.createGame(GameType.RANKED, player.status.rank.rankId);
+      game.players.push(user);
+      return game.id;
+    }
+  }
+
+  createGame(gametype: GameType, rankId?: number) {
+    const game = new Game(gametype, rankId);
     this.games.set(game.id, game);
     return game;
   }
 
   getAvailableGame(gametype: GameType) {
     const availableGames = Array.from(this.games.values()).filter((game) => {
-      if (game) return game.players.length < 2 && game.type === gametype;
+      if (game) return !game.isFull() && game.type === gametype;
+    });
+    return availableGames[0];
+  }
+
+  getAvailableRankedGame(rankId: number) {
+    const availableGames = Array.from(this.games.values()).filter((game) => {
+      if (game)
+        return (
+          !game.isFull() &&
+          game.type === GameType.RANKED &&
+          game.rankId >= rankId -1 && game.rankId <= rankId + 1
+        );
     });
     return availableGames[0];
   }
@@ -129,7 +170,8 @@ export class GameService {
 
   getLevelFromXP(XP: number) {
     const requiredXP = 100;
-    const level = Math.floor(Math.log(XP / requiredXP) / Math.log(1.6)) + 1;
+    let level = Math.floor(Math.log(XP / requiredXP) / Math.log(1.6)) + 2;
+    if (XP < requiredXP) level = 1;
     return level;
   }
 
@@ -158,19 +200,16 @@ export class GameService {
       winnerScore,
       LooserScore,
     );
-    const winnerLevel = this.getLevelFromXP(Number(winner.status.XP));
     looser.status.XP += this.calculateLooserXP(
       looser.status.level,
       LooserScore,
     );
-    const looserLevel = this.getLevelFromXP(Number(looser.status.XP));
-
     await this.prisma.status.update({
       where: {
         id: winner.status.id,
       },
       data: {
-        level: winnerLevel,
+        level: this.getLevelFromXP(Number(winner.status.XP)),
         XP: winner.status.XP,
       },
     });
@@ -179,7 +218,7 @@ export class GameService {
         id: looser.status.id,
       },
       data: {
-        level: looserLevel,
+        level: this.getLevelFromXP(Number(looser.status.XP)),
         XP: looser.status.XP,
       },
     });
@@ -211,6 +250,29 @@ export class GameService {
       data: {
         current_points: looser_RP,
         rankId: looserRank.id,
+      },
+    });
+  }
+
+  async getTimeAttakXP(winner, looser) {
+    winner.status.XP += 40;
+    looser.status.XP += 15;
+    await this.prisma.status.update({
+      where: {
+        id: winner.status.id,
+      },
+      data: {
+        level: this.getLevelFromXP(Number(winner.status.XP)),
+        XP: winner.status.XP,
+      },
+    });
+    await this.prisma.status.update({
+      where: {
+        id: looser.status.id,
+      },
+      data: {
+        level: this.getLevelFromXP(Number(looser.status.XP)),
+        XP: looser.status.XP,
       },
     });
   }
@@ -259,9 +321,20 @@ export class GameService {
         },
       },
     });
-
-    await this.levelUp(winner, __winner.score, looser, __looser.score);
-    if (game.type.toString() === 'RANKED') await this.rankUp(winner, looser);
+    console.log('saving game...') 
+    if (!game.isTimeAttack()) {
+      console.log('not time attack') 
+      await this.levelUp(winner, __winner.score, looser, __looser.score);
+      console.log('leveled up') 
+      console.log(game.type); 
+      if (game.isRanked()) {
+        console.log('ranked') 
+        await this.rankUp(winner, looser);
+      }
+    } else {
+      await this.getTimeAttakXP(winner, looser);
+    }
+    console.log('game saved');
     this.deleteGame(game.id);
   }
 }
