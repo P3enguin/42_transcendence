@@ -86,7 +86,7 @@ export async function getServerSideProps({ params, req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST +
+      process.env.NEXT_PUBLIC_BACKEND_HOST0 +
         '/players/data?' +
         new URLSearchParams({ nickname: params.user }),
       {
