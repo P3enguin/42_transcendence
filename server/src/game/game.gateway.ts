@@ -29,7 +29,7 @@ export interface connectedPlayer extends Player {
 @WebSocketGateway({
   namespace: 'game',
   cors: {
-    origin: process.env.FRONTEND_HOST,
+    origin: [process.env.FRONTEND_HOST, process.env.FRONTEND_HOST0],
   },
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {

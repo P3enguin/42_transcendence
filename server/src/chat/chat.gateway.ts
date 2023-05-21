@@ -28,7 +28,7 @@ export interface LogPlayer extends Player {
 @WebSocketGateway({
   namespace: 'chat',
   cors: {
-    origin: process.env.FRONTEND_HOST,
+    origin: [process.env.FRONTEND_HOST, process.env.FRONTEND_HOST0],
   },
 })
 export class ChatGateway
@@ -36,12 +36,12 @@ export class ChatGateway
 {
   constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
 
-  @WebSocketServer()   server: Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->;
+  @WebSocketServer() server: Server<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    InterServerEvents,
+    SocketData
+  >;
 
   afterInit(server: Server) {
     // console.log(server);
@@ -55,8 +55,7 @@ export class ChatGateway
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
     )) as LogPlayer;
-    if (client)
-      player.socketId = client.id;
+    if (client) player.socketId = client.id;
     client.handshake.query.user = JSON.stringify(player);
     console.log('player connected:', player.nickname, player.socketId);
     this.server.to(client.id).emit('connected', 'Hello world!');
@@ -75,19 +74,18 @@ export class ChatGateway
     @MessageBody() data: any,
   ) {
     var time = new Date();
-    const receivedTime = time.getHours() + ":" + time.getMinutes();
+    const receivedTime = time.getHours() + ':' + time.getMinutes();
     // console.log(data.id);
     // console.log(player);
 
-    const messageInfo= {
+    const messageInfo = {
       sender: player.nickname,
       senderAvatar: player.avatar,
       time: receivedTime,
       message: data.message,
     };
-  
-    this.server.to(data.id).emit('message', messageInfo);
-    this.chatservice.saveMessage(messageInfo, data.id)
-  }
 
+    this.server.to(data.id).emit('message', messageInfo);
+    this.chatservice.saveMessage(messageInfo, data.id);
+  }
 }

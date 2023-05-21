@@ -9,7 +9,7 @@ import { RankService } from 'src/rank/rank.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: process.env.FRONTEND_HOST,
+      origin: [process.env.FRONTEND_HOST, process.env.FRONTEND_HOST0],
       credentials: true,
     },
   });
