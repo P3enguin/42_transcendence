@@ -36,7 +36,7 @@ const BallAi = ({ boardRef, position, ballRef }: ballProps) => {
   return (
     <div
       ref={ballRef}
-      className="absolute translate-x-[-50%] translate-y-[-50%] bg-center bg-no-repeat"
+      className="absolute translate-x-[-50%] translate-y-[-50%] bg-center bg-no-repeat "
       style={{
         backgroundImage: "url('../game/Ball.svg')",
         backgroundSize: '100%',

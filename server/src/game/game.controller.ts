@@ -33,11 +33,19 @@ export class GameController {
     @Res() res: Response,
     @Query('gametype') gametype: GameType,
   ) {
-    const id = this.gameService.joinGame(
-      new Player(player.id, player.nickname, player.avatar),
-      gametype,
-    );
-    return res.status(200).json(id);
+    if (gametype) {
+      let id: string;
+      if (gametype === GameType.RANKED) {
+        const id = this.gameService.joinRankedGame(
+          new Player(player.id, player.nickname, player.avatar),
+        );
+      } else
+        id = this.gameService.joinGame(
+          new Player(player.id, player.nickname, player.avatar),
+          gametype,
+        );
+      return res.status(200).json(id);
+    } else return res.status(400).json({ message: 'GameType is required' });
   }
 
   @Get('invite')
@@ -48,7 +56,11 @@ export class GameController {
   ) {
     const gameId = this.gameService.inviteGame(
       new Player(player.id, player.nickname, player.avatar),
-      new Player(Number(invite.user.id), invite.user.nickname, invite.user.avatar),
+      new Player(
+        Number(invite.user.id),
+        invite.user.nickname,
+        invite.user.avatar,
+      ),
       invite.gameType,
     );
     return res.status(200).json(gameId);
@@ -61,10 +73,9 @@ export class GameController {
     @Res() res: Response,
   ) {
     if (this.gameService.getMyGame(gameId, player))
-    return res.status(200).json({message: 'Oki', isPlayer: true});
+      return res.status(200).json({ message: 'Oki', isPlayer: true });
     else if (this.gameService.getActiveGame(gameId))
       return res.status(200).json({ message: 'Oki', isPlayer: false });
-    return res.status(404).json({ message: 'Game Not Found'});
+    return res.status(404).json({ message: 'Game Not Found' });
   }
 }
-

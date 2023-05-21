@@ -28,8 +28,8 @@ const StatusBubble = ({ data, className, onClick }: StatusBubbleProps) => {
         alt="Avatar"
         width={200}
         height={200}
-        className="h-[60px] w-[60px] rounded-full border-2 border-[#0097E2]
-        border-opacity-50 transition duration-300 ease-in hover:border-opacity-100"
+        className="h-[60px] w-[60px] rounded-full border-2 border-[#0097E2] border-opacity-40
+        object-cover transition duration-300 ease-in hover:border-opacity-100"
         onClick={onClick}
       />
       <div

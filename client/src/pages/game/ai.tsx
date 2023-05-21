@@ -64,6 +64,7 @@ const Ai = ({ player }: any) => {
             score: AIScore,
           }}
           gameOn={gameOn}
+          spectators={0}
         />
         {gameOn && (<PongAi
           gameRef={gameRef}

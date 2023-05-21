@@ -9,11 +9,11 @@ import * as argon2 from 'argon2';
 import * as fs from 'fs';
 import { send } from 'process';
 
-function calculateXP(level: number, totalXP: BigInt) {
+function calculateXP(level: number, totalXP: number) {
   const requiredXP = Math.floor(100 * Math.pow(1.6, level - 1));
-  const XP = Number(totalXP) - requiredXP;
+  const XP = level === 1 ? totalXP : totalXP - requiredXP;
   return {
-    XP,
+    XP: Math.abs(XP),
     requiredXP,
   };
 }
@@ -431,7 +431,7 @@ export class PlayerService {
       const rankId = playerStatus.status.rank.rankId;
       const level = playerStatus.status.level;
 
-      const xp = calculateXP(level, playerStatus.status.XP);
+      const xp = calculateXP(level, Number(playerStatus.status.XP));
 
       const winRatio = (
         (playerStatus.wins.length /
@@ -527,7 +527,7 @@ export class PlayerService {
       });
       const level = playerStatus.status.level;
       const rankId = playerStatus.status.rank.rankId;
-      const xp = calculateXP(level, playerStatus.status.XP);
+      const xp = calculateXP(level, Number(playerStatus.status.XP));
       const winRatio = (
         (playerStatus.wins.length /
           (playerStatus.wins.length + playerStatus.loss.length)) *
