@@ -110,7 +110,7 @@ export class PlayerService {
     });
     if (!receiverId) throw new Error('Nickname Not Found');
     try {
-      const existingRequest = await this.prisma.request.findFirst({
+      const existingRequest = await this.prisma.request.findMany({
         where: {
           toPlayerId: receiverId.id,
           fromPlayerId: player.id,
@@ -119,8 +119,8 @@ export class PlayerService {
           },
         },
       });
-      if (existingRequest) throw new Error('Cannot Send request');
-
+      console.log(existingRequest);
+      if (existingRequest.length != 0) throw new Error('Cannot Send request');
       const request = await this.prisma.request.create({
         data: {
           id: reqId,
@@ -375,16 +375,23 @@ export class PlayerService {
         },
       });
 
-      const otherRequests = await this.prisma.request.findMany({
+      const oldRequestFrom = await this.prisma.request.findMany({
         where: {
           fromPlayerId: player.id,
           toPlayerId: friendId.id,
         },
       });
+      const oldRequestTo = await this.prisma.request.findMany({
+        where: {
+          fromPlayerId: friendId.id,
+          toPlayerId: player.id,
+        },
+      });
+      const allCommonRequest = [...oldRequestFrom, ...oldRequestTo];
       //delete those requests
       await this.prisma.request.deleteMany({
         where: {
-          id: { in: otherRequests.map((r) => r.id) },
+          id: { in: allCommonRequest.map((r) => r.id) },
         },
       });
       res.status(200).json({ message: 'Friend blocked successfully' });

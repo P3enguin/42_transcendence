@@ -91,6 +91,7 @@ function AddFriend({
     } else {
       setreply('Failed to cancel  Friend Request');
       setError(true);
+      Router.reload();
       setTimeout(() => {
         setError(false);
       }, 3000);

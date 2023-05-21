@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
+import Router from 'next/router';
 interface NotifInterface {
   nickname: string;
   image: string;
@@ -41,6 +42,7 @@ function NotiAddFriend({
       // }, 3000);
     } else if (response.status == 400) {
       const result = await response.json();
+      Router.reload();
       console.log('didnt accept');
       // const err = await response.json();
       // setreply('An Error has Occurred!');
@@ -69,6 +71,7 @@ function NotiAddFriend({
     if (response.ok) {
       handleUpdateRequestStatus?.(requestId);
       console.log('rejected!');
+
       // setreply('Password Changed !');
       // setSuccess(true);
       // setTimeout(() => {
@@ -200,7 +203,7 @@ function NotiDrop() {
   return (
     <div
       x-show="dropdownOpen"
-      className="absolute top-[56px] right-12 z-50 mt-2 h-[400px] w-[21rem] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
+      className="absolute right-12 top-[56px] z-50 mt-2 h-[400px] w-[21rem] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
     >
       {!requests ? (
         <div className="text-lg text-gray-500 "> You have no requests</div>
