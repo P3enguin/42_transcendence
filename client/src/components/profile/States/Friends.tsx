@@ -34,32 +34,58 @@ function FriendStats({
     };
     fetchData();
   }, [nickname]);
-
-  if (isLoading) return <div className="text-center">Loading Data...</div>;
-  else {
-    if (friends.length === 0) {
-      if (userProfile) {
-        return <div className="text-center">You have no friends</div>;
-      } else {
-        return <div className="text-center">{nickname} has no friends</div>;
-      }
-    }
-    return (
-      <div className="flex h-3/4 min-h-[233px] w-full flex-wrap justify-center p-6 sm:gap-10 ">
-        {friends.map((elem, index) => (
-          <div key={index} className="w-[190px]">
-            <Player
-              nickname={elem.nickname}
-              avatar={
-                process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + elem.avatar
-              }
-              userProfile={userProfile}
-            />
-          </div>
-        ))}
-      </div>
+  console.log(friends)
+  async function blockFriend(e: React.MouseEvent, nickname: string) {
+    e.preventDefault();
+    const resp = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/block',
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname: nickname }),
+        credentials: 'include',
+      },
     );
+    if (resp.ok) {
+      const newFriendList = friends.filter(
+        (friend) => friend.nickname != nickname,
+      );
+      setFriends(newFriendList);
+      console.log('blocked');
+    } else {
+      console.log('not blocked');
+    }
   }
-}
+
+    if (isLoading) return <div className="text-center">Loading Data...</div>;
+    else {
+      if (friends.length === 0) {
+        if (userProfile) {
+          return <div className="text-center">You have no friends</div>;
+        } else {
+          return <div className="text-center">{nickname} has no friends</div>;
+        }
+      }
+      return (
+        <div className="flex h-3/4 min-h-[233px] w-full flex-wrap justify-center p-6 sm:gap-10 ">
+          {friends.map((elem, index) => (
+            <div key={index} className="w-[190px]">
+              <Player
+                nickname={elem.nickname}
+                avatar={
+                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  '/avatars/' +
+                  elem.avatar
+                }
+                userProfile={userProfile}
+                blockFriend={blockFriend}
+              />
+            </div>
+          ))}
+        </div>
+      );
+    }
+  }
+
 
 export default FriendStats;

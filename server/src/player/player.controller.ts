@@ -144,7 +144,7 @@ export class PlayerController {
   GetFriends(
     @Req() req: Request,
     @Res() res: Response,
-    @Query() query :queryParam,
+    @Query() query: queryParam,
   ) {
     return this.playerService.GetFriends(req, res, query.nickname);
   }
@@ -155,11 +155,20 @@ export class PlayerController {
     @GetPlayer() player: Player,
     @Req() req: Request,
   ) {
-    return this.playerService.BlockFriend(player, req.body.nickname,res);
+    return this.playerService.BlockFriend(player, req.body.nickname, res);
   }
   @Get('blocked')
   GetBlockedFriends(@Res() res: Response, @Query() query: queryParam) {
-    return this.playerService.GetBlockedFriends(query.nickname,res);
+    return this.playerService.GetBlockedFriends(query.nickname, res);
+  }
+
+  @Post('unblock')
+  Unblock(
+    @Req() req: Request,
+    @Res() res: Response,
+    @GetPlayer() player: Player,
+  ) {
+    return this.playerService.Unblock(req.body.nickname, res, player);
   }
 
   //------------------------------{ Avatar and Wallpaper }----------------------------------

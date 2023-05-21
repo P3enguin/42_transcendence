@@ -4,27 +4,10 @@ interface PLayerProps {
   nickname: string;
   avatar: string;
   userProfile: boolean;
+  blockFriend(e: React.MouseEvent, nickname: string): Promise<void>;
 }
 
-function Player({ nickname, avatar, userProfile }: PLayerProps) {
-  async function blockFriend(e: React.MouseEvent) {
-    e.preventDefault();
-    const resp = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/block',
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname }),
-        credentials: 'include',
-      },
-    );
-    if (resp.ok) {
-      console.log('blocked');
-    } else {
-      console.log('not blocked');
-    }
-  }
-
+function Player({ nickname, avatar, userProfile, blockFriend }: PLayerProps) {
   return (
     <div className="flex  items-center justify-between rounded-xl border p-1">
       <div className="flex w-3/4 flex-row items-center gap-1">
@@ -49,7 +32,7 @@ function Player({ nickname, avatar, userProfile }: PLayerProps) {
               className="h-[17px] w-[17px] "
             />
           </button>
-          <button onClick={blockFriend}>
+          <button onClick={(event) => blockFriend(event, nickname)}>
             <img src="/blockFriend.svg" alt="msg" className="h-[17px] w-[17]" />
           </button>
         </div>
