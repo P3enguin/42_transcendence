@@ -13,7 +13,7 @@ export default function LiveGame({ liveGame }: { liveGame: Game }) {
       >
         <div className="truncate font-semibold">{players[0].nickname}</div>
         <Image
-          className="rounded-full bg-[#8bd9ffb3]"
+          className="h-[56px] w-[56px] rounded-full border-2 border-[#0097E2] border-opacity-50 transition duration-300 ease-in hover:border-opacity-100"
           src={
             process.env.NEXT_PUBLIC_BACKEND_HOST +
             '/avatars/' +
@@ -40,7 +40,7 @@ export default function LiveGame({ liveGame }: { liveGame: Game }) {
         className="flex w-[40%] items-center justify-start gap-[13px]"
       >
         <Image
-          className="rounded-full bg-[#8bd9ffb3]"
+          className="h-[56px] w-[56px] rounded-full border-2 border-[#0097E2] border-opacity-50 transition duration-300 ease-in hover:border-opacity-100"
           src={
             process.env.NEXT_PUBLIC_BACKEND_HOST +
             '/avatars/' +
