@@ -38,7 +38,6 @@ function Chat({
     setShowStartNew(true);
   };
 
-
   useEffect(() => {
     const MobilView = () => {
       if (document.body.offsetWidth < 800) {
@@ -59,15 +58,17 @@ function Chat({
       window.removeEventListener('resize', MobilView);
     };
     // eslint-disable-next-line
-  }, []);
+  }, [showMobile]);
 
   return (
     <>
-      <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
+      <div className="m-5 flex h-[70%] min-h-[680px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
         {showRecentChat && (
           <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px]">
             <div className="flex h-[5%] w-[100%] items-center border-b pl-5 ">
-              <Link href={`/chat`} className='text-2xl p-1 '>Chat Room </Link>
+              <Link href={`/chat`} className="p-1 text-2xl ">
+                Chat Room{' '}
+              </Link>
             </div>
             {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
 
@@ -80,7 +81,7 @@ function Chat({
                   Recent Chat
                 </div>
                 <div
-                  className="cursor-pointer text-green-300 md:hidden"
+                  className="cursor-pointer text-green-300 tx:hidden"
                   onClick={handleStartNewClick}
                 >
                   Start New
@@ -97,18 +98,12 @@ function Chat({
         {showStartNew && (
           <div className=" w-full flex-col justify-between md:flex">
             {!showRecentChat && (
-              <div className="flex flex-row justify-between  pt-1">
+              <div className="flex flex-row justify-between border pt-1">
                 <div
                   className="cursor-pointer text-green-300"
                   onClick={handleRecentChatClick}
                 >
                   Recent Chat
-                </div>
-                <div
-                  className="cursor-pointer text-green-300 md:hidden"
-                  onClick={handleStartNewClick}
-                >
-                  Start New
                 </div>
               </div>
             )}

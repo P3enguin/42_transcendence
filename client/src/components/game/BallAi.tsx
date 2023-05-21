@@ -31,12 +31,12 @@ const BallAi = ({ boardRef, position, ballRef }: ballProps) => {
       window.removeEventListener('resize', resizeBall);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boardRef?.current]);
+  }, [boardRef?.current, position, ballRef.current]);
 
   return (
     <div
       ref={ballRef}
-      className="absolute translate-x-[-50%] translate-y-[-50%] bg-center bg-no-repeat"
+      className="absolute translate-x-[-50%] translate-y-[-50%] bg-center bg-no-repeat "
       style={{
         backgroundImage: "url('../game/Ball.svg')",
         backgroundSize: '100%',

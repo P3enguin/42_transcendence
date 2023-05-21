@@ -15,9 +15,13 @@ import RankingStat from './States/RankingStat';
 function ProfileStats({
   nickname,
   userProfile,
+  blockedByFriend,
+  blockedByPlayer,
 }: {
   nickname: string;
   userProfile: boolean;
+  blockedByFriend?: boolean;
+  blockedByPlayer?: boolean;
 }) {
   const [selected, setSelected] = useState(-1);
 
@@ -27,13 +31,13 @@ function ProfileStats({
         bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1100px]"
     >
       <div
-        className="flex border-2 border-t-0 border-l-0 border-r-0 
+        className="flex border-2 border-l-0 border-r-0 border-t-0 
                 border-gray-100 border-opacity-70 p-2 text-sm text-[#8BD9FF]"
       >
         <button
           className="relative flex h-[60px] w-1/4 items-center 
-                     justify-center border-2 border-t-0 
-                     border-l-0 border-b-0 border-gray-100 
+                     justify-center border-2 border-b-0 
+                     border-l-0 border-t-0 border-gray-100 
                      border-opacity-70 transition-all"
           onClick={() => setSelected(0)}
         >
@@ -51,7 +55,7 @@ function ProfileStats({
         <button
           className="relative flex h-[60px] w-1/4 items-center 
                      justify-center  border-2 
-                      border-t-0 border-l-0 border-b-0 border-gray-100 
+                      border-b-0 border-l-0 border-t-0 border-gray-100 
                       border-opacity-70 transition-all"
           onClick={() => setSelected(1)}
         >
@@ -68,8 +72,8 @@ function ProfileStats({
         </button>
         <button
           className="relative flex h-[60px] w-1/4 items-center 
-                      justify-center  border-2 border-t-0 
-                      border-l-0 border-b-0  border-gray-100 
+                      justify-center  border-2 border-b-0 
+                      border-l-0 border-t-0  border-gray-100 
                       border-opacity-70 transition-all"
           onClick={() => setSelected(2)}
         >
@@ -86,8 +90,8 @@ function ProfileStats({
         </button>
         <button
           className="relative flex h-[60px] w-1/4 items-center 
-                    justify-center border-2  border-t-0 
-                    border-r-0 border-l-0 border-b-0  border-gray-100 
+                    justify-center border-2  border-b-0 
+                    border-l-0 border-r-0 border-t-0  border-gray-100 
                     border-opacity-70 transition-all "
           onClick={() => setSelected(3)}
         >
@@ -104,7 +108,15 @@ function ProfileStats({
         </button>
       </div>
       <div className=" h-[400px]  min-h-[300px] overflow-y-auto">
-        {selected == 0 ? (
+        {blockedByPlayer ? (
+          <div className="flex justify-center text-xl text-red-700">
+            You blocked {nickname} !
+          </div>
+        ) : blockedByFriend ? (
+          <div className="flex justify-center text-xl text-red-700">
+            you are blocked !
+          </div>
+        ) : selected == 0 ? (
           <FriendStats nickname={nickname} userProfile={userProfile} />
         ) : selected == 1 ? (
           <AchievementStats />

@@ -7,6 +7,10 @@ import React from 'react';
 import Router from 'next/router';
 import { LayoutProps } from './layout';
 import { Socket, io } from 'socket.io-client';
+import { verifyToken } from '../VerifyToken';
+
+import NextApiRequest from 'next';
+import GameInvitation from './GameInvitation';
 let socket: Socket;
 
 function SideNavBar({ children }: LayoutProps) {
@@ -17,8 +21,10 @@ function SideNavBar({ children }: LayoutProps) {
   const pages = [
     { path: '/home', index: 0 },
     { path: '/chat', index: 1 },
+    { path: '/chat/[id]', index: 1 },
     { path: '/game', index: 2 },
     { path: '/game/[id]', index: 2 },
+    { path: '/game/ai', index: 2 },
     { path: '/profile', index: 3 },
     { path: '/users/[id]', index: 3 },
     { path: '/shop', index: 4 },
@@ -32,20 +38,45 @@ function SideNavBar({ children }: LayoutProps) {
   }
 
   useEffect(() => {
-    socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/player`, {
-      auth: {
-        // token: jwt_token,
-      },
+    if (React.isValidElement(children)) {
+      socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/`, {
+        auth: {
+          token: children.props.jwt_token,
+        },
+      });
+    }
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        socket.emit('away', {});
+      } else {
+        socket.emit('online', {});
+      }
+    };
+    socket.on('connected', (data) => {
+      handleVisibilityChange();
+      console.log('connected');
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
     });
+
     return () => {
       socket.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // socket emmit everytime route cahnges
   useEffect(() => {
-    socket.emit('route', router.pathname);
-  }, [router.pathname]);
+    if (socket) {
+      if (router.pathname === '/game/[id]' || router.pathname === '/game/ai') {
+        socket.emit('inGame', {});
+      } else {
+        socket.emit('online', {});
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname, socket]);
 
   // to fix later
   useEffect(() => {
@@ -68,7 +99,7 @@ function SideNavBar({ children }: LayoutProps) {
     pages.forEach((page) => {
       if (page.path == router.pathname) setSvgIndex(page.index);
     });
-  }, [router.pathname]);
+  }, [router.pathname,pages]);
 
   async function handleLogOut(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -108,6 +139,7 @@ function SideNavBar({ children }: LayoutProps) {
           });
         })}
       </SideBar>
+      <GameInvitation ws={socket} />
     </div>
   );
 }

@@ -19,6 +19,13 @@ interface player {
   isFriend?: boolean;
   rankId: number;
   winRatio: string;
+  level: number;
+  xp: {
+    XP: number;
+    requiredXP: number;
+  };
+  blockedByPlayer: boolean;
+  blockedByFriend: boolean;
 }
 
 function UserProfile({
@@ -34,43 +41,45 @@ function UserProfile({
   isFriend,
   rankId,
   winRatio,
+  level,
+  xp,
+  blockedByFriend,
+  blockedByPlayer,
 }: player) {
+  const [requestFriend, setRequest] = useState(request);
+  const titles = ['hh', 'hh2', 'hh3'];
   if (!exist)
     return (
       <p className="mt-[400px]  text-xl text-red-600">Player does not exist!</p>
     );
-  const [isLoading, setLoading] = useState(false);
-  const [requestFriend, setRequest] = useState(request);
-  const titles = ['hh', 'hh2', 'hh3'];
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!isLoading) {
-    return (
-      <>
-        <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
-          <ProfileDisplay
-            wp={
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper
-            }
-            pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
-            fullname={firstname + ' ' + lastname}
-            nickname={nickname}
-            joinDate={joinDate}
-            coins={coins}
-            exp={1800}
-            MaxExp={2500}
-            userProfile={false}
-            requestFriend={requestFriend}
-            setRequest={setRequest}
-            isFriend={isFriend}
-            rankId={rankId}
-            winRatio={winRatio}
-          />
-          <ProfileStats nickname={nickname} userProfile={false} />
-        </div>
-      </>
-    );
-  }
+  return (
+    <>
+      <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
+        <ProfileDisplay
+          wp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper}
+          pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
+          fullname={firstname + ' ' + lastname}
+          nickname={nickname}
+          joinDate={joinDate}
+          coins={coins}
+          exp={xp.XP}
+          MaxExp={xp.requiredXP}
+          userProfile={false}
+          requestFriend={requestFriend}
+          setRequest={setRequest}
+          isFriend={isFriend}
+          rankId={rankId}
+          winRatio={winRatio}
+          level={level}
+          blockedByFriend={blockedByFriend}
+          blockedByPlayer={blockedByPlayer}
+        />
+        <ProfileStats nickname={nickname} userProfile={false}blockedByFriend={blockedByFriend}
+          blockedByPlayer={blockedByPlayer}/>
+      </div>
+    </>
+  );
 }
 
 export async function getServerSideProps({ params, req }: any) {
@@ -108,7 +117,7 @@ export async function getServerSideProps({ params, req }: any) {
     const date = new Intl.DateTimeFormat('en-US', options).format(
       new Date(data.player.joinAt),
     );
-
+    console.log(data);
     return {
       // modify this to return anything you want before your page load
       props: {
@@ -124,6 +133,10 @@ export async function getServerSideProps({ params, req }: any) {
         isFriend: data.isFriend,
         rankId: data.rankId,
         winRatio: data.winRatio,
+        level: data.level,
+        xp: data.xp,
+        blockedByPlayer: data.blockedByPlayer,
+        blockedByFriend: data.blockedByFriend,
       },
     };
   }

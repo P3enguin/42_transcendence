@@ -127,9 +127,6 @@ function SideBar({
             className={` absolute z-20 flex  h-[calc(100vh-64px)] w-16
               flex-col items-center justify-between gap-6 overflow-auto
               rounded-bl-3xl border border-t-0 border-[#0097E2] bg-gradient-to-t  from-[#141E4A] to-[#28346C] scrollbar-hide sm:hidden`}
-            // className={` flex h-full w-16 shrink-0 flex-col
-            //   items-center  justify-between gap-6 rounded-bl-3xl border
-            //   border-t-0 border-[#0097E2] bg-gradient-to-t from-[#141E4A] to-[#28346C] sm:hidden`}
           >
             <div className="flex h-auto flex-col items-center justify-around gap-10">
               <Link

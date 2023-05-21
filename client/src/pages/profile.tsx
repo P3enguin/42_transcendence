@@ -15,6 +15,11 @@ interface player {
   joinDate: string;
   winRatio: string;
   rankId: number;
+  level: number;
+  xp: {
+    XP: number;
+    requiredXP: number;
+  };
 }
 
 function PlayerProfile({
@@ -27,6 +32,8 @@ function PlayerProfile({
   joinDate,
   winRatio,
   rankId,
+  level,
+  xp,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(false);
@@ -48,11 +55,12 @@ function PlayerProfile({
             nickname={nickname}
             joinDate={joinDate}
             coins={coins}
-            exp={1500}
-            MaxExp={2500}
+            exp={xp.XP}
+            MaxExp={xp.requiredXP}
             userProfile={true}
             winRatio={winRatio}
             rankId={rankId}
+            level={level}
           />
           <ProfileStats nickname={nickname} userProfile={true} />
         </div>
@@ -88,6 +96,7 @@ export async function getServerSideProps({ req }: any) {
       return {
         // modify this to return anything you want before your page load
         props: {
+          jwt_token,
           nickname: data.player.nickname,
           firstname: data.player.firstname,
           lastname: data.player.lastname,
@@ -97,6 +106,8 @@ export async function getServerSideProps({ req }: any) {
           joinDate: date,
           rankId: data.rankId,
           winRatio: data.winRatio,
+          level: data.level,
+          xp: data.xp,
         },
       };
     }

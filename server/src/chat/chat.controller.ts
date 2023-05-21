@@ -36,8 +36,8 @@ export class ChatController {
     @Query('page') page: number,
   ) {
     try {
-      console.log('Get All Chat');
-      const allChat = await this.chatService.getAllChat(player, 0);
+      // console.log("Get All Chat");
+      const allChat = await this.chatService.getAllChat(player, 0);     
       res.status(allChat.status).json(allChat);
     } catch (error) {
       console.log(error);

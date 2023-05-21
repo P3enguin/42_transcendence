@@ -406,7 +406,7 @@ function SendIcon() {
     </svg>
   );
 }
-function SettingIcon() {
+function OptionIcon() {
   return (
     <svg
       width="31"
@@ -529,7 +529,7 @@ function IsFriendIcon() {
   );
 }
 export {
-  SettingIcon,
+  OptionIcon,
   SendIcon,
   SideBarIcon,
   LogoutIcon,

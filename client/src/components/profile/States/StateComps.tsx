@@ -46,10 +46,10 @@ function MatchData({
         />
         <div className="truncate text-sm font-semibold">{player1}</div>
       </div>
-      <div className="flex w-[10%]  flex-col items-center justify-center lg:w-[20%]">
+      <div className="flex w-[20%]  flex-col items-center justify-center ">
         <div className="text-lg font-bold">{status ? 'WIN' : 'LOSS'}</div>
-        <div className="text-sm font-semibold">{score}</div>
-        <div className="text-xs font-semibold text-[#CFCFCF]">{date} </div>
+        <div className="text-[15px] font-semibold">{score}</div>
+        <div className="text-[9.4px] sm:text-[12px]  font-semibold text-[#CFCFCF]">{date} </div>
       </div>
       <div className="flex w-[40%]  items-center justify-end gap-[13px] lg:w-[45%]">
         <div className="truncate text-sm font-semibold">{player2}</div>
