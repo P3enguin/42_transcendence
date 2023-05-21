@@ -12,6 +12,7 @@ export default function Leaderboard({
     <div className="w-full rounded-[20px] border border-white pb-3 pr-3">
       <div className="flex items-center pl-4 pt-4">
         <Image
+          className="h-[24px] w-[24px]"
           src="/rankLeaderboard.svg"
           alt="rankLeaderboard"
           width={24}

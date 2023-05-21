@@ -9,12 +9,13 @@ export default function DiscoverChannels({
 }) {
   return (
     <div className="w-[90%] rounded-[20px] border border-white md:w-[640px] xl:w-[90%] 2xl:w-[1323px]">
-      <div className="flex pl-4 pt-4">
+      <div className="flex items-center pl-4 pt-4">
         <Image
+          className="h-[24px] w-[24px]"
           src="/discoverChannels.svg"
           alt="discoverChannels"
-          width={20}
-          height={20}
+          width={24}
+          height={24}
         />
         <h1 className="pl-2 text-xl font-bold uppercase">Discover Channels:</h1>
       </div>

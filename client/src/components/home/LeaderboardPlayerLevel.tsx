@@ -20,7 +20,7 @@ export default function LeaderboardPlayerRank({
         className="flex w-[65%] items-center justify-start gap-6"
       >
         <Image
-          className="rounded-full border-2 border-[#0097E2] border-opacity-50 transition duration-300 ease-in hover:border-opacity-100"
+          className="h-[56px] w-[56px] rounded-full border-2 border-[#0097E2] border-opacity-50 transition duration-300 ease-in hover:border-opacity-100"
           src={avatar}
           alt="pfp"
           width={56}
