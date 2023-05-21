@@ -26,7 +26,7 @@ export default function DiscoverChannels({
           </div>
         )}
         {channels.map((channel) => (
-          <li key={channel.name} className="p-2">
+          <li key={channel.channelId} className="p-2">
             <ChannelHome
               avatar={
                 process.env.NEXT_PUBLIC_BACKEND_HOST +
