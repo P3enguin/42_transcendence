@@ -1,7 +1,14 @@
-import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateChannelDto {
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
@@ -22,6 +29,7 @@ export class CreateChannelDto {
 
 export class JoinChannelDto {
   @IsString()
+  @IsNotEmpty()
   channelId: string;
 
   @IsString()
@@ -31,17 +39,21 @@ export class JoinChannelDto {
 
 export class KickMemberDto {
   @IsString()
+  @IsNotEmpty()
   channelId: string;
 
   @IsString()
+  @IsNotEmpty()
   memberNickname: string;
 }
 
 export class BanMemberDto {
   @IsString()
+  @IsNotEmpty()
   channelId: string;
 
   @IsString()
+  @IsNotEmpty()
   memberNickname: string;
 
   @IsString()
@@ -51,17 +63,21 @@ export class BanMemberDto {
 
 export class UnbanMemberDto {
   @IsString()
+  @IsNotEmpty()
   channelId: string;
 
   @IsString()
+  @IsNotEmpty()
   memberNickname: string;
 }
 
 export class MuteMemberDto {
   @IsString()
+  @IsNotEmpty()
   channelId: string;
 
   @IsString()
+  @IsNotEmpty()
   memberNickname: string;
 
   @IsInt()
@@ -71,8 +87,10 @@ export class MuteMemberDto {
 
 export class UnmuteMemberDto {
   @IsString()
+  @IsNotEmpty()
   channelId: string;
 
   @IsString()
+  @IsNotEmpty()
   memberNickname: string;
 }

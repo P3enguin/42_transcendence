@@ -8,7 +8,7 @@ export default function DiscoverChannels({
   channels: Channels[];
 }) {
   return (
-    <div className="w-[90%] rounded-[20px] border border-white 2xl:w-[1495px]">
+    <div className="w-[90%] rounded-[20px] border border-white md:w-[640px] xl:w-[90%] 2xl:w-[1323px]">
       <div className="flex pl-4 pt-4">
         <Image
           src="/discoverChannels.svg"
