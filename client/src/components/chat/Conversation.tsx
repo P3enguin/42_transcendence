@@ -8,6 +8,8 @@ import Image from 'next/image';
 import MessageLabel from './MessageLabel';
 import MessageWrapper from './MessageWrapper';
 import ChannelHeader from './ChannelHeader';
+import ChannelOptions from './ChannelOptions';
+import { Channel } from '@/interfaces/Channel';
 
 let socket: any;
 interface Message {
@@ -19,14 +21,12 @@ interface Message {
 
 function Conversation({ player, jwt_token, id, setNew }: any) {
   const [showTopic, setShowTopic] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const [memberSettings, setMemberSettings] = useState('');
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [channel, setChannel] = useState<{
-    avatar: string;
-    name: string;
-    topic: string;
-  }>();
+  const [channel, setChannel] = useState<Channel>();
   const [message, setMessage] = useState('');
 
   const clientsMap = new Map();
@@ -57,6 +57,8 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
   };
 
   useEffect(() => {
+    setShowSettings(false);
+    setMemberSettings('');
     // setChannel(NULL);
     getRoomData(id);
 
@@ -103,20 +105,32 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
   const picture =
     process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar;
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full overflow-hidden">
       <div className="absolute h-full w-full">
         <MessageWrapper
           socket={socket}
           id={id}
           player={player}
-          setNew={setNew} />
+          setNew={setNew}
+        />
       </div>
       <div
         className="absolute h-14 w-full rounded-tl-2xl rounded-tr-2xl border-b
           bg-[#283775] bg-opacity-20 backdrop-blur-[9px] tx:rounded-tl-none"
+        onClick={(e) => {
+          setShowSettings(!showSettings);
+          setMemberSettings('');
+        }}
       >
         <ChannelHeader />
       </div>
+      <ChannelOptions
+        channel={channel}
+        isVisible={showSettings}
+        toggleVisible={setShowSettings}
+        memberSettings={memberSettings}
+        toggleMemberSettings={setMemberSettings}
+      />
     </div>
   );
 }

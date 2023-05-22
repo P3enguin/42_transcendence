@@ -5,14 +5,10 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import StatusBubble from '../game/StatusBubble';
 
-export interface friend {
+export interface Status {
   nickname: string;
   avatar: string;
   id: number;
-}
-
-export interface Status {
-  friend: friend;
   status: string;
 }
 
@@ -28,13 +24,13 @@ function OnlineNow({ player, token, ws }: any) {
       ws.on('statusChange', (data: Status) => {
         if (data.status === 'OFFLINE') {
           setFriends((prev) => {
-            return prev.filter((friend) => friend.friend.id !== data.friend.id);
+            return prev.filter((friend) => friend.id !== data.id);
           });
         } else {
           setFriends((prev) => {
-            if (prev.find((friend) => friend.friend.id === data.friend.id)) {
+            if (prev.find((friend) => friend.id === data.id)) {
               return prev.map((friend) => {
-                if (friend.friend.id === data.friend.id) {
+                if (friend.id === data.id) {
                   return data;
                 }
                 return friend;
@@ -72,8 +68,8 @@ function OnlineNow({ player, token, ws }: any) {
   }
 
   return (
-    <div className="flex h-[100px] w-[100%]  flex-col px-5 mt-3">
-      <h3 className='uppercase font-semibold'>Online Now: </h3>
+    <div className="mt-3 flex h-[100px]  w-[100%] flex-col px-5">
+      <h3 className="font-semibold uppercase">Online Now: </h3>
       <div
         className="scroll-hide flex h-full flex-row items-center gap-3
         overflow-hidden overflow-x-auto scrollbar-hide"
@@ -81,7 +77,8 @@ function OnlineNow({ player, token, ws }: any) {
         {friends.map((friend: any, key: number) => {
           return (
             <StatusBubble
-              data={friend}
+              avatar={friend.avatar}
+              status={friend.status}
               key={key}
               className="cursor-pointer"
               onClick={(e) => getRoom(e, player, friend.nickname)}

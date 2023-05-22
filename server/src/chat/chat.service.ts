@@ -143,6 +143,24 @@ export class ChatService {
         topic: true,
         memberLimit: true,
         privacy: true,
+        owner: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
+        admins: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
         members: {
           select: {
             nickname: true,
