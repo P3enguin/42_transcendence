@@ -16,7 +16,7 @@ services:
     container_name: server
     build: ./server
     ports:
-      - 8000:8001
+      - 8000:8000
     environment:
       DATABASE_URL: ${DATABASE_URL}
       FE_CONTAINER_HOST: ${FE_CONTAINER_HOST}
@@ -39,7 +39,7 @@ services:
     container_name: client
     build: ./client
     ports:
-      - 3000:3001
+      - 3000:8000
     environment:
       NEXT_PUBLIC_BACKEND_HOST: ${BACKEND_HOST}
       NEXT_PUBLIC_BE_CONTAINER_HOST: ${BE_CONTAINER_HOST}
