@@ -107,7 +107,7 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
   }, [id]);
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full overflow-hidden">
       <div className="absolute h-full w-full">
         <MessageWrapper
           socket={socket}

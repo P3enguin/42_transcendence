@@ -12,7 +12,7 @@ export const InvitationPopup = ({ invitation, rmInvitation }: any) => {
       border-[3px] border-[#0097E2] bg-[#44659C] bg-opacity-70 p-2 sm:p-5"
       >
         <Image
-          src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${invitation.user.avatar}`}
+          src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${invitation.user.avatar}`}
           alt="avatar"
           width={100}
           height={100}

@@ -9,7 +9,7 @@
         "api:dev": "json-server --watch db.json --port 4444",
         "db:migrate:dev": "prisma migrate dev --name init",
         "db:migrate:reset": "prisma migrate reset",
-        "db:up": "docker-compose -f ../docker-compose.yml up -d ",
+        "db:up": "docker-compose -f ../docker-compose.yml up -d database",
         "db:down": "docker-compose -f ../docker-compose.yml down",
         "db:restart": "yarn run db:down && yarn run db:up",
         "db:reset": "yarn run db:down && yarn run db:up && sleep 1 && yarn run db:migrate:reset",

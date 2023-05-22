@@ -79,7 +79,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
           <div className="flex justify-between">
             <div className="flex flex-col items-center">
               <Image
-                src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player1.avatar}`}
+                src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${props.player1.avatar}`}
                 alt={`Avatar of ${props.player1.nickname}`}
                 width={50}
                 height={50}
@@ -88,10 +88,12 @@ const ScoreBoard = (props: ScoreBoardProps) => {
               <p>{props.player1.nickname}</p>
               <p>{props.player1.score}</p>
             </div>
-            <p className="flex text-center items-center">spectators: {props.spectators}</p>
+            <p className="flex items-center text-center">
+              spectators: {props.spectators}
+            </p>
             <div className="flex flex-col items-center">
               <Image
-                src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player2.avatar}`}
+                src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${props.player2.avatar}`}
                 alt={`Avatar of ${props.player2.nickname}`}
                 width={50}
                 height={50}
@@ -107,7 +109,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         <div className="m-auto flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
           <div>
             <Image
-              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${
+              src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${
                 getWinner().avatar
               }`}
               alt={`Avatar of ${getWinner().nickname}`}

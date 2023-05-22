@@ -6,7 +6,9 @@ function Message({ message, side }: { message: any; side: boolean }) {
   // }, [message])
   // className="sm:h-12 sm:w-12 rounded-full absolute right-0 bottom-0 translate-x-[100%] translate-y-[50%]"
   const avatar =
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + message.senderAvatar;
+    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+    '/avatars/' +
+    message.senderAvatar;
   return (
     <>
       {side && (

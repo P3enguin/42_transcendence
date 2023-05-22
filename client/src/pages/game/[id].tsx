@@ -262,7 +262,7 @@ export async function getServerSideProps({
     if (res.ok) {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/game/${params.id}`,
+          `${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/game/${params.id}`,
           {
             headers: {
               Cookie: req.headers.cookie,
