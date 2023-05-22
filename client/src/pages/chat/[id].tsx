@@ -28,10 +28,7 @@ function Chat({
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
   const [showConversation, setShowConversation] = useState(true);
-  const [hasChanged, setHasChanged] = useState(false);
-
-
-  console.log('hasChangd : ', hasChanged);
+  const [newMessages, setNewMessages] = useState<boolean>(true);
 
   const handleRecentChatClick = () => {
     setShowRecentChat(true);
@@ -45,13 +42,18 @@ function Chat({
     setShowConversation(true);
   };
 
+  const changeToNewmessages = () => {
+    setNewMessages((prev) => !prev);
+  }
+
+
   useEffect(() => {
     const MobilView = () => {
       if (document.body.offsetWidth < 800) {
-        if (!showMobile)  {
+        if (!showMobile) {
           setShowMobile(true);
-          setShowConversation(false);
-          setShowRecentChat(true);
+          setShowConversation(true);
+          setShowRecentChat(false);
         }
       } else {
         setShowMobile(false);
@@ -64,16 +66,15 @@ function Chat({
     return () => {
       window.removeEventListener('resize', MobilView);
     };
-    // eslint-disable-next-line
-  }, [hasChanged]);
+  }, [showMobile]);
   return (
     <>
       <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
         {showRecentChat && (
           <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px] ">
-            <div className="flex h-[8%] w-[100%] items-center border-b pl-5 text-xl">
+            <h1 className="flex h-14 w-[100%] items-center border-b pl-5 text-3xl font-light">
               <Link href={`/chat`}>Chat Room </Link>
-            </div>
+            </h1>
             {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
 
             <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
@@ -93,7 +94,11 @@ function Chat({
               </div>
               <div className="mt-2 h-full flex-col overflow-hidden overflow-y-auto scrollbar-hide">
                 {showRecentChat && (
-                  <RecentChat hasChangd={hasChanged} setHasChanged={setHasChanged} />
+                  <RecentChat
+                    avatar={data.avatar}
+                    player={data.nickname}
+                    newmsgs={newMessages}
+                  />
                 )}
               </div>
             </div>
@@ -101,7 +106,15 @@ function Chat({
         )}
         {showConversation && (
           <div className="flex w-full flex-col justify-between">
-            { <Conversation player={data} jwt_token={jwt_token} id={id} fct={setHasChanged} /> }
+            {/* <div className="flex h-[5%] w-full items-center border-b "></div> */}
+            {
+              <Conversation
+                player={data}
+                jwt_token={jwt_token}
+                id={id}
+                setNew={changeToNewmessages}
+              />
+            }
           </div>
         )}
       </div>

@@ -296,7 +296,7 @@ export class PlayerService {
 
   //----------------{ get the list if all friends }--------------------
 
-  async GetFriends(req: Request, res: Response, nickname: string) {
+  async GetFriends(nickname: string, req?: Request, res?: Response) {
     // const player = this.Get_Player(req);
     try {
       const FriendList = await this.prisma.player.findUnique({
@@ -313,13 +313,16 @@ export class PlayerService {
           },
         },
       });
-      return res.status(200).json(FriendList.friends);
+      if (res) return res.status(200).json(FriendList.friends);
+      else return FriendList.friends;
     } catch (error) {
-      if (error instanceof PrismaClientKnownRequestError) {
-        console.log(error.message);
-        return res.status(400).json({ error: error.message });
-      }
-      return res.status(400).json({ error: 'Unexpected error has occurred' });
+      if (res) {
+        if (error instanceof PrismaClientKnownRequestError) {
+          console.log(error.message);
+          return res.status(400).json({ error: error.message });
+        }
+        return res.status(400).json({ error: 'Unexpected error has occurred' });
+      } else return null;
     }
   }
   //-----------------------------------{ Block }-----------------------------------\\

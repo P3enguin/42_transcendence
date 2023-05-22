@@ -109,9 +109,9 @@ export class ChatService {
         },
       },
     });
-    console.log('Player Rooms Messages:');
+    // console.log('Player Rooms Messages:');
     player.rooms.forEach((room) => {
-      console.log(room.messages);
+      // console.log(room.messages);
     });
     if (!player)
       return {

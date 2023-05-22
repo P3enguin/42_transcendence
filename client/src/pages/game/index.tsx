@@ -6,9 +6,9 @@ import { verifyToken } from '@/components/VerifyToken';
 import axios from 'axios';
 import NextApiRequest from 'next';
 import Head from 'next/head';
+import { Socket } from 'socket.io-client';
 
-function Game() {
-
+function Game({ ws }: { ws: Socket }) {
   return (
     <>
       <Head>
@@ -16,8 +16,8 @@ function Game() {
       </Head>
 
       <div className="m-5 flex h-[70%]  min-h-[700px] flex-col rounded-2xl border border-neutral-300 sm:m-20 lg:min-w-[60%]">
-        <OnlineFriends />
-        <div className="sm:m-4 min-h-[1px] w-1/2 self-center bg-neutral-300"></div>
+        <OnlineFriends ws={ws} />
+        <div className="min-h-[1px] w-1/2 self-center bg-neutral-300 sm:m-4"></div>
         <div className="flex h-full w-full flex-col  md:h-1/3 md:flex-row">
           <StartGame />
           <div className=" min-h-[1px] w-1/2 min-w-[1px] self-center bg-neutral-300 md:h-2/3 md:w-[1px]"></div>
@@ -34,11 +34,11 @@ export async function getServerSideProps({ req }: NextApiRequest) {
   if (jwt_token) {
     const res = await verifyToken(req.headers.cookie);
     if (res.ok) {
-        return {
-          props: {
-            jwt_token: jwt_token,
-          },
-      }
+      return {
+        props: {
+          jwt_token: jwt_token,
+        },
+      };
     }
   }
   return {

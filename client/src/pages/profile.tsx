@@ -96,6 +96,7 @@ export async function getServerSideProps({ req }: any) {
       return {
         // modify this to return anything you want before your page load
         props: {
+          jwt_token,
           nickname: data.player.nickname,
           firstname: data.player.firstname,
           lastname: data.player.lastname,

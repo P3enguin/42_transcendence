@@ -36,8 +36,8 @@ export class ChatController {
     @Query('page') page: number,
   ) {
     try {
-      console.log('Get All Chat');
-      const allChat = await this.chatService.getAllChat(player, 0);
+      // console.log("Get All Chat");
+      const allChat = await this.chatService.getAllChat(player, 0);     
       res.status(allChat.status).json(allChat);
     } catch (error) {
       console.log(error);
@@ -100,6 +100,7 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
+      console.log("channel");
       const result = await this.chatService.getChannel(player, channelId);
       res.status(result.status).json(result.data);
     } catch (error) {
@@ -115,6 +116,7 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
+      console.log('creating dm');
       const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {

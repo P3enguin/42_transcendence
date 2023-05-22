@@ -180,6 +180,8 @@ model Room {
   createdAt DateTime @default(now())
 }
 
+
+
 model Message {
   MsgId Int @id @default(autoincrement())
 
