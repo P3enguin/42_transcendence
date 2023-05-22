@@ -28,7 +28,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  await app.listen(8001);
+  await app.listen(8000);
 }
 
 bootstrap();
