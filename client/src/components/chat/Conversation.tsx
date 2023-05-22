@@ -103,13 +103,14 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
   const picture =
     process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar;
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full overflow-hidden">
       <div className="absolute h-full w-full">
         <MessageWrapper
           socket={socket}
           id={id}
           player={player}
-          setNew={setNew} />
+          setNew={setNew}
+        />
       </div>
       <div
         className="absolute h-14 w-full rounded-tl-2xl rounded-tr-2xl border-b

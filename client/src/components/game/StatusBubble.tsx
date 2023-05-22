@@ -24,7 +24,7 @@ const StatusBubble = ({ data, className, onClick }: StatusBubbleProps) => {
       }
     >
       <Image
-        src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${data.friend.avatar}`}
+        src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${data.friend.avatar}`}
         alt="Avatar"
         width={200}
         height={200}

@@ -35,7 +35,7 @@ export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
     const channelsRes = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST0 + '/chat/discover',
+      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/chat/discover',
       {
         headers: {
           Cookie: req.headers.cookie,
@@ -45,7 +45,7 @@ export async function getServerSideProps({ req }: any) {
     const channelsData = await channelsRes.json();
 
     const levelLeaderBoardRes = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/leaderboard',
+      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/leaderboard',
       {
         headers: {
           Cookie: req.headers.cookie,
@@ -55,7 +55,7 @@ export async function getServerSideProps({ req }: any) {
     const levelLeaderBoardData = await levelLeaderBoardRes.json();
 
     const rankLeaderBoardRes = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/rank/leaderboard',
+      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/rank/leaderboard',
       {
         headers: {
           Cookie: req.headers.cookie,
