@@ -16,6 +16,7 @@ interface ScoreBoardProps {
     avatar: string;
     score: number;
   };
+  spectators: number;
 }
 
 const START_DATE = new Date().getTime();
@@ -73,7 +74,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
   return (
     <>
       {props.gameOn && (
-        <div className="felx w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3 my-6">
+        <div className="felx my-6 w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3">
           <p className="text-center text-xl ">{formatTime(elapsedTime)}</p>
           <div className="flex justify-between">
             <div className="flex flex-col items-center">
@@ -87,6 +88,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
               <p>{props.player1.nickname}</p>
               <p>{props.player1.score}</p>
             </div>
+            <p className="flex text-center items-center">spectators: {props.spectators}</p>
             <div className="flex flex-col items-center">
               <Image
                 src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${props.player2.avatar}`}
@@ -102,11 +104,12 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         </div>
       )}
       {!props.gameOn && (
-        <div className="flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl m-auto">
+        <div className="m-auto flex min-h-[300px] w-[50%] min-w-[300px] max-w-[800px] flex-col items-center justify-between rounded-2xl border p-5 text-center text-xl">
           <div>
             <Image
-              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${getWinner().avatar
-                }`}
+              src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${
+                getWinner().avatar
+              }`}
               alt={`Avatar of ${getWinner().nickname}`}
               width={200}
               height={200}

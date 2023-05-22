@@ -422,7 +422,7 @@ export function InputBtn({
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-0 w-3/4 min-w-[170px] max-w-[350px]">
+    <div className="group relative z-0 mb-0 w-[90%] xl:w-3/4 min-w-[170px] max-w-[350px]">
       <input
         type="input"
         name={name}

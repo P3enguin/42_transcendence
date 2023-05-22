@@ -176,7 +176,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
               {privacy.privacy === 'private' && (
                 <div className="flex max-w-[400px] xl:justify-center">
                   <InputDefault
-                    className="group relative z-0 mb-2 w-3/4 min-w-[170px]"
+                    className="group relative z-0 mb-2 w-[86%] xl:w-3/4 min-w-[170px]"
                     name="name"
                     id="name"
                     type="password"
@@ -188,7 +188,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
               {
                 <div className="flex max-w-[400px] xl:justify-center ">
                   <InputDefault
-                    className="group relative z-0 mb-2 w-3/4 min-w-[170px]"
+                    className="group relative z-0 mb-2 w-[86%] xl:w-3/4 min-w-[170px]"
                     name="topic"
                     type="input"
                     id="topic"

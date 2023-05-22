@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { EditIconProfile } from '../icons/Icons';
 import { AvatarLevelCounter } from '../icons/Icons';
 import { AddFriendIcon } from '../icons/Icons';
@@ -23,20 +24,21 @@ function AvatarProfileComp({
 }: AvataProps) {
   return (
     <div className="-mt-[120px] flex xl:-mt-[150px]">
-      <img
+      <Image
         src={pfp}
         alt="pfp"
+        width={200}
+        height={200}
         id="pfp-holder"
-        className="pfp absolute z-0 h-[130px] 
-                w-[120px] translate-x-[20px] 
-                translate-y-[28px] xl:h-[150px] xl:w-[130px] 
-                xl:translate-x-[25px] xl:translate-y-[31px]"
+        className="pfp absolute z-0 h-[130px] w-[120px] translate-x-[20px] 
+          translate-y-[28px] object-cover xl:h-[150px] xl:w-[130px]
+          xl:translate-x-[25px] xl:translate-y-[31px]"
       />
       {EditIcon && (
         <>
           <label
             htmlFor="pfp"
-            className="absolute z-20  mt-14  ml-28  cursor-pointer xl:mt-[70px] xl:ml-[130px]"
+            className="absolute z-20  ml-28  mt-14  cursor-pointer xl:ml-[130px] xl:mt-[70px]"
           >
             <EditIconProfile />
           </label>

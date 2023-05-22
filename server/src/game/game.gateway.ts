@@ -29,7 +29,7 @@ export interface connectedPlayer extends Player {
 @WebSocketGateway({
   namespace: 'game',
   cors: {
-    origin: process.env.FRONTEND_HOST,
+    origin: [process.env.FRONTEND_HOST, process.env.FRONTEND_HOST0],
   },
 })
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -66,7 +66,13 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (game.gameOn) {
         game.playerLeft(player.nickname);
         this.server.to(player.gameId).emit('left', player.nickname);
-      } else this.gameService.deleteGame(player.gameId);
+      } else {
+        if (game.isFull()) {
+          clearInterval(game.ruleInterval);
+          game.removePlayer(player.nickname);
+        } else this.gameService.deleteGame(player.gameId);
+      }
+      this.server.to(player.gameId).emit('left', player.nickname);
     }
     this.logger.log(
       `player disconnected: ${player.nickname} ${player.socketId}`,
@@ -96,24 +102,27 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
           client.join(gameId);
         }
         if (game.isActive()) {
-          this.server.to(game.players[0].socketId).emit('startGame', {
-            position: 'Bottom',
-            info: game.getPlayersInfo(),
-          });
-          this.server.to(game.players[1].socketId).emit('startGame', {
-            position: 'Top',
-            info: game.getPlayersInfo(),
-          });
-          this.server.to(gameId).emit('joined', {
-            isPlayer: true,
-            message: `${player.nickname} has joined the game`,
-          });
-          this.server
-            .to('LiveGames')
-            .emit('newGame', this.gameService.getLiveGame(game));
-          setTimeout(() => {
-            this.startGame(game);
-          }, 1000);
+          this.server.to(gameId).emit('gameRules', game.getGameRules());
+          game.ruleInterval = setTimeout(() => {
+            this.server.to(game.players[0].socketId).emit('startGame', {
+              position: 'Bottom',
+              info: game.getPlayersInfo(),
+            });
+            this.server.to(game.players[1].socketId).emit('startGame', {
+              position: 'Top',
+              info: game.getPlayersInfo(),
+            });
+            this.server.to(gameId).emit('joined', {
+              isPlayer: true,
+              message: `${player.nickname} has joined the game`,
+            });
+            this.server
+              .to('LiveGames')
+              .emit('newGame', this.gameService.getLiveGame(game));
+            setTimeout(() => {
+              this.startGame(game);
+            }, 1000);
+          }, 1000 * 12);
         }
         return { status: 200, message: 'Joined' };
       } else {
