@@ -63,7 +63,7 @@ function PlayerProgress({
             height={27}
             src="/star.svg"
             alt="startIcon"
-            className="h-full w-[27px] "
+            className="h-full w-[27px]"
           ></Image>
           <div className="flex  flex-col ">
             <strong className="  text-gray-100">
@@ -78,7 +78,7 @@ function PlayerProgress({
             height={27}
             src="/champion.svg"
             alt="champIcon"
-            className="h-full w-[27px] "
+            className="h-full w-[27px]"
           ></Image>
           <div className="flex  flex-col ">
             <strong className="  text-gray-100">{winRatio + '%'}</strong>

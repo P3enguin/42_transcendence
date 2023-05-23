@@ -410,11 +410,17 @@ export class PlayerService {
         where: {
           nickname: nickname,
         },
-        include: {
-          block: true,
+        select: {
+          block: {
+            select: {
+              id: true,
+              nickname: true,
+              avatar: true,
+            },
+          },
         },
       });
-      res.status(200).json({ BlockedList });
+      res.status(200).json(BlockedList.block);
     } catch (error) {
       console.error('Error getting blocked :', error);
       res.status(500).json({ error: 'Internal server error' });

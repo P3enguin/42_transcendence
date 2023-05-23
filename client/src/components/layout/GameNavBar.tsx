@@ -40,20 +40,26 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'Tween' }}
-              className="border-r-1 w-[64px] absolute  top-0 left-0 flex
-          h-[64px] items-center justify-center rounded-tr-3xl border 
+              className="border-r-1 absolute left-0  top-0 flex h-[64px]
+          w-[64px] items-center justify-center rounded-tr-3xl border 
               border-b-0  border-[#0097E2]  bg-[#2A3568] sm:hidden"
             ></motion.div>
           )}
         </AnimatePresence>
       </div>
       <div
-        className="absolute top-0 left-0  flex h-[64px] w-[64px]
-            items-center justify-center rounded-tr-3xl rounded-bl-3xl border 
+        className="absolute left-0 top-0  flex h-[64px] w-[64px]
+            items-center justify-center rounded-bl-3xl rounded-tr-3xl border 
               border-[#0097E2] bg-[#2A3568]"
       >
         <Link className="" href="/home">
-          <Image className="" src="/logo.svg" alt="logo" width={39} height={41} />
+          <Image
+            className=""
+            src="/logo.svg"
+            alt="logo"
+            width={39}
+            height={41}
+          />
         </Link>
       </div>
       <div

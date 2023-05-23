@@ -275,7 +275,7 @@ function FriendIcon({ selected }: { selected: number }) {
       className={`${
         selected != 0
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
+          : 'translate-x-0 translate-y-[-1.7rem] fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path
@@ -298,7 +298,7 @@ function AchievementIcon({ selected }: { selected: number }) {
       className={`${
         selected != 1
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
+          : 'translate-x-0 translate-y-[-1.7rem] fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path d="M48.3 8.11205L49.62 10.7521C49.8 11.1121 50.28 11.472 50.68 11.532L53.07 11.9321C54.6 12.192 54.96 13.2921 53.86 14.3921L52 16.2521C51.69 16.5621 51.51 17.1721 51.61 17.6121L52.14 19.9221C52.56 21.7421 51.59 22.4521 49.98 21.5021L47.74 20.1721C47.33 19.9321 46.67 19.9321 46.26 20.1721L44.02 21.5021C42.41 22.4521 41.44 21.7421 41.86 19.9221L42.39 17.6121C42.49 17.182 42.31 16.5721 42 16.2521L40.14 14.3921C39.04 13.2921 39.4 12.1821 40.93 11.9321L43.32 11.532C43.72 11.462 44.2 11.1121 44.38 10.7521L45.7 8.11205C46.41 6.68205 47.59 6.68205 48.3 8.11205Z" />
@@ -321,7 +321,7 @@ function MatchHistoryIcon({ selected }: { selected: number }) {
       className={`${
         selected != 2
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
+          : 'translate-x-0 translate-y-[-1.7rem] fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path
@@ -344,7 +344,7 @@ function RankingIcon({ selected }: { selected: number }) {
       className={`${
         selected != 3
           ? 'friend-icon fill-[#8BD9FF] duration-200 ease-in'
-          : 'translate-y-[-1.7rem] translate-x-0 fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
+          : 'translate-x-0 translate-y-[-1.7rem] fill-[#70F89B] duration-200 ease-in sm:translate-x-[-3.4rem] sm:translate-y-0'
       }`}
     >
       <path
@@ -369,7 +369,7 @@ function RankingIconFix() {
       viewBox="0 0 94 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className=" -mr-5 -ml-5 fill-[#70F89B] "
+      className=" -ml-5 -mr-5 fill-[#70F89B] "
     >
       <path
         opacity="0.4"
@@ -449,7 +449,7 @@ function AvatarLevelCounter({
       </defs>
       <path
         className={track}
-        d="M 702 319 C 702.297 298.428 702.297 325.112 689.793 346.77 L 550.207 588.54 C 537.703 610.198 514.594 623.54 489.585 623.54 H 210.415 C 185.406 623.54 162.297 610.198 149.793 588.54 L 10.2071 346.77 C -2.2971 325.112 -2.2971 298.428 10.2072 276.77 L 149.793 35.0001 C 162.297 13.3419 185.406 0 210.415 0 H 489.585 C 514.594 0 537.703 13.342 550.207 35.0001 L 703 312 Z"
+        d="M 702 319 C 701.304 320.234 702.297 325.112 689.793 346.77 L 550.207 588.54 C 537.703 610.198 514.594 623.54 489.585 623.54 H 210.415 C 185.406 623.54 162.297 610.198 149.793 588.54 L 10.2071 346.77 C -2.2971 325.112 -2.2971 298.428 10.2072 276.77 L 149.793 35.0001 C 162.297 13.3419 185.406 0 210.415 0 H 489.585 C 514.594 0 537.703 13.342 550.207 35.0001 L 703 312 Z"
       ></path>
 
       <path
