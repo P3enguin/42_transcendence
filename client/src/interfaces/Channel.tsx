@@ -1,16 +1,23 @@
 export interface Member {
   nickname: string;
   avatar: string;
-  topic: string;
 }
 
 export interface Channel {
-  channelId: number;
+  channelId: string;
   name: string;
   topic: string;
   avatar: string;
-  owner: Member;
-  admins: Member[];
-  members: Member[];
+  privacy: 'public' | 'private' | 'secret';
   memberLimit: number;
+  membersCount?: number;
+  owner?: Member;
+  admins?: Member[];
+  members?: Member[];
+  mutes?: {
+    player: Member[];
+  };
+  bans?: {
+    player: Member[];
+  };
 }

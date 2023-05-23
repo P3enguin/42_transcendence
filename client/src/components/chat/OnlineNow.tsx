@@ -12,7 +12,7 @@ export interface Status {
   status: string;
 }
 
-function OnlineNow({ player, token, ws }: any) {
+function OnlineNow({ nickname, token, ws }: any) {
   const [friends, setFriends] = useState<Status[]>([]);
   const router = useRouter();
 
@@ -47,24 +47,20 @@ function OnlineNow({ player, token, ws }: any) {
     };
   }, [ws]);
 
-  async function getRoom(event: React.FormEvent, player1: any, player2: any) {
+  async function openDMs(event: React.FormEvent, nickname2: string) {
     event.preventDefault();
 
-    const room = player1 + player2;
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${nickname2}`,
+      {
+        credentials: 'include',
+      },
+    );
 
-    const res = await axios
-      .get(
-        `${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat/getRoom?player1=${player1}&creator=${player2}`,
-        {
-          withCredentials: true,
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((res) => {
-        // console.log(res.data);
-        router.push(`/chat/${res.data}`);
-      })
-      .catch((err) => console.log(err));
+    if (response.status == 200 || response.status == 201) {
+      const dmData = await response.json();
+      router.push(`/chat/${dmData.channelId}`);
+    }
   }
 
   return (
@@ -81,7 +77,7 @@ function OnlineNow({ player, token, ws }: any) {
               status={friend.status}
               key={key}
               className="cursor-pointer"
-              onClick={(e) => getRoom(e, player, friend.nickname)}
+              onClick={(e) => openDMs(e, friend.nickname)}
             />
           );
         })}

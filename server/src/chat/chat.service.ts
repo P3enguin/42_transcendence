@@ -170,6 +170,33 @@ export class ChatService {
             joinAt: true,
           },
         },
+        mutes: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+          },
+        },
+        bans: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+            reason: true,
+          },
+        },
         avatar: true,
         createdAt: true,
       },
@@ -191,12 +218,25 @@ export class ChatService {
     }
 
     if (
-      channel.privacy === 'private' &&
       !channel.members.find((member) => member.nickname === player.nickname)
     ) {
-      channel['membersCount'] = channel.members.length;
-      delete channel.members;
-      delete channel.topic;
+      return {
+        status: 403,
+        data: {
+          channelId: channel.channelId,
+          name: channel.name,
+          topic: channel.topic,
+          avatar: channel.avatar,
+          privacy: channel.privacy,
+          memberLimit: channel.memberLimit,
+          membersCount: channel.members.length,
+        },
+      };
+    }
+
+    if (!channel.admins.find((admin) => admin.nickname === player.nickname)) {
+      delete channel.mutes;
+      delete channel.bans;
     }
 
     return {
@@ -206,6 +246,13 @@ export class ChatService {
   }
 
   async createDM(player: Player, nickname: string) {
+    if (nickname === player.nickname) {
+      return {
+        status: 405,
+        data: { error: 'Method Not Allowed' },
+      };
+    }
+
     const existingDM = await this.prisma.room.findFirst({
       select: {
         channelId: true,
@@ -237,6 +284,15 @@ export class ChatService {
     const dm = await this.prisma.room.create({
       select: {
         channelId: true,
+        members: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
       },
       data: {
         channelId: generate(),

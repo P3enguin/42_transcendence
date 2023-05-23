@@ -70,7 +70,7 @@ function Chat({
                 Chat Room{' '}
               </Link>
             </div>
-            {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
+            {showRecentChat && <OnlineNow nickname={data.nickname} ws={ws} />}
 
             <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
               <div className="flex flex-row justify-between  pt-1">

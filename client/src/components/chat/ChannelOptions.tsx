@@ -1,14 +1,17 @@
 import Image from 'next/image';
 import { Channel } from '@/interfaces/Channel';
 import ChannelCategory from './ChannelCategory';
+import Router from 'next/router';
 
 export default function ChannelOptions({
+  nickname,
   channel,
   isVisible,
   toggleVisible,
   memberSettings,
   toggleMemberSettings,
 }: {
+  nickname: string;
   channel: Channel;
   isVisible: boolean;
   toggleVisible: (isVisible: boolean) => void;
@@ -17,10 +20,30 @@ export default function ChannelOptions({
 }) {
   let { owner, admins, members } = channel;
 
-  admins = admins.filter((admin) => admin.nickname !== owner.nickname);
-  members = members.filter(
-    (member) => member.nickname !== owner.nickname && !admins.includes(member),
+  admins = admins?.filter((admin) => admin.nickname !== owner?.nickname);
+  members = members?.filter(
+    (member) =>
+      member.nickname !== owner?.nickname && !admins?.includes(member),
   );
+
+  async function leaveChannel(e: React.FormEvent) {
+    e.preventDefault();
+
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/leave/' + channel.channelId,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      },
+    );
+
+    if (res.status == 204) {
+      Router.push(`/chat`);
+    }
+  }
 
   return (
     <div
@@ -43,7 +66,10 @@ export default function ChannelOptions({
         <button className="flex h-[24px] w-[115px] items-center justify-center rounded-md bg-[#0097E2E6] hover:bg-[#0097E2] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]">
           <p className="fond-bold text-[10px] uppercase">Channel Settings</p>
         </button>
-        <button className="flex h-[24px] w-[115px] items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]">
+        <button
+          className="flex h-[24px] w-[115px] items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
+          onClick={leaveChannel}
+        >
           <p className="fond-bold text-[10px] uppercase">Leave Channel</p>
         </button>
       </div>
@@ -63,32 +89,38 @@ export default function ChannelOptions({
             {channel.topic}
           </p>
           <p className="text-[12px] font-semibold text-[#B4B4B4]">
-            {channel.members.length} member
-            {channel.members.length > 1 ? 's' : ''}
+            {channel.members?.length} member
+            {channel.members && channel.members.length > 1 ? 's' : ''}
           </p>
         </div>
       </div>
       <ul className="scrollbar absolute bottom-0 right-[50%] mb-2 flex h-[calc(100%-230px)] w-[90%] translate-x-[50%] flex-col gap-2 overflow-y-auto px-6">
         <li>
           <ChannelCategory
-            category="Owner"
-            members={[owner]}
+            channel={channel}
+            nickname={nickname}
+            category="owner"
+            members={owner ? [owner] : []}
             memberSettings={memberSettings}
             toggleMemberSettings={toggleMemberSettings}
           />
         </li>
         <li>
           <ChannelCategory
-            category="Admins"
-            members={admins}
+            channel={channel}
+            nickname={nickname}
+            category="admin"
+            members={admins ?? []}
             memberSettings={memberSettings}
             toggleMemberSettings={toggleMemberSettings}
           />
         </li>
         <li>
           <ChannelCategory
-            category="Members"
-            members={members}
+            channel={channel}
+            nickname={nickname}
+            category="member"
+            members={members ?? []}
             memberSettings={memberSettings}
             toggleMemberSettings={toggleMemberSettings}
           />
