@@ -39,7 +39,7 @@ services:
     container_name: client
     build: ./client
     ports:
-      - 3000:8000
+      - 3000:3000
     environment:
       NEXT_PUBLIC_BACKEND_HOST: ${BACKEND_HOST}
       NEXT_PUBLIC_BE_CONTAINER_HOST: ${BE_CONTAINER_HOST}
