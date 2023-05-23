@@ -1,7 +1,7 @@
 import { AnimatePresence, LazyMotion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SideBarIcon, SearchBarIcon, NotificationIcon } from '../icons/Icons';
 import { NotiDrop } from './Notification';
@@ -16,6 +16,7 @@ interface FunctionProps {
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
   const [notif, setNotif] = useState(false);
   const router = useRouter();
+  const notificationRef = useRef<any>(null); // Add the useRef hook
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -25,6 +26,20 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
       router.push({ pathname: '/search', query: { search: data } }, '/search');
     }
   }
+
+  useEffect(() => {
+    const closeNoti = (e: any) => {
+      if (
+        notif &&
+        notificationRef.current &&
+        !notificationRef.current.contains(e.target)
+      ) {
+        setNotif(false);
+      }
+    };
+    document.body.addEventListener('click', closeNoti);
+    return () => document.body.removeEventListener('click', closeNoti);
+  }, [notif]);
 
   return (
     <div className="flex w-full flex-row ">
@@ -92,7 +107,10 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             </button>
           </label>
         </form>
-        <div className="relative right-12 flex sm:absolute">
+        <div
+          className="relative right-12 flex sm:absolute"
+          ref={notificationRef}
+        >
           <button onClick={() => setNotif(!notif)}>
             <NotificationIcon />
           </button>

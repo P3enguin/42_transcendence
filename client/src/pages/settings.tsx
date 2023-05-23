@@ -2,6 +2,7 @@ import Layout from '@/components/layout/layout';
 import { useState } from 'react';
 import { statObj } from '@/components/tools/Interface';
 import { useEffect } from 'react';
+import Router from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ModalActivate2FA,
@@ -459,6 +460,15 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
             DEACTIVATE 2FA
           </button>
         )}
+        <button
+          className={`hover:text-md hover:text-l text-xs w-3/5 transform self-center  rounded-full bg-red-500
+                  px-12 py-2 text-center uppercase  text-white transition duration-300 hover:scale-110 hover:bg-red-700 md:mt-10
+                  md:text-base
+                  `}
+          onClick={() => Router.push('/blocked')}
+        >
+          BLOCKED USERS
+        </button>
       </div>
     </>
   );

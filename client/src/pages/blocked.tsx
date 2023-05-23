@@ -73,7 +73,7 @@ function BlockedPage({ nickname }: { nickname: string }) {
       className="mt-[40px] flex h-[750px] w-11/12 flex-col
                 gap-5 rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6 xl:w-[1000px] "
     >
-      <h1 className="text-center">Blocked Users</h1>
+      <h1 className="mt-5 text-center text-[35px]">Blocked Users</h1>
       <div className="flex  min-h-[233px] w-full flex-wrap justify-center gap-10 overflow-scroll p-6 scrollbar-hide sm:gap-10 ">
         {isloading ? (
           <div>Fetching data...</div>
