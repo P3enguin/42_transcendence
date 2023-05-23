@@ -20,7 +20,7 @@ import { on } from 'events';
 
 @WebSocketGateway({
   cors: {
-    origin: [process.env.FRONTEND_HOST, process.env.FRONTEND_HOST0],
+    origin: process.env.FRONTEND_HOST,
   },
 })
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {

@@ -175,6 +175,15 @@ const PlayGame = ({ jwt_token, res, params, ws }: GameProps) => {
       setError(res.message);
     }
     return () => {
+      socket.off('connected');
+      socket.off('joined');
+      socket.off('left');
+      socket.off('startGame');
+      socket.off('updateScore');
+      socket.off('gameOver');
+      socket.off('gameRules');
+      if (ws) 
+        ws.off('denyInvitation');
       socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -262,7 +271,7 @@ export async function getServerSideProps({
     if (res.ok) {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_HOST}/game/${params.id}`,
+          `${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/game/${params.id}`,
           {
             headers: {
               Cookie: req.headers.cookie,

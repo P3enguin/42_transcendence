@@ -200,7 +200,7 @@ function NotiDrop() {
   return (
     <div
       x-show="dropdownOpen"
-      className="absolute top-[56px] right-12 z-50 mt-2 h-[400px] w-[21rem] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
+      className="absolute right-12 top-[56px] z-50 mt-2 h-[400px] w-[21rem] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
     >
       {!requests ? (
         <div className="text-lg text-gray-500 "> You have no requests</div>

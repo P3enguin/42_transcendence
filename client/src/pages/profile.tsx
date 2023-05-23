@@ -75,7 +75,7 @@ export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST0 + '/players/data',
+      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/data',
       {
         headers: {
           Cookie: req.headers.cookie,

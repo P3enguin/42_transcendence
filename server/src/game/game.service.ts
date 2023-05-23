@@ -255,8 +255,8 @@ export class GameService {
   }
 
   async getTimeAttakXP(winner, looser) {
-    winner.status.XP += 40;
-    looser.status.XP += 15;
+    winner.status.XP += BigInt(40);
+    looser.status.XP += BigInt(15);
     await this.prisma.status.update({
       where: {
         id: winner.status.id,
