@@ -10,12 +10,76 @@ import {
   MuteMemberDto,
   UnmuteMemberDto,
   UnbanMemberDto,
+  MessageInfo,
+  invitedMember,
 } from './dto';
 import { generate } from 'shortid';
 
 @Injectable()
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
+
+  async getMessages(channelId: string, player: Player) {
+    const messageInfo : MessageInfo[]=[];
+    try{
+      const result = await this.prisma.room.findUnique({
+        where: { channelId: channelId},
+        select: 
+          {
+            messages: {
+              select: {
+                sender: true,
+                sendAt: true,
+                message: true,
+              },
+              orderBy: {
+                sendAt: 'desc',
+              },
+            },
+          },
+      });
+      const blocked = await this.prisma.player.findUnique({
+        where: {
+          id: player.id
+        },
+        select: {
+          block:true,
+        },
+      });
+      for (const element of result.messages) {
+        const sender = await  this.prisma.player.findUnique({
+          where: {
+            id: element.sender,
+          },
+          select:{
+            nickname: true,
+            avatar: true,
+          },
+        });
+        let found = false;
+        for (const findSender of blocked.block){
+          if (sender.nickname === findSender.nickname)
+            found = true;
+        }
+        if (!found){
+          const msg: MessageInfo = {
+          sender: sender.nickname,
+          senderAvatar: sender.avatar,
+          time: element.sendAt.getHours() + ":" + element.sendAt.getMinutes(),
+          message: element.message,
+        };
+        messageInfo.push(msg);
+      };
+    }// <----- empty
+      return {
+        status : 201,
+        data: messageInfo,
+      };
+    }catch (e) {
+      console.error(e);
+      throw new Error("Error retrieving messages");
+    }
+  }
 
   async getAllChat(_player: Player, page: number) {
     const player = await this.prisma.player.findUnique({
@@ -141,8 +205,28 @@ export class ChatService {
         channelId: true,
         name: true,
         topic: true,
+        avatar: true,
         memberLimit: true,
         privacy: true,
+        isChannel: true,
+        owner: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
+        admins: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
         members: {
           select: {
             nickname: true,
@@ -152,16 +236,45 @@ export class ChatService {
             joinAt: true,
           },
         },
-        avatar: true,
+        mutes: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+          },
+        },
+        bans: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+            reason: true,
+          },
+        },
         createdAt: true,
       },
       where: {
-        isChannel: true,
         channelId,
       },
     });
 
     if (
+      (!channel.isChannel &&
+        !channel.members.find(
+          (member) => member.nickname === player.nickname,
+        )) ||
       !channel ||
       (channel.privacy === 'secret' &&
         !channel.members.find((member) => member.nickname === player.nickname))
@@ -172,13 +285,36 @@ export class ChatService {
       };
     }
 
+    if (!channel.isChannel) {
+      return {
+        status: 200,
+        data: {
+          channelId: channel.channelId,
+          members: channel.members,
+        },
+      };
+    }
+
     if (
-      channel.privacy === 'private' &&
       !channel.members.find((member) => member.nickname === player.nickname)
     ) {
-      channel['membersCount'] = channel.members.length;
-      delete channel.members;
-      delete channel.topic;
+      return {
+        status: 403,
+        data: {
+          channelId: channel.channelId,
+          name: channel.name,
+          topic: channel.topic,
+          avatar: channel.avatar,
+          privacy: channel.privacy,
+          memberLimit: channel.memberLimit,
+          membersCount: channel.members.length,
+        },
+      };
+    }
+
+    if (!channel.admins.find((admin) => admin.nickname === player.nickname)) {
+      delete channel.mutes;
+      delete channel.bans;
     }
 
     return {
@@ -187,7 +323,14 @@ export class ChatService {
     };
   }
 
-  async createDM(player: Player, nickname: string) {
+  async getDM(player: Player, nickname: string) {
+    if (nickname === player.nickname) {
+      return {
+        status: 405,
+        data: { error: 'Method Not Allowed' },
+      };
+    }
+
     const existingDM = await this.prisma.room.findFirst({
       select: {
         channelId: true,
@@ -219,6 +362,15 @@ export class ChatService {
     const dm = await this.prisma.room.create({
       select: {
         channelId: true,
+        members: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
       },
       data: {
         channelId: generate(),
@@ -237,42 +389,6 @@ export class ChatService {
       status: 201,
       data: dm,
     };
-  }
-
-  async getDM(player: Player, nickname: string) {
-    const dm = await this.prisma.room.findFirst({
-      select: {
-        channelId: true,
-        members: {
-          select: {
-            nickname: true,
-            avatar: true,
-            firstname: true,
-            lastname: true,
-            joinAt: true,
-          },
-        },
-        createdAt: true,
-      },
-      where: {
-        isChannel: false,
-        memberLimit: 2,
-        members: {
-          every: {
-            OR: [{ nickname: player.nickname }, { nickname: nickname }],
-          },
-        },
-      },
-    });
-
-    if (dm) {
-      return {
-        status: 200,
-        data: dm,
-      };
-    }
-
-    return this.createDM(player, nickname);
   }
 
   async joinChannel(player: Player, JoinChannelDto: JoinChannelDto) {
@@ -856,6 +972,146 @@ export class ChatService {
       status: 204,
       data: { message: 'Successfully unmuted member from the channel' },
     };
+  }
+
+  async inviteMember(player: Player, invitedMember: invitedMember) {
+    const { channelId, playerNickname } = invitedMember;
+
+    const channel = await this.prisma.room.findUnique({
+      where:{
+        channelId: channelId,
+      },
+      select :{
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+        invited: true,
+      },
+    });
+
+    if (!channel ){
+      return {
+      status: 403,
+      data: {error : "Unkown Channel"},
+      };
+    }
+    if (!channel.admins.find((channelAdmin)=> channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to invite users" },
+      };
+    }
+    const member  =await this.prisma.player.findUnique({
+      where :{
+      nickname: playerNickname,
+      },
+      select: {
+        id: true,
+        invited: true,
+      },
+    });
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'User not found' },
+      };
+    }
+    if (channel.members.find((channelMember) => channelMember.id === member.id)) {
+      return {
+        status: 404,
+        data: { error: 'User is already a member of the channel' },
+      };
+  }
+  if (channel.invited.find((channelInvites) => channelInvites.id === member.id)) {
+    return {
+      status: 404,
+      data: { error: 'User is already a Invited' },
+    };
+  }
+  const invite = await this.prisma.invite.create({
+    data: {
+      channel:{
+        connect: {id: channel.id},
+      },
+      player: {
+        connect :{ id : member.id },
+      },
+    },
+  });
+  if (!invite) {
+    return {
+        status: 400,
+        data: { error: 'An error occurred while inviting the member' },
+      };
+  }
+  return {
+    status : 200,
+    data: {msg : 'invitation sent successfully'},
+  }
+}
+
+  async cancelInvites(player, invited) {
+    const { channelId, playerNickname } = invited;
+    const channel = await this.prisma.room.findUnique({
+      where:{
+        channelId: channelId,
+      },
+      select :{
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+        invited: true,
+      },
+    });
+
+    if (!channel ){
+      return {
+      status: 403,
+      data: {error : "Unkown Channel"},
+      };
+    }
+    if (!channel.admins.find((channelAdmin)=> channelAdmin.id === player.id)) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to invite users" },
+      };
+    }
+    const member  =await this.prisma.player.findUnique({
+      where :{
+      nickname: playerNickname,
+      },
+      select: {
+        id: true,
+        invited: true,
+      },
+    });
+    if (!member) {
+      return {
+        status: 404,
+        data: { error: 'User not found' },
+      };
+    }
+    if (channel.members.find((channelMember) => channelMember.id === member.id)) {
+      return {
+        status: 404,
+        data: { error: 'User is already a member of the channel' },
+      };
+    }
+    if (!channel.invited.find((channelInvites) => channelInvites.id === member.id)) {
+      return {
+        status: 404,
+        data: { error: 'User is not invited' },
+      };
+    }
+
+    const canceled = await this.prisma.invite.deleteMany({
+      where:{
+        channelId: channel.id,
+        playerId: member.id,
+      }
+    })
   }
 
   async getDiscoveredChannels() {

@@ -24,8 +24,7 @@ function Chat({
   id: string;
   ws: Socket;
 }) {
-  console.log('room Id', data.nickname);
-
+  
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
   const [showConversation, setShowConversation] = useState(true);
@@ -45,8 +44,7 @@ function Chat({
 
   const changeToNewmessages = () => {
     setNewMessages((prev) => !prev);
-  }
-
+  };
 
   useEffect(() => {
     const MobilView = () => {
@@ -67,7 +65,6 @@ function Chat({
     return () => {
       window.removeEventListener('resize', MobilView);
     };
-    // eslint-disable-next-line
   }, [showMobile]);
   return (
     <>
@@ -77,7 +74,7 @@ function Chat({
             <h1 className="flex h-14 w-[100%] items-center border-b pl-5 text-3xl font-light">
               <Link href={`/chat`}>Chat Room </Link>
             </h1>
-            {showRecentChat && <OnlineNow player={data.nickname} ws={ws} />}
+            {showRecentChat && <OnlineNow nickname={data.nickname} ws={ws} />}
 
             <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
               <div className="flex flex-row justify-between  pt-1">
@@ -114,6 +111,7 @@ function Chat({
                 player={data}
                 jwt_token={jwt_token}
                 id={id}
+                ws={ws}
                 setNew={changeToNewmessages}
               />
             }

@@ -51,11 +51,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // since we have kicked out the client from the default room, we need to emit to the client directly
     client.emit('connected', 'Welcome, How may I help you!');
     this.server.to(`${user.id}_status`).emit('statusChange', {
-      friend: {
-        id: user.id,
-        nickname: user.nickname,
-        avatar: user.avatar,
-      },
+      id: user.id,
+      nickname: user.nickname,
+      avatar: user.avatar,
       status: this.userStatus(user.nickname),
     });
   }
@@ -72,11 +70,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (this.userStatus(user.nickname) === UserStatus.OFFLINE)
       this.appService.socketStatus.delete(client.id);
     this.server.to(`${user.id}_status`).emit('statusChange', {
-      friend: {
-        id: user.id,
-        nickname: user.nickname,
-        avatar: user.avatar,
-      },
+      id: user.id,
+      nickname: user.nickname,
+      avatar: user.avatar,
       status: this.userStatus(user.nickname),
     });
   }
@@ -94,11 +90,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // this.logger.log(`${player.nickname} is away`);
     this.appService.socketStatus.set(client.id, UserStatus.AWAY);
     this.server.to(`${user.id}_status`).emit('statusChange', {
-      friend: {
-        id: user.id,
-        nickname: user.nickname,
-        avatar: user.avatar,
-      },
+      id: user.id,
+      nickname: user.nickname,
+      avatar: user.avatar,
       status: this.userStatus(user.nickname),
     });
   }
@@ -116,11 +110,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // this.logger.log(`${player.nickname} is away`);
     this.appService.socketStatus.set(client.id, UserStatus.IN_GAME);
     this.server.to(`${user.id}_status`).emit('statusChange', {
-      friend: {
-        id: user.id,
-        nickname: user.nickname,
-        avatar: user.avatar,
-      },
+      id: user.id,
+      nickname: user.nickname,
+      avatar: user.avatar,
       status: this.userStatus(user.nickname),
     });
   }
@@ -138,11 +130,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // this.logger.log(`${Player.nickname} is online`);
     this.appService.socketStatus.set(client.id, UserStatus.ONLINE);
     this.server.to(`${user.id}_status`).emit('statusChange', {
-      friend: {
-        id: user.id,
-        nickname: user.nickname,
-        avatar: user.avatar,
-      },
+      id: user.id,
+      nickname: user.nickname,
+      avatar: user.avatar,
       status: this.userStatus(user.nickname),
     });
   }
@@ -153,22 +143,20 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     if (!user) {
-      client.disconnect();
+      // client.disconnect();
       return;
     }
     // console.log('getOnlineFriends', player.nickname);
     const friends = await this.playerService.GetFriends(user.nickname);
     if (isArray(friends)) {
-      const onlineFirends = [];
+      const onlineFriends = [];
       friends.forEach((friend) => {
         client.join(`${friend.id}_status`);
-        onlineFirends.push({
-          friend: friend,
-          status: this.userStatus(friend.nickname),
-        });
+        friend['status'] = this.userStatus(friend.nickname);
+        onlineFriends.push(friend);
       });
-      // console.log(onlineFirends);
-      return onlineFirends;
+      // console.log(onlineFriends);
+      return onlineFriends;
     }
   }
 
@@ -195,7 +183,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('denyInvitation')
-  habdleDenyInvitation(
+  handleDenyInvitation(
     @GetPlayer() user: Player,
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
@@ -215,6 +203,19 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameType: data.gameType,
       gameId: data.gameId,
     });
+  }
+
+  @SubscribeMessage('getUserStatus')
+  handleGetUserStatus(
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    return this.userStatus(data.name);
   }
 
   userStatus(nickname: string) {

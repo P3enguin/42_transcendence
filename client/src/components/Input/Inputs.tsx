@@ -367,7 +367,7 @@ export function InputDefault({
   setName,
   className,
 }: {
-  setName: Dispatch<SetStateAction<string>>;
+  setName?: Dispatch<SetStateAction<string>>;
   name: string;
   id: string;
   type: string;
@@ -387,6 +387,7 @@ export function InputDefault({
         placeholder=" "
         defaultValue={defaultValue}
         onChange={(e) => {
+          if (!setName) return;
           e.preventDefault();
           setName(e.target.value);
           console.log(e.target.value);
@@ -422,7 +423,7 @@ export function InputBtn({
   defaultValue?: string;
 }) {
   return (
-    <div className="group relative z-0 mb-0 w-[90%] xl:w-3/4 min-w-[170px] max-w-[350px]">
+    <div className="group relative z-0 mb-0 w-[90%] min-w-[170px] max-w-[350px] xl:w-3/4">
       <input
         type="input"
         name={name}
