@@ -89,28 +89,20 @@ function SideBar({
             </Link>
           </div>
 
-          <div className="flex flex-col items-center gap-10">
-            <div className="flex sm:hidden">
+          <div className="flex flex-col items-center gap-10 mt-10 ml-1">
+            <div className="flex">
               <button onClick={handleLogOut}>
-                /wallpaper.png
                 <LogoutIcon />
               </button>
             </div>
-            <div className="flex flex-col items-center gap-10">
-              <div className="flex">
-                <button onClick={handleLogOut}>
-                  <LogoutIcon />
-                </button>
-              </div>
-              <div className="mb-3 ">
-                <Link
-                  className="mt-2 flex h-12 w-12 items-center justify-center"
-                  href="/settings"
-                  shallow
-                >
-                  <SettingsIcon svgIndex={svgIndex} />
-                </Link>
-              </div>
+            <div className="mb-3 ">
+              <Link
+                className="mt-2 flex h-12 w-12 items-center justify-center"
+                href="/settings"
+                shallow
+              >
+                <SettingsIcon svgIndex={svgIndex} />
+              </Link>
             </div>
           </div>
         </motion.aside>
@@ -162,12 +154,10 @@ function SideBar({
               </Link>
             </div>
 
-            <div className="flex flex-col items-center gap-10">
-              <div className="flex sm:hidden">
+            <div className="flex flex-col items-center gap-10 mt-10 ml-1">
                 <button onClick={handleLogOut}>
                   <LogoutIcon />
                 </button>
-              </div>
               <div className="mb-3">
                 <Link
                   className="mt-2 flex h-12 w-12 items-center justify-center"
