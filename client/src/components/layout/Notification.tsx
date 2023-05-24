@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import React from 'react';
 import Router from 'next/router';
 import Image from 'next/image';
@@ -98,8 +99,8 @@ function NotiAddFriend({
   }
 
   return (
-    <div className="-mx-2 flex items-center border-b px-4 py-3 hover:bg-[#8fd4f6]">
-      <div className="w-1/5">
+    <div className="-mx-2 flex items-center border-b px-4 py-3">
+      <Link href={'/users/' + nickname} className="w-1/5">
         <Image
           width={200}
           height={200}
@@ -107,17 +108,23 @@ function NotiAddFriend({
           src={image}
           alt="user image"
         />
-      </div>
-      <div className="w-4/5 text-sm text-[#2F3C78]">
+      </Link>
+      <div className="w-4/5 text-sm ">
         <div>
           <span className="font-bold ">{nickname} </span>
           <span>wants to be your friend</span>
         </div>
         <div className="font-bold">
-          <button onClick={acceptRequest} className="mr-2 text-blue-600">
+          <button
+            onClick={acceptRequest}
+            className="mr-2 text-blue-600 hover:text-blue-300"
+          >
             Accept
           </button>
-          <button onClick={rejectRequest} className="text-red-500">
+          <button
+            onClick={rejectRequest}
+            className="text-red-500 hover:text-red-700"
+          >
             Decline
           </button>
         </div>
@@ -133,8 +140,8 @@ function NotiAccepted({
   senderId,
 }: NotifInterface) {
   return (
-    <div className="-mx-2 flex items-center border-b px-4 py-3 hover:bg-[#8fd4f6]">
-      <div className="w-1/5">
+    <div className="-mx-2 flex items-center border-b px-4 py-3">
+      <Link href={'/users/' + nickname} className="w-1/5">
         <Image
           width={200}
           height={200}
@@ -142,12 +149,12 @@ function NotiAccepted({
           src={image}
           alt="user image"
         />
-      </div>
-      <div className="w-4/5 text-sm text-[#2F3C78]">
+      </Link>
+      <div className="w-4/5 text-sm ">
         <div>
           <span className="font-bold ">{nickname} </span>
           <span>
-            <strong className="text-blue-600">accepted</strong> your friend
+            <strong className="text-blue-400">accepted</strong> your friend
             request!
           </span>
         </div>
@@ -163,8 +170,8 @@ function NotiRejected({
   senderId,
 }: NotifInterface) {
   return (
-    <div className="-mx-2 flex items-center border-b px-4 py-3 hover:bg-[#8fd4f6]">
-      <div className="w-1/5">
+    <div className="-mx-2 flex items-center border-b px-4 py-3">
+      <Link  href={'/users/' + nickname} className="w-1/5">
         <Image
           width={200}
           height={200}
@@ -172,8 +179,8 @@ function NotiRejected({
           src={image}
           alt="user image"
         />
-      </div>
-      <div className="w-4/5 text-sm text-[#2F3C78]">
+      </Link>
+      <div className="w-4/5 text-sm">
         <div>
           <span className="font-bold ">{nickname} </span>
           <span>
@@ -221,10 +228,11 @@ function NotiDrop() {
   return (
     <div
       x-show="dropdownOpen"
-      className="absolute right-12 top-[56px] z-50 mt-2 h-[400px] w-[21rem] overflow-scroll overflow-x-hidden rounded-md bg-white shadow-lg"
+      className="absolute right-12 top-[56px] z-50 mt-2 h-[400px] w-[21rem] overflow-hidden 
+                  overflow-x-hidden rounded-md bg-[#283775] shadow-lg"
     >
       {!requests ? (
-        <div className="text-lg text-gray-500 "> You have no requests</div>
+        <div className="text-lg  "> You have no requests</div>
       ) : (
         <div className="py-2">
           {requests.map((request: any, i: number) => {

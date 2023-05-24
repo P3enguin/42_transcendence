@@ -44,7 +44,7 @@ function BlockedPage({ nickname }: { nickname: string }) {
       }
     }
     getPLayers(nickname);
-  }, []);
+  }, [nickname]);
 
   async function unblockPlayer(e: React.MouseEvent, nickname: string) {
     e.preventDefault();

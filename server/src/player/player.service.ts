@@ -100,27 +100,25 @@ export class PlayerService {
   async AddRequest(player: Player, receiver: string, res: Response) {
     const shortid = require('shortid');
     const reqId = shortid.generate();
-    const receiverId = await this.prisma.player.findUnique({
-      where: {
-        nickname: receiver,
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!receiverId) throw new Error('Nickname Not Found');
     try {
-      const existingRequest = await this.prisma.request.findMany({
+      const receiverId = await this.prisma.player.findUnique({
         where: {
-          toPlayerId: receiverId.id,
-          fromPlayerId: player.id,
+          nickname: receiver,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!receiverId) throw new Error('Nickname Not Found');
+      const receivedRequests = await this.prisma.request.findMany({
+        where: {
+          toPlayerId: player.id,
           status: {
-            in: ['pending', 'accepted'],
+            in: ['accepted'],
           },
         },
       });
-      console.log(existingRequest);
-      if (existingRequest.length != 0) throw new Error('Cannot Send request');
+      if (receivedRequests.length != 0) throw new Error('Cannot Send request');
       const request = await this.prisma.request.create({
         data: {
           id: reqId,
@@ -282,7 +280,8 @@ export class PlayerService {
           id: requestId,
         },
       });
-      if (request.status == 'accepted') throw new Error('Cannot Send request');
+      if (request.status == 'accepted')
+        throw new Error('Cannot cancel request');
       else {
         await this.prisma.request.delete({
           where: {
