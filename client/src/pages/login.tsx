@@ -13,7 +13,6 @@ function loginPage({
   image: string;
   coins: number;
 }) {
-
   return (
     <div className="grid h-screen place-items-center items-start ">
       <UpdateProfile
@@ -30,36 +29,44 @@ function loginPage({
 export async function getServerSideProps(context: any) {
   const jwt_token: string = context.req.cookies['jwt_token'];
   if (!jwt_token) {
-    const response = await verifySession(context.req.headers.cookie);
-    if (!response.ok) {
-      const data = await response.json();
+    try {
+      const response = await verifySession(context.req.headers.cookie);
+      if (!response.ok) {
+        const data = await response.json();
+        return {
+          redirect: {
+            destination: '/',
+            permanent: true,
+          },
+        };
+      }
+      const result = await response.json();
       return {
-        redirect: {
-          destination: '/',
-          permanent: true,
+        props: {
+          email: result.jwtDecoded.email,
+          firstName: result.jwtDecoded.firstName ?? null,
+          lastName: result.jwtDecoded.lastName ?? null,
+          image: result.jwtDecoded.picture,
+          coins: result.jwtDecoded.coins,
         },
       };
+    } catch (error) {
+      console.log('An error has occurred');
     }
-    const result = await response.json();
-    return {
-      props: {
-        email: result.jwtDecoded.email,
-        firstName: result.jwtDecoded.firstName ?? null,
-        lastName: result.jwtDecoded.lastName ?? null,
-        image: result.jwtDecoded.picture,
-        coins: result.jwtDecoded.coins,
-      },
-    };
   }
   if (jwt_token) {
-    const res = await verifyToken(context.req.headers.cookie);
-    if (res.ok) {
-      return {
-        redirect: {
-          destination: '/profile',
-          permanent: true,
-        },
-      };
+    try {
+      const res = await verifyToken(context.req.headers.cookie);
+      if (res.ok) {
+        return {
+          redirect: {
+            destination: '/profile',
+            permanent: true,
+          },
+        };
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
   //  to check the validity of jwt before redirecting later

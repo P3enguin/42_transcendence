@@ -240,12 +240,12 @@ function UpdateProfile({
         span,
         'Nickname cannot be empty!',
       );
-    } else if (!isBetween(nick_name, 3, 15)) {
+    } else if (!isBetween(nick_name, 3, 16)) {
       updateField(
         2,
         { valid: false, touched: touched },
         span,
-        'Nickname should be (3-20) character long!',
+        'Nickname should be (3-16) character long!',
       );
     } else if (!isClear(nick_name)) {
       updateField(

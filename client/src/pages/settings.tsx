@@ -254,8 +254,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       newState = mutateArray(2, { valid: false, touched: false }, newState);
     else if (isEmpty(nick_name)) {
       printError(span, 'Nickname cannot be empty!');
-    } else if (!isBetween(nick_name, 3, 15)) {
-      printError(span, 'Nickname should be (3-20) character long!');
+    } else if (!isBetween(nick_name, 3, 16)) {
+      printError(span, 'Nickname should be (3-16) character long!');
     } else if (!isClear(nick_name)) {
       printError(span, 'Nickname contains forbidden characters!');
     } else {

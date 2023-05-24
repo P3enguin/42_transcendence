@@ -37,27 +37,31 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   async handleConnection(client: Socket) {
-    const user = await this.jwt.verifyToken(client.handshake.auth.token);
-    if (!user) {
-      client.disconnect(true);
-      return;
+    try {
+      const user = await this.jwt.verifyToken(client.handshake.auth.token);
+      if (!user) {
+        client.disconnect(true);
+        return;
+      }
+      client.handshake.query.user = JSON.stringify(user);
+      this.logger.log(`${user.nickname} connected: ${client.id}`);
+      this.appService.socketStatus.set(client.id, UserStatus.ONLINE);
+      client.leave(client.id);
+      client.join(user.nickname);
+      // this.server.to(client.id).emit('connected', 'Welcome, How may I help you!');
+      // since we have kicked out the client from the default room, we need to emit to the client directly
+      client.emit('connected', 'Welcome, How may I help you!');
+      this.server.to(`${user.id}_status`).emit('statusChange', {
+        friend: {
+          id: user.id,
+          nickname: user.nickname,
+          avatar: user.avatar,
+        },
+        status: this.userStatus(user.nickname),
+      });
+    } catch (error) {
+      console.log('An error has occurred');
     }
-    client.handshake.query.user = JSON.stringify(user);
-    this.logger.log(`${user.nickname} connected: ${client.id}`);
-    this.appService.socketStatus.set(client.id, UserStatus.ONLINE);
-    client.leave(client.id);
-    client.join(user.nickname);
-    // this.server.to(client.id).emit('connected', 'Welcome, How may I help you!');
-    // since we have kicked out the client from the default room, we need to emit to the client directly
-    client.emit('connected', 'Welcome, How may I help you!');
-    this.server.to(`${user.id}_status`).emit('statusChange', {
-      friend: {
-        id: user.id,
-        nickname: user.nickname,
-        avatar: user.avatar,
-      },
-      status: this.userStatus(user.nickname),
-    });
   }
 
   handleDisconnect(client: Socket) {
