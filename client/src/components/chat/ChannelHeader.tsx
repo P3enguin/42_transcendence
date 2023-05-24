@@ -1,52 +1,67 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
+import { Channel } from '@/interfaces/Channel';
+import { Socket } from 'socket.io-client';
+import { ClimbingBoxLoader } from 'react-spinners';
+import StatusBubble from '../game/StatusBubble';
 
-const ChannelHeader = (id : any) => {
+export interface ChannelHeaderProps {
+  channel: Channel;
+  onClick: () => void;
+  ws: Socket;
+}
 
-  const [channel, setChannel] = useState<{
-    avatar: string;
-    name: string;
-    topic: string;
-  }>();
-
-  async function getRoomData(id: any) {
-    try {
-      const response = await axios.get(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/channels/${id.id}`,
-        {
-          withCredentials: true,
-        },
-      );
-      const channel = response.data;
-      setChannel(channel);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+const ChannelHeader = ({ channel, onClick, ws }: ChannelHeaderProps) => {
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
-    getRoomData(id);
-  }, [])
+    if (channel.isChannel) {
+      setStatus('');
+      return;
+    }
+    if (ws) {
+      ws.emit('getUserStatus', { name: channel.name }, (data: any) => {
+        console.log(data);
+        setStatus(data);
+      });
+    }
+    return () => {
+      if (ws) {
+        ws.off('statusChange');
+      }
+    };
+  }, [ws, channel]);
+
   if (!channel) {
     return <div className="self-center">Loading...</div>;
   }
-  const picture =
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar;
-  return (
-    <div className='flex flex-row p-2'>
-      <Image className='border rounded-full w-[45px] h-[45px]'
-        src={picture}
-        width={60}
-        height={60}
-        alt='picture'
-      />
-      <div className='pl-5'>
-      <p className='text-green-600'>{channel.name}</p> 
-      <p className='text-sm'>{channel.topic}</p>
-      </div>
-    </div>
-  )
-}
 
-export default ChannelHeader
+  return (
+    <div className="flex h-full flex-row items-center gap-5 px-5">
+      <StatusBubble
+        avatar={channel.avatar}
+        status={status}
+        imageClassName="h-[48px] w-[48px]"
+        isChannel={channel.isChannel}
+      />
+      <div className="">
+        <button onClick={onClick} className="hover:underline">
+          {channel.name}
+        </button>
+        <p className="text-sm text-gray-300">{channel.topic}</p>
+      </div>
+      <button className="ml-auto" onClick={onClick}>
+        <Image
+          className="ml-auto h-[26px] w-[26px]"
+          src="/dots.svg"
+          alt="dots"
+          width={26}
+          height={26}
+        />
+      </button>
+    </div>
+  );
+};
+
+export default ChannelHeader;

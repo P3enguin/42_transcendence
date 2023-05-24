@@ -38,7 +38,7 @@ export class ChatController {
   ) {
     try {
       // console.log("Get All Chat");
-      const allChat = await this.chatService.getAllChat(player, 0);     
+      const allChat = await this.chatService.getAllChat(player, 0);
       res.status(allChat.status).json(allChat);
     } catch (error) {
       console.log(error);
@@ -52,15 +52,15 @@ export class ChatController {
     @Param('id') channelId: string,
     @Res() res: Response,
   ) {
-    try{
-      console.log("channelId : ",channelId);
+    try {
+      console.log('channelId : ', channelId);
       const result = await this.chatService.getMessages(channelId, player);
-      console.log("messages: ", result.data);
+      console.log('messages: ', result.data);
       res.status(result.status).json(result.data);
-    }catch(err){
-      return res.status(404).json({error: 'can not get messages'});
+    } catch (err) {
+      return res.status(404).json({ error: 'can not get messages' });
     }
-  } 
+  }
 
   @Post('create')
   async createChannel(
@@ -101,24 +101,8 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      console.log("channel");
+      console.log('channel');
       const result = await this.chatService.getChannel(player, channelId);
-      res.status(result.status).json(result.data);
-    } catch (error) {
-      console.log(error);
-      return res.status(400).json({ error: 'Unexpected error occurred' });
-    }
-  }
-
-  @Post('create/dm')
-  async createDM(
-    @GetPlayer() player: Player,
-    @Query('nickname') nickname: string,
-    @Res() res: Response,
-  ) {
-    try {
-      console.log('creating dm');
-      const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
@@ -253,27 +237,33 @@ export class ChatController {
   async inviteMember(
     @GetPlayer() player: Player,
     @Body() invitedMember: invitedMember,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
-    try{
+    try {
       const result = await this.chatService.inviteMember(player, invitedMember);
       res.status(result.status).json(result.data);
-    }catch(err){
-      return res.status(400).json({ error: 'Unexpected error occurred while inviting player' });
+    } catch (err) {
+      return res
+        .status(400)
+        .json({ error: 'Unexpected error occurred while inviting player' });
     }
   }
 
   @Post('cancelInvite')
   async cancelInvite(
-    @GetPlayer() player : Player,
-    @Body() invited : invitedMember,
-    @Res() res : Response,
-  ){
+    @GetPlayer() player: Player,
+    @Body() invited: invitedMember,
+    @Res() res: Response,
+  ) {
     try {
       const result = await this.chatService.cancelInvites(player, invited);
       res.status(result.status).json(result.data);
-    }catch (error) {
-      return res.status(400).json({ error: 'Unexpected error occurred while canceling the invitation'});
+    } catch (error) {
+      return res
+        .status(400)
+        .json({
+          error: 'Unexpected error occurred while canceling the invitation',
+        });
     }
   }
 

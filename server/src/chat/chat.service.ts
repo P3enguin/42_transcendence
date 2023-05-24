@@ -205,8 +205,28 @@ export class ChatService {
         channelId: true,
         name: true,
         topic: true,
+        avatar: true,
         memberLimit: true,
         privacy: true,
+        isChannel: true,
+        owner: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
+        admins: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
         members: {
           select: {
             nickname: true,
@@ -216,16 +236,45 @@ export class ChatService {
             joinAt: true,
           },
         },
-        avatar: true,
+        mutes: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+          },
+        },
+        bans: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+            reason: true,
+          },
+        },
         createdAt: true,
       },
       where: {
-        isChannel: true,
         channelId,
       },
     });
 
     if (
+      (!channel.isChannel &&
+        !channel.members.find(
+          (member) => member.nickname === player.nickname,
+        )) ||
       !channel ||
       (channel.privacy === 'secret' &&
         !channel.members.find((member) => member.nickname === player.nickname))
@@ -236,13 +285,36 @@ export class ChatService {
       };
     }
 
+    if (!channel.isChannel) {
+      return {
+        status: 200,
+        data: {
+          channelId: channel.channelId,
+          members: channel.members,
+        },
+      };
+    }
+
     if (
-      channel.privacy === 'private' &&
       !channel.members.find((member) => member.nickname === player.nickname)
     ) {
-      channel['membersCount'] = channel.members.length;
-      delete channel.members;
-      delete channel.topic;
+      return {
+        status: 403,
+        data: {
+          channelId: channel.channelId,
+          name: channel.name,
+          topic: channel.topic,
+          avatar: channel.avatar,
+          privacy: channel.privacy,
+          memberLimit: channel.memberLimit,
+          membersCount: channel.members.length,
+        },
+      };
+    }
+
+    if (!channel.admins.find((admin) => admin.nickname === player.nickname)) {
+      delete channel.mutes;
+      delete channel.bans;
     }
 
     return {
@@ -251,7 +323,14 @@ export class ChatService {
     };
   }
 
-  async createDM(player: Player, nickname: string) {
+  async getDM(player: Player, nickname: string) {
+    if (nickname === player.nickname) {
+      return {
+        status: 405,
+        data: { error: 'Method Not Allowed' },
+      };
+    }
+
     const existingDM = await this.prisma.room.findFirst({
       select: {
         channelId: true,
@@ -283,6 +362,15 @@ export class ChatService {
     const dm = await this.prisma.room.create({
       select: {
         channelId: true,
+        members: {
+          select: {
+            nickname: true,
+            avatar: true,
+            firstname: true,
+            lastname: true,
+            joinAt: true,
+          },
+        },
       },
       data: {
         channelId: generate(),
@@ -301,42 +389,6 @@ export class ChatService {
       status: 201,
       data: dm,
     };
-  }
-
-  async getDM(player: Player, nickname: string) {
-    const dm = await this.prisma.room.findFirst({
-      select: {
-        channelId: true,
-        members: {
-          select: {
-            nickname: true,
-            avatar: true,
-            firstname: true,
-            lastname: true,
-            joinAt: true,
-          },
-        },
-        createdAt: true,
-      },
-      where: {
-        isChannel: false,
-        memberLimit: 2,
-        members: {
-          every: {
-            OR: [{ nickname: player.nickname }, { nickname: nickname }],
-          },
-        },
-      },
-    });
-
-    if (dm) {
-      return {
-        status: 200,
-        data: dm,
-      };
-    }
-
-    return this.createDM(player, nickname);
   }
 
   async joinChannel(player: Player, JoinChannelDto: JoinChannelDto) {

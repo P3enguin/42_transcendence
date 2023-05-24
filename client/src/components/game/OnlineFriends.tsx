@@ -5,14 +5,10 @@ import { RadioInput } from './StartGame';
 import { useRouter } from 'next/router';
 import { Socket } from 'socket.io-client';
 
-export interface friend {
+export interface Status {
   nickname: string;
   avatar: string;
   id: number;
-}
-
-export interface Status {
-  friend: friend;
   status: string;
 }
 
@@ -39,7 +35,6 @@ const OnlineFriends = ({ ws }: { ws: Socket }) => {
       .catch((err) => {
         console.log(err.message);
       });
-    
   };
 
   useEffect(() => {
@@ -51,13 +46,13 @@ const OnlineFriends = ({ ws }: { ws: Socket }) => {
       ws.on('statusChange', (data: Status) => {
         if (data.status === 'OFFLINE') {
           setOnlineFriends((prev) => {
-            return prev.filter((friend) => friend.friend.id !== data.friend.id);
+            return prev.filter((friend) => friend.id !== data.id);
           });
         } else {
           setOnlineFriends((prev) => {
-            if (prev.find((friend) => friend.friend.id === data.friend.id)) {
+            if (prev.find((friend) => friend.id === data.id)) {
               return prev.map((friend) => {
-                if (friend.friend.id === data.friend.id) {
+                if (friend.id === data.id) {
                   return data;
                 }
                 return friend;
@@ -112,7 +107,7 @@ const OnlineFriends = ({ ws }: { ws: Socket }) => {
           {onlineFriends.map((user: any, index: number) => (
             <InviteFriendCard
               key={index}
-              data={user}
+              friend={user}
               inviteFriend={inviteFriend}
             />
           ))}
