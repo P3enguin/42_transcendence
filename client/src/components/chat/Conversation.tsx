@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 import { SendIcon, OptionIcon } from '../icons/Icons';
 import axios from 'axios';
 import Message from './Message';
@@ -9,11 +9,11 @@ import MessageLabel from './MessageLabel';
 import MessageWrapper from './MessageWrapper';
 import ChannelHeader from './ChannelHeader';
 import ChannelOptions from './ChannelOptions';
-import { Channel } from '@/interfaces/Channel';
+import { Channel, DirectMessage, Member } from '@/interfaces/Channel';
 import Router from 'next/router';
 import { InputDefault } from '../Input/Inputs';
 
-let socket: any;
+let socket: Socket;
 
 interface Message {
   sender: string;
@@ -22,7 +22,7 @@ interface Message {
   message: string;
 }
 
-function Conversation({ player, jwt_token, id, setNew }: any) {
+function Conversation({ player, jwt_token, id, setNew, ws }: any) {
   const [showTopic, setShowTopic] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [memberSettings, setMemberSettings] = useState('');
@@ -49,30 +49,19 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
       const channelData = await response.json();
       const channelStatus = response.status;
 
-      if (channelStatus === 200) {
-        setChannel(channelData);
-        setIsChannel(true);
-        return;
+      if (channelStatus !== 200) {
+        setChannel(undefined);
       }
 
-      // Find DM
-      const response2 = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dms/${id}`,
-        {
-          credentials: 'include',
-        },
-      );
-
-      const dmData = await response2.json();
-      const dmStatus = response.status;
-
-      if (dmStatus === 200) {
-        setChannel(dmData);
-        setIsChannel(false);
-        return;
+      setIsChannel(channelData.isChannel);
+      if (!channelData.isChannel) {
+        const user = channelData.members.filter(
+          (member: Member) => member.nickname != player.nickname,
+        )[0];
+        channelData.name = user.nickname;
+        channelData.avatar = user.avatar;
       }
-
-      setChannel(undefined);
+      setChannel(channelData);
 
       // Do something with the channel data, such as updating state
     } catch (error) {
@@ -224,9 +213,6 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
     );
   }
 
-  const picture =
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar;
-
   return (
     <div className="relative h-full w-full overflow-hidden">
       <div className="absolute h-full w-full">
@@ -237,15 +223,15 @@ function Conversation({ player, jwt_token, id, setNew }: any) {
           setNew={setNew}
         />
       </div>
-      <div
-        className="absolute h-14 w-full rounded-tl-2xl rounded-tr-2xl border-b
-          bg-[#283775] bg-opacity-20 backdrop-blur-[9px] tx:rounded-tl-none"
-        onClick={(e) => {
-          setShowSettings(!showSettings);
-          setMemberSettings('');
-        }}
-      >
-        <ChannelHeader id={id} />
+      <div className="absolute h-14 w-full rounded-tl-2xl rounded-tr-2xl border-b bg-[#283775] bg-opacity-20 backdrop-blur-[9px] tx:rounded-tl-none">
+        <ChannelHeader
+          channel={channel}
+          ws={ws}
+          onClick={() => {
+            setShowSettings(!showSettings);
+            setMemberSettings('');
+          }}
+        />
       </div>
       <ChannelOptions
         nickname={player.nickname}

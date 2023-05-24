@@ -113,6 +113,7 @@ function Chat({
                 player={data}
                 jwt_token={jwt_token}
                 id={id}
+                ws={ws}
                 setNew={changeToNewmessages}
               />
             }

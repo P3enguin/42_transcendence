@@ -37,7 +37,7 @@ export class ChatController {
   ) {
     try {
       // console.log("Get All Chat");
-      const allChat = await this.chatService.getAllChat(player, 0);     
+      const allChat = await this.chatService.getAllChat(player, 0);
       res.status(allChat.status).json(allChat);
     } catch (error) {
       console.log(error);
@@ -85,21 +85,6 @@ export class ChatController {
   ) {
     try {
       const result = await this.chatService.getChannel(player, channelId);
-      res.status(result.status).json(result.data);
-    } catch (error) {
-      console.log(error);
-      return res.status(400).json({ error: 'Unexpected error occurred' });
-    }
-  }
-
-  @Post('create/dm')
-  async createDM(
-    @GetPlayer() player: Player,
-    @Query('nickname') nickname: string,
-    @Res() res: Response,
-  ) {
-    try {
-      const result = await this.chatService.createDM(player, nickname);
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);

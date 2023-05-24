@@ -183,7 +183,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('denyInvitation')
-  habdleDenyInvitation(
+  handleDenyInvitation(
     @GetPlayer() user: Player,
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
@@ -203,6 +203,19 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       gameType: data.gameType,
       gameId: data.gameId,
     });
+  }
+
+  @SubscribeMessage('getUserStatus')
+  handleGetUserStatus(
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    return this.userStatus(data.name);
   }
 
   userStatus(nickname: string) {

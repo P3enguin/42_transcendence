@@ -6,6 +6,7 @@ export interface StatusBubbleProps {
   status?: string;
   className?: string;
   imageClassName?: string;
+  isChannel?: boolean;
   onClick?: (e: any) => Promise<void> | void;
 }
 
@@ -14,8 +15,13 @@ const StatusBubble = ({
   status,
   className,
   imageClassName,
+  isChannel,
   onClick,
 }: StatusBubbleProps) => {
+  const avatarLink =
+    process.env.NEXT_PUBLIC_BACKEND_HOST +
+    (isChannel ? '/channels/' : '/avatars/') +
+    avatar;
   return (
     <div
       className={
@@ -25,7 +31,7 @@ const StatusBubble = ({
       }
     >
       <Image
-        src={`${process.env.NEXT_PUBLIC_BACKEND_HOST}/avatars/${avatar}`}
+        src={avatarLink}
         alt="Avatar"
         width={200}
         height={200}
