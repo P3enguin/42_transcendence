@@ -122,7 +122,7 @@ export class PlayerService {
       if (blockedPlayers.includes(player.nickname)) {
         throw new Error('Cannot Send request');
       }
-      
+
       const receivedRequests = await this.prisma.request.findMany({
         where: {
           toPlayerId: player.id,
@@ -346,6 +346,10 @@ export class PlayerService {
 
   async BlockFriend(player: Player, friend: string, res: Response) {
     try {
+      if (player.nickname == friend) {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+
       const friendId = await this.prisma.player.findUnique({
         where: {
           nickname: friend,
@@ -412,7 +416,7 @@ export class PlayerService {
       res.status(200).json({ message: 'Friend blocked successfully' });
     } catch (error) {
       console.error('Error blocking friend:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(400).json({ error: 'Internal server error' });
     }
   }
 
@@ -435,7 +439,7 @@ export class PlayerService {
       res.status(200).json(BlockedList.block);
     } catch (error) {
       console.error('Error getting blocked :', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(400).json({ error: 'Internal server error' });
     }
   }
 
@@ -469,7 +473,7 @@ export class PlayerService {
       res.status(200).json({ message: 'unblocked successfully' });
     } catch (error) {
       console.error('Error unblocking friend:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(400).json({ error: 'Internal server error' });
     }
   }
   //-----------------------{ Fetching and changing Data }----------------------
@@ -937,7 +941,7 @@ export class PlayerService {
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(400).json({ message: 'Internal server error' });
     }
   }
 
@@ -1019,7 +1023,7 @@ export class PlayerService {
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(400).json({ message: 'Internal server error' });
     }
   }
 
@@ -1046,7 +1050,7 @@ export class PlayerService {
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(400).json({ message: 'Internal server error' });
     }
   }
 }
