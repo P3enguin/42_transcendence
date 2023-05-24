@@ -36,12 +36,12 @@ export class ChatGateway
 {
   constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
 
-  @WebSocketServer()   server: Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
->;
+  @WebSocketServer() server: Server<
+    ClientToServerEvents,
+    ServerToClientEvents,
+    InterServerEvents,
+    SocketData
+  >;
 
   afterInit(server: Server) {
     // console.log(server);
@@ -55,17 +55,28 @@ export class ChatGateway
     const player = (await this.jwt.verifyToken(
       client.handshake.auth.token,
     )) as LogPlayer;
-    if (client)
-      player.socketId = client.id;
+    if (!player) {
+      client.disconnect(true);
+      return;
+    }
+    player.socketId = client.id;
     client.handshake.query.user = JSON.stringify(player);
     console.log('player connected:', player.nickname, player.socketId);
     this.server.to(client.id).emit('connected', 'Hello world!');
   }
 
   @SubscribeMessage('joinChat')
-  handleJoinChat(client: Socket, payload: any) {
+  handleJoinChat(
+    @GetPlayer() player: LogPlayer,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
+    if (!player) {
+      client.disconnect(true);
+      return;
+    }
     // console.log(payload);
-    client.join(payload.id);
+    client.join(data.id);
   }
 
   @SubscribeMessage('sendMessage')
@@ -74,20 +85,23 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
   ) {
+    if (!player) {
+      client.disconnect(true);
+      return;
+    }
     var time = new Date();
-    const receivedTime = time.getHours() + ":" + time.getMinutes();
+    const receivedTime = time.getHours() + ':' + time.getMinutes();
     // console.log(data.id);
     // console.log(player);
 
-    const messageInfo= {
+    const messageInfo = {
       sender: player.nickname,
       senderAvatar: player.avatar,
       time: receivedTime,
       message: data.message,
     };
-  
-    this.server.to(data.id).emit('message', messageInfo);
-    this.chatservice.saveMessage(messageInfo, data.id)
-  }
 
+    this.server.to(data.id).emit('message', messageInfo);
+    this.chatservice.saveMessage(messageInfo, data.id);
+  }
 }
