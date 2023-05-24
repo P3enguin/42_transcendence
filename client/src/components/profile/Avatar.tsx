@@ -25,9 +25,11 @@ function AvatarProfileComp({
   return (
     <div className="-mt-[120px] flex xl:-mt-[150px]">
       {/*  */}
-      <img
+      <Image
         src={pfp}
         alt="pfp"
+        width={200}
+        height={200}
         id="pfp-holder"
         className="pfp absolute z-0 h-[130px] w-[120px] translate-x-[20px] 
           translate-y-[28px] object-cover xl:h-[150px] xl:w-[130px]

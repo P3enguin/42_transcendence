@@ -1,35 +1,30 @@
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { CancelIcon } from '../icons/Icons';
+import Image from 'next/image';
 interface PLayerProps {
   nickname: string;
   avatar: string;
-  userProfile: boolean;
+  userProfile?: boolean;
+  blockFriend?(e: React.MouseEvent, nickname: string): Promise<void>;
+  unblockPlayer?(e: React.MouseEvent, nickname: string): Promise<void>;
+  openDMs?(event: React.FormEvent, nickname2: string): Promise<void>;
 }
 
-function Player({ nickname, avatar, userProfile }: PLayerProps) {
-  async function blockFriend(e: React.MouseEvent) {
-    e.preventDefault();
-    const resp = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/block',
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname }),
-        credentials: 'include',
-      },
-    );
-    if (resp.ok) {
-      console.log('blocked');
-    } else {
-      console.log('not blocked');
-    }
-  }
-
+function Player({
+  nickname,
+  avatar,
+  userProfile,
+  blockFriend,
+  openDMs,
+}: PLayerProps) {
   return (
     <div className="flex  items-center justify-between rounded-xl border p-1">
       <div className="flex w-3/4 flex-row items-center gap-1">
         <Link href={'/users/' + nickname}>
-          <img
+          <Image
+            width={45}
+            height={45}
             className="h-[45px] w-[45px] rounded-full border sm:h-[48px] sm:w-[48px]"
             src={
               //   process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + elem.avatar
@@ -42,18 +37,52 @@ function Player({ nickname, avatar, userProfile }: PLayerProps) {
       </div>
       {userProfile && (
         <div className="flex flex-col gap-1 sm:gap-2 ">
-          <button>
-            <img
+          <button onClick={(e) => openDMs!(e, nickname)}>
+            <Image
+              width={17}
+              height={17}
               src="/msgProfile.svg"
               alt="msg"
               className="h-[17px] w-[17px] "
             />
           </button>
-          <button onClick={blockFriend}>
-            <img src="/blockFriend.svg" alt="msg" className="h-[17px] w-[17]" />
+          <button onClick={(event) => blockFriend!(event, nickname)}>
+            <Image
+              width={17}
+              height={17}
+              src="/blockFriend.svg"
+              alt="msg"
+              className="h-[17px] w-[17]"
+            />
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+export function Blocked({ nickname, avatar, unblockPlayer }: PLayerProps) {
+  return (
+    <div className="flex  items-center justify-between rounded-xl border p-1">
+      <div className="flex w-3/4 flex-row items-center gap-1">
+        <Link href={'/users/' + nickname}>
+          <Image
+            width={45}
+            height={45}
+            className="h-[45px] w-[45px] rounded-full border sm:h-[48px] sm:w-[48px]"
+            src={avatar}
+            alt="pfp"
+          />
+        </Link>
+        <strong className="text-sm">{'@' + nickname}</strong>
+      </div>
+
+      <button
+        className="mr-1 flex flex-row "
+        onClick={(event) => unblockPlayer!(event, nickname)}
+      >
+        <CancelIcon />
+      </button>
     </div>
   );
 }

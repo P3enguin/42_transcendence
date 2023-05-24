@@ -104,13 +104,17 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const res = await verifyToken(req.headers.cookie);
-    if (res.ok) {
-      return {
-        props: {
-          authenticated: true,
-        },
-      };
+    try {
+      const res = await verifyToken(req.headers.cookie);
+      if (res.ok) {
+        return {
+          props: {
+            authenticated: true,
+          },
+        };
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
   return {

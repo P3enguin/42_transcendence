@@ -109,7 +109,7 @@ export default function NavBar({
           </div>
 
           <Disclosure.Panel className="absolute z-20 w-full  flex-grow sm:hidden">
-            <div className="space-y-1 bg-[#001033] px-2 pt-2 pb-3">
+            <div className="space-y-1 bg-[#001033] px-2 pb-3 pt-2">
               {state.map((item, index) => (
                 <button
                   key={item.name}

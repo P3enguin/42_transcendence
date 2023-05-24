@@ -2,7 +2,7 @@ import { MatchData, Rank } from './StateComps';
 import { RankingIconFix } from '@/components/icons/Icons';
 import { useState, useEffect } from 'react';
 import { calculateTimeElapsed } from '@/components/tools/functions';
-
+import Image from 'next/image';
 function RankingStat({ nickname }: { nickname: string }) {
   const [games, setGames] = useState([]);
   const [rankStat, setRankStat] = useState<any>();
@@ -10,34 +10,38 @@ function RankingStat({ nickname }: { nickname: string }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resp = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST +
-          '/players/ranked?' +
-          new URLSearchParams({ search: nickname }),
-        {
-          credentials: 'include',
-        },
-      );
-
-      if (resp.ok) {
-        const games = await resp.json();
-        setGames(games);
-        const resp2 = await fetch(
+      try {
+        const resp = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_HOST +
-            '/players/rankStat?' +
+            '/players/ranked?' +
             new URLSearchParams({ search: nickname }),
           {
             credentials: 'include',
           },
         );
-        if (resp2.ok) {
-          const stats = await resp2.json();
-          setRankStat(stats);
-          setIsLoading(false);
+
+        if (resp.ok) {
+          const games = await resp.json();
+          setGames(games);
+          const resp2 = await fetch(
+            process.env.NEXT_PUBLIC_BACKEND_HOST +
+              '/players/rankStat?' +
+              new URLSearchParams({ search: nickname }),
+            {
+              credentials: 'include',
+            },
+          );
+          if (resp2.ok) {
+            const stats = await resp2.json();
+            setRankStat(stats);
+            setIsLoading(false);
+          }
+        } else {
+          // make div to return an error or something
+          return;
         }
-      } else {
-        // make div to return an error or something
-        return;
+      } catch (error) {
+        console.log('An error has occurred');
       }
     };
     fetchData();
@@ -131,11 +135,13 @@ function RankingStat({ nickname }: { nickname: string }) {
           >
             <h1>STATS:</h1>
             <div className="flex w-1/2 flex-row items-center  justify-evenly gap-3 lg:w-2/3">
-              <img
+              <Image
+                width={20}
+                height={20}
                 src="/star.svg"
                 alt="startIcon"
-                className="ml-2 w-[20px] "
-              ></img>
+                className="ml-2 h-full w-[20px]"
+              ></Image>
               <p className="w-[150px] ">
                 Rank Point : {rankStat.current_points + ' RP'}{' '}
               </p>

@@ -82,7 +82,7 @@ function SideNavBar({ children }: LayoutProps) {
   // to fix later
   useEffect(() => {
     const hanldeResize = () => {
-      if (window.innerWidth <= 640 && !isMobile) {
+      if (window.innerWidth <= 640) {
         setIsMobile(true);
       } else {
         setIsMobile(false);
@@ -97,10 +97,23 @@ function SideNavBar({ children }: LayoutProps) {
 
   // Handle the color of the icon based on the page we are in
   useEffect(() => {
+    const pages = [
+      { path: '/home', index: 0 },
+      { path: '/chat', index: 1 },
+      { path: '/chat/[id]', index: 1 },
+      { path: '/game', index: 2 },
+      { path: '/game/[id]', index: 2 },
+      { path: '/game/ai', index: 2 },
+      { path: '/profile', index: 3 },
+      { path: '/users/[id]', index: 3 },
+      { path: '/shop', index: 4 },
+      { path: '/settings', index: 5 },
+    ];
+
     pages.forEach((page) => {
       if (page.path == router.pathname) setSvgIndex(page.index);
     });
-  }, [router.pathname, pages]);
+  }, [router.pathname]);
 
   async function handleLogOut(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -108,12 +121,16 @@ function SideNavBar({ children }: LayoutProps) {
     e.preventDefault();
 
     const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/logout';
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-    });
-    if (resp.status === 201) Router.push('/');
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (resp.status === 201) Router.push('/');
+    } catch (error) {
+      console.log('An error has occurred');
+    }
   }
 
   return (

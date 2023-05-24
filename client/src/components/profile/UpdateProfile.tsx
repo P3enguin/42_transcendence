@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
+
 import {
   EditIconProfile,
   EditIconWallpaper,
@@ -36,6 +37,8 @@ function UpdateProfile({
   image: string;
   coins: number;
 }) {
+  const [wallpaper, setWallpaper] = useState('/wallpaper.png');
+  const [avatar, setAvatar] = useState('/pfp1.png');
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -58,64 +61,73 @@ function UpdateProfile({
       };
       const singupURL: string =
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/signup';
+      try {
+        const response = await fetch(singupURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include',
+        });
+        if (response.status == 201) {
+          if (uploads.pfp) {
+            const avatar = (document.getElementById('pfp') as HTMLInputElement)
+              .files?.[0];
+            if (avatar) {
+              let formData = new FormData();
+              formData.append('file', avatar);
 
-      const response = await fetch(singupURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
-      if (response.status == 201) {
-        if (uploads.pfp) {
-          const avatar = (document.getElementById('pfp') as HTMLInputElement)
-            .files?.[0];
-          if (avatar) {
-            let formData = new FormData();
-            formData.append('file', avatar);
-
-            const url =
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
-
-            const resp = await fetch(url, {
-              method: 'POST',
-              body: formData,
-              credentials: 'include',
-            });
+              try {
+                const url =
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/avatar';
+                const resp = await fetch(url, {
+                  method: 'POST',
+                  body: formData,
+                  credentials: 'include',
+                });
+              } catch (error) {
+                console.log('An error has occurred');
+              }
+            }
+          }
+          if (uploads.wp) {
+            const wallpaper = (
+              document.getElementById('wallpaper') as HTMLInputElement
+            ).files?.[0];
+            if (wallpaper) {
+              let formData = new FormData();
+              formData.append('file', wallpaper);
+              const url =
+                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/wallpaper';
+              try {
+                const resp = await fetch(url, {
+                  method: 'POST',
+                  body: formData,
+                  credentials: 'include',
+                });
+              } catch (error) {
+                console.log('An error has occurred');
+              }
+            }
+          }
+          Router.push('/profile');
+        } else if (response.status == 401) {
+          const err = await response.json();
+          if (err.error === 'Nickname already exist') {
+            const span = document.getElementById('nickspan');
+            updateField(
+              2,
+              { valid: false, touched: state[2].touched },
+              span,
+              err.error,
+            );
+          } else {
+            const span = document.getElementById('wp-span');
+            // to check later ,
+            if (span) span.innerHTML = err;
           }
         }
-        if (uploads.wp) {
-          const wallpaper = (
-            document.getElementById('wallpaper') as HTMLInputElement
-          ).files?.[0];
-          if (wallpaper) {
-            let formData = new FormData();
-            formData.append('file', wallpaper);
-            const url =
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
-
-            const resp = await fetch(url, {
-              method: 'POST',
-              body: formData,
-              credentials: 'include',
-            });
-          }
-        }
-        Router.push('/profile');
-      } else if (response.status == 401) {
-        const err = await response.json();
-        if (err.error === 'Nickname already exist') {
-          const span = document.getElementById('nickspan');
-          updateField(
-            2,
-            { valid: false, touched: state[2].touched },
-            span,
-            err.error,
-          );
-        } else {
-          const span = document.getElementById('wp-span');
-          // to check later ,
-          if (span) span.innerHTML = err;
-        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
@@ -228,12 +240,12 @@ function UpdateProfile({
         span,
         'Nickname cannot be empty!',
       );
-    } else if (!isBetween(nick_name, 3, 15)) {
+    } else if (!isBetween(nick_name, 3, 16)) {
       updateField(
         2,
         { valid: false, touched: touched },
         span,
-        'Nickname should be (3-20) character long!',
+        'Nickname should be (3-16) character long!',
       );
     } else if (!isClear(nick_name)) {
       updateField(
@@ -288,7 +300,7 @@ function UpdateProfile({
       }
       const pfp = document.getElementById('pfp-holder') as HTMLImageElement;
       if (uploads.pfp) window.URL.revokeObjectURL(pfp.src);
-      pfp.src = window.URL.createObjectURL(avatar);
+      setAvatar(window.URL.createObjectURL(avatar));
       handleImage((item) => ({
         ...item,
         ...{ pfp: true, wp: uploads.wp },
@@ -314,7 +326,7 @@ function UpdateProfile({
         'wallpaper-holder',
       ) as HTMLImageElement;
       if (uploads.wp) window.URL.revokeObjectURL(pfp.src);
-      pfp.src = window.URL.createObjectURL(wallpaper);
+      setWallpaper(window.URL.createObjectURL(wallpaper));
       handleImage((item) => ({
         ...item,
         ...{ pfp: uploads.pfp, wp: true },
@@ -342,8 +354,10 @@ function UpdateProfile({
             className="justify-even text-lg ml-4 mt-2 flex text-red-700"
           ></span>
           <div className="pfp-container">
-            <img
-              src="/wallpaper.png"
+            <Image
+              width={700}
+              height={80}
+              src={wallpaper}
               alt="wallpaper"
               id="wallpaper-holder"
               className="h-[140px] min-h-[80px] w-[700px] min-w-[200px] flex-shrink-0 rounded-3xl object-cover object-center lg:h-[200px]"
@@ -364,8 +378,10 @@ function UpdateProfile({
             onChange={handleWpChange}
           />
           <div className="pfp-container">
-            <img
-              src="/pfp1.png"
+            <Image
+              width={100}
+              height={100}
+              src={avatar}
               alt="pfp"
               id="pfp-holder"
               className="pfp -mt-10  h-[100px] w-[100px] object-cover object-center"

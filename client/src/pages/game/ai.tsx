@@ -66,14 +66,16 @@ const Ai = ({ player }: any) => {
           gameOn={gameOn}
           spectators={0}
         />
-        {gameOn && (<PongAi
-          gameRef={gameRef}
-          newScore={newScore}
-          isSimulation={false}
-          isContact={false}
-          isRotated={false}
-          gamePaused={gamePaused}
-        />)}
+        {gameOn && (
+          <PongAi
+            gameRef={gameRef}
+            newScore={newScore}
+            isSimulation={false}
+            isContact={false}
+            isRotated={false}
+            gamePaused={gamePaused}
+          />
+        )}
       </div>
     </>
   );
