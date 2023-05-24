@@ -1,5 +1,5 @@
 import { statObj, handleKeyUp, validFunc } from '../tools/Interface';
-import { Dispatch, FormEvent, SetStateAction, useEffect } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 
 export function FirstNameInput({
   state,
@@ -463,5 +463,43 @@ export function InputBtn({
         {description}
       </label>
     </div>
+  );
+}
+
+export function TransparentInput({
+  id,
+  value,
+  className,
+  required,
+  setValue,
+}: {
+  id: string;
+  value?: string;
+  className?: string;
+  required?: boolean;
+  setValue: (value: string) => void;
+}) {
+  const [size, setSize] = useState(
+    value ? (value.length > 0 ? value.length : 1) : 1,
+  );
+
+  return (
+    <input
+      size={size}
+      className={
+        'm-0 rounded-md border-none bg-transparent p-0 px-0.5 hover:ring focus:ring-2 focus:ring-[#0097E2E6] ' +
+        className
+      }
+      type="text"
+      id={id}
+      name={id}
+      defaultValue={value}
+      onChange={(e: React.FormEvent<HTMLInputElement>) => {
+        const newValue = e.currentTarget.value;
+        setValue(newValue);
+        setSize(newValue.length > 0 ? newValue.length : 1);
+      }}
+      required={required}
+    />
   );
 }

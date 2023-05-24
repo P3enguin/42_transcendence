@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
-import { SendIcon, OptionIcon } from '../icons/Icons';
 import axios from 'axios';
 import Message from './Message';
-import { verifyToken } from '../VerifyToken';
 import Image from 'next/image';
-import MessageLabel from './MessageLabel';
 import MessageWrapper from './MessageWrapper';
 import ChannelHeader from './ChannelHeader';
-import ChannelOptions from './ChannelOptions';
-import { Channel, DirectMessage, Member } from '@/interfaces/Channel';
-import Router from 'next/router';
+import ChannelDetails from './ChannelDetails';
+import { Channel, Member } from '@/interfaces/Channel';
 import { InputDefault } from '../Input/Inputs';
+import DMDetails from './DMDetails';
+import ChannelSettings from './ChannelSettings';
 
 let socket: Socket;
 
@@ -24,21 +22,20 @@ interface Message {
 
 function Conversation({ player, jwt_token, id, setNew, ws }: any) {
   const [showTopic, setShowTopic] = useState(true);
+  const [showDetails, setShowDetails] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [memberSettings, setMemberSettings] = useState('');
 
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [channel, setChannel] = useState<Channel | null | undefined>(null);
-  const [isChannel, setIsChannel] = useState(false);
+  const [channel, setChannel] = useState<Channel | null | undefined>(undefined);
 
   const [message, setMessage] = useState('');
 
   const clientsMap = new Map();
 
-  async function getChannel(id: any) {
+  async function getChannel(id: string) {
     try {
-      // Find Channel
       const response = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/channels/${id}`,
         {
@@ -49,18 +46,20 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
       const channelData = await response.json();
       const channelStatus = response.status;
 
-      if (channelStatus !== 200) {
-        setChannel(undefined);
+      if (channelStatus === 404) {
+        setChannel(null);
+        return;
       }
 
-      setIsChannel(channelData.isChannel);
-      if (!channelData.isChannel) {
+      if (channelStatus === 200 && !channelData.isChannel) {
         const user = channelData.members.filter(
           (member: Member) => member.nickname != player.nickname,
         )[0];
         channelData.name = user.nickname;
+        channelData.topic = user.firstname + ' ' + user.lastname;
         channelData.avatar = user.avatar;
       }
+
       setChannel(channelData);
 
       // Do something with the channel data, such as updating state
@@ -108,7 +107,7 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
 
   useEffect(() => {
     // setChannel(NULL);
-    setShowSettings(false);
+    setShowDetails(false);
     setMemberSettings('');
 
     getChannel(id);
@@ -183,7 +182,9 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
     };
   }, [id]);
 
-  if (channel === null) {
+  // console.log('channel', channel);
+
+  if (channel === undefined) {
     return (
       <div className="flex h-full w-full items-center justify-center text-center">
         Loading ...
@@ -191,7 +192,7 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
     );
   }
 
-  if (channel === undefined) {
+  if (channel === null) {
     return (
       <div className="flex h-full w-full items-center justify-center text-center">
         404 Channel Not Found
@@ -199,7 +200,7 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
     );
   }
 
-  if (isChannel && channel && !channel.members) {
+  if (channel.isChannel && !channel.members) {
     return (
       <form
         onSubmit={(e) => joinChannel(e)}
@@ -261,19 +262,41 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
           channel={channel}
           ws={ws}
           onClick={() => {
-            setShowSettings(!showSettings);
+            setShowDetails(!showDetails);
             setMemberSettings('');
           }}
         />
       </div>
-      <ChannelOptions
-        nickname={player.nickname}
-        channel={channel}
-        isVisible={showSettings}
-        toggleVisible={setShowSettings}
-        memberSettings={memberSettings}
-        toggleMemberSettings={setMemberSettings}
-      />
+      {channel.isChannel &&
+        (showSettings ? (
+          <ChannelSettings
+            channel={channel}
+            setChannel={setChannel}
+            isVisible={showDetails}
+            showDetails={setShowDetails}
+            showSettings={setShowSettings}
+            toggleMemberSettings={setMemberSettings}
+          />
+        ) : (
+          <ChannelDetails
+            nickname={player.nickname}
+            channel={channel}
+            isVisible={showDetails}
+            showDetails={setShowDetails}
+            showSettings={setShowSettings}
+            memberSettings={memberSettings}
+            toggleMemberSettings={setMemberSettings}
+          />
+        ))}
+      {!channel.isChannel && (
+        <DMDetails
+          nickname={player.nickname}
+          channel={channel}
+          isVisible={showDetails}
+          toggleVisible={setShowDetails}
+          ws={ws}
+        />
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Res,
@@ -259,11 +260,29 @@ export class ChatController {
       const result = await this.chatService.cancelInvites(player, invited);
       res.status(result.status).json(result.data);
     } catch (error) {
-      return res
-        .status(400)
-        .json({
-          error: 'Unexpected error occurred while canceling the invitation',
-        });
+      return res.status(400).json({
+        error: 'Unexpected error occurred while canceling the invitation',
+      });
+    }
+  }
+
+  @Patch('update/:id')
+  async updateChannel(
+    @GetPlayer() player: Player,
+    @Body() createChannelDto: CreateChannelDto,
+    @Param('id') channelId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.updateChannel(
+        player,
+        channelId,
+        createChannelDto,
+      );
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 

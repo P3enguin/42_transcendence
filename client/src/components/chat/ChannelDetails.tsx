@@ -1,20 +1,22 @@
-import Image from 'next/image';
 import { Channel } from '@/interfaces/Channel';
 import ChannelCategory from './ChannelCategory';
 import Router from 'next/router';
+import StatusBubble from '../game/StatusBubble';
 
-export default function ChannelOptions({
+export default function ChannelDetails({
   nickname,
   channel,
   isVisible,
-  toggleVisible,
+  showDetails,
+  showSettings,
   memberSettings,
   toggleMemberSettings,
 }: {
   nickname: string;
   channel: Channel;
   isVisible: boolean;
-  toggleVisible: (isVisible: boolean) => void;
+  showDetails: (isVisible: boolean) => void;
+  showSettings: (toggle: boolean) => void;
   memberSettings: string;
   toggleMemberSettings: (memberSettings: string) => void;
 }) {
@@ -55,7 +57,7 @@ export default function ChannelOptions({
       <button
         className="absolute left-6 top-6 flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#8BD9FF4D] hover:bg-[#8BD9FF66]"
         onClick={() => {
-          toggleVisible(false);
+          showDetails(false);
           toggleMemberSettings('');
         }}
       >
@@ -63,38 +65,36 @@ export default function ChannelOptions({
         <div className="absolute h-[0.1rem] w-[45%] -rotate-45 transform rounded-sm bg-[#8BD9FF]"></div>
       </button>
       <div className="absolute right-5 top-5 flex flex-col gap-2">
-        <button className="flex h-[24px] w-[115px] items-center justify-center rounded-md bg-[#0097E2E6] hover:bg-[#0097E2] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]">
+        <button
+          className="flex h-6 w-28 items-center justify-center rounded-md bg-[#0097E2E6] hover:bg-[#0097E2] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
+          onClick={() => {
+            showSettings(true);
+          }}
+        >
           <p className="fond-bold text-[10px] uppercase">Channel Settings</p>
         </button>
         <button
-          className="flex h-[24px] w-[115px] items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
+          className="flex h-6 w-28 items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
           onClick={leaveChannel}
         >
           <p className="fond-bold text-[10px] uppercase">Leave Channel</p>
         </button>
       </div>
-      <div className="mt-10 flex w-full flex-col items-center justify-center gap-4">
-        <Image
-          className="h-[60px] w-[60px] rounded-full"
-          src={
-            process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
-            '/channels/' +
-            channel.avatar
-          }
-          alt="channelAvatar"
-          width={60}
-          height={60}
+      <div className="mt-10 flex w-full flex-col items-center justify-center gap-1">
+        <StatusBubble
+          avatar={channel.avatar}
+          className="mb-2"
+          imageClassName="h-20 w-20"
+          isChannel={channel.isChannel}
         />
-        <p className="text-[15px] font-semibold">{channel.name}</p>
-        <div className="flex flex-col items-center gap-1">
-          <p className="text-[12px] font-semibold text-[#B4B4B4]">
-            {channel.topic}
-          </p>
-          <p className="text-[12px] font-semibold text-[#B4B4B4]">
-            {channel.members?.length} member
-            {channel.members && channel.members.length > 1 ? 's' : ''}
-          </p>
-        </div>
+        <p className="text-base font-semibold">#{channel.name}</p>
+        <p className="text-[12px] font-semibold text-[#B4B4B4]">
+          {channel.topic}
+        </p>
+        <p className="text-[12px] font-semibold text-[#B4B4B4]">
+          {channel.members?.length} member
+          {channel.members && channel.members.length > 1 ? 's' : ''}
+        </p>
       </div>
       <ul className="scrollbar absolute bottom-0 right-[50%] mb-2 flex h-[calc(100%-230px)] w-[90%] translate-x-[50%] flex-col gap-2 overflow-y-auto px-6">
         <li>
