@@ -89,7 +89,7 @@ function BlockedPage({ nickname }: { nickname: string }) {
               <Blocked
                 nickname={player.nickname}
                 avatar={
-                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
                   player.avatar
                 }

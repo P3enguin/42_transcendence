@@ -48,9 +48,9 @@ function PlayerProfile({
         <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
           <ProfileDisplay
             wp={
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/wallpapers/' + wallpaper
+              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/wallpapers/' + wallpaper
             }
-            pfp={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + avatar}
+            pfp={process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + avatar}
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}

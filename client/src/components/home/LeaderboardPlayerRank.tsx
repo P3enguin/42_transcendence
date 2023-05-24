@@ -36,7 +36,10 @@ export default function LeaderboardPlayerRank({
         <Image
           className="h-[56px] w-[56px]"
           src={
-            process.env.NEXT_PUBLIC_BACKEND_HOST + '/ranks/' + rankName + '.png'
+            process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+            '/ranks/' +
+            rankName +
+            '.png'
           }
           alt="rankName"
           width={56}

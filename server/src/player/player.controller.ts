@@ -159,7 +159,6 @@ export class PlayerController {
   }
   @Get('blocked')
   GetBlockedFriends(@Res() res: Response, @Query() query: queryParam) {
-    console.log("wow");
     return this.playerService.GetBlockedFriends(query.nickname, res);
   }
 

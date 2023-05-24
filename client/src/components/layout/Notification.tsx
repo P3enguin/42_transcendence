@@ -244,7 +244,7 @@ function NotiDrop() {
                 handleUpdateRequestStatus={handleUpdateRequestsTo}
                 nickname={request.fromPlayer.nickname}
                 image={
-                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
                   request.fromPlayer.avatar
                 }
@@ -258,7 +258,7 @@ function NotiDrop() {
                 senderId={request.toPlayer.id}
                 nickname={request.toPlayer.nickname}
                 image={
-                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
                   request.toPlayer.avatar
                 }
@@ -271,7 +271,7 @@ function NotiDrop() {
                 senderId={request.toPlayer.id}
                 nickname={request.toPlayer.nickname}
                 image={
-                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
                   request.toPlayer.avatar
                 }

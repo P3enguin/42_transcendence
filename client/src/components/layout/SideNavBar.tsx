@@ -26,7 +26,8 @@ function SideNavBar({ children }: LayoutProps) {
     { path: '/game/[id]', index: 2 },
     { path: '/game/ai', index: 2 },
     { path: '/profile', index: 3 },
-    { path: '/users/[id]', index: 3 },
+    { path: '/users', index: 3 },
+    { path: '/users/[user]', index: 3 },
     { path: '/shop', index: 4 },
     { path: '/settings', index: 5 },
   ];

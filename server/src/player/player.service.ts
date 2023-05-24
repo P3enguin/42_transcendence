@@ -107,9 +107,22 @@ export class PlayerService {
         },
         select: {
           id: true,
+          block: {
+            select: {
+              nickname: true,
+            },
+          },
         },
       });
       if (!receiverId) throw new Error('Nickname Not Found');
+      const blockedPlayers = receiverId.block.map(
+        (blockedPlayer) => blockedPlayer.nickname,
+      );
+
+      if (blockedPlayers.includes(player.nickname)) {
+        throw new Error('Cannot Send request');
+      }
+      
       const receivedRequests = await this.prisma.request.findMany({
         where: {
           toPlayerId: player.id,
@@ -645,7 +658,6 @@ export class PlayerService {
   async changePassowrd(data: any, res: Response) {
     try {
       const hash = await argon2.hash(data.password);
-      console.log(hash);
       await this.prisma.player.update({
         where: {
           id: data.user.id,

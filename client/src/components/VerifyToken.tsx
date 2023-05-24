@@ -1,6 +1,6 @@
 export async function verifyToken(cookie: string): Promise<Response> {
   return await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/verifytoken',
+    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/auth/verifytoken',
     {
       method: 'GET',
       headers: {
@@ -12,7 +12,7 @@ export async function verifyToken(cookie: string): Promise<Response> {
 
 export async function verifySession(cookie: string): Promise<Response> {
   return await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/verifysession',
+    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/auth/verifysession',
     {
       method: 'GET',
       headers: {
@@ -24,7 +24,7 @@ export async function verifySession(cookie: string): Promise<Response> {
 
 export async function verify2FAToken(cookie: string): Promise<Response> {
   return await fetch(
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/token2FA',
+    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/auth/token2FA',
     {
       method: 'GET',
       headers: {

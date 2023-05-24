@@ -98,7 +98,7 @@ function FriendStats({
             <Player
               nickname={elem.nickname}
               avatar={
-                process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + elem.avatar
+                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + elem.avatar
               }
               openDMs={openDMs}
               userProfile={userProfile}

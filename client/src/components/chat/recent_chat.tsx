@@ -19,10 +19,16 @@ function RecentChat({ avatar, player, friendId, newmsgs }: any) {
       .then((response) => {
         let conversation = response.data.data.rooms;
         conversation = conversation.sort((convA: any, convB: any) => {
-          const sendAtA = new Date(convA.messages[0].sendAt).getTime();
-          const sendAtB = new Date(convB.messages[0].sendAt).getTime();
-
-          return sendAtB - sendAtA;
+          if (convA.messages[0] && convB.messages[0]) {
+            const sendAtA = new Date(convA.messages[0].sendAt).getTime();
+            const sendAtB = new Date(convB.messages[0].sendAt).getTime();
+            return sendAtB - sendAtA;
+          } else if (convA.messages[0] && !convB.messages[0])
+              return -1
+            else if (!convA.messages[0] && convB.messages[0])
+              return 1;
+            else
+              return 0;
         });
 
         setRecentChat(conversation);

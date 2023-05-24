@@ -78,7 +78,7 @@ function UpdateProfile({
 
               try {
                 const url =
-                  process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/avatar';
                 const resp = await fetch(url, {
                   method: 'POST',
                   body: formData,
@@ -97,7 +97,7 @@ function UpdateProfile({
               let formData = new FormData();
               formData.append('file', wallpaper);
               const url =
-                process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
+                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/wallpaper';
               try {
                 const resp = await fetch(url, {
                   method: 'POST',

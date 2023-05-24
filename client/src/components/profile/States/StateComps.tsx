@@ -40,7 +40,7 @@ function MatchData({
       <div className="flex w-[40%] items-center gap-[13px] lg:w-[45%]">
         <Image
           className="h-[56px] w-[56px] rounded-full bg-[#8bd9ffb3]"
-          src={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + P1Avatar}
+          src={process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + P1Avatar}
           alt="pfp"
           width={56}
           height={56}
@@ -58,7 +58,7 @@ function MatchData({
         <div className="truncate text-sm font-semibold">{player2}</div>
         <Image
           className="h-[56px] w-[56px] rounded-full bg-[#8bd9ffb3]"
-          src={process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + P2Avatar}
+          src={process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + P2Avatar}
           alt="pfp"
           width={56}
           height={56}
