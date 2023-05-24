@@ -19,7 +19,7 @@ const StatusBubble = ({
   onClick,
 }: StatusBubbleProps) => {
   const avatarLink =
-    process.env.NEXT_PUBLIC_BACKEND_HOST +
+    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
     (isChannel ? '/channels/' : '/avatars/') +
     avatar;
   return (

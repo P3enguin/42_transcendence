@@ -29,7 +29,7 @@ export default function DiscoverChannels({
           <li key={channel.channelId} className="p-2">
             <ChannelHome
               avatar={
-                process.env.NEXT_PUBLIC_BACKEND_HOST +
+                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                 '/channels/' +
                 channel.avatar
               }

@@ -77,7 +77,9 @@ export default function ChannelOptions({
         <Image
           className="h-[60px] w-[60px] rounded-full"
           src={
-            process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar
+            process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+            '/channels/' +
+            channel.avatar
           }
           alt="channelAvatar"
           width={60}

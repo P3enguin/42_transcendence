@@ -32,7 +32,7 @@ export default function Leaderboard({
               <LeaderboardPlayerRank
                 nickname={player.status.player.nickname}
                 avatar={
-                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
                   player.status.player.avatar
                 }
@@ -47,7 +47,7 @@ export default function Leaderboard({
               <LeaderboardPlayerLevel
                 nickname={player.player.nickname}
                 avatar={
-                  process.env.NEXT_PUBLIC_BACKEND_HOST +
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
                   player.player.avatar
                 }

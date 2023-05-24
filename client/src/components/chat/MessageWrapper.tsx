@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MessageLabel from './MessageLabel';
 import Message from './Message';
-
+import axios from 'axios';
 export interface Message {
   sender: string;
   senderAvatar: string;
@@ -11,6 +11,37 @@ export interface Message {
 
 const MessageWrapper = ({ player, socket, id, setNew }: any) => {
   const [messages, setMessages] = useState<Message[]>([]);
+
+  useEffect(() => {
+    const LoadOldMessages = async () => {
+      try {
+        const response = await axios.get(
+          process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/msg/${id}`,
+          {
+            withCredentials: true,
+          }
+          );
+          const messageData = response.data;
+
+        // Transform the response data into Message objects
+        const NewMessage = messageData.map((message: any) => ({
+          sender: message.sender,
+          senderAvatar: message.senderAvatar,
+          time: message.time,
+          message: message.message,
+        }));
+        console.log("messages : ",messages);
+        
+        // Append the new messages to the existing messages in state
+        setMessages(() => []);
+        setMessages((prevMessages) => [...prevMessages, ...NewMessage]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    LoadOldMessages();
+  },[id]);
 
   useEffect(() => {
     if (socket) {

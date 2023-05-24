@@ -39,6 +39,7 @@ model Player {
   rooms   Room[] @relation(name: "room_members")
   bans    Ban[]
   mutes   Mute[]
+  invited Invite[]
 
   equipedTitle Int       @default(0)
   requestsFrom Request[] @relation("requestFrom")
@@ -174,10 +175,21 @@ model Room {
   messages  Message[]
   bans      Ban[]
   mutes     Mute[]
+  invited   Invite[]
 
   avatar String @default("eg.jpeg")
 
   createdAt DateTime @default(now())
+}
+
+model Invite {
+  id        Int @id @default(autoincrement())
+
+  channelId Int
+  channel   Room @relation(fields: [channelId], references: [id])
+
+  playerId  Int
+  player    Player @relation(fields: [playerId], references: [id])
 }
 
 model Message {

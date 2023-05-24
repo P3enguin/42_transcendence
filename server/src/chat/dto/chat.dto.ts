@@ -94,3 +94,28 @@ export class UnmuteMemberDto {
   @IsNotEmpty()
   memberNickname: string;
 }
+
+export class invitedMember {
+  @IsString()
+  @IsNotEmpty()
+  channelId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  playerNickname;
+}
+
+export class MessageInfo {
+  
+  @IsString()
+  sender: string;
+
+  @IsString()
+  senderAvatar: string;
+
+  @IsString()
+  time: string;
+
+  @IsString()
+  message: string;
+}

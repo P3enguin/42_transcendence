@@ -22,6 +22,7 @@ import {
   UnbanMemberDto,
   MuteMemberDto,
   UnmuteMemberDto,
+  invitedMember,
 } from './dto';
 
 @UseGuards(JwtGuard)
@@ -42,6 +43,22 @@ export class ChatController {
     } catch (error) {
       console.log(error);
       return res.status(404).json({ error: 'An error has occurred' });
+    }
+  }
+
+  @Get('msg/:id')
+  async getMessages(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      console.log('channelId : ', channelId);
+      const result = await this.chatService.getMessages(channelId, player);
+      console.log('messages: ', result.data);
+      res.status(result.status).json(result.data);
+    } catch (err) {
+      return res.status(404).json({ error: 'can not get messages' });
     }
   }
 
@@ -84,6 +101,7 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
+      console.log('channel');
       const result = await this.chatService.getChannel(player, channelId);
       res.status(result.status).json(result.data);
     } catch (error) {
@@ -212,6 +230,40 @@ export class ChatController {
     } catch (error) {
       console.log(error);
       return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Post('invite')
+  async inviteMember(
+    @GetPlayer() player: Player,
+    @Body() invitedMember: invitedMember,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.inviteMember(player, invitedMember);
+      res.status(result.status).json(result.data);
+    } catch (err) {
+      return res
+        .status(400)
+        .json({ error: 'Unexpected error occurred while inviting player' });
+    }
+  }
+
+  @Post('cancelInvite')
+  async cancelInvite(
+    @GetPlayer() player: Player,
+    @Body() invited: invitedMember,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.cancelInvites(player, invited);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      return res
+        .status(400)
+        .json({
+          error: 'Unexpected error occurred while canceling the invitation',
+        });
     }
   }
 

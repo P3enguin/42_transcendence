@@ -24,8 +24,7 @@ function Chat({
   id: string;
   ws: Socket;
 }) {
-  console.log('room Id', data.nickname);
-
+  
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
   const [showConversation, setShowConversation] = useState(true);
@@ -66,7 +65,6 @@ function Chat({
     return () => {
       window.removeEventListener('resize', MobilView);
     };
-    // eslint-disable-next-line
   }, [showMobile]);
   return (
     <>

@@ -143,7 +143,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     if (!user) {
-      client.disconnect();
+      // client.disconnect();
       return;
     }
     // console.log('getOnlineFriends', player.nickname);

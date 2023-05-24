@@ -5,7 +5,7 @@ function RecentConversation(room: any) {
   let date;
   let msg;
   const picture =
-    process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + room.room.avatar;
+    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/channels/' + room.room.avatar;
   if (room.room.messages[0]) {
     msg = room.room.messages[0].message;
     date = new Date(room.room.messages[0].sendAt);

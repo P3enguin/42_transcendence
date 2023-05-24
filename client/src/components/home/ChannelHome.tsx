@@ -17,7 +17,7 @@ export default function ChannelHome({
   return (
     <Link
       href={channelLink}
-      className="inline flex h-[90px] w-[125px] flex-col items-center rounded-[20px] bg-[#88d9ff99] p-2"
+      className="flex h-[90px] w-[125px] flex-col items-center rounded-[20px] bg-[#88d9ff99] p-2"
     >
       <Image
         src={avatar}

@@ -107,11 +107,43 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
   };
 
   useEffect(() => {
+    // setChannel(NULL);
     setShowSettings(false);
     setMemberSettings('');
 
     getChannel(id);
 
+    const LoadOldMessages = async () => {
+      try {
+        const response = await axios.get(
+          process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/msg/${id}`,
+          {
+            withCredentials: true,
+            headers: { Authorization: `Bearer ${jwt_token}` },
+          },
+        );
+        const messageData = response.data;
+
+        // Transform the response data into Message objects
+        const NewMessage = messageData.map((message: any) => ({
+          sender: message.sender,
+          senderAvatar: message.senderAvatar,
+          time: message.time,
+          message: message.message,
+        }));
+        console.log('messages : ', messages);
+
+        // Append the new messages to the existing messages in state
+        setMessages(() => []);
+        setMessages((prevMessages) => [...prevMessages, ...NewMessage]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    LoadOldMessages();
+
+    //----------------------------------------------------------------
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/chat`, {
       auth: {
         token: jwt_token,
@@ -141,12 +173,11 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
         };
         console.log('sender :', message.sender, 'receiver :', player.nickname);
         setMessages((prevMessages) => [message, ...prevMessages]);
-        handelReceivedMessage(message);
+        // handelReceivedMessage(message);
       });
     });
 
-    const handelReceivedMessage = (message: any) => {};
-
+    // const handelReceivedMessage = (message: any) => {};
     return () => {
       socket.disconnect();
     };
@@ -176,7 +207,9 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
       >
         <Image
           src={
-            process.env.NEXT_PUBLIC_BACKEND_HOST + '/channels/' + channel.avatar
+            process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+            '/channels/' +
+            channel.avatar
           }
           alt={channel.name}
           width={124}
