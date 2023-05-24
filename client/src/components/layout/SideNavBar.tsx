@@ -81,7 +81,7 @@ function SideNavBar({ children }: LayoutProps) {
   // to fix later
   useEffect(() => {
     const hanldeResize = () => {
-      if (window.innerWidth <= 640 ) {
+      if (window.innerWidth <= 640) {
         setIsMobile(true);
       } else {
         setIsMobile(false);
@@ -120,12 +120,16 @@ function SideNavBar({ children }: LayoutProps) {
     e.preventDefault();
 
     const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/logout';
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-    });
-    if (resp.status === 201) Router.push('/');
+    try {
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      if (resp.status === 201) Router.push('/');
+    } catch (error) {
+      console.log('An error has occurred');
+    }
   }
 
   return (

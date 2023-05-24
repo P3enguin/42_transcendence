@@ -75,8 +75,12 @@ function UserProfile({
           blockedByFriend={blockedByFriend}
           blockedByPlayer={blockedByPlayer}
         />
-        <ProfileStats nickname={nickname} userProfile={false}blockedByFriend={blockedByFriend}
-          blockedByPlayer={blockedByPlayer}/>
+        <ProfileStats
+          nickname={nickname}
+          userProfile={false}
+          blockedByFriend={blockedByFriend}
+          blockedByPlayer={blockedByPlayer}
+        />
       </div>
     </>
   );
@@ -85,60 +89,63 @@ function UserProfile({
 export async function getServerSideProps({ params, req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST +
-        '/players/data?' +
-        new URLSearchParams({ nickname: params.user }),
-      {
-        headers: {
-          Cookie: req.headers.cookie,
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST +
+          '/players/data?' +
+          new URLSearchParams({ nickname: params.user }),
+        {
+          headers: {
+            Cookie: req.headers.cookie,
+          },
         },
-      },
-    );
-    const data = await res.json();
-    if (data.IsThePlayer) {
-      return {
-        redirect: {
-          destination: '/profile',
-          permanent: true,
-        },
+      );
+      const data = await res.json();
+      if (data.IsThePlayer) {
+        return {
+          redirect: {
+            destination: '/profile',
+            permanent: true,
+          },
+        };
+      } else if (!data.player)
+        return {
+          props: {
+            exist: false,
+          },
+        };
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       };
-    } else if (!data.player)
+      const date = new Intl.DateTimeFormat('en-US', options).format(
+        new Date(data.player.joinAt),
+      );
       return {
+        // modify this to return anything you want before your page load
         props: {
-          exist: false,
+          nickname: data.player.nickname,
+          firstname: data.player.firstname,
+          lastname: data.player.lastname,
+          coins: data.player.coins,
+          avatar: data.player.avatar,
+          wallpaper: data.player.wallpaper,
+          joinDate: date,
+          exist: true,
+          request: data.request,
+          isFriend: data.isFriend,
+          rankId: data.rankId,
+          winRatio: data.winRatio,
+          level: data.level,
+          xp: data.xp,
+          blockedByPlayer: data.blockedByPlayer,
+          blockedByFriend: data.blockedByFriend,
         },
       };
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-    const date = new Intl.DateTimeFormat('en-US', options).format(
-      new Date(data.player.joinAt),
-    );
-    console.log(data);
-    return {
-      // modify this to return anything you want before your page load
-      props: {
-        nickname: data.player.nickname,
-        firstname: data.player.firstname,
-        lastname: data.player.lastname,
-        coins: data.player.coins,
-        avatar: data.player.avatar,
-        wallpaper: data.player.wallpaper,
-        joinDate: date,
-        exist: true,
-        request: data.request,
-        isFriend: data.isFriend,
-        rankId: data.rankId,
-        winRatio: data.winRatio,
-        level: data.level,
-        xp: data.xp,
-        blockedByPlayer: data.blockedByPlayer,
-        blockedByFriend: data.blockedByFriend,
-      },
-    };
+    } catch (error) {
+      console.log('An error has occurred');
+    }
   }
   return {
     redirect: {

@@ -26,31 +26,34 @@ function NotiAddFriend({
     };
     const updateURL: string =
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/AcceptRequest';
-
-    const response = await fetch(updateURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.ok) {
-      handleUpdateRequestStatus?.(requestId);
-      console.log('accepted!');
-      // setreply('Password Changed !');
-      // setSuccess(true);
-      // setTimeout(() => {
-      //   setSuccess(false);
-      // }, 3000);
-    } else if (response.status == 400) {
-      const result = await response.json();
-      Router.reload();
-      console.log('didnt accept');
-      // const err = await response.json();
-      // setreply('An Error has Occurred!');
-      // setError(true);
-      // setTimeout(() => {
-      //   setError(false);
-      // }, 3000);
+    try {
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.ok) {
+        handleUpdateRequestStatus?.(requestId);
+        console.log('accepted!');
+        // setreply('Password Changed !');
+        // setSuccess(true);
+        // setTimeout(() => {
+        //   setSuccess(false);
+        // }, 3000);
+      } else if (response.status == 400) {
+        const result = await response.json();
+        Router.reload();
+        console.log('didnt accept');
+        // const err = await response.json();
+        // setreply('An Error has Occurred!');
+        // setError(true);
+        // setTimeout(() => {
+        //   setError(false);
+        // }, 3000);
+      }
+    } catch (error) {
+      console.log('An Error has occurred');
     }
   }
 
@@ -63,30 +66,34 @@ function NotiAddFriend({
     const updateURL: string =
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/RejectRequest';
 
-    const response = await fetch(updateURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      credentials: 'include',
-    });
-    if (response.ok) {
-      handleUpdateRequestStatus?.(requestId);
-      console.log('rejected!');
+    try {
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.ok) {
+        handleUpdateRequestStatus?.(requestId);
+        console.log('rejected!');
 
-      // setreply('Password Changed !');
-      // setSuccess(true);
-      // setTimeout(() => {
-      //   setSuccess(false);
-      // }, 3000);
-    } else if (response.status == 400) {
-      const result = await response.json();
-      console.log('didnt reject');
-      // const err = await response.json();
-      // setreply('An Error has Occurred!');
-      // setError(true);
-      // setTimeout(() => {
-      //   setError(false);
-      // }, 3000);
+        // setreply('Password Changed !');
+        // setSuccess(true);
+        // setTimeout(() => {
+        //   setSuccess(false);
+        // }, 3000);
+      } else if (response.status == 400) {
+        const result = await response.json();
+        console.log('didnt reject');
+        // const err = await response.json();
+        // setreply('An Error has Occurred!');
+        // setError(true);
+        // setTimeout(() => {
+        //   setError(false);
+        // }, 3000);
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
 
@@ -191,17 +198,21 @@ function NotiDrop() {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      const resp = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/requests',
-        {
-          credentials: 'include',
-        },
-      );
-      if (resp.ok) {
-        const result = await resp.json();
-        setRequests(result.requests);
-        // setRequestsTo(result.to);
-        setIsLoading(false);
+      try {
+        const resp = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/requests',
+          {
+            credentials: 'include',
+          },
+        );
+        if (resp.ok) {
+          const result = await resp.json();
+          setRequests(result.requests);
+          // setRequestsTo(result.to);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     };
     fetchRequests();

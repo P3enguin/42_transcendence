@@ -10,34 +10,38 @@ function RankingStat({ nickname }: { nickname: string }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resp = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST +
-          '/players/ranked?' +
-          new URLSearchParams({ search: nickname }),
-        {
-          credentials: 'include',
-        },
-      );
-
-      if (resp.ok) {
-        const games = await resp.json();
-        setGames(games);
-        const resp2 = await fetch(
+      try {
+        const resp = await fetch(
           process.env.NEXT_PUBLIC_BACKEND_HOST +
-            '/players/rankStat?' +
+            '/players/ranked?' +
             new URLSearchParams({ search: nickname }),
           {
             credentials: 'include',
           },
         );
-        if (resp2.ok) {
-          const stats = await resp2.json();
-          setRankStat(stats);
-          setIsLoading(false);
+
+        if (resp.ok) {
+          const games = await resp.json();
+          setGames(games);
+          const resp2 = await fetch(
+            process.env.NEXT_PUBLIC_BACKEND_HOST +
+              '/players/rankStat?' +
+              new URLSearchParams({ search: nickname }),
+            {
+              credentials: 'include',
+            },
+          );
+          if (resp2.ok) {
+            const stats = await resp2.json();
+            setRankStat(stats);
+            setIsLoading(false);
+          }
+        } else {
+          // make div to return an error or something
+          return;
         }
-      } else {
-        // make div to return an error or something
-        return;
+      } catch (error) {
+        console.log('An error has occurred');
       }
     };
     fetchData();
@@ -136,7 +140,7 @@ function RankingStat({ nickname }: { nickname: string }) {
                 height={20}
                 src="/star.svg"
                 alt="startIcon"
-                className="ml-2 w-[20px] h-full"
+                className="ml-2 h-full w-[20px]"
               ></Image>
               <p className="w-[150px] ">
                 Rank Point : {rankStat.current_points + ' RP'}{' '}

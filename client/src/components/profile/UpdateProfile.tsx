@@ -61,64 +61,73 @@ function UpdateProfile({
       };
       const singupURL: string =
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/signup';
+      try {
+        const response = await fetch(singupURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include',
+        });
+        if (response.status == 201) {
+          if (uploads.pfp) {
+            const avatar = (document.getElementById('pfp') as HTMLInputElement)
+              .files?.[0];
+            if (avatar) {
+              let formData = new FormData();
+              formData.append('file', avatar);
 
-      const response = await fetch(singupURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
-      if (response.status == 201) {
-        if (uploads.pfp) {
-          const avatar = (document.getElementById('pfp') as HTMLInputElement)
-            .files?.[0];
-          if (avatar) {
-            let formData = new FormData();
-            formData.append('file', avatar);
-
-            const url =
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
-
-            const resp = await fetch(url, {
-              method: 'POST',
-              body: formData,
-              credentials: 'include',
-            });
+              try {
+                const url =
+                  process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
+                const resp = await fetch(url, {
+                  method: 'POST',
+                  body: formData,
+                  credentials: 'include',
+                });
+              } catch (error) {
+                console.log('An error has occurred');
+              }
+            }
+          }
+          if (uploads.wp) {
+            const wallpaper = (
+              document.getElementById('wallpaper') as HTMLInputElement
+            ).files?.[0];
+            if (wallpaper) {
+              let formData = new FormData();
+              formData.append('file', wallpaper);
+              const url =
+                process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
+              try {
+                const resp = await fetch(url, {
+                  method: 'POST',
+                  body: formData,
+                  credentials: 'include',
+                });
+              } catch (error) {
+                console.log('An error has occurred');
+              }
+            }
+          }
+          Router.push('/profile');
+        } else if (response.status == 401) {
+          const err = await response.json();
+          if (err.error === 'Nickname already exist') {
+            const span = document.getElementById('nickspan');
+            updateField(
+              2,
+              { valid: false, touched: state[2].touched },
+              span,
+              err.error,
+            );
+          } else {
+            const span = document.getElementById('wp-span');
+            // to check later ,
+            if (span) span.innerHTML = err;
           }
         }
-        if (uploads.wp) {
-          const wallpaper = (
-            document.getElementById('wallpaper') as HTMLInputElement
-          ).files?.[0];
-          if (wallpaper) {
-            let formData = new FormData();
-            formData.append('file', wallpaper);
-            const url =
-              process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
-
-            const resp = await fetch(url, {
-              method: 'POST',
-              body: formData,
-              credentials: 'include',
-            });
-          }
-        }
-        Router.push('/profile');
-      } else if (response.status == 401) {
-        const err = await response.json();
-        if (err.error === 'Nickname already exist') {
-          const span = document.getElementById('nickspan');
-          updateField(
-            2,
-            { valid: false, touched: state[2].touched },
-            span,
-            err.error,
-          );
-        } else {
-          const span = document.getElementById('wp-span');
-          // to check later ,
-          if (span) span.innerHTML = err;
-        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }

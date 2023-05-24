@@ -48,23 +48,27 @@ function BlockedPage({ nickname }: { nickname: string }) {
 
   async function unblockPlayer(e: React.MouseEvent, nickname: string) {
     e.preventDefault();
-    const resp = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/unblock',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname }),
-        credentials: 'include',
-      },
-    );
-    if (resp.ok) {
-      const newBlocklist = blockedList.filter(
-        (blocked) => blocked.nickname != nickname,
+    try {
+      const resp = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/unblock',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname: nickname }),
+          credentials: 'include',
+        },
       );
-      setBlockedList(newBlocklist);
-      console.log('unblocked');
-    } else {
-      console.log('cannot unblock');
+      if (resp.ok) {
+        const newBlocklist = blockedList.filter(
+          (blocked) => blocked.nickname != nickname,
+        );
+        setBlockedList(newBlocklist);
+        console.log('unblocked');
+      } else {
+        console.log('cannot unblock');
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
 

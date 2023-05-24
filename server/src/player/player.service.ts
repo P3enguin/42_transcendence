@@ -495,12 +495,13 @@ export class PlayerService {
 
       const xp = calculateXP(level, Number(playerStatus.status.XP));
 
-      const winRatio = (
+      let winRatio = (
         (playerStatus.wins.length /
           (playerStatus.wins.length + playerStatus.loss.length)) *
         100
       ).toFixed(2);
 
+      if (winRatio == 'NaN') winRatio = '00.00';
       //deleting status from player object;
       const { status, ...player } = playerStatus;
       return res.status(200).json({ player, rankId, winRatio, level, xp });
@@ -590,11 +591,13 @@ export class PlayerService {
       const level = playerStatus.status.level;
       const rankId = playerStatus.status.rank.rankId;
       const xp = calculateXP(level, Number(playerStatus.status.XP));
-      const winRatio = (
+      let winRatio = (
         (playerStatus.wins.length /
           (playerStatus.wins.length + playerStatus.loss.length)) *
         100
       ).toFixed(2);
+
+      if (winRatio == 'NaN') winRatio = '00.00';
       const { status, friends, block, wins, loss, ...player } = playerStatus;
       return res.status(200).json({
         player,

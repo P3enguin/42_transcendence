@@ -11,21 +11,25 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const resp = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST +
-          '/players/games?' +
-          new URLSearchParams({ search: nickname }),
-        {
-          credentials: 'include',
-        },
-      );
-      if (resp.ok) {
-        const games = await resp.json();
-        setGames(games);
-        setIsLoading(false);
-      } else {
-        // make div to return an error or something
-        return;
+      try {
+        const resp = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_HOST +
+            '/players/games?' +
+            new URLSearchParams({ search: nickname }),
+          {
+            credentials: 'include',
+          },
+        );
+        if (resp.ok) {
+          const games = await resp.json();
+          setGames(games);
+          setIsLoading(false);
+        } else {
+          // make div to return an error or something
+          return;
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     };
     fetchData();

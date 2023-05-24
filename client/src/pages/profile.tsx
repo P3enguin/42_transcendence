@@ -74,42 +74,46 @@ export async function getServerSideProps({ req }: any) {
 
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
-      {
-        headers: {
-          Cookie: req.headers.cookie,
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
+        {
+          headers: {
+            Cookie: req.headers.cookie,
+          },
         },
-      },
-    );
-    if (res.ok) {
-      const data = await res.json();
-
-      const timeFormat: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      };
-      const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
-        new Date(data.player.joinAt),
       );
-      return {
-        // modify this to return anything you want before your page load
-        props: {
-          jwt_token,
-          nickname: data.player.nickname,
-          firstname: data.player.firstname,
-          lastname: data.player.lastname,
-          coins: data.player.coins,
-          avatar: data.player.avatar,
-          wallpaper: data.player.wallpaper,
-          joinDate: date,
-          rankId: data.rankId,
-          winRatio: data.winRatio,
-          level: data.level,
-          xp: data.xp,
-        },
-      };
+      if (res.ok) {
+        const data = await res.json();
+
+        const timeFormat: Intl.DateTimeFormatOptions = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        };
+        const date = new Intl.DateTimeFormat('en-US', timeFormat).format(
+          new Date(data.player.joinAt),
+        );
+        return {
+          // modify this to return anything you want before your page load
+          props: {
+            jwt_token,
+            nickname: data.player.nickname,
+            firstname: data.player.firstname,
+            lastname: data.player.lastname,
+            coins: data.player.coins,
+            avatar: data.player.avatar,
+            wallpaper: data.player.wallpaper,
+            joinDate: date,
+            rankId: data.rankId,
+            winRatio: data.winRatio,
+            level: data.level,
+            xp: data.xp,
+          },
+        };
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
   return {

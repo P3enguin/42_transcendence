@@ -85,25 +85,28 @@ function ProfileDisplay({
       let formData = new FormData();
       formData.append('file', wallpaper);
       const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
-
-      const resp = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      if (resp.ok) {
-        setreply('Wallpaper updated!');
-        setSuccess(true);
-        Router.reload();
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      } else {
-        setreply('Failed to upload!');
-        setError(true);
-        setTimeout(() => {
-          setError(false);
-        }, 3000);
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+        if (resp.ok) {
+          setreply('Wallpaper updated!');
+          setSuccess(true);
+          Router.reload();
+          setTimeout(() => {
+            setSuccess(false);
+          }, 3000);
+        } else {
+          setreply('Failed to upload!');
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
@@ -123,25 +126,28 @@ function ProfileDisplay({
       let formData = new FormData();
       formData.append('file', avatar);
       const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
-
-      const resp = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      if (resp.ok) {
-        setreply('Avatar updated !');
-        setSuccess(true);
-        Router.reload();
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      } else {
-        setreply('Failed to upload!');
-        setError(true);
-        setTimeout(() => {
-          setError(false);
-        }, 3000);
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+        if (resp.ok) {
+          setreply('Avatar updated !');
+          setSuccess(true);
+          Router.reload();
+          setTimeout(() => {
+            setSuccess(false);
+          }, 3000);
+        } else {
+          setreply('Failed to upload!');
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
