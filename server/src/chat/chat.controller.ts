@@ -22,6 +22,7 @@ import {
   UnbanMemberDto,
   MuteMemberDto,
   UnmuteMemberDto,
+  invitedMember,
 } from './dto';
 
 @UseGuards(JwtGuard)
@@ -245,6 +246,34 @@ export class ChatController {
     } catch (error) {
       console.log(error);
       return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Post('invite')
+  async inviteMember(
+    @GetPlayer() player: Player,
+    @Body() invitedMember: invitedMember,
+    @Res() res: Response
+  ) {
+    try{
+      const result = await this.chatService.inviteMember(player, invitedMember);
+      res.status(result.status).json(result.data);
+    }catch(err){
+      return res.status(400).json({ error: 'Unexpected error occurred while inviting player' });
+    }
+  }
+
+  @Post('cancelInvite')
+  async cancelInvite(
+    @GetPlayer() player : Player,
+    @Body() invited : invitedMember,
+    @Res() res : Response,
+  ){
+    try {
+      const result = await this.chatService.cancelInvites(player, invited);
+      res.status(result.status).json(result.data);
+    }catch (error) {
+      return res.status(400).json({ error: 'Unexpected error occurred while canceling the invitation'});
     }
   }
 
