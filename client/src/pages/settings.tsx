@@ -2,6 +2,7 @@ import Layout from '@/components/layout/layout';
 import { useState } from 'react';
 import { statObj } from '@/components/tools/Interface';
 import { useEffect } from 'react';
+import Router from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ModalActivate2FA,
@@ -74,26 +75,29 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       };
       const updateURL: string =
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/password';
-
-      const response = await fetch(updateURL, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
-      if (response.status == 201) {
-        setreply('Password Changed !');
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      } else if (response.status == 400) {
-        const err = await response.json();
-        setreply('An Error has Occurred!');
-        setError(true);
-        setTimeout(() => {
-          setError(false);
-        }, 3000);
+      try {
+        const response = await fetch(updateURL, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include',
+        });
+        if (response.status == 201) {
+          setreply('Password Changed !');
+          setSuccess(true);
+          setTimeout(() => {
+            setSuccess(false);
+          }, 3000);
+        } else if (response.status == 400) {
+          const err = await response.json();
+          setreply('An Error has Occurred!');
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
@@ -115,37 +119,40 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       };
       const updateURL: string =
         process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data';
-
-      const response = await fetch(updateURL, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include',
-      });
-      if (response.status == 201) {
-        setreply('Data has been Changed !');
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      } else if (response.status == 400) {
-        const err = await response.json();
-        if (err.error === 'Nickname already exist') {
-          const span = document.getElementById('nickspan');
-          const newArr = mutateArray(
-            2,
-            { valid: false, touched: false },
-            state,
-          );
-          updateState(newArr);
-          printError(span, err.error);
-        } else {
-          setreply('An Error has Occurred!');
-          setError(true);
+      try {
+        const response = await fetch(updateURL, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'include',
+        });
+        if (response.status == 201) {
+          setreply('Data has been Changed !');
+          setSuccess(true);
           setTimeout(() => {
-            setError(false);
+            setSuccess(false);
           }, 3000);
+        } else if (response.status == 400) {
+          const err = await response.json();
+          if (err.error === 'Nickname already exist') {
+            const span = document.getElementById('nickspan');
+            const newArr = mutateArray(
+              2,
+              { valid: false, touched: false },
+              state,
+            );
+            updateState(newArr);
+            printError(span, err.error);
+          } else {
+            setreply('An Error has Occurred!');
+            setError(true);
+            setTimeout(() => {
+              setError(false);
+            }, 3000);
+          }
         }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
@@ -247,8 +254,8 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       newState = mutateArray(2, { valid: false, touched: false }, newState);
     else if (isEmpty(nick_name)) {
       printError(span, 'Nickname cannot be empty!');
-    } else if (!isBetween(nick_name, 3, 15)) {
-      printError(span, 'Nickname should be (3-20) character long!');
+    } else if (!isBetween(nick_name, 3, 16)) {
+      printError(span, 'Nickname should be (3-16) character long!');
     } else if (!isClear(nick_name)) {
       printError(span, 'Nickname contains forbidden characters!');
     } else {
@@ -313,21 +320,23 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
 
   async function activate2FA(event: React.MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
-
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/enable2FA',
-      {
-        credentials: 'include',
-      },
-    );
-    const data = await res.json();
-    if (res.ok) {
-      setQrPath(data.qrcode);
-      toggleOpen(0);
-    } else {
-      // handling erroś
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/auth/enable2FA',
+        {
+          credentials: 'include',
+        },
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setQrPath(data.qrcode);
+        toggleOpen(0);
+      } else {
+        console.log('Error');
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
-    console.log(data);
     // if (res.ok) {
     //   const data = await res.json();
     //   console.log(data);
@@ -459,6 +468,15 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
             DEACTIVATE 2FA
           </button>
         )}
+        <button
+          className={`hover:text-md hover:text-l text-xs w-3/5 transform self-center  rounded-full bg-red-500
+                  px-12 py-2 text-center uppercase  text-white transition duration-300 hover:scale-110 hover:bg-red-700 md:mt-10
+                  md:text-base
+                  `}
+          onClick={() => Router.push('/blocked')}
+        >
+          BLOCKED USERS
+        </button>
       </div>
     </>
   );
@@ -467,25 +485,29 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/data',
-      {
-        headers: {
-          Cookie: req.headers.cookie,
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/data',
+        {
+          headers: {
+            Cookie: req.headers.cookie,
+          },
         },
-      },
-    );
-    if (res.ok) {
-      const data = await res.json();
-      return {
-        // modify this to return anything you want before your page load
-        props: {
-          nickname: data.player.nickname,
-          firstname: data.player.firstname,
-          lastname: data.player.lastname,
-          Is2FAEnabled: data.player.Is2FAEnabled,
-        },
-      };
+      );
+      if (res.ok) {
+        const data = await res.json();
+        return {
+          // modify this to return anything you want before your page load
+          props: {
+            nickname: data.player.nickname,
+            firstname: data.player.firstname,
+            lastname: data.player.lastname,
+            Is2FAEnabled: data.player.Is2FAEnabled,
+          },
+        };
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
   return {

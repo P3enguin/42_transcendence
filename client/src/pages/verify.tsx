@@ -6,13 +6,13 @@ import { verifyOTP } from '@/components/tools/functions';
 function Verify2fa() {
   async function verify(event: React.FormEvent) {
     event.preventDefault();
-    if (await verifyOTP(event,"/auth/verify2FA","GET"))
+    if (await verifyOTP(event, '/auth/verify2FA', 'GET'))
       Router.push('/profile');
   }
 
   return (
     <div className="relative flex min-h-screen flex-col justify-center overflow-hidden  py-12">
-      <div className="relative mx-auto w-full max-w-lg rounded-2xl bg-white px-6 pt-10 pb-9 shadow-xl">
+      <div className="relative mx-auto w-full max-w-lg rounded-2xl bg-white px-6 pb-9 pt-10 shadow-xl">
         <div className="mx-auto flex w-full max-w-md flex-col space-y-16">
           <div className="flex flex-col items-center justify-center space-y-2 text-center">
             <div className="text-3xl font-semibold text-black">
@@ -58,33 +58,41 @@ function Verify2fa() {
 export async function getServerSideProps(context: any) {
   const jwt_token: string = context.req.cookies['jwt_token'];
   if (!jwt_token) {
-    const response = await verify2FAToken(context.req.headers.cookie);
-    if (!response.ok) {
-      const data = await response.json();
-      console.log(data);
+    try {
+      const response = await verify2FAToken(context.req.headers.cookie);
+      if (!response.ok) {
+        const data = await response.json();
+        console.log(data);
+        return {
+          redirect: {
+            destination: '/',
+            permanent: true,
+          },
+        };
+      }
+      const result = await response.json();
       return {
-        redirect: {
-          destination: '/',
-          permanent: true,
+        props: {
+          email: 'hh',
         },
       };
+    } catch (error) {
+      console.log('An error has occurred');
     }
-    const result = await response.json();
-    return {
-      props: {
-        email: 'hh',
-      },
-    };
   }
   if (jwt_token) {
-    const res = await verifyToken(context.req.headers.cookie);
-    if (res.ok) {
-      return {
-        redirect: {
-          destination: '/profile',
-          permanent: true,
-        },
-      };
+    try {
+      const res = await verifyToken(context.req.headers.cookie);
+      if (res.ok) {
+        return {
+          redirect: {
+            destination: '/profile',
+            permanent: true,
+          },
+        };
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
   //  to check the validity of jwt before redirecting later

@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React from 'react';
+import Image from 'next/image';
 const UM6P_LOGO = 'https://um6p.ma/sites/default/files/logo.svg';
 const ECOLE_42_LOGO =
   'https://www.42network.org/wp-content/themes/e42-network/img/42-network-logo.svg';
@@ -14,22 +15,30 @@ const badge = () => {
     <>
       <div className="relative h-[50vh] w-[40vw] rounded-2xl bg-[#001e30] text-[1.25vw]">
         <h2 className="absolute left-[4%] top-[4%]">ael-hadd&apos;s profile</h2>
-        <img
+        <Image
+          width={100}
+          height={100}
           src={UM6P_LOGO}
           alt="um6p logo"
           className="absolute right-[4%] top-[4%] w-[25%] brightness-0 invert"
         />
-        <img
+        <Image
+          width={100}
+          height={100}
           src={ECOLE_1337_LOGO}
           alt="1337 logo"
           className="absolute right-[31%] top-[4%] w-[15%] brightness-0 invert"
         />
-        <img
+        <Image
+          width={100}
+          height={100}
           src={ECOLE_42_LOGO}
           alt="42 logo"
           className="absolute bottom-[4%] right-[4%] w-[25%] invert"
         />
-        <img
+        <Image
+          width={100}
+          height={100}
           src={PIC}
           alt="pic"
           className=" absolute left-[4%] top-[25%] w-[20%] rounded-2xl"
@@ -69,7 +78,9 @@ const badge = () => {
             </p>
           </div>
         </div>
-        <h2 className="absolute bottom-[4%] text-[1vw] p-1 bg-[#008daf] left-[4%] rounded-md">STUDENT</h2>
+        <h2 className="absolute bottom-[4%] left-[4%] rounded-md bg-[#008daf] p-1 text-[1vw]">
+          STUDENT
+        </h2>
       </div>
     </>
   );

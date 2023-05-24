@@ -163,6 +163,15 @@ export class PlayerController {
     return this.playerService.GetBlockedFriends(query.nickname, res);
   }
 
+  @Post('unblock')
+  Unblock(
+    @Req() req: Request,
+    @Res() res: Response,
+    @GetPlayer() player: Player,
+  ) {
+    return this.playerService.Unblock(req.body.nickname, res, player);
+  }
+
   //------------------------------{ Avatar and Wallpaper }----------------------------------
 
   @Post('avatar')

@@ -1,13 +1,16 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-
-function TitlesComp( {cssProps}: {  cssProps: string }) {
-  const [titles,setTitles] = useState([""]);
+function TitlesComp({ cssProps }: { cssProps: string }) {
+  const [titles, setTitles] = useState(['']);
   useEffect(() => {
     async function getTitles() {
-      const response = await fetch('')
+      try {
+        const response = await fetch('');
+      } catch (error) {
+        console.log('error');
+      }
     }
-  })
+  });
   return (
     <select id="title" className={cssProps}>
       <option value="">Select a title</option>

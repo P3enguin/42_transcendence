@@ -1,5 +1,8 @@
-
-export async function verifyOTP(event: React.FormEvent, api: string,method :string) {
+export async function verifyOTP(
+  event: React.FormEvent,
+  api: string,
+  method: string,
+) {
   const span = document.getElementById('errorSpan');
 
   const nbr1 = (document.getElementById('1') as HTMLInputElement).value;
@@ -13,40 +16,40 @@ export async function verifyOTP(event: React.FormEvent, api: string,method :stri
     if (span) span.innerHTML = 'Please enter all the digits !';
     return false;
   }
-  let resp ;
+  let resp;
   const token: string = nbr1 + nbr2 + nbr3 + nbr4 + nbr5 + nbr6;
-  if (method === "PATCH")
-  {
-     resp = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + api,
-      {
+  try {
+    if (method === 'PATCH') {
+      resp = await fetch(process.env.NEXT_PUBLIC_BACKEND_HOST + api, {
         method: method,
         body: JSON.stringify({ token: token }),
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-      },
-    );
-  }
-  else if (method === "GET")
-  {
-    resp = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + api + "?" +  new URLSearchParams({token : token}),
-      {
-        method: method,
-        credentials: 'include',
-      },
-    );
-  }
-  if (resp)
-  {
-    if (resp.ok) {
-      return true;
-      // Router.push('/profile');
-    } else if (resp.status === 400) {
-      const message = await resp.json();
-      if (span) span.innerHTML = 'The code is invalid';
-      return false
+      });
+    } else if (method === 'GET') {
+      resp = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST +
+          api +
+          '?' +
+          new URLSearchParams({ token: token }),
+        {
+          method: method,
+          credentials: 'include',
+        },
+      );
     }
+    if (resp) {
+      if (resp.ok) {
+        return true;
+        // Router.push('/profile');
+      } else if (resp.status === 400) {
+        const message = await resp.json();
+        if (span) span.innerHTML = 'The code is invalid';
+        return false;
+      }
+    }
+  } catch (error) {
+    console.log('An error has occurred');
   }
 }
 
