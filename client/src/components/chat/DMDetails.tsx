@@ -31,7 +31,7 @@ export default function DMDetails({
       {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname }),
+        body: JSON.stringify({ nickname: channel.name }),
         credentials: 'include',
       },
     );
