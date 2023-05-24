@@ -8,9 +8,16 @@ interface PLayerProps {
   userProfile?: boolean;
   blockFriend?(e: React.MouseEvent, nickname: string): Promise<void>;
   unblockPlayer?(e: React.MouseEvent, nickname: string): Promise<void>;
+  openDMs?(event: React.FormEvent, nickname2: string): Promise<void>;
 }
 
-function Player({ nickname, avatar, userProfile, blockFriend }: PLayerProps) {
+function Player({
+  nickname,
+  avatar,
+  userProfile,
+  blockFriend,
+  openDMs,
+}: PLayerProps) {
   return (
     <div className="flex  items-center justify-between rounded-xl border p-1">
       <div className="flex w-3/4 flex-row items-center gap-1">
@@ -30,7 +37,7 @@ function Player({ nickname, avatar, userProfile, blockFriend }: PLayerProps) {
       </div>
       {userProfile && (
         <div className="flex flex-col gap-1 sm:gap-2 ">
-          <button>
+          <button onClick={(e) => openDMs!(e, nickname)}>
             <Image
               width={17}
               height={17}
@@ -71,7 +78,7 @@ export function Blocked({ nickname, avatar, unblockPlayer }: PLayerProps) {
       </div>
 
       <button
-        className="flex flex-row mr-1 "
+        className="mr-1 flex flex-row "
         onClick={(event) => unblockPlayer!(event, nickname)}
       >
         <CancelIcon />

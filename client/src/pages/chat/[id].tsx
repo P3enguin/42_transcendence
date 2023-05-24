@@ -45,8 +45,7 @@ function Chat({
 
   const changeToNewmessages = () => {
     setNewMessages((prev) => !prev);
-  }
-
+  };
 
   useEffect(() => {
     const MobilView = () => {

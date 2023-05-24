@@ -89,7 +89,7 @@ function SideBar({
             </Link>
           </div>
 
-          <div className="flex flex-col items-center gap-10 mt-10 ml-1">
+          <div className="ml-1 mt-10 flex flex-col items-center gap-10">
             <div className="flex">
               <button onClick={handleLogOut}>
                 <LogoutIcon />
@@ -154,10 +154,10 @@ function SideBar({
               </Link>
             </div>
 
-            <div className="flex flex-col items-center gap-10 mt-10 ml-1">
-                <button onClick={handleLogOut}>
-                  <LogoutIcon />
-                </button>
+            <div className="ml-1 mt-10 flex flex-col items-center gap-10">
+              <button onClick={handleLogOut}>
+                <LogoutIcon />
+              </button>
               <div className="mb-3">
                 <Link
                   className="mt-2 flex h-12 w-12 items-center justify-center"

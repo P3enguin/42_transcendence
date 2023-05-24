@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Player from '../Player';
 import { useEffect, useState } from 'react';
+import Router from 'next/router';
 interface friendsInterface {
   nickname: string;
   avatar: string;
@@ -38,7 +39,23 @@ function FriendStats({
     };
     fetchData();
   }, [nickname]);
-  console.log(friends);
+
+  async function openDMs(event: React.MouseEvent, nickname2: string) {
+    event.preventDefault();
+
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${nickname2}`,
+      {
+        credentials: 'include',
+      },
+    );
+
+    if (response.status == 200 || response.status == 201) {
+      const dmData = await response.json();
+      Router.push(`/chat/${dmData.channelId}`);
+    }
+  }
+
   async function blockFriend(e: React.MouseEvent, nickname: string) {
     e.preventDefault();
     try {
@@ -83,6 +100,7 @@ function FriendStats({
               avatar={
                 process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + elem.avatar
               }
+              openDMs={openDMs}
               userProfile={userProfile}
               blockFriend={blockFriend}
             />
