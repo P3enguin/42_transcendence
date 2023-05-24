@@ -8,11 +8,11 @@ import StatusBubble from '../game/StatusBubble';
 
 export interface ChannelHeaderProps {
   channel: Channel;
-  onClick: () => void;
   ws: Socket;
+  onClick: () => void;
 }
 
-const ChannelHeader = ({ channel, onClick, ws }: ChannelHeaderProps) => {
+const ChannelHeader = ({ channel, ws, onClick }: ChannelHeaderProps) => {
   const [status, setStatus] = useState('');
 
   useEffect(() => {

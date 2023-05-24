@@ -28,10 +28,10 @@ export default function ChannelMember({
   };
 
   return (
-    <div className="ml-auto flex h-[60px] w-[95%] items-center gap-3 rounded-2xl bg-[#8BD9FF4D] px-2 transition duration-300 ease-in hover:bg-[#8BD9FF66]">
+    <div className="ml-auto flex h-16 w-[95%] items-center gap-3 rounded-2xl bg-[#8BD9FF4D] px-3 transition duration-300 ease-in hover:bg-[#8BD9FF66]">
       <StatusBubble
         avatar={member.avatar}
-        imageClassName="w-[48px] h-[48px]"
+        imageClassName="w-14 h-14"
         onClick={(e) => {
           return redirect('/users/' + member.nickname);
         }}

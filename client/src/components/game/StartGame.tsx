@@ -4,9 +4,17 @@ import { useState } from 'react';
 
 export const RadioInput = ({ id, label, onChange, className }: any) => {
   return (
-    <div className={"mr-6 sm:inline-flex  items-center justify-start min-w-[130px] whitespace-nowrap "+className}>
+    <div
+      className={
+        'mr-6 min-w-[130px] items-center justify-start whitespace-nowrap sm:inline-flex ' +
+        className
+      }
+    >
       <input type="radio" id={id} name="type" onChange={onChange} />
-      <label htmlFor={id} className="m-1 ml-2 whitespace-nowrap cursor-pointer text-left">
+      <label
+        htmlFor={id}
+        className="ml-2 cursor-pointer whitespace-nowrap text-left"
+      >
         {label}
       </label>
     </div>

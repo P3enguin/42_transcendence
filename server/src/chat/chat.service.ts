@@ -20,64 +20,62 @@ export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
   async getMessages(channelId: string, player: Player) {
-    const messageInfo : MessageInfo[]=[];
-    try{
+    const messageInfo: MessageInfo[] = [];
+    try {
       const result = await this.prisma.room.findUnique({
-        where: { channelId: channelId},
-        select: 
-          {
-            messages: {
-              select: {
-                sender: true,
-                sendAt: true,
-                message: true,
-              },
-              orderBy: {
-                sendAt: 'desc',
-              },
+        where: { channelId: channelId },
+        select: {
+          messages: {
+            select: {
+              sender: true,
+              sendAt: true,
+              message: true,
+            },
+            orderBy: {
+              sendAt: 'desc',
             },
           },
+        },
       });
       const blocked = await this.prisma.player.findUnique({
         where: {
-          id: player.id
+          id: player.id,
         },
         select: {
-          block:true,
+          block: true,
         },
       });
       for (const element of result.messages) {
-        const sender = await  this.prisma.player.findUnique({
+        const sender = await this.prisma.player.findUnique({
           where: {
             id: element.sender,
           },
-          select:{
+          select: {
             nickname: true,
             avatar: true,
           },
         });
         let found = false;
-        for (const findSender of blocked.block){
-          if (sender.nickname === findSender.nickname)
-            found = true;
+        for (const findSender of blocked.block) {
+          if (sender.nickname === findSender.nickname) found = true;
         }
-        if (!found){
+        if (!found) {
           const msg: MessageInfo = {
-          sender: sender.nickname,
-          senderAvatar: sender.avatar,
-          time: element.sendAt.getHours() + ":" + element.sendAt.getMinutes(),
-          message: element.message,
-        };
-        messageInfo.push(msg);
-      };
-    }// <----- empty
+            sender: sender.nickname,
+            senderAvatar: sender.avatar,
+            time: element.sendAt.getHours() + ':' + element.sendAt.getMinutes(),
+            message: element.message,
+          };
+          messageInfo.push(msg);
+        }
+      } // <----- empty
       return {
-        status : 201,
+        status: 201,
         data: messageInfo,
       };
-    }catch (e) {
+    } catch (e) {
       console.error(e);
-      throw new Error("Error retrieving messages");
+      throw new Error('Error retrieving messages');
     }
   }
 
@@ -291,6 +289,7 @@ export class ChatService {
         data: {
           channelId: channel.channelId,
           members: channel.members,
+          isChannel: channel.isChannel,
         },
       };
     }
@@ -306,6 +305,7 @@ export class ChatService {
           topic: channel.topic,
           avatar: channel.avatar,
           privacy: channel.privacy,
+          isChannel: channel.isChannel,
           memberLimit: channel.memberLimit,
           membersCount: channel.members.length,
         },
@@ -978,10 +978,10 @@ export class ChatService {
     const { channelId, playerNickname } = invitedMember;
 
     const channel = await this.prisma.room.findUnique({
-      where:{
+      where: {
         channelId: channelId,
       },
-      select :{
+      select: {
         id: true,
         owner: true,
         admins: true,
@@ -990,21 +990,21 @@ export class ChatService {
       },
     });
 
-    if (!channel ){
+    if (!channel) {
       return {
-      status: 403,
-      data: {error : "Unkown Channel"},
+        status: 403,
+        data: { error: 'Unkown Channel' },
       };
     }
-    if (!channel.admins.find((channelAdmin)=> channelAdmin.id === player.id)) {
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
       return {
         status: 403,
         data: { error: "You don't have permissions to invite users" },
       };
     }
-    const member  =await this.prisma.player.findUnique({
-      where :{
-      nickname: playerNickname,
+    const member = await this.prisma.player.findUnique({
+      where: {
+        nickname: playerNickname,
       },
       select: {
         id: true,
@@ -1017,47 +1017,51 @@ export class ChatService {
         data: { error: 'User not found' },
       };
     }
-    if (channel.members.find((channelMember) => channelMember.id === member.id)) {
+    if (
+      channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
       return {
         status: 404,
         data: { error: 'User is already a member of the channel' },
       };
-  }
-  if (channel.invited.find((channelInvites) => channelInvites.id === member.id)) {
-    return {
-      status: 404,
-      data: { error: 'User is already a Invited' },
-    };
-  }
-  const invite = await this.prisma.invite.create({
-    data: {
-      channel:{
-        connect: {id: channel.id},
+    }
+    if (
+      channel.invited.find((channelInvites) => channelInvites.id === member.id)
+    ) {
+      return {
+        status: 404,
+        data: { error: 'User is already a Invited' },
+      };
+    }
+    const invite = await this.prisma.invite.create({
+      data: {
+        channel: {
+          connect: { id: channel.id },
+        },
+        player: {
+          connect: { id: member.id },
+        },
       },
-      player: {
-        connect :{ id : member.id },
-      },
-    },
-  });
-  if (!invite) {
-    return {
+    });
+    if (!invite) {
+      return {
         status: 400,
         data: { error: 'An error occurred while inviting the member' },
       };
+    }
+    return {
+      status: 200,
+      data: { msg: 'invitation sent successfully' },
+    };
   }
-  return {
-    status : 200,
-    data: {msg : 'invitation sent successfully'},
-  }
-}
 
   async cancelInvites(player, invited) {
     const { channelId, playerNickname } = invited;
     const channel = await this.prisma.room.findUnique({
-      where:{
+      where: {
         channelId: channelId,
       },
-      select :{
+      select: {
         id: true,
         owner: true,
         admins: true,
@@ -1066,21 +1070,21 @@ export class ChatService {
       },
     });
 
-    if (!channel ){
+    if (!channel) {
       return {
-      status: 403,
-      data: {error : "Unkown Channel"},
+        status: 403,
+        data: { error: 'Unkown Channel' },
       };
     }
-    if (!channel.admins.find((channelAdmin)=> channelAdmin.id === player.id)) {
+    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
       return {
         status: 403,
         data: { error: "You don't have permissions to invite users" },
       };
     }
-    const member  =await this.prisma.player.findUnique({
-      where :{
-      nickname: playerNickname,
+    const member = await this.prisma.player.findUnique({
+      where: {
+        nickname: playerNickname,
       },
       select: {
         id: true,
@@ -1093,13 +1097,17 @@ export class ChatService {
         data: { error: 'User not found' },
       };
     }
-    if (channel.members.find((channelMember) => channelMember.id === member.id)) {
+    if (
+      channel.members.find((channelMember) => channelMember.id === member.id)
+    ) {
       return {
         status: 404,
         data: { error: 'User is already a member of the channel' },
       };
     }
-    if (!channel.invited.find((channelInvites) => channelInvites.id === member.id)) {
+    if (
+      !channel.invited.find((channelInvites) => channelInvites.id === member.id)
+    ) {
       return {
         status: 404,
         data: { error: 'User is not invited' },
@@ -1107,11 +1115,59 @@ export class ChatService {
     }
 
     const canceled = await this.prisma.invite.deleteMany({
-      where:{
+      where: {
         channelId: channel.id,
         playerId: member.id,
-      }
-    })
+      },
+    });
+  }
+
+  async updateChannel(
+    player: Player,
+    channelId: string,
+    createChannelDto: CreateChannelDto,
+  ) {
+    const { name, topic, key, memberLimit, privacy } = createChannelDto;
+
+    const updatedChannel = await this.prisma.room.update({
+      select: {
+        channelId: true,
+        name: true,
+        topic: true,
+        memberLimit: true,
+        privacy: true,
+        owner: true,
+        admins: true,
+      },
+      where: { channelId: channelId },
+      data: {
+        name,
+        topic,
+        key,
+        memberLimit,
+        privacy,
+      },
+    });
+
+    if (
+      updatedChannel.owner.nickname !== player.nickname &&
+      !updatedChannel.admins.find((admin) => admin.nickname === player.nickname)
+    ) {
+      return {
+        status: 403,
+        data: {
+          error: "You don't have permissions to update channel information",
+        },
+      };
+    }
+
+    delete updatedChannel.owner;
+    delete updatedChannel.admins;
+
+    return {
+      status: 200,
+      data: updatedChannel,
+    };
   }
 
   async getDiscoveredChannels() {
