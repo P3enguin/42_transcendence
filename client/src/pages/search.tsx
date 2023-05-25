@@ -60,9 +60,7 @@ function Search() {
             <div key={index} className="h-[20px] w-[150px]">
               <Player
                 nickname={player.nickname}
-                avatar={
-                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
-                  '/avatars/' +
+                avatar={   
                   player.avatar
                 }
                 userProfile={false}
