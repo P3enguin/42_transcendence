@@ -7,12 +7,14 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ChatService } from './chat.service';
 import { GetPlayer } from 'src/auth/decorator';
-import { Response } from 'express';
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
 import {
@@ -25,7 +27,11 @@ import {
   UnmuteMemberDto,
   invitedMember,
 } from './dto';
-
+import { v4 as uuidv4 } from 'uuid';
+import { extname } from 'path';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { UploadedFile } from '@nestjs/common';
 @UseGuards(JwtGuard)
 @Controller('chat')
 export class ChatController {
@@ -335,6 +341,25 @@ export class ChatController {
     }
   }
 
+  @Post('avatar/:id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: process.cwd() + '/uploads/channels/',
+        filename: (req, file, cb) => {
+          const randomName = uuidv4();
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  uploadProfile(
+    @Param('id') channelId: string,
+    @Res() res: Response,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.chatService.updateChannelAvatar(channelId, file.filename, res);
+  }
   // async saveMessage(
   //   @GetPlayer('id') id: number,
   //   messageInfo: any,

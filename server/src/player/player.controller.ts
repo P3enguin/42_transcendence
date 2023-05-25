@@ -206,6 +206,8 @@ export class PlayerController {
   ) {
     return this.playerService.updatePFP(req, file.filename,res);
   }
+
+  
   @Post('wallpaper')
   @UseInterceptors(
     FileInterceptor('file', {

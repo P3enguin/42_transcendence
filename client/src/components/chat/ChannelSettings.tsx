@@ -3,7 +3,7 @@ import StatusBubble from '../game/StatusBubble';
 import { InputDefault, TransparentInput } from '../Input/Inputs';
 import { RadioInput } from '../game/StartGame';
 import { useState } from 'react';
-
+import { EditIconProfile } from '../icons/Icons';
 export default function ChannelSettings({
   channel,
   setChannel,
@@ -25,6 +25,7 @@ export default function ChannelSettings({
   const [topic, setTopic] = useState(channel.topic);
   const [privacy, setPrivacy] = useState(channel.privacy);
   const [key, setKey] = useState(channel.key);
+  const [ChannelAvatar, setPicture] = useState(channel.avatar);
   const [memberLimit, setMemberLimit] = useState<string | number>(
     channel.memberLimit === 0 ? '∞' : channel.memberLimit,
   );
@@ -58,6 +59,34 @@ export default function ChannelSettings({
       }
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async function channelAvatarChange(event: React.ChangeEvent) {
+    const ChannelAvatar = (event.target as HTMLInputElement).files?.[0];
+    if (ChannelAvatar) {
+      let formData = new FormData();
+      formData.append('file', ChannelAvatar);
+      const url =
+        process.env.NEXT_PUBLIC_BACKEND_HOST +
+        '/chat/avatar/' +
+        channel.channelId;
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+        if (resp.ok) {
+          const data = (await resp.json()) as string;
+          console.log(data);
+          setPicture(data);
+        } else {
+          console.log('failed to upload');
+        }
+      } catch (error) {
+        console.log('An error has occurred');
+      }
     }
   }
 
@@ -96,13 +125,29 @@ export default function ChannelSettings({
           <p className="fond-bold text-[10px] uppercase">Cancel</p>
         </button>
       </div>
-      <div className="mt-10 flex w-full flex-col items-center justify-center gap-1">
+
+      <div className=" mt-10 flex w-full flex-col items-center justify-center gap-1">
         <StatusBubble
-          avatar={channel.avatar}
+          avatar={ChannelAvatar}
           className="mb-2"
           imageClassName="h-20 w-20"
           isChannel={channel.isChannel}
         />
+        <label
+          htmlFor="avatar-holder"
+          className="absolute top-[40px]  z-20 ml-10 cursor-pointer items-center"
+        >
+          <EditIconProfile />
+        </label>
+        <input
+          className="hidden cursor-pointer"
+          name="avatar-holder"
+          id="avatar-holder"
+          type="file"
+          accept="image/*"
+          onChange={channelAvatarChange}
+        />
+
         <div className="text-base font-semibold">
           #
           <TransparentInput
