@@ -8,8 +8,52 @@ interface NotifInterface {
   image: string;
   requestId: string;
   requests: Array<object>;
-  senderId: number;
+  senderId?: number;
   handleUpdateRequestStatus?: (requestId: string) => void;
+}
+
+// interface requestFrom {
+//   fromPlayerId: number;
+//   id: string;
+//   receivedAt: string;
+//   status: string;
+//   toPlayer: {
+//     nickname: string;
+//     avatar: string;
+//   };
+//   toPlayerId: number;
+//   type: string;
+// }
+
+// interface requestTo {
+//   fromPlayer: {
+//     nickname: string;
+//     avatar: string;
+//   };
+//   fromPlayerId: 2;
+//   id: string;
+//   receivedAt: string;
+//   status: string;
+//   toPlayerId: 1;
+//   type: string;
+// }
+
+interface request {
+  fromPlayer?: {
+    nickname: string;
+    avatar: string;
+  };
+  id: string;
+  receivedAt: string;
+  toPlayerId: number;
+  type: string;
+  fromPlayerId: number;
+
+  status: string;
+  toPlayer?: {
+    nickname: string;
+    avatar: string;
+  };
 }
 
 function NotiAddFriend({
@@ -137,8 +181,6 @@ function NotiAddFriend({
 function NotiAccepted({
   nickname,
   image,
-  requestId,
-  senderId,
 }: NotifInterface) {
   return (
     <div className="-mx-2 flex items-center border-b px-4 py-3">
@@ -197,12 +239,11 @@ function NotiRejected({
 }
 
 function NotiDrop() {
-  const [requests, setRequests] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [requests, setRequests] = useState<request[]>([]);
 
   function handleUpdateRequestsTo(requestId: string) {
     setRequests((current) =>
-      current.filter((request: any) => request.id != requestId),
+      current.filter((request: request) => request.id != requestId),
     );
   }
 
@@ -218,8 +259,6 @@ function NotiDrop() {
         if (resp.ok) {
           const result = await resp.json();
           setRequests(result.requests);
-          // setRequestsTo(result.to);
-          setIsLoading(false);
         }
       } catch (error) {
         console.log('An error has occurred');
@@ -228,6 +267,7 @@ function NotiDrop() {
     fetchRequests();
   }, []);
 
+  console.log(requests);
   return (
     <div
       x-show="dropdownOpen"
@@ -238,18 +278,18 @@ function NotiDrop() {
         <div className="text-lg  "> You have no requests</div>
       ) : (
         <div className="py-2">
-          {requests.map((request: any, i: number) => {
+          {requests.map((request: request, i: number) => {
             return request.type === 'to' && request.status === 'pending' ? (
               <NotiAddFriend
                 key={request.id}
                 requestId={request.id}
                 requests={requests}
                 handleUpdateRequestStatus={handleUpdateRequestsTo}
-                nickname={request.fromPlayer.nickname}
+                nickname={request.fromPlayer!.nickname}
                 image={
                   process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
-                  request.fromPlayer.avatar
+                  request.fromPlayer!.avatar
                 }
                 senderId={request.fromPlayerId}
               />
@@ -258,12 +298,11 @@ function NotiDrop() {
                 key={request.id}
                 requestId={request.id}
                 requests={requests}
-                senderId={request.toPlayer.id}
-                nickname={request.toPlayer.nickname}
+                nickname={request.toPlayer!.nickname}
                 image={
                   process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
-                  request.toPlayer.avatar
+                  request.toPlayer!.avatar
                 }
               />
             ) : request.type === 'from' && request.status === 'rejected' ? (
@@ -271,12 +310,11 @@ function NotiDrop() {
                 key={request.id}
                 requestId={request.id}
                 requests={requests}
-                senderId={request.toPlayer.id}
-                nickname={request.toPlayer.nickname}
+                nickname={request.toPlayer!.nickname}
                 image={
                   process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
                   '/avatars/' +
-                  request.toPlayer.avatar
+                  request.toPlayer!.avatar
                 }
               />
             ) : (

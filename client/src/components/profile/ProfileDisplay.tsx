@@ -175,7 +175,7 @@ function ProfileDisplay({
             width={700}
             height={160}
             src={wp}
-            sizes="100vw"
+            priority={true}
             alt="wallpaper"
             id="wallpaper-holder"
             className="h-[160px] min-h-[80px] w-full min-w-[200px]
