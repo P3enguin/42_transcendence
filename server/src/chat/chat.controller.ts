@@ -156,7 +156,7 @@ export class ChatController {
     }
   }
 
-  @Delete('members/:id')
+  @Delete('members')
   async kickMember(
     @GetPlayer() player: Player,
     @Body() kickMemberDto: KickMemberDto,
@@ -278,6 +278,46 @@ export class ChatController {
         player,
         channelId,
         createChannelDto,
+      );
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Post('promote/:id')
+  async addAdmin(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Query('nickname') nickname: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.addAdmin(
+        player,
+        channelId,
+        nickname,
+      );
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Delete('promote/:id')
+  async removeAdmin(
+    @GetPlayer() player: Player,
+    @Param('id') channelId: string,
+    @Query('nickname') nickname: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.chatService.removeAdmin(
+        player,
+        channelId,
+        nickname,
       );
       res.status(result.status).json(result.data);
     } catch (error) {

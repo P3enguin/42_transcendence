@@ -162,10 +162,10 @@ model Room {
   name        String?
   topic       String?
   key         String?
-  memberLimit Int     @default(2)
-  privacy     String  @default("secret")
+  memberLimit Int     @default(0)
+  privacy     String  @default("public")
 
-  isChannel Boolean @default(false)
+  isChannel Boolean @default(true)
 
   ownerId Int
   owner   Player? @relation(fields: [ownerId], references: [id])

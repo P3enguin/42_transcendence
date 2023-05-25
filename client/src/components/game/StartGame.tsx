@@ -2,7 +2,19 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-export const RadioInput = ({ id, label, onChange, className }: any) => {
+export const RadioInput = ({
+  id,
+  label,
+  onChange,
+  className,
+  checked = false,
+}: {
+  id: string;
+  label: string;
+  onChange: (e: any) => void;
+  className?: string;
+  checked?: boolean;
+}) => {
   return (
     <div
       className={
@@ -10,7 +22,11 @@ export const RadioInput = ({ id, label, onChange, className }: any) => {
         className
       }
     >
-      <input type="radio" id={id} name="type" onChange={onChange} />
+      {checked ? (
+        <input type="radio" id={id} name="type" onChange={onChange} checked />
+      ) : (
+        <input type="radio" id={id} name="type" onChange={onChange} />
+      )}
       <label
         htmlFor={id}
         className="ml-2 cursor-pointer whitespace-nowrap text-left"

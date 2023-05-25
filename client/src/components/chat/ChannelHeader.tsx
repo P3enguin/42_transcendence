@@ -21,7 +21,7 @@ const ChannelHeader = ({ channel, ws, onClick }: ChannelHeaderProps) => {
       return;
     }
     if (ws) {
-      ws.emit('getUserStatus', { name: channel.name }, (data: any) => {
+      ws.emit('getUserStatus', { name: channel.topic }, (data: any) => {
         console.log(data);
         setStatus(data);
       });

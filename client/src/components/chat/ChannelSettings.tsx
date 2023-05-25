@@ -1,6 +1,6 @@
 import { Channel } from '@/interfaces/Channel';
 import StatusBubble from '../game/StatusBubble';
-import { TransparentInput } from '../Input/Inputs';
+import { InputDefault, TransparentInput } from '../Input/Inputs';
 import { RadioInput } from '../game/StartGame';
 import { useState } from 'react';
 
@@ -24,8 +24,9 @@ export default function ChannelSettings({
   const [name, setName] = useState(channel.name);
   const [topic, setTopic] = useState(channel.topic);
   const [privacy, setPrivacy] = useState(channel.privacy);
+  const [key, setKey] = useState(channel.key);
   const [memberLimit, setMemberLimit] = useState<string | number>(
-    channel.memberLimit,
+    channel.memberLimit === 0 ? '∞' : channel.memberLimit,
   );
 
   async function saveSettings() {
@@ -40,7 +41,8 @@ export default function ChannelSettings({
             name,
             topic,
             privacy,
-            memberLimit,
+            key: privacy === 'private' ? key : '',
+            memberLimit: memberLimit === '∞' ? 0 : (memberLimit as number),
           }),
           credentials: 'include',
         },
@@ -51,7 +53,7 @@ export default function ChannelSettings({
         channel.name = name;
         channel.topic = topic;
         channel.privacy = privacy;
-        channel.memberLimit = memberLimit as number;
+        channel.memberLimit = memberLimit === '∞' ? 0 : (memberLimit as number);
         setChannel(channel);
       }
     } catch (error) {
@@ -120,34 +122,50 @@ export default function ChannelSettings({
           />
         </div>
       </div>
-      <div className="mt-4 flex flex-col gap-2 px-16">
-        <p className="text-sm font-semibold uppercase">Change Privacy:</p>
-        <div className="ml-12 flex flex-col">
-          <RadioInput
-            id="privacy-public"
-            label="Public"
-            onChange={(e: any) => {
-              setPrivacy('public');
-            }}
-            className="text-sm font-light"
-          />
-          <RadioInput
-            id="privacy-private"
-            label="Private"
-            onChange={(e: any) => {
-              setPrivacy('public');
-            }}
-            className="text-sm font-light"
-          />
-          <RadioInput
-            id="privacy-secret"
-            label="Secret"
-            onChange={(e: any) => {
-              setPrivacy('secret');
-            }}
-            className="text-sm font-light"
-          />
+      <div className="mt-4 flex gap-8 px-16">
+        <div className="flex flex-col gap-2">
+          <p className="text-sm font-semibold uppercase">Change Privacy:</p>
+          <div className="ml-12 flex flex-col">
+            <RadioInput
+              id="privacy-public"
+              label="Public"
+              onChange={(e: any) => {
+                setPrivacy('public');
+              }}
+              className="mr-0 min-w-0 text-sm font-light"
+              checked={privacy === 'public'}
+            />
+            <RadioInput
+              id="privacy-private"
+              label="Private"
+              onChange={(e: any) => {
+                setPrivacy('private');
+              }}
+              className="mr-0 min-w-0 text-sm font-light"
+              checked={privacy === 'private'}
+            />
+            <RadioInput
+              id="privacy-secret"
+              label="Secret"
+              onChange={(e: any) => {
+                setPrivacy('secret');
+              }}
+              className="mr-0 min-w-0 text-sm font-light"
+              checked={privacy === 'secret'}
+            />
+          </div>
         </div>
+        {privacy === 'private' && (
+          <InputDefault
+            className="group relative"
+            name="channelKey"
+            id="channelKey"
+            type="password"
+            description="Channel key"
+            defaultValue={key}
+            setName={setKey}
+          />
+        )}
       </div>
       <div className="mt-4 flex items-center gap-4 px-16">
         <p className="text-sm font-semibold uppercase">Member Limit:</p>

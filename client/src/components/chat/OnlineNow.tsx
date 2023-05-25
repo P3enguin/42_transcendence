@@ -50,16 +50,20 @@ function OnlineNow({ nickname, token, ws }: any) {
   async function openDMs(event: React.FormEvent, nickname2: string) {
     event.preventDefault();
 
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${nickname2}`,
-      {
-        credentials: 'include',
-      },
-    );
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${nickname2}`,
+        {
+          credentials: 'include',
+        },
+      );
 
-    if (response.status == 200 || response.status == 201) {
-      const dmData = await response.json();
-      router.push(`/chat/${dmData.channelId}`);
+      if (response.ok) {
+        const dmData = await response.json();
+        router.push(`/chat/${dmData.channelId}`);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

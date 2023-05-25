@@ -21,20 +21,38 @@ interface Message {
 }
 
 function Conversation({ player, jwt_token, id, setNew, ws }: any) {
-  const [showTopic, setShowTopic] = useState(true);
+  const [channel, setChannel] = useState<Channel | null | undefined>(undefined);
+
   const [showDetails, setShowDetails] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [memberSettings, setMemberSettings] = useState('');
 
+  const [blocked, setBlocked] = useState<Member[]>([]);
+
   const [messages, setMessages] = useState<Message[]>([]);
-
-  const [channel, setChannel] = useState<Channel | null | undefined>(undefined);
-
   const [message, setMessage] = useState('');
 
   const clientsMap = new Map();
 
-  async function getChannel(id: string) {
+  async function getBlocked() {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/blocked',
+        {
+          credentials: 'include',
+        },
+      );
+      if (response.ok) {
+        const result = await response.json();
+        console.log('blocked', result);
+        setBlocked(result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getChannel() {
     try {
       const response = await fetch(
         process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/channels/${id}`,
@@ -43,26 +61,24 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
         },
       );
 
-      const channelData = await response.json();
       const channelStatus = response.status;
+      const channelData = await response.json();
 
       if (channelStatus === 404) {
         setChannel(null);
         return;
       }
 
-      if (channelStatus === 200 && !channelData.isChannel) {
+      if (response.ok && !channelData.isChannel) {
         const user = channelData.members.filter(
           (member: Member) => member.nickname != player.nickname,
         )[0];
-        channelData.name = user.nickname;
-        channelData.topic = user.firstname + ' ' + user.lastname;
+        channelData.topic = '@' + user.nickname;
+        channelData.name = user.firstname + ' ' + user.lastname;
         channelData.avatar = user.avatar;
       }
 
       setChannel(channelData);
-
-      // Do something with the channel data, such as updating state
     } catch (error) {
       console.error(error);
     }
@@ -81,7 +97,7 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
       ).value;
     }
 
-    const res = await fetch(
+    const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/join',
       {
         method: 'POST',
@@ -93,8 +109,8 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
       },
     );
 
-    if (res.status == 200) {
-      getChannel(id);
+    if (response.ok) {
+      getChannel();
     }
   }
 
@@ -110,7 +126,8 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
     setShowDetails(false);
     setMemberSettings('');
 
-    getChannel(id);
+    getChannel();
+    getBlocked();
 
     const LoadOldMessages = async () => {
       try {
@@ -286,15 +303,21 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
             showSettings={setShowSettings}
             memberSettings={memberSettings}
             toggleMemberSettings={setMemberSettings}
+            blocked={blocked}
           />
         ))}
-      {!channel.isChannel && (
+      {!channel.isChannel && channel.members && (
         <DMDetails
           nickname={player.nickname}
-          channel={channel}
+          member={
+            channel.members.find(
+              (member) => member.nickname !== player.nickname,
+            ) ?? channel.members[0]
+          }
           isVisible={showDetails}
           toggleVisible={setShowDetails}
           ws={ws}
+          blocked={blocked}
         />
       )}
     </div>

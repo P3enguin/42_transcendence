@@ -8,9 +8,7 @@ function BlockedPlayers({ nickname }: { nickname: string }) {
     const fetchData = async () => {
       try {
         const resp = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_HOST +
-            '/players/blocked?' +
-            new URLSearchParams({ nickname: nickname }),
+          process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/blocked',
           {
             credentials: 'include',
           },

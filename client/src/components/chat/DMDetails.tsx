@@ -1,4 +1,4 @@
-import { Channel } from '@/interfaces/Channel';
+import { Channel, Member } from '@/interfaces/Channel';
 import StatusBubble from '../game/StatusBubble';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
@@ -7,44 +7,75 @@ import { useRouter } from 'next/router';
 import { RadioInput } from '../game/StartGame';
 import Link from 'next/link';
 
+interface GameInvite {
+  nickname: string;
+  avatar: string;
+  id: number;
+}
+
 export default function DMDetails({
   nickname,
-  channel,
+  member,
   isVisible,
   toggleVisible,
   ws,
+  blocked,
 }: {
   nickname: string;
-  channel: Channel;
+  member: Member;
   isVisible: boolean;
   toggleVisible: (isVisible: boolean) => void;
   ws: Socket;
+  blocked: Member[];
 }) {
   const [status, setStatus] = useState('');
   const [gameType, setGameType] = useState('NORMAL');
+  const [isBlocked, setBlocked] = useState(
+    blocked.find((user) => user.nickname === member.nickname) ? true : false,
+  );
   const router = useRouter();
 
-  async function blockUser(e: React.MouseEvent) {
-    e.preventDefault();
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/block',
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: channel.name }),
-        credentials: 'include',
-      },
-    );
-    if (response.ok) {
-      router.push('/chat');
+  async function blockUser() {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/block',
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname: member.nickname }),
+          credentials: 'include',
+        },
+      );
+      if (response.ok) {
+        setBlocked(true);
+        router.push('/chat');
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  const inviteFriend = (user: {
-    nickname: string;
-    avatar: string;
-    id: number;
-  }) => {
+  async function unblockUser() {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/unblock',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nickname: member.nickname }),
+          credentials: 'include',
+        },
+      );
+      if (response.ok) {
+        setBlocked(false);
+        toggleVisible(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const inviteFriend = (user: GameInvite) => {
     axios
       .get('/game/invite', { params: { user: user, gameType } })
       .then((res) => {
@@ -60,12 +91,8 @@ export default function DMDetails({
   };
 
   useEffect(() => {
-    if (channel.isChannel) {
-      setStatus('');
-      return;
-    }
     if (ws) {
-      ws.emit('getUserStatus', { name: channel.name }, (data: any) => {
+      ws.emit('getUserStatus', { name: member.nickname }, (data: any) => {
         console.log(data);
         setStatus(data);
       });
@@ -75,7 +102,7 @@ export default function DMDetails({
         ws.off('statusChange');
       }
     };
-  }, [ws, channel]);
+  }, [ws, member]);
 
   return (
     <div
@@ -93,32 +120,41 @@ export default function DMDetails({
         <div className="absolute h-[0.1rem] w-[45%] -rotate-45 transform rounded-sm bg-[#8BD9FF]"></div>
       </button>
       <div className="absolute right-5 top-5 flex flex-col gap-2">
-        <button
-          className="flex h-6 w-16 items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
-          onClick={blockUser}
-        >
-          <p className="fond-bold text-[10px] uppercase">Block</p>
-        </button>
+        {isBlocked ? (
+          <button
+            className="flex h-6 w-16 items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
+            onClick={unblockUser}
+          >
+            <p className="fond-bold text-[10px] uppercase">Unblock</p>
+          </button>
+        ) : (
+          <button
+            className="flex h-6 w-16 items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
+            onClick={blockUser}
+          >
+            <p className="fond-bold text-[10px] uppercase">Block</p>
+          </button>
+        )}
       </div>
       <div className="mt-10 flex w-full flex-col items-center justify-center gap-4">
         <StatusBubble
-          avatar={channel.avatar}
+          avatar={member.avatar}
           status={status}
           imageClassName="h-[100px] w-[100px]"
-          isChannel={channel.isChannel}
+          isChannel={false}
         />
         <div className="flex flex-col items-center gap-1">
           <Link
-            href={'/users/' + channel.name}
+            href={'/users/' + member.nickname}
             className="text-base font-bold hover:underline"
           >
-            {channel.topic}
+            {member.firstname + ' ' + member.lastname}
           </Link>
           <Link
-            href={'/users/' + channel.name}
+            href={'/users/' + member.nickname}
             className="text-[15px] font-semibold text-[#B4B4B4] hover:underline"
           >
-            @{channel.name}
+            @{member.nickname}
           </Link>
         </div>
       </div>
@@ -155,8 +191,13 @@ export default function DMDetails({
         <button
           className="mt-5 h-6 w-14 -translate-x-6 rounded-md bg-[#0097E2E6] text-sm font-normal hover:bg-[#0097E2] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
           onClick={(e) => {
+            if (!member.id) return;
             e.preventDefault();
-            // inviteFriend(friend);
+            inviteFriend({
+              nickname: member.nickname,
+              avatar: member.avatar,
+              id: member.id,
+            });
           }}
         >
           Invite

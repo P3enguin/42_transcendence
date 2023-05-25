@@ -8,6 +8,7 @@ export default function ChannelCategory({
   members,
   memberSettings,
   toggleMemberSettings,
+  blocked,
 }: {
   channel: Channel;
   nickname: string;
@@ -15,6 +16,7 @@ export default function ChannelCategory({
   members: Member[];
   memberSettings: string;
   toggleMemberSettings: (memberSettings: string) => void;
+  blocked: Member[];
 }) {
   return (
     <>
@@ -34,6 +36,7 @@ export default function ChannelCategory({
                 member={member}
                 memberSettings={memberSettings}
                 toggleMemberSettings={toggleMemberSettings}
+                blocked={blocked}
               />
             </div>
           ))}

@@ -207,6 +207,7 @@ export class ChatService {
         memberLimit: true,
         privacy: true,
         isChannel: true,
+        key: true,
         owner: {
           select: {
             nickname: true,
@@ -227,6 +228,7 @@ export class ChatService {
         },
         members: {
           select: {
+            id: true,
             nickname: true,
             avatar: true,
             firstname: true,
@@ -313,6 +315,7 @@ export class ChatService {
     }
 
     if (!channel.admins.find((admin) => admin.nickname === player.nickname)) {
+      delete channel.key;
       delete channel.mutes;
       delete channel.bans;
     }
@@ -344,6 +347,7 @@ export class ChatService {
       where: {
         isChannel: false,
         memberLimit: 2,
+        privacy: 'secret',
         members: {
           every: {
             OR: [{ nickname: player.nickname }, { nickname: nickname }],
@@ -375,6 +379,7 @@ export class ChatService {
       data: {
         channelId: generate(),
         isChannel: false,
+        privacy: 'secret',
         memberLimit: 2,
         owner: {
           connect: { id: player.id },
@@ -398,6 +403,7 @@ export class ChatService {
       where: { channelId: channelId },
       select: {
         channelId: true,
+        privacy: true,
         key: true,
         memberLimit: true,
         members: true,
@@ -414,7 +420,7 @@ export class ChatService {
       };
     }
 
-    if (channel.key && key !== channel.key) {
+    if (channel.privacy === 'private' && key !== channel.key) {
       return {
         status: 403,
         data: { error: 'Invalid key' },
@@ -646,7 +652,7 @@ export class ChatService {
     // Check if the user is already banned
     if (member.bans.find((mute) => mute.channelId === channel.id)) {
       return {
-        status: 401,
+        status: 403,
         data: { error: 'Member is already banned' },
       };
     }
@@ -755,7 +761,7 @@ export class ChatService {
     // Check if the member is not banned
     if (!member.bans.find((mute) => mute.channelId === channel.id)) {
       return {
-        status: 401,
+        status: 403,
         data: { error: 'Member is not banned' },
       };
     }
@@ -843,7 +849,7 @@ export class ChatService {
     // Check if the user is already muted
     if (member.mutes.find((mute) => mute.channelId === channel.id)) {
       return {
-        status: 401,
+        status: 403,
         data: { error: 'Member is already muted' },
       };
     }
@@ -948,7 +954,7 @@ export class ChatService {
     // Check if the member is not muted
     if (!member.mutes.find((mute) => mute.channelId === channel.id)) {
       return {
-        status: 401,
+        status: 403,
         data: { error: 'Member is not muted' },
       };
     }
@@ -1129,6 +1135,15 @@ export class ChatService {
   ) {
     const { name, topic, key, memberLimit, privacy } = createChannelDto;
 
+    if (privacy === 'private' && (!key || !key.length)) {
+      return {
+        status: 400,
+        data: {
+          error: 'Key cannot be empty',
+        },
+      };
+    }
+
     const updatedChannel = await this.prisma.room.update({
       select: {
         channelId: true,
@@ -1167,6 +1182,134 @@ export class ChatService {
     return {
       status: 200,
       data: updatedChannel,
+    };
+  }
+
+  async addAdmin(player: Player, channelId: string, nickname: string) {
+    const user = await this.prisma.player.findUnique({
+      select: {
+        id: true,
+      },
+      where: {
+        nickname: nickname,
+      },
+    });
+
+    const channel = await this.prisma.room.findFirst({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (player.nickname !== channel.owner.nickname) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to manage channel admins" },
+      };
+    }
+
+    if (!channel.members.find((member) => member.nickname !== nickname)) {
+      return {
+        status: 404,
+        data: {
+          error: 'User not found',
+        },
+      };
+    }
+
+    if (channel.admins.find((admin) => admin.nickname !== nickname)) {
+      return {
+        status: 403,
+        data: {
+          error: 'User is already an administrator',
+        },
+      };
+    }
+
+    await this.prisma.room.update({
+      where: {
+        channelId,
+      },
+      data: {
+        admins: {
+          connect: { id: user.id },
+        },
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully added user to administrators' },
+    };
+  }
+
+  async removeAdmin(player: Player, channelId: string, nickname: string) {
+    const user = await this.prisma.player.findUnique({
+      select: {
+        id: true,
+      },
+      where: {
+        nickname: nickname,
+      },
+    });
+
+    const channel = await this.prisma.room.findFirst({
+      select: {
+        id: true,
+        owner: true,
+        admins: true,
+        members: true,
+      },
+      where: {
+        channelId: channelId,
+      },
+    });
+
+    if (player.nickname !== channel.owner.nickname) {
+      return {
+        status: 403,
+        data: { error: "You don't have permissions to manage channel admins" },
+      };
+    }
+
+    if (!channel.members.find((member) => member.nickname !== nickname)) {
+      return {
+        status: 404,
+        data: {
+          error: 'User not found',
+        },
+      };
+    }
+
+    if (!channel.admins.find((admin) => admin.nickname !== nickname)) {
+      return {
+        status: 403,
+        data: {
+          error: 'User is not an administrator',
+        },
+      };
+    }
+
+    await this.prisma.room.update({
+      where: {
+        channelId,
+      },
+      data: {
+        admins: {
+          disconnect: { id: user.id },
+        },
+      },
+    });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully added user to administrators' },
     };
   }
 
