@@ -40,7 +40,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     try {
       const user = await this.jwt.verifyToken(client.handshake.auth.token);
       if (!user) {
-        client.disconnect(true);
         return;
       }
       client.handshake.query.user = JSON.stringify(user);
@@ -52,11 +51,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // since we have kicked out the client from the default room, we need to emit to the client directly
       client.emit('connected', 'Welcome, How may I help you!');
       this.server.to(`${user.id}_status`).emit('statusChange', {
-        friend: {
-          id: user.id,
-          nickname: user.nickname,
-          avatar: user.avatar,
-        },
+        id: user.id,
+        nickname: user.nickname,
+        avatar: user.avatar,
         status: this.userStatus(user.nickname),
       });
     } catch (error) {
@@ -69,7 +66,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (client.handshake.query.user as string)
       user = JSON.parse(client.handshake.query.user as string);
     if (!user) {
-      client.disconnect();
       return;
     }
     this.logger.log(`${user.nickname} disconnected: ${client.id}`);
@@ -90,7 +86,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (!user) {
-      client.disconnect();
       return;
     }
     // this.logger.log(`${player.nickname} is away`);
@@ -110,7 +105,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (!user) {
-      client.disconnect();
       return;
     }
     // this.logger.log(`${player.nickname} is away`);
@@ -130,7 +124,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (!user) {
-      client.disconnect();
       return;
     }
     // this.logger.log(`${Player.nickname} is online`);
@@ -149,7 +142,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     if (!user) {
-      // client.disconnect();
       return;
     }
     // console.log('getOnlineFriends', player.nickname);
@@ -173,7 +165,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (!user) {
-      client.disconnect();
       return;
     }
     console.log('gameInvite', data);
@@ -195,7 +186,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (!user) {
-      client.disconnect();
       return;
     }
     // console.log('denyInvitation', data);
@@ -218,7 +208,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: any,
   ) {
     if (!user) {
-      client.disconnect();
       return;
     }
     return this.userStatus(data.name);

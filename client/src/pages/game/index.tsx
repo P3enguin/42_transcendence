@@ -8,7 +8,7 @@ import NextApiRequest from 'next';
 import Head from 'next/head';
 import { Socket } from 'socket.io-client';
 
-function Game({ ws }: { ws: Socket }) {
+function Game({ ws, wsConnected }: { ws: Socket; wsConnected: boolean }) {
   return (
     <>
       <Head>
@@ -16,7 +16,7 @@ function Game({ ws }: { ws: Socket }) {
       </Head>
 
       <div className="m-5 flex h-[70%]  min-h-[700px] flex-col rounded-2xl border border-neutral-300 sm:m-20 lg:min-w-[60%]">
-        <OnlineFriends ws={ws} />
+        <OnlineFriends ws={ws} wsConnected={wsConnected} />
         <div className="min-h-[1px] w-1/2 self-center bg-neutral-300 sm:m-4"></div>
         <div className="flex h-full w-full flex-col  md:h-1/3 md:flex-row">
           <StartGame />

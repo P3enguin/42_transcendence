@@ -17,6 +17,7 @@ export interface GameProps {
   res: any;
   params: { id: string };
   ws: Socket;
+  wsConnected: boolean;
 }
 
 export interface GameRules {
@@ -32,7 +33,7 @@ export interface Player {
   score: number;
 }
 
-const PlayGame = ({ jwt_token, res, params, ws }: GameProps) => {
+const PlayGame = ({ jwt_token, res, params, ws, wsConnected }: GameProps) => {
   const router = useRouter();
   const [redirectTime, setRedirectTime] = useState<number>(3);
   const [ruleTime, setRuleTime] = useState<number>(10);
@@ -54,6 +55,17 @@ const PlayGame = ({ jwt_token, res, params, ws }: GameProps) => {
   });
   const [gameOn, setGameOn] = useState<boolean>(false);
 
+  const redirectAfter = (seconds: number, redirect: boolean) => {
+    let intervalId = setTimeout(() => {
+      if (seconds >= 0) {
+        setRedirectTime(seconds);
+        redirectAfter(seconds - 1, redirect);
+      } else if (redirect) {
+        router.push('/game');
+      }
+    }, 1000);
+  };
+
   useEffect(() => {
     console.log(res);
     socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/game`, {
@@ -61,17 +73,6 @@ const PlayGame = ({ jwt_token, res, params, ws }: GameProps) => {
         token: jwt_token,
       },
     });
-
-    const redirectAfter = (seconds: number, redirect: boolean) => {
-      let intervalId = setTimeout(() => {
-        if (seconds >= 0) {
-          setRedirectTime(seconds);
-          redirectAfter(seconds - 1, redirect);
-        } else if (redirect) {
-          router.push('/game');
-        }
-      }, 1000);
-    };
 
     if (res.message === 'Oki') {
       setLoading(true);
@@ -161,14 +162,6 @@ const PlayGame = ({ jwt_token, res, params, ws }: GameProps) => {
           socket.disconnect();
         });
       });
-
-      if (ws) {
-        ws.on('denyInvitation', (data: any) => {
-          console.log('denyInvitation', data);
-          redirectAfter(redirectTime, true);
-          setError(`${data.user.nickname} has denied your invitation`);
-        });
-      }
     } else {
       socket.disconnect();
       redirectAfter(redirectTime, true);
@@ -182,12 +175,22 @@ const PlayGame = ({ jwt_token, res, params, ws }: GameProps) => {
       socket.off('updateScore');
       socket.off('gameOver');
       socket.off('gameRules');
-      if (ws) 
-        ws.off('denyInvitation');
+      if (ws) ws.off('denyInvitation');
       socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt_token, params, res]);
+
+  useEffect(() => {
+    if (ws && wsConnected) {
+      ws.on('denyInvitation', (data: any) => {
+        console.log('denyInvitation', data);
+        redirectAfter(redirectTime, true);
+        setError(`${data.user.nickname} has denied your invitation`);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wsConnected, ws]);
 
   return (
     <>

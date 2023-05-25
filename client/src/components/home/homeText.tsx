@@ -1,5 +1,4 @@
-import { Props } from '@headlessui/react/dist/types';
-import { AnimateSharedLayout, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 export interface handleFunc {
   handleJoin: (event: React.MouseEvent) => void;
@@ -16,10 +15,10 @@ function HomeText({ handleJoin }: handleFunc) {
         exit={{ opacity: 0 }}
       >
         <h3 className=" mb-1 text-white lg:mb-10  text-4xl lg:text-5xl">
-          Ponigator
+          Ponginator
         </h3>
         <p className="mt-4 mb-1 2xl:text-3xl  md:max-2xl:text-2xl text-xl leading-relaxed text-white lg:mb-10  ">
-          The Ultimate Exprerience For The Mighty Ping Context!
+          The Ultimate Experience For The Mighty Ping Context!
         </p>
         <div className="pt-5">
           <motion.div
