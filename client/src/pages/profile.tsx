@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import ProfileDisplay from '@/components/profile/ProfileDisplay';
 import ProfileStats from '@/components/profile/ProfileStats';
 import Head from 'next/head';
+import { Socket } from 'socket.io-client';
 
 interface player {
   nickname: string;
@@ -20,6 +21,7 @@ interface player {
     XP: number;
     requiredXP: number;
   };
+  ws :Socket;
 }
 
 function PlayerProfile({
@@ -34,6 +36,7 @@ function PlayerProfile({
   rankId,
   level,
   xp,
+  ws,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(false);
@@ -62,7 +65,7 @@ function PlayerProfile({
             rankId={rankId}
             level={level}
           />
-          <ProfileStats nickname={nickname} userProfile={true} />
+          <ProfileStats nickname={nickname} userProfile={true}  ws={ws}/>
         </div>
       </>
     );
