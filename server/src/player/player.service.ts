@@ -8,6 +8,7 @@ import { Response } from 'express';
 import * as argon2 from 'argon2';
 import * as fs from 'fs';
 import { send } from 'process';
+import { DataDTO, PasswordDTO } from './dto/player.dto';
 
 function calculateXP(level: number, totalXP: number) {
   const requiredXP = Math.floor(100 * Math.pow(1.6, level - 1));
@@ -122,7 +123,7 @@ export class PlayerService {
       if (blockedPlayers.includes(player.nickname)) {
         throw new Error('Cannot Send request');
       }
-      
+
       const receivedRequests = await this.prisma.request.findMany({
         where: {
           toPlayerId: player.id,
@@ -628,11 +629,11 @@ export class PlayerService {
     }
   }
 
-  async changeData(data: any, res: Response) {
+  async changeData(player: Player, data: DataDTO, res: Response) {
     try {
       await this.prisma.player.update({
         where: {
-          id: data.user.id,
+          id: player.id,
         },
         data: {
           nickname: data.nickname,
@@ -655,12 +656,12 @@ export class PlayerService {
     }
   }
 
-  async changePassowrd(data: any, res: Response) {
+  async changePassowrd(player: Player, password: PasswordDTO, res: Response) {
     try {
       const hash = await argon2.hash(data.password);
       await this.prisma.player.update({
         where: {
-          id: data.user.id,
+          id: player.id,
         },
         data: {
           password: hash,

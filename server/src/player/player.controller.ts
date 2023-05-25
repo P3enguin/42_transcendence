@@ -9,6 +9,7 @@ import {
   Res,
   Query,
   Patch,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Player } from '@prisma/client';
@@ -19,6 +20,7 @@ import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response, query } from 'express';
 import { GetPlayer } from 'src/auth/decorator';
+import { DataDTO, PasswordDTO } from './dto/player.dto';
 
 interface queryParam {
   nickname: string;
@@ -46,7 +48,7 @@ export class PlayerController {
 
   @Get('data')
   getData(
-    @GetPlayer() player: any,
+    @GetPlayer() player: Player,
     @Query() query: queryParam,
     @Res() res: Response,
   ) {
@@ -62,13 +64,21 @@ export class PlayerController {
   }
 
   @Patch('data')
-  changeData(@Req() req: Request, @Res() res: Response) {
-    return this.playerService.changeData(req.body, res);
+  changeData(
+    @GetPlayer() player: Player,
+    @Res() res: Response,
+    @Body() dto: DataDTO,
+  ) {
+    return this.playerService.changeData(player, dto, res);
   }
 
   @Patch('password')
-  changePassword(@Req() req: Request, @Res() res: Response) {
-    return this.playerService.changePassowrd(req.body, res);
+  changePassword(
+    @GetPlayer() Player: Player,
+    @Body() dto: PasswordDTO,
+    @Res() res: Response,
+  ) {
+    return this.playerService.changePassowrd(Player,dto, res);
   }
 
   //------------------------------{ Titles }----------------------------------
@@ -146,7 +156,7 @@ export class PlayerController {
     @Res() res: Response,
     @Query() query: queryParam,
   ) {
-    return this.playerService.GetFriends(query.nickname,req, res);
+    return this.playerService.GetFriends(query.nickname, req, res);
   }
 
   @Patch('block')
