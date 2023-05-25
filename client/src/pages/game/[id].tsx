@@ -222,7 +222,7 @@ const PlayGame = ({ jwt_token, res, params, ws, wsConnected }: GameProps) => {
         {gameOn && (
           <Pong gameRef={gameRef} socket={socket} position={Position} />
         )}
-        {loading && !error && (
+        {loading && !error && Position != 'spectator' && (
           <div className="m-auto flex flex-col items-center">
             <DotLoader
               color="#ffffff"

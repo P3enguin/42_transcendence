@@ -47,7 +47,6 @@ export class GameService {
         },
       },
     });
-    console.log(player.status.rank.rankId);
     const game = this.getAvailableRankedGame(player.status.rank.rankId);
     if (game) {
       game.players.push(user);
@@ -321,20 +320,14 @@ export class GameService {
         },
       },
     });
-    console.log('saving game...') 
     if (!game.isTimeAttack()) {
-      console.log('not time attack') 
-      await this.levelUp(winner, __winner.score, looser, __looser.score);
-      console.log('leveled up') 
-      console.log(game.type); 
+      await this.levelUp(winner, __winner.score, looser, __looser.score); 
       if (game.isRanked()) {
-        console.log('ranked') 
         await this.rankUp(winner, looser);
       }
     } else {
       await this.getTimeAttakXP(winner, looser);
     }
-    console.log('game saved');
     this.deleteGame(game.id);
   }
 }

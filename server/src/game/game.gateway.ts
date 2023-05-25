@@ -119,9 +119,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             this.server
               .to('LiveGames')
               .emit('newGame', this.gameService.getLiveGame(game));
-            setTimeout(() => {
               this.startGame(game);
-            }, 1000);
           }, 1000 * 12);
         }
         return { status: 200, message: 'Joined' };

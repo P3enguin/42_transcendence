@@ -48,15 +48,15 @@ export default function LiveGames({ jwt_token }: { jwt_token: string }) {
   }, []);
 
   return (
-    <div className="w-full rounded-[20px] border border-white pb-3 pr-3">
+    <div className="w-full max-h-[600px]  min-h-[250px] rounded-[20px] border border-white">
       <div className="flex items-center pl-4 pt-4">
         <div className="h-[12px] w-[12px] rounded-full bg-[#EB2230]"></div>
         <h1 className="pl-2 text-xl font-bold uppercase">Live Games:</h1>
       </div>
-      <div className="scrollbar h-[580px] overflow-auto">
+      <div className="scrollbar overflow-auto">
         <ul className="flex h-full flex-col px-9 py-4">
           {games.length == 0 && (
-            <div className="flex h-full w-full items-center justify-center">
+            <div className="flex h-full w-full items-center justify-center mt-[12%]">
               <p>No live games</p>
             </div>
           )}

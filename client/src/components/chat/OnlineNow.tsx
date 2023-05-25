@@ -19,7 +19,7 @@ function OnlineNow({ ws, wsConnected }: any) {
   useEffect(() => {
     if (ws && wsConnected) {
       ws.emit('getOnlineFriends', (res: []) => {
-        setFriends(res);
+        setFriends(res.filter((friend: Status) => friend.status !== 'OFFLINE'));
       });
       ws.on('statusChange', (data: Status) => {
         if (data.status === 'OFFLINE') {

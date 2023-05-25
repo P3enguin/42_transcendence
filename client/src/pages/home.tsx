@@ -44,16 +44,6 @@ export async function getServerSideProps({ req }: any) {
     );
     const channelsData = await channelsRes.json();
 
-    const levelLeaderBoardRes = await fetch(
-      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/players/leaderboard',
-      {
-        headers: {
-          Cookie: req.headers.cookie,
-        },
-      },
-    );
-    const levelLeaderBoardData = await levelLeaderBoardRes.json();
-
     const rankLeaderBoardRes = await fetch(
       process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/rank/leaderboard',
       {
@@ -70,7 +60,6 @@ export async function getServerSideProps({ req }: any) {
         jwt_token,
         channels: channelsData,
         leaderBoard: {
-          level: levelLeaderBoardData,
           rank: rankLeaderBoardData,
         },
       },

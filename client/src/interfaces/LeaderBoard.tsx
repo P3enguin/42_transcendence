@@ -20,6 +20,5 @@ export interface Rank {
 }
 
 export interface LeaderBoard {
-  level: Level[];
   rank: Rank[];
 }
