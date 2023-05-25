@@ -19,12 +19,14 @@ function ProfileStats({
   blockedByFriend,
   blockedByPlayer,
   ws,
+  wsConnected,
 }: {
   nickname: string;
   userProfile: boolean;
   blockedByFriend?: boolean;
   blockedByPlayer?: boolean;
   ws: Socket;
+  wsConnected: boolean;
 }) {
   const [selected, setSelected] = useState(-1);
 
@@ -120,7 +122,12 @@ function ProfileStats({
             you are blocked !
           </div>
         ) : selected == 0 ? (
-          <FriendStats nickname={nickname} userProfile={userProfile} ws={ws} />
+          <FriendStats
+            nickname={nickname}
+            userProfile={userProfile}
+            ws={ws}
+            wsConnected={wsConnected}
+          />
         ) : selected == 1 ? (
           <AchievementStats />
         ) : selected == 2 ? (

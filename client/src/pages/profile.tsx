@@ -21,7 +21,8 @@ interface player {
     XP: number;
     requiredXP: number;
   };
-  ws :Socket;
+  ws: Socket;
+  wsConnected: boolean;
 }
 
 function PlayerProfile({
@@ -37,6 +38,7 @@ function PlayerProfile({
   level,
   xp,
   ws,
+  wsConnected,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(false);
@@ -51,9 +53,13 @@ function PlayerProfile({
         <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
           <ProfileDisplay
             wp={
-              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/wallpapers/' + wallpaper
+              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+              '/wallpapers/' +
+              wallpaper
             }
-            pfp={process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + avatar}
+            pfp={
+              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + avatar
+            }
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}
@@ -65,7 +71,12 @@ function PlayerProfile({
             rankId={rankId}
             level={level}
           />
-          <ProfileStats nickname={nickname} userProfile={true}  ws={ws}/>
+          <ProfileStats
+            nickname={nickname}
+            userProfile={true}
+            ws={ws}
+            wsConnected={wsConnected}
+          />
         </div>
       </>
     );

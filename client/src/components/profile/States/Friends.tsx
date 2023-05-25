@@ -16,13 +16,21 @@ function FriendStats({
   nickname,
   userProfile,
   ws,
+  wsConnected,
 }: {
   nickname: string;
   userProfile: boolean;
   ws: Socket;
+  wsConnected: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [friends, setFriends] = useState<friendsInterface[]>([]);
+
+  const statusDisconnect = (id: number) => {
+    if (ws && wsConnected) {
+      ws.emit('unfollowStatus', id);
+    }
+  };
 
   useEffect(() => {
     if (!userProfile) {
@@ -47,30 +55,24 @@ function FriendStats({
       };
       fetchData();
     } else {
-      if (ws) {
+      if (ws && wsConnected) {
         ws.emit('getOnlineFriends', (res: []) => {
           setFriends(res);
           setIsLoading(false);
         });
 
-        // ws.on('statusChange', (data: friendsInterface) => {
-        //   if (data.status === 'OFFLINE') {
-        //     setFriends((prev) => {
-        //       return prev.filter((friend) => friend.id !== data.id);
-        //     });
-        //   } else {
-        //     setFriends((prev) => {
-        //       if (prev.find((friend) => friend.id === data.id)) {
-        //         return prev.map((friend) => {
-        //           if (friend.id === data.id) {
-        //             return data;
-        //           }
-        //           return friend;
-        //         });
-        //       } else return [...prev, data];
-        //     });
-        //   }
-        // });
+        ws.on('statusChange', (data: friendsInterface) => {
+          setFriends((prev) => {
+            if (prev.find((friend) => friend.id === data.id)) {
+              return prev.map((friend) => {
+                if (friend.id === data.id) {
+                  return data;
+                }
+                return friend;
+              });
+            } else return [...prev, data];
+          });
+        });
       }
       return () => {
         if (ws) {
@@ -78,7 +80,8 @@ function FriendStats({
         }
       };
     }
-  }, [nickname, ws]);
+    //eslint-disable-next-line
+  }, [nickname, ws, wsConnected]);
 
   async function openDMs(event: React.MouseEvent, nickname2: string) {
     event.preventDefault();
@@ -96,7 +99,11 @@ function FriendStats({
     }
   }
 
-  async function blockFriend(e: React.MouseEvent, nickname: string) {
+  async function blockFriend(
+    e: React.MouseEvent,
+    nickname: string,
+    id: number,
+  ) {
     e.preventDefault();
     try {
       const resp = await fetch(
@@ -109,6 +116,7 @@ function FriendStats({
         },
       );
       if (resp.ok) {
+        statusDisconnect(id);
         const newFriendList = friends.filter(
           (friend) => friend.nickname != nickname,
         );
@@ -143,6 +151,7 @@ function FriendStats({
               userProfile={userProfile}
               blockFriend={blockFriend}
               status={elem.status}
+              id={elem.id}
             />
           </div>
         ))}

@@ -8,7 +8,7 @@ interface PLayerProps {
   id?: number;
   status?: string;
   userProfile?: boolean;
-  blockFriend?(e: React.MouseEvent, nickname: string): Promise<void>;
+  blockFriend?(e: React.MouseEvent, nickname: string,id?:number): Promise<void>;
   unblockPlayer?(e: React.MouseEvent, nickname: string): Promise<void>;
   openDMs?(event: React.FormEvent, nickname2: string): Promise<void>;
 }
@@ -20,6 +20,7 @@ function Player({
   blockFriend,
   openDMs,
   status,
+  id,
 }: PLayerProps) {
   return (
     <div className="flex  items-center justify-between rounded-xl border p-1 border-[#0097E2]">
@@ -64,7 +65,7 @@ function Player({
                 className="h-[17px] w-[17px] "
               />
             </button>
-            <button onClick={(event) => blockFriend!(event, nickname)}>
+            <button onClick={(event) => blockFriend!(event, nickname,id)}>
               <Image
                 width={17}
                 height={17}

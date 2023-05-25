@@ -213,6 +213,19 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return this.userStatus(data.name);
   }
 
+  @SubscribeMessage('unfollowStatus')
+  handleUnfollowStatus(
+    @GetPlayer() user: Player,
+    @ConnectedSocket() client: Socket,
+    @MessageBody() id: number,
+  ) {
+    if (!user) {
+      return;
+    }
+    this.logger.log(`${user.nickname} unfollowing ${id}`);
+    client.leave(`${id}_status`);
+  }
+
   userStatus(nickname: string) {
     const room = this.server.sockets.adapter.rooms.get(nickname);
     let online = 0;
