@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { SideBarIcon, SearchBarIcon, NotificationIcon } from '../icons/Icons';
 import { NotiDrop } from './Notification';
 import { useRouter } from 'next/router';
+import { RefObject } from 'react';
 
 interface FunctionProps {
   toggleSideBar: () => void;
@@ -16,7 +17,7 @@ interface FunctionProps {
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
   const [notif, setNotif] = useState(false);
   const router = useRouter();
-  const notificationRef = useRef<any>(null); // Add the useRef hook
+  const notificationRef = useRef<HTMLDivElement>(null); // Add the useRef hook
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -28,11 +29,11 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
   }
 
   useEffect(() => {
-    const closeNoti = (e: any) => {
+    const closeNoti = (e: MouseEvent) => {
       if (
         notif &&
         notificationRef.current &&
-        !notificationRef.current.contains(e.target)
+        !notificationRef.current.contains(e.target as Node)
       ) {
         setNotif(false);
       }
@@ -72,7 +73,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             className=""
             src="/logo.svg"
             alt="logo"
-            width={39}
+            width={41}
             height={41}
           />
         </Link>
