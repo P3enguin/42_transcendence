@@ -78,7 +78,7 @@ export class PlayerController {
     @Body() dto: PasswordDTO,
     @Res() res: Response,
   ) {
-    return this.playerService.changePassowrd(Player,dto, res);
+    return this.playerService.changePassowrd(Player, dto.password, res);
   }
 
   //------------------------------{ Titles }----------------------------------

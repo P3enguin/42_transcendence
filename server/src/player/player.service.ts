@@ -127,6 +127,7 @@ export class PlayerService {
       const receivedRequests = await this.prisma.request.findMany({
         where: {
           toPlayerId: player.id,
+          fromPlayerId:receiverId.id,
           status: {
             in: ['accepted'],
           },
@@ -265,6 +266,7 @@ export class PlayerService {
         },
       });
       if (!request) throw new Error('Request not found');
+
       // change request status to accpeted
       await this.prisma.request.update({
         where: {
@@ -294,7 +296,7 @@ export class PlayerService {
           id: requestId,
         },
       });
-      if (request.status == 'accepted')
+      if (request.status == 'accepted' || request.status == 'rejected')
         throw new Error('Cannot cancel request');
       else {
         await this.prisma.request.delete({
@@ -656,9 +658,9 @@ export class PlayerService {
     }
   }
 
-  async changePassowrd(player: Player, password: PasswordDTO, res: Response) {
+  async changePassowrd(player: Player, password: string, res: Response) {
     try {
-      const hash = await argon2.hash(data.password);
+      const hash = await argon2.hash(password);
       await this.prisma.player.update({
         where: {
           id: player.id,

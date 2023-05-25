@@ -50,26 +50,27 @@ function FriendStats({
       if (ws) {
         ws.emit('getOnlineFriends', (res: []) => {
           setFriends(res);
+          setIsLoading(false);
         });
 
-        ws.on('statusChange', (data: friendsInterface) => {
-          if (data.status === 'OFFLINE') {
-            setFriends((prev) => {
-              return prev.filter((friend) => friend.id !== data.id);
-            });
-          } else {
-            setFriends((prev) => {
-              if (prev.find((friend) => friend.id === data.id)) {
-                return prev.map((friend) => {
-                  if (friend.id === data.id) {
-                    return data;
-                  }
-                  return friend;
-                });
-              } else return [...prev, data];
-            });
-          }
-        });
+        // ws.on('statusChange', (data: friendsInterface) => {
+        //   if (data.status === 'OFFLINE') {
+        //     setFriends((prev) => {
+        //       return prev.filter((friend) => friend.id !== data.id);
+        //     });
+        //   } else {
+        //     setFriends((prev) => {
+        //       if (prev.find((friend) => friend.id === data.id)) {
+        //         return prev.map((friend) => {
+        //           if (friend.id === data.id) {
+        //             return data;
+        //           }
+        //           return friend;
+        //         });
+        //       } else return [...prev, data];
+        //     });
+        //   }
+        // });
       }
       return () => {
         if (ws) {
@@ -121,6 +122,7 @@ function FriendStats({
     }
   }
 
+  console.log(friends);
   if (isLoading) return <div className="text-center">Loading Data...</div>;
   else {
     if (friends.length === 0) {
@@ -136,14 +138,11 @@ function FriendStats({
           <div key={index} className="w-[190px]">
             <Player
               nickname={elem.nickname}
-              avatar={
-                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
-                '/avatars/' +
-                elem.avatar
-              }
+              avatar={elem.avatar}
               openDMs={openDMs}
               userProfile={userProfile}
               blockFriend={blockFriend}
+              status={elem.status}
             />
           </div>
         ))}

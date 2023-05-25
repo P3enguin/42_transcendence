@@ -22,23 +22,25 @@ function Player({
   status,
 }: PLayerProps) {
   return (
-    <div className="flex  items-center justify-between rounded-xl border p-1">
+    <div className="flex  items-center justify-between rounded-xl border p-1 border-[#0097E2]">
       {!userProfile && (
         <>
-          <div className="flex w-3/4 flex-row items-center gap-1">
+          <div className="flex w-full flex-row items-center gap-1 ">
             <Link href={'/users/' + nickname}>
               <Image
                 width={45}
                 height={45}
-                className="h-[45px] w-[45px] rounded-full border sm:h-[48px] sm:w-[48px]"
+                className="h-[45px] w-[45px] rounded-full  border-2 border-[#0097E2] border-opacity-40 object-cover transition
+                duration-300 ease-in hover:border-opacity-100 sm:h-[48px] sm:w-[48px]"
                 src={
-                  //   process.env.NEXT_PUBLIC_BACKEND_HOST + '/avatars/' + elem.avatar
+                  process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+                  '/avatars/' +
                   avatar
                 }
                 alt="pfp"
               />
             </Link>
-            <strong className="text-sm">{'@' + nickname}</strong>
+            <strong className="text-sm w-[60%] text-center">{'@' + nickname}</strong>
           </div>
         </>
       )}
@@ -80,13 +82,14 @@ function Player({
 
 export function Blocked({ nickname, avatar, unblockPlayer }: PLayerProps) {
   return (
-    <div className="flex  items-center justify-between rounded-xl border p-1">
+    <div className="flex  items-center justify-between rounded-xl border p-1 border-[#0097E2]">
       <div className="flex w-3/4 flex-row items-center gap-1">
         <Link href={'/users/' + nickname}>
           <Image
             width={45}
             height={45}
-            className="h-[45px] w-[45px] rounded-full border sm:h-[48px] sm:w-[48px]"
+            className="h-[45px] w-[45px] rounded-full border-2 border-[#0097E2] border-opacity-40 object-cover transition
+            duration-300 ease-in hover:border-opacity-100 sm:h-[48px] sm:w-[48px]"
             src={avatar}
             alt="pfp"
           />

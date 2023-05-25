@@ -104,7 +104,8 @@ function NotiAddFriend({
         <Image
           width={200}
           height={200}
-          className="h-12 w-12 rounded-full border border-gray-100 shadow-sm"
+          className="h-12 w-12 rounded-full border-2 border-[#0097E2] border-opacity-40 object-cover transition
+          duration-300 ease-in hover:border-opacity-100 sm:h-[48px] sm:w-[48px]"
           src={image}
           alt="user image"
         />
@@ -145,7 +146,8 @@ function NotiAccepted({
         <Image
           width={200}
           height={200}
-          className="h-12 w-12 rounded-full border border-gray-100 shadow-sm"
+          className="h-12 w-12 rounded-full border-2 border-[#0097E2] border-opacity-40 object-cover shadow-sm
+          transition duration-300 ease-in hover:border-opacity-100 sm:h-[48px] sm:w-[48px]"
           src={image}
           alt="user image"
         />
@@ -171,11 +173,12 @@ function NotiRejected({
 }: NotifInterface) {
   return (
     <div className="-mx-2 flex items-center border-b px-4 py-3">
-      <Link  href={'/users/' + nickname} className="w-1/5">
+      <Link href={'/users/' + nickname} className="w-1/5">
         <Image
           width={200}
           height={200}
-          className="h-12 w-12 rounded-full border border-gray-100 shadow-sm"
+          className="h-12 w-12 rounded-full border-2 border-[#0097E2] border-opacity-40 object-cover transition
+          duration-300 ease-in hover:border-opacity-100 sm:h-[48px] sm:w-[48px]"
           src={image}
           alt="user image"
         />
