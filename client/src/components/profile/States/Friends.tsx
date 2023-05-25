@@ -141,7 +141,7 @@ function FriendStats({
       }
     }
     return (
-      <div className="flex h-3/4 min-h-[233px] w-full flex-wrap justify-center p-6 sm:gap-10 ">
+      <div className="flex h-3/4 min-h-[233px] w-full flex-wrap justify-center p-6 sm:gap-10 gap-4 ">
         {friends.map((elem, index) => (
           <div key={index} className="w-[190px]">
             <Player
