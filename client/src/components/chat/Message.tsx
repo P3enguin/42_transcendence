@@ -13,21 +13,27 @@ function Message({ message, side }: { message: any; side: boolean }) {
     <>
       {side && (
         // div className=" relative left-[36%] flex flex-row-reverse rounded-full bg-[#0097E2] max-w-[70%] lg:max-w-[50%] mb-1 mt-2">
-        <div className="relative my-3 flex max-w-[50%] self-end 
-        rounded-xl bg-[#0097E2] p-2 px-5 md:max-w-[70%]">
+        <div
+          className="relative my-3 flex max-w-[50%] self-end 
+        rounded-xl bg-[#0097E2] p-2 px-5 md:max-w-[70%]"
+        >
+          <p className="absolute -top-5 right-2 w-[16ch] text-right  text-[13px]">
+            {message.sender}
+          </p>
           <Image
             src={avatar}
             alt="channel"
-            width={40}
-            height={40}
-            className="absolute bottom-0 right-0 h-[40px] w-[40px] border translate-x-[107%] translate-y-[50%] rounded-full"
+            width={45}
+            height={45}
+            className="absolute bottom-0 right-0 h-[45px] w-[45px] translate-x-[107%]
+            translate-y-[50%] rounded-full border-2 border-[#0097E2] border-opacity-40
+            object-cover transition duration-300 ease-in hover:border-opacity-100"
           />
           <object
             data="/chat_tail_right.svg"
             type="image/svg+xml"
             className=" absolute bottom-0 right-0 -z-10 translate-x-1"
           ></object>
-          <p className="absolute -top-4 right-3.5 text-sm ">{message.sender}</p>
           <p
             className="break-words text-left text-black"
             style={{
@@ -52,13 +58,14 @@ function Message({ message, side }: { message: any; side: boolean }) {
           <Image
             src={avatar}
             alt="channel"
-            width={40}
-            height={40}
-            className="absolute bottom-0 left-0 h-[40px] w-[40px] border -translate-x-11 translate-y-[50%] rounded-full"
+            width={45}
+            height={45}
+            className="absolute bottom-0 left-0 h-[45px] w-[45px] -translate-x-[107%]
+            translate-y-[50%] rounded-full border-2 border-[#01FD91] border-opacity-40
+            object-cover transition duration-300 ease-in hover:border-opacity-100"
           />
-          <p className="absolute -top-4 left-3.5 flex text-sm ">
-            {' '}
-            {message.sender}{' '}
+          <p className="absolute -top-5 left-2 w-[16ch] text-left  text-[13px]">
+            {message.sender}
           </p>
           <p
             className=" break-words text-left text-black"

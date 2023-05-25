@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import StatusBubble from './StatusBubble';
 
 interface ScoreBoardProps {
   gameOn: boolean;
@@ -74,31 +75,20 @@ const ScoreBoard = (props: ScoreBoardProps) => {
   return (
     <>
       {props.gameOn && (
-        <div className="felx my-6 w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3">
+        <div className="my-6 w-[50%] min-w-[300px] max-w-[800px] rounded-2xl border p-3">
           <p className="text-center text-xl ">{formatTime(elapsedTime)}</p>
           <div className="flex justify-between">
-            <div className="flex flex-col items-center">
-              <Image
-                src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${props.player1.avatar}`}
-                alt={`Avatar of ${props.player1.nickname}`}
-                width={50}
-                height={50}
-                className="w-[50px] rounded-full"
-              />
+            <div className="flex flex-col items-center min-w-[110px]">
+              <StatusBubble avatar={`${props.player1.avatar}`} />
               <p>{props.player1.nickname}</p>
               <p>{props.player1.score}</p>
             </div>
-            <p className="flex items-center text-center">
+           {props.player2.nickname != 'Ponginator-v2' && ( <p className="flex items-center text-center">
               spectators: {props.spectators}
-            </p>
-            <div className="flex flex-col items-center">
-              <Image
-                src={`${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/avatars/${props.player2.avatar}`}
-                alt={`Avatar of ${props.player2.nickname}`}
-                width={50}
-                height={50}
-                className="w-[50px] rounded-full"
-              />
+            </p>)}
+            <div className="flex min-w-[110px] flex-col items-center">
+              <StatusBubble avatar={`${props.player2.avatar}`} />
+
               <p>{props.player2.nickname}</p>
               <p>{props.player2.score}</p>
             </div>

@@ -1,44 +1,85 @@
-import Image from 'next/image';
 import Player from '../Player';
 import { useEffect, useState } from 'react';
 import Router from 'next/router';
+import { Socket } from 'socket.io-client';
 
 interface friendsInterface {
   nickname: string;
   avatar: string;
+  id?: number;
+  status?: string;
 }
 
 function FriendStats({
   nickname,
   userProfile,
+  ws,
+  wsConnected,
 }: {
   nickname: string;
   userProfile: boolean;
+  ws: Socket;
+  wsConnected: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [friends, setFriends] = useState<friendsInterface[]>([]);
+
+  const statusDisconnect = (id: number) => {
+    if (ws && wsConnected) {
+      ws.emit('unfollowStatus', id);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_HOST +
-            '/players/friends?' +
-            new URLSearchParams({ nickname: nickname }),
-          {
-            credentials: 'include',
-          },
-        );
-        if (resp.ok) {
-          const friends = (await resp.json()) as friendsInterface[];
-          setFriends(friends);
-          setIsLoading(false);
+    if (!userProfile) {
+      const fetchData = async () => {
+        try {
+          const resp = await fetch(
+            process.env.NEXT_PUBLIC_BACKEND_HOST +
+              '/players/friends?' +
+              new URLSearchParams({ nickname: nickname }),
+            {
+              credentials: 'include',
+            },
+          );
+          if (resp.ok) {
+            const friends = (await resp.json()) as friendsInterface[];
+            setFriends(friends);
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.log('An error has occurred');
         }
-      } catch (error) {
-        console.log('An error has occurred');
+      };
+      fetchData();
+    } else {
+      if (ws && wsConnected) {
+        ws.emit('getOnlineFriends', (res: []) => {
+          setFriends(res);
+          setIsLoading(false);
+        });
+
+        ws.on('statusChange', (data: friendsInterface) => {
+          setFriends((prev) => {
+            if (prev.find((friend) => friend.id === data.id)) {
+              return prev.map((friend) => {
+                if (friend.id === data.id) {
+                  return data;
+                }
+                return friend;
+              });
+            } else return [...prev, data];
+          });
+        });
       }
-    };
-    fetchData();
-  }, [nickname]);
+      return () => {
+        if (ws) {
+          ws.off('statusChange');
+        }
+      };
+    }
+    //eslint-disable-next-line
+  }, [nickname, ws, wsConnected]);
 
   async function openDMs(event: React.MouseEvent, nickname2: string) {
     event.preventDefault();
@@ -59,7 +100,11 @@ function FriendStats({
     }
   }
 
-  async function blockFriend(e: React.MouseEvent, nickname: string) {
+  async function blockFriend(
+    e: React.MouseEvent,
+    nickname: string,
+    id: number,
+  ) {
     e.preventDefault();
     try {
       const resp = await fetch(
@@ -72,6 +117,7 @@ function FriendStats({
         },
       );
       if (resp.ok) {
+        statusDisconnect(id);
         const newFriendList = friends.filter(
           (friend) => friend.nickname != nickname,
         );
@@ -95,19 +141,17 @@ function FriendStats({
       }
     }
     return (
-      <div className="flex h-3/4 min-h-[233px] w-full flex-wrap justify-center p-6 sm:gap-10 ">
+      <div className="flex h-3/4 min-h-[233px] w-full flex-wrap justify-center gap-4 p-6 sm:gap-10 ">
         {friends.map((elem, index) => (
           <div key={index} className="w-[190px]">
             <Player
               nickname={elem.nickname}
-              avatar={
-                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
-                '/avatars/' +
-                elem.avatar
-              }
+              avatar={elem.avatar}
               openDMs={openDMs}
               userProfile={userProfile}
               blockFriend={blockFriend}
+              status={elem.status}
+              id={elem.id}
             />
           </div>
         ))}

@@ -109,7 +109,7 @@ export async function getServerSideProps({ req }: any) {
       const res = await verifyToken(req.headers.cookie);
 
       if (res.ok) {
-        const data = await res.json();
+        const data = (await res.json()) as players;
         return {
           // modify this to return anything you want before your page load
           props: {

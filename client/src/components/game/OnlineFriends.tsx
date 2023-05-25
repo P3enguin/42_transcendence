@@ -12,7 +12,13 @@ export interface Status {
   status: string;
 }
 
-const OnlineFriends = ({ ws }: { ws: Socket }) => {
+const OnlineFriends = ({
+  ws,
+  wsConnected,
+}: {
+  ws: Socket;
+  wsConnected: boolean;
+}) => {
   const [onlineFriends, setOnlineFriends] = useState<Status[]>([]);
   const [gameType, setGameType] = useState('NORMAL');
   const router = useRouter();
@@ -38,13 +44,17 @@ const OnlineFriends = ({ ws }: { ws: Socket }) => {
   };
 
   useEffect(() => {
-    if (ws) {
+    if (ws && wsConnected) {
+      console.log('getOnlineFriends');
+
       ws.emit('getOnlineFriends', (res: []) => {
-        setOnlineFriends(res);
+        setOnlineFriends(
+          res.filter((friend: Status) => friend.status !== 'OFFLINE' && friend.status !== 'IN_GAME'),
+        );
       });
 
       ws.on('statusChange', (data: Status) => {
-        if (data.status === 'OFFLINE') {
+        if (data.status === 'OFFLINE' || data.status === 'IN_GAME') {
           setOnlineFriends((prev) => {
             return prev.filter((friend) => friend.id !== data.id);
           });
@@ -60,6 +70,7 @@ const OnlineFriends = ({ ws }: { ws: Socket }) => {
             } else return [...prev, data];
           });
         }
+        console.log('data', data);
       });
     }
     return () => {
@@ -67,7 +78,7 @@ const OnlineFriends = ({ ws }: { ws: Socket }) => {
         ws.off('statusChange');
       }
     };
-  }, [ws]);
+  }, [ws, wsConnected]);
 
   return (
     <div className="flex h-[50%] flex-col p-2 md:h-1/2 md:p-5">

@@ -3,9 +3,21 @@ import { RankingIconFix } from '@/components/icons/Icons';
 import { useState, useEffect } from 'react';
 import { calculateTimeElapsed } from '@/components/tools/functions';
 import Image from 'next/image';
+import { GameType } from '@/interfaces/Profile';
+
+interface RanKType {
+  current_points: number;
+  rankId: number;
+  statusId: number;
+}
+
 function RankingStat({ nickname }: { nickname: string }) {
   const [games, setGames] = useState([]);
-  const [rankStat, setRankStat] = useState<any>();
+  const [rankStat, setRankStat] = useState<RanKType>({
+    current_points: 0,
+    rankId: 0,
+    statusId: 0,
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -59,6 +71,7 @@ function RankingStat({ nickname }: { nickname: string }) {
     'Master',
     'King',
   ];
+
   if (isLoading) return <div>Loading Data...</div>;
   else {
     return (
@@ -73,52 +86,52 @@ function RankingStat({ nickname }: { nickname: string }) {
               <Rank
                 rank={ranks[1]}
                 width="w-[50px]"
-                isVisible={rankStat?.rankId >= 1 ? true : false}
+                isVisible={rankStat.current_points >= 100 ? true : false}
               />
               <Rank
                 rank={ranks[2]}
                 width="w-[50px]"
-                isVisible={rankStat?.rankId >= 2 ? true : false}
+                isVisible={rankStat.current_points >= 200 ? true : false}
               />
               <Rank
                 rank={ranks[3]}
                 width="w-[50px]"
-                isVisible={rankStat?.rankId >= 3 ? true : false}
+                isVisible={rankStat.current_points >= 300 ? true : false}
               />
               <Rank
                 rank={ranks[4]}
                 width="w-[50px]"
-                isVisible={rankStat?.rankId >= 4 ? true : false}
+                isVisible={rankStat.current_points >= 400 ? true : false}
               />
               <Rank
                 rank={ranks[5]}
                 width="w-[55px]"
-                isVisible={rankStat?.rankId >= 5 ? true : false}
+                isVisible={rankStat.current_points >= 500 ? true : false}
               />
               <Rank
                 rank={ranks[6]}
                 width="w-[55px]"
-                isVisible={rankStat?.rankId >= 6 ? true : false}
+                isVisible={rankStat.current_points >= 600 ? true : false}
               />
               <Rank
                 rank={ranks[7]}
                 width="w-[60px]"
-                isVisible={rankStat?.rankId >= 7 ? true : false}
+                isVisible={rankStat.current_points >= 700 ? true : false}
               />
               <Rank
                 rank={ranks[8]}
                 width="w-[60px]"
-                isVisible={rankStat?.rankId >= 8 ? true : false}
+                isVisible={rankStat.current_points >= 800 ? true : false}
               />
               <Rank
                 rank={ranks[9]}
                 width="w-[60px]"
-                isVisible={rankStat?.rankId >= 9 ? true : false}
+                isVisible={rankStat.current_points >= 900 ? true : false}
               />
               <Rank
                 rank={ranks[10]}
                 width="w-[70px]"
-                isVisible={rankStat?.rankId >= 10 ? true : false}
+                isVisible={rankStat.current_points >= 1000 ? true : false}
               />
             </div>
           </div>
@@ -140,7 +153,7 @@ function RankingStat({ nickname }: { nickname: string }) {
                 height={20}
                 src="/star.svg"
                 alt="startIcon"
-                className="ml-2 h-full w-[20px]"
+                className="ml-2 h-[20px] w-[20px]"
               ></Image>
               <p className="w-[150px] ">
                 Rank Point : {rankStat.current_points + ' RP'}{' '}
@@ -165,7 +178,7 @@ function RankingStat({ nickname }: { nickname: string }) {
           <div className="mt-9 flex  w-full flex-col items-center">
             <h1>RECENT RANK GAMES:</h1>
             <div className="mt-4 flex h-[250px] w-full flex-col items-center  gap-5  overflow-auto">
-              {games.map((game: any, i: number) => {
+              {games.map((game: GameType, i: number) => {
                 return game.isPlayerWinner ? (
                   <MatchData
                     key={i}

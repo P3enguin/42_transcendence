@@ -12,6 +12,7 @@ interface inviteFriendsProps {
 }
 
 const InviteFriendCard = ({ friend, inviteFriend }: inviteFriendsProps) => {
+  // console.log('here', friend);
   return (
     <div className="m-3 flex flex-col  items-center rounded-2xl bg-[#8BD9FF] bg-opacity-30 px-5 py-3 sm:px-8 md:mb-10">
       <StatusBubble avatar={friend.avatar} status={friend.status} />

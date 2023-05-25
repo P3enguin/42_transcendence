@@ -8,6 +8,7 @@ import { Response } from 'express';
 import * as argon2 from 'argon2';
 import * as fs from 'fs';
 import { send } from 'process';
+import { DataDTO, PasswordDTO } from './dto/player.dto';
 
 function calculateXP(level: number, totalXP: number) {
   const requiredXP = Math.floor(100 * Math.pow(1.6, level - 1));
@@ -126,6 +127,7 @@ export class PlayerService {
       const receivedRequests = await this.prisma.request.findMany({
         where: {
           toPlayerId: player.id,
+          fromPlayerId:receiverId.id,
           status: {
             in: ['accepted'],
           },
@@ -264,6 +266,7 @@ export class PlayerService {
         },
       });
       if (!request) throw new Error('Request not found');
+
       // change request status to accpeted
       await this.prisma.request.update({
         where: {
@@ -293,7 +296,7 @@ export class PlayerService {
           id: requestId,
         },
       });
-      if (request.status == 'accepted')
+      if (request.status == 'accepted' || request.status == 'rejected')
         throw new Error('Cannot cancel request');
       else {
         await this.prisma.request.delete({
@@ -633,11 +636,11 @@ export class PlayerService {
     }
   }
 
-  async changeData(data: any, res: Response) {
+  async changeData(player: Player, data: DataDTO, res: Response) {
     try {
       await this.prisma.player.update({
         where: {
-          id: data.user.id,
+          id: player.id,
         },
         data: {
           nickname: data.nickname,
@@ -660,12 +663,12 @@ export class PlayerService {
     }
   }
 
-  async changePassowrd(data: any, res: Response) {
+  async changePassowrd(player: Player, password: string, res: Response) {
     try {
-      const hash = await argon2.hash(data.password);
+      const hash = await argon2.hash(password);
       await this.prisma.player.update({
         where: {
-          id: data.user.id,
+          id: player.id,
         },
         data: {
           password: hash,
@@ -677,7 +680,7 @@ export class PlayerService {
       return res.status(400).json({ error: 'An error has occurred' });
     }
   }
-  async updatePFP(req: Request, fileName: string) {
+  async updatePFP(req: Request, fileName: string,res:Response) {
     const token = req.cookies['jwt_token'];
     /* not necessary , we already using auth guard
 			 but protection is good , Highly recommended hh*/
@@ -710,12 +713,14 @@ export class PlayerService {
           avatar: fileName,
         },
       });
+      return res.status(200).json(fileName);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
+      return res.status(401).json({message : "Can not update avatar"});
     }
   }
 
-  async updateWallpaper(req: Request, fileName: string) {
+  async updateWallpaper(req: Request, fileName: string,res:Response) {
     const token = req.cookies['jwt_token'];
     try {
       const secret = process.env.JWT_SECRET;
@@ -746,8 +751,10 @@ export class PlayerService {
           wallpaper: fileName,
         },
       });
+      return res.status(200).json(fileName);
     } catch (err) {
-      console.log(err);
+      return res.status(401).json({message : "Can not upload wallpaper"});
+      console.log(err.message);
     }
   }
   //----------------------------------{Titles}-----------------------------------

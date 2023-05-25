@@ -17,10 +17,12 @@ function Chat({
   jwt_token,
   data,
   ws,
+  wsConnected,
 }: {
   jwt_token: string;
   data: any;
   ws: Socket;
+  wsConnected: boolean;
 }) {
   const [showRecentChat, setShowRecentChat] = useState(true);
   const [showMobile, setShowMobile] = useState(false);
@@ -70,7 +72,13 @@ function Chat({
                 Chat Room{' '}
               </Link>
             </div>
-            {showRecentChat && <OnlineNow nickname={data.nickname} ws={ws} />}
+            {showRecentChat && (
+              <OnlineNow
+                nickname={data.nickname}
+                ws={ws}
+                wsConnected={wsConnected}
+              />
+            )}
 
             <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
               <div className="flex flex-row justify-between  pt-1">

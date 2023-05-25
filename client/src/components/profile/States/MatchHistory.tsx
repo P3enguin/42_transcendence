@@ -3,9 +3,10 @@ import Link from 'next/link';
 import { MatchData, OverViewData } from './StateComps';
 import { calculateTimeElapsed } from '@/components/tools/functions';
 import { useEffect, useState } from 'react';
+import { GameType } from '@/interfaces/Profile';
 
 function MatchHistoryStat({ nickname }: { nickname: string }) {
-  const [games, setGames] = useState([]);
+  const [games, setGames] = useState<GameType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(1);
 
@@ -35,12 +36,12 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
     fetchData();
   }, [nickname]);
 
-  const wins = games.filter((game: any) => game.isPlayerWinner);
-  const loss = games.filter((game: any) => game.isPlayerLoser);
-  let winStreak = [];
-  let currentStreak: any = [];
+  const wins = games.filter((game: GameType) => game.isPlayerWinner);
+  const loss = games.filter((game: GameType) => game.isPlayerLoser);
+  let winStreak: GameType[][] = [];
+  let currentStreak: GameType[] = [];
 
-  games.forEach((game: any) => {
+  games.forEach((game: GameType) => {
     if (game.isPlayerWinner) {
       currentStreak.push(game);
     } else {
@@ -101,7 +102,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
         {/* match history */}
         <div className="mt-10 flex h-[300px] w-full flex-col items-center  gap-5  overflow-auto lg:w-2/3 ">
           {selected == 1 &&
-            games.map((game: any, i: number) => {
+            games.map((game: GameType, i: number) => {
               return game.isPlayerWinner ? (
                 <MatchData
                   key={i}
@@ -127,7 +128,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
               );
             })}
           {selected == 2 &&
-            wins.map((game: any, i: number) => {
+            wins.map((game: GameType, i: number) => {
               return (
                 <MatchData
                   key={i}
@@ -142,13 +143,13 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
               );
             })}
           {selected == 3 &&
-            winStreak.map((arr: any, i: number) => {
+            winStreak.map((arr: GameType[], i: number) => {
               return (
                 <div
                   key={i}
                   className="flex w-full flex-col items-center gap-5 "
                 >
-                  {arr.map((game: any, j: number) => (
+                  {arr.map((game: GameType, j: number) => (
                     <MatchData
                       key={i + j + 100}
                       player1={game.winnerId.nickname}
@@ -167,7 +168,7 @@ function MatchHistoryStat({ nickname }: { nickname: string }) {
               );
             })}
           {selected == 4 &&
-            loss.map((game: any, i: number) => {
+            loss.map((game: GameType, i: number) => {
               return (
                 <MatchData
                   key={i + 10}

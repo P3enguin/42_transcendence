@@ -11,17 +11,22 @@ import FriendStats from './States/Friends';
 import AchievementStats from './States/Achievement';
 import MatchHistoryStat from './States/MatchHistory';
 import RankingStat from './States/RankingStat';
+import { Socket } from 'socket.io-client';
 
 function ProfileStats({
   nickname,
   userProfile,
   blockedByFriend,
   blockedByPlayer,
+  ws,
+  wsConnected,
 }: {
   nickname: string;
   userProfile: boolean;
   blockedByFriend?: boolean;
   blockedByPlayer?: boolean;
+  ws?: Socket;
+  wsConnected?: boolean;
 }) {
   const [selected, setSelected] = useState(-1);
 
@@ -117,7 +122,12 @@ function ProfileStats({
             you are blocked !
           </div>
         ) : selected == 0 ? (
-          <FriendStats nickname={nickname} userProfile={userProfile} />
+          <FriendStats
+            nickname={nickname}
+            userProfile={userProfile}
+            ws={ws!}
+            wsConnected={wsConnected!}
+          />
         ) : selected == 1 ? (
           <AchievementStats />
         ) : selected == 2 ? (

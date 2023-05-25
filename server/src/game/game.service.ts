@@ -47,7 +47,6 @@ export class GameService {
         },
       },
     });
-    console.log(player.status.rank.rankId);
     const game = this.getAvailableRankedGame(player.status.rank.rankId);
     if (game) {
       game.players.push(user);
@@ -78,7 +77,8 @@ export class GameService {
         return (
           !game.isFull() &&
           game.type === GameType.RANKED &&
-          game.rankId >= rankId -1 && game.rankId <= rankId + 1
+          game.rankId >= rankId - 1 &&
+          game.rankId <= rankId + 1
         );
     });
     return availableGames[0];
@@ -229,11 +229,17 @@ export class GameService {
     let looserRank = __looser.status.rank.rank;
     let winner_RP = __winner.status.rank.current_points;
     let looser_RP = __looser.status.rank.current_points;
-    winner_RP += 10 / (winnerRank.id ? winnerRank.id : 1);
-    looser_RP -= looserRank.id;
-    if (looser_RP < 0) looser_RP = 0;
-    if (winner_RP > winnerRank.points) winnerRank.id++;
-    if (looser_RP < looserRank.points) looserRank.id--;
+    if (winnerRank.id) {
+      winner_RP += 10 / winnerRank.id;
+    } else {
+      winner_RP += 50;
+    }
+    if (looserRank.id) {
+      looser_RP -= looserRank.id;
+      if (looser_RP < 0) looser_RP = 0;
+      if (looser_RP < looserRank.points + 100) looserRank.id--;
+    }
+    if (winner_RP >= winnerRank.points + 100) winnerRank.id++;
     await this.prisma.rank_status.update({
       where: {
         statusId: __winner.status.id,
@@ -255,8 +261,8 @@ export class GameService {
   }
 
   async getTimeAttakXP(winner, looser) {
-    winner.status.XP += 40;
-    looser.status.XP += 15;
+    winner.status.XP += BigInt(40);
+    looser.status.XP += BigInt(15);
     await this.prisma.status.update({
       where: {
         id: winner.status.id,
@@ -321,20 +327,14 @@ export class GameService {
         },
       },
     });
-    console.log('saving game...') 
     if (!game.isTimeAttack()) {
-      console.log('not time attack') 
       await this.levelUp(winner, __winner.score, looser, __looser.score);
-      console.log('leveled up') 
-      console.log(game.type); 
       if (game.isRanked()) {
-        console.log('ranked') 
         await this.rankUp(winner, looser);
       }
     } else {
       await this.getTimeAttakXP(winner, looser);
     }
-    console.log('game saved');
     this.deleteGame(game.id);
   }
 }

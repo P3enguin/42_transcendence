@@ -36,7 +36,7 @@ const Ai = ({ player }: any) => {
       }, 1000);
       setPlayerScore(score);
     }
-    if (score === 5) {
+    if (score === 55) {
       clearInterval(interval);
       setGameOn(false);
       setGamePaused(true);

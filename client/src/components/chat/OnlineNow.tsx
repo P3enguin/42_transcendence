@@ -12,14 +12,14 @@ export interface Status {
   status: string;
 }
 
-function OnlineNow({ nickname, token, ws }: any) {
+function OnlineNow({ ws, wsConnected }: any) {
   const [friends, setFriends] = useState<Status[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    if (ws) {
+    if (ws && wsConnected) {
       ws.emit('getOnlineFriends', (res: []) => {
-        setFriends(res);
+        setFriends(res.filter((friend: Status) => friend.status !== 'OFFLINE'));
       });
       ws.on('statusChange', (data: Status) => {
         if (data.status === 'OFFLINE') {
@@ -45,7 +45,7 @@ function OnlineNow({ nickname, token, ws }: any) {
         ws.off('statusChange');
       }
     };
-  }, [ws]);
+  }, [ws, wsConnected]);
 
   async function openDMs(event: React.FormEvent, nickname2: string) {
     event.preventDefault();

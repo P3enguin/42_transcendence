@@ -56,7 +56,7 @@ export default function Home({ authenticated }: { authenticated: boolean }) {
     return (
       <>
         <Head>
-          <title>Ping Pong</title>
+          <title>Ponginator</title>
 
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>

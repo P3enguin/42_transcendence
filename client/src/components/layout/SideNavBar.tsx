@@ -17,6 +17,7 @@ function SideNavBar({ children }: LayoutProps) {
   const [svgIndex, setSvgIndex] = useState(5);
   const [isVisible, setVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [wsConnected, setWsConnected] = useState(false);
 
   const pages = [
     { path: '/home', index: 0 },
@@ -39,13 +40,6 @@ function SideNavBar({ children }: LayoutProps) {
   }
 
   useEffect(() => {
-    if (React.isValidElement(children)) {
-      socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/`, {
-        auth: {
-          token: children.props.jwt_token,
-        },
-      });
-    }
     const handleVisibilityChange = () => {
       if (document.hidden) {
         socket.emit('away', {});
@@ -53,23 +47,35 @@ function SideNavBar({ children }: LayoutProps) {
         socket.emit('online', {});
       }
     };
-    socket.on('connected', (data) => {
-      handleVisibilityChange();
-      console.log('connected');
+    if (React.isValidElement(children)) {
+      socket = io(`${process.env.NEXT_PUBLIC_BACKEND_HOST}/`, {
+        auth: {
+          token: children.props.jwt_token,
+        },
+      });
+      socket.on('connected', (data) => {
+        console.log('connected', data);
+        setWsConnected(true);
+        handleVisibilityChange();
 
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-    });
-
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+      });
+      socket.on('disconnect', () => {
+        console.log('disconnected');
+      });
+    }
     return () => {
-      socket.disconnect();
+      if (socket) {
+        socket.disconnect();
+        setWsConnected(false);
+      }
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // socket emmit everytime route cahnges
   useEffect(() => {
-    if (socket) {
+    if (socket && wsConnected) {
       if (router.pathname === '/game/[id]' || router.pathname === '/game/ai') {
         socket.emit('inGame', {});
       } else {
@@ -77,7 +83,7 @@ function SideNavBar({ children }: LayoutProps) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, socket]);
+  }, [router.pathname, socket, wsConnected]);
 
   // to fix later
   useEffect(() => {
@@ -154,6 +160,7 @@ function SideNavBar({ children }: LayoutProps) {
         {React.Children.map(children, (child) => {
           return React.cloneElement(child as React.ReactElement, {
             ws: socket,
+            wsConnected,
           });
         })}
       </SideBar>

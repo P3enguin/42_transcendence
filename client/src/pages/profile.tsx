@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import ProfileDisplay from '@/components/profile/ProfileDisplay';
 import ProfileStats from '@/components/profile/ProfileStats';
 import Head from 'next/head';
+import { Socket } from 'socket.io-client';
 
 interface player {
   nickname: string;
@@ -20,6 +21,8 @@ interface player {
     XP: number;
     requiredXP: number;
   };
+  ws: Socket;
+  wsConnected: boolean;
 }
 
 function PlayerProfile({
@@ -34,6 +37,8 @@ function PlayerProfile({
   rankId,
   level,
   xp,
+  ws,
+  wsConnected,
 }: player) {
   // const [pictures, changePictures] = useState({ pfp: '', wp: '' });
   const [isLoading, setLoading] = useState(false);
@@ -48,9 +53,13 @@ function PlayerProfile({
         <div className=" flex w-full flex-col items-center gap-10 xl:gap-[100px]">
           <ProfileDisplay
             wp={
-              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/wallpapers/' + wallpaper
+              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST +
+              '/wallpapers/' +
+              wallpaper
             }
-            pfp={process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + avatar}
+            pfp={
+              process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + avatar
+            }
             fullname={firstname + ' ' + lastname}
             nickname={nickname}
             joinDate={joinDate}
@@ -62,7 +71,12 @@ function PlayerProfile({
             rankId={rankId}
             level={level}
           />
-          <ProfileStats nickname={nickname} userProfile={true} />
+          <ProfileStats
+            nickname={nickname}
+            userProfile={true}
+            ws={ws}
+            wsConnected={wsConnected}
+          />
         </div>
       </>
     );
