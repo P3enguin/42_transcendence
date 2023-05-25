@@ -54,7 +54,6 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      console.log('channelId : ', channelId);
       const result = await this.chatService.getMessages(channelId, player);
       console.log('messages: ', result.data);
       res.status(result.status).json(result.data);
@@ -102,7 +101,6 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      console.log('channel');
       const result = await this.chatService.getChannel(player, channelId);
       res.status(result.status).json(result.data);
     } catch (error) {

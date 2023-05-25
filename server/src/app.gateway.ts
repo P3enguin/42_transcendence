@@ -167,7 +167,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!user) {
       return;
     }
-    console.log('gameInvite', data);
     this.server.to(data.user.nickname).emit('gameInvite', {
       user: {
         id: user.id,

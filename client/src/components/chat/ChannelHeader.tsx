@@ -53,11 +53,11 @@ const ChannelHeader = ({ channel, ws, onClick }: ChannelHeaderProps) => {
       </div>
       <button className="ml-auto" onClick={onClick}>
         <Image
-          className="ml-auto h-[26px] w-[26px]"
+          className="ml-auto h-[20px] w-[20px]"
           src="/dots.svg"
           alt="dots"
-          width={26}
-          height={26}
+          width={20}
+          height={20}
         />
       </button>
     </div>

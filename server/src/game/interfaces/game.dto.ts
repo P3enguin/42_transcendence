@@ -188,7 +188,6 @@ export class Game {
       Player?,
       Player?,
     ];
-    console.log(this.players);
   }
 
   isPlayer(nickname: string): Player | undefined {
@@ -325,10 +324,8 @@ export class Game {
   }
 
   start(): void {
-    setTimeout(() => {
-      this.paused = false;
-    }, 1000);
     this.gameOn = true;
+    this.pauseGame(2);
     this.createdAt = new Date();
   }
 

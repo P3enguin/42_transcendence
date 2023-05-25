@@ -48,11 +48,13 @@ const OnlineFriends = ({
       console.log('getOnlineFriends');
 
       ws.emit('getOnlineFriends', (res: []) => {
-        setOnlineFriends(res);
+        setOnlineFriends(
+          res.filter((friend: Status) => friend.status !== 'OFFLINE' && friend.status !== 'IN_GAME'),
+        );
       });
 
       ws.on('statusChange', (data: Status) => {
-        if (data.status === 'OFFLINE') {
+        if (data.status === 'OFFLINE' || data.status === 'IN_GAME') {
           setOnlineFriends((prev) => {
             return prev.filter((friend) => friend.id !== data.id);
           });

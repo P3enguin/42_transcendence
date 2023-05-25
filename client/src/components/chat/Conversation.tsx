@@ -182,7 +182,6 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
     };
   }, [id]);
 
-  // console.log('channel', channel);
 
   if (channel === undefined) {
     return (

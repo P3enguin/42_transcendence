@@ -23,9 +23,11 @@ function Message({ message, side }: { message: any; side: boolean }) {
           <Image
             src={avatar}
             alt="channel"
-            width={40}
-            height={40}
-            className="absolute bottom-0 right-0 h-[40px] w-[40px] translate-x-[107%] translate-y-[50%] rounded-full border"
+            width={45}
+            height={45}
+            className="absolute bottom-0 right-0 h-[45px] w-[45px] translate-x-[107%]
+            translate-y-[50%] rounded-full border-2 border-[#0097E2] border-opacity-40
+            object-cover transition duration-300 ease-in hover:border-opacity-100"
           />
           <object
             data="/chat_tail_right.svg"
@@ -56,9 +58,11 @@ function Message({ message, side }: { message: any; side: boolean }) {
           <Image
             src={avatar}
             alt="channel"
-            width={40}
-            height={40}
-            className="absolute bottom-0 left-0 h-[40px] w-[40px] -translate-x-11 translate-y-[50%] rounded-full border"
+            width={45}
+            height={45}
+            className="absolute bottom-0 left-0 h-[45px] w-[45px] -translate-x-[107%]
+            translate-y-[50%] rounded-full border-2 border-[#01FD91] border-opacity-40
+            object-cover transition duration-300 ease-in hover:border-opacity-100"
           />
           <p className="absolute -top-5 left-2 w-[16ch] text-left  text-[13px]">
             {message.sender}
