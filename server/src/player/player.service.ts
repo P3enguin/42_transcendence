@@ -423,18 +423,19 @@ export class PlayerService {
     }
   }
 
-  async GetBlockedFriends(nickname: string, res: Response) {
+  async GetBlockedFriends(player: Player, res: Response) {
     try {
       const BlockedList = await this.prisma.player.findUnique({
         where: {
-          nickname: nickname,
+          nickname: player.nickname,
         },
         select: {
           block: {
             select: {
-              id: true,
               nickname: true,
               avatar: true,
+              firstname: true,
+              lastname: true,
             },
           },
         },

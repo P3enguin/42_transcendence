@@ -1,16 +1,14 @@
-import Image from 'next/image';
 import Player from '../Player';
 import { useEffect, useState } from 'react';
 import Router from 'next/router';
-import { Status } from '@/components/game/OnlineFriends';
+import { Socket } from 'socket.io-client';
+
 interface friendsInterface {
   nickname: string;
   avatar: string;
   id?: number;
   status?: string;
 }
-import Link from 'next/link';
-import { Socket } from 'socket.io-client';
 
 function FriendStats({
   nickname,
@@ -85,17 +83,20 @@ function FriendStats({
 
   async function openDMs(event: React.MouseEvent, nickname2: string) {
     event.preventDefault();
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${nickname2}`,
+        {
+          credentials: 'include',
+        },
+      );
 
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${nickname2}`,
-      {
-        credentials: 'include',
-      },
-    );
-
-    if (response.status == 200 || response.status == 201) {
-      const dmData = await response.json();
-      Router.push(`/chat/${dmData.channelId}`);
+      if (response.ok) {
+        const dmData = await response.json();
+        Router.push(`/chat/${dmData.channelId}`);
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

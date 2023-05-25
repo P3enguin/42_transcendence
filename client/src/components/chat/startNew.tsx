@@ -13,7 +13,7 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
   const [key, setKey] = useState('');
-  const [memberLimit, setMemberLimit] = useState(50);
+  const [memberLimit, setMemberLimit] = useState(0);
   const [privacy, setPrivacy] = useState({
     privacy: '',
     description: '',

@@ -1,7 +1,8 @@
-import { Channel } from '@/interfaces/Channel';
+import { Channel, Member } from '@/interfaces/Channel';
 import ChannelCategory from './ChannelCategory';
 import Router from 'next/router';
 import StatusBubble from '../game/StatusBubble';
+import { useState } from 'react';
 
 export default function ChannelDetails({
   nickname,
@@ -11,6 +12,7 @@ export default function ChannelDetails({
   showSettings,
   memberSettings,
   toggleMemberSettings,
+  blocked,
 }: {
   nickname: string;
   channel: Channel;
@@ -19,6 +21,7 @@ export default function ChannelDetails({
   showSettings: (toggle: boolean) => void;
   memberSettings: string;
   toggleMemberSettings: (memberSettings: string) => void;
+  blocked: Member[];
 }) {
   let { owner, admins, members } = channel;
 
@@ -65,14 +68,17 @@ export default function ChannelDetails({
         <div className="absolute h-[0.1rem] w-[45%] -rotate-45 transform rounded-sm bg-[#8BD9FF]"></div>
       </button>
       <div className="absolute right-5 top-5 flex flex-col gap-2">
-        <button
-          className="flex h-6 w-28 items-center justify-center rounded-md bg-[#0097E2E6] hover:bg-[#0097E2] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
-          onClick={() => {
-            showSettings(true);
-          }}
-        >
-          <p className="fond-bold text-[10px] uppercase">Channel Settings</p>
-        </button>
+        {(owner?.nickname === nickname ||
+          admins?.find((admin) => admin.nickname === nickname)) && (
+          <button
+            className="flex h-6 w-28 items-center justify-center rounded-md bg-[#0097E2E6] hover:bg-[#0097E2] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
+            onClick={() => {
+              showSettings(true);
+            }}
+          >
+            <p className="fond-bold text-[10px] uppercase">Channel Settings</p>
+          </button>
+        )}
         <button
           className="flex h-6 w-28 items-center justify-center rounded-md bg-[#FF0D3EA8] hover:bg-[#FF0D3EBF] active:shadow-[inset_0px_4px_4px_rgba(0,0,0,0.35)]"
           onClick={leaveChannel}
@@ -105,6 +111,7 @@ export default function ChannelDetails({
             members={owner ? [owner] : []}
             memberSettings={memberSettings}
             toggleMemberSettings={toggleMemberSettings}
+            blocked={blocked}
           />
         </li>
         <li>
@@ -115,6 +122,7 @@ export default function ChannelDetails({
             members={admins ?? []}
             memberSettings={memberSettings}
             toggleMemberSettings={toggleMemberSettings}
+            blocked={blocked}
           />
         </li>
         <li>
@@ -125,6 +133,7 @@ export default function ChannelDetails({
             members={members ?? []}
             memberSettings={memberSettings}
             toggleMemberSettings={toggleMemberSettings}
+            blocked={blocked}
           />
         </li>
       </ul>

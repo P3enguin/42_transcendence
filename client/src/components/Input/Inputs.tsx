@@ -364,16 +364,16 @@ export function InputDefault({
   type,
   defaultValue,
   description,
-  setName,
   className,
+  setName,
 }: {
-  setName?: Dispatch<SetStateAction<string>>;
   name: string;
   id: string;
   type: string;
+  defaultValue?: string;
   description: string;
   className?: string;
-  defaultValue?: string;
+  setName?: (value: string) => void;
 }) {
   return (
     <div className={`${className ? className : ''}`}>

@@ -1,4 +1,5 @@
 export interface Member {
+  id?: number;
   nickname: string;
   avatar: string;
   firstname?: string;
@@ -11,6 +12,7 @@ export interface Channel {
   topic: string;
   avatar: string;
   privacy: 'public' | 'private' | 'secret';
+  key?: string;
   isChannel: boolean;
   memberLimit: number;
   membersCount?: number;
@@ -18,9 +20,9 @@ export interface Channel {
   admins?: Member[];
   members?: Member[];
   mutes?: {
-    player: Member[];
-  };
+    player: Member;
+  }[];
   bans?: {
-    player: Member[];
-  };
+    player: Member;
+  }[];
 }

@@ -19,9 +19,7 @@ function BlockedPage({ nickname }: { nickname: string }) {
       try {
         setLoading(true);
         const response = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_HOST +
-            '/players/blocked?' +
-            new URLSearchParams({ nickname: nickname }),
+          process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/blocked',
           {
             credentials: 'include',
           },
@@ -29,7 +27,7 @@ function BlockedPage({ nickname }: { nickname: string }) {
         if (!response.ok) {
           const err = await response.json();
           if (err.error.message) throw new Error(err.error.message);
-          else throw new Error('An unexprected error occurred');
+          else throw new Error('An unexpected error occurred');
         } else if (response.ok) {
           const data = await response.json();
           setBlockedList(data);

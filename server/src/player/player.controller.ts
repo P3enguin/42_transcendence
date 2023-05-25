@@ -169,8 +169,8 @@ export class PlayerController {
   }
 
   @Get('blocked')
-  GetBlockedFriends(@Res() res: Response, @Query() query: queryParam) {
-    return this.playerService.GetBlockedFriends(query.nickname, res);
+  GetBlockedFriends(@GetPlayer() player: Player, @Res() res: Response) {
+    return this.playerService.GetBlockedFriends(player, res);
   }
 
   @Post('unblock')
