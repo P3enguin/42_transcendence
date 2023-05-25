@@ -65,10 +65,10 @@ export default function NavBar({
                 <div className="flex flex-shrink-0 items-center">
                   <button onClick={(e) => handleClick(e, 0)}>
                     <Image
-                      className="block h-12 w-auto "
+                      className="block h-[41px] w-[41px] "
                       src="/logo.svg"
                       alt="Pognitor-logo"
-                      width={39}
+                      width={41}
                       height={41}
                     />
                   </button>

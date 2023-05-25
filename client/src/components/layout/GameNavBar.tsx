@@ -73,7 +73,7 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             className=""
             src="/logo.svg"
             alt="logo"
-            width={39}
+            width={41}
             height={41}
           />
         </Link>
