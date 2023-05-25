@@ -100,25 +100,38 @@ export class PlayerService {
   async AddRequest(player: Player, receiver: string, res: Response) {
     const shortid = require('shortid');
     const reqId = shortid.generate();
-    const receiverId = await this.prisma.player.findUnique({
-      where: {
-        nickname: receiver,
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!receiverId) throw new Error('Nickname Not Found');
     try {
-      const existingRequest = await this.prisma.request.findFirst({
+      const receiverId = await this.prisma.player.findUnique({
         where: {
-          toPlayerId: receiverId.id,
-          fromPlayerId: player.id,
-          status: 'pending',
+          nickname: receiver,
+        },
+        select: {
+          id: true,
+          block: {
+            select: {
+              nickname: true,
+            },
+          },
         },
       });
-      if (existingRequest) throw new Error('Request already sent');
+      if (!receiverId) throw new Error('Nickname Not Found');
+      const blockedPlayers = receiverId.block.map(
+        (blockedPlayer) => blockedPlayer.nickname,
+      );
 
+      if (blockedPlayers.includes(player.nickname)) {
+        throw new Error('Cannot Send request');
+      }
+
+      const receivedRequests = await this.prisma.request.findMany({
+        where: {
+          toPlayerId: player.id,
+          status: {
+            in: ['accepted'],
+          },
+        },
+      });
+      if (receivedRequests.length != 0) throw new Error('Cannot Send request');
       const request = await this.prisma.request.create({
         data: {
           id: reqId,
@@ -143,6 +156,12 @@ export class PlayerService {
     res: Response,
   ) {
     try {
+      const request = await this.prisma.request.findUnique({
+        where: {
+          id: requestId,
+        },
+      });
+      if (!request) throw new Error('Request not found');
       const check_friend = await this.prisma.player.findUnique({
         where: {
           id: player.id,
@@ -165,6 +184,7 @@ export class PlayerService {
       else if (check_friend.block.some((f) => f.id === senderId))
         throw new Error('You have been blocked');
       // connect first player
+
       await this.prisma.player.update({
         where: {
           id: player.id,
@@ -238,6 +258,12 @@ export class PlayerService {
     res: Response,
   ) {
     try {
+      const request = await this.prisma.request.findUnique({
+        where: {
+          id: requestId,
+        },
+      });
+      if (!request) throw new Error('Request not found');
       // change request status to accpeted
       await this.prisma.request.update({
         where: {
@@ -247,20 +273,6 @@ export class PlayerService {
           status: 'rejected',
         },
       });
-      // get other requests that might have been sent the player
-      // const otherRequests = await this.prisma.request.findMany({
-      //   where: {
-      //     fromPlayerId: player.id,
-      //     toPlayerId: senderId,
-      //     status: 'pending',
-      //   },
-      // });
-      // //delete those requests
-      // await this.prisma.request.deleteMany({
-      //   where: {
-      //     id: { in: otherRequests.map((r) => r.id) },
-      //   },
-      // });
       return res.json({ message: 'Success' });
     } catch (error) {
       if (error instanceof Error) {
@@ -268,11 +280,6 @@ export class PlayerService {
           console.log(error.message);
           return res.status(400).json({ error: error.message });
         }
-        // await this.prisma.request.delete({
-        //   where: {
-        //     id: requestId,
-        //   },
-        // });
       }
       return res.status(400).json({ error: 'An error has occurred' });
     }
@@ -281,11 +288,20 @@ export class PlayerService {
   async CancelRequest(res: Response, player: Player, requestId: string) {
     const shortid = require('shortid');
     try {
-      await this.prisma.request.delete({
+      const request = await this.prisma.request.findUnique({
         where: {
           id: requestId,
         },
       });
+      if (request.status == 'accepted')
+        throw new Error('Cannot cancel request');
+      else {
+        await this.prisma.request.delete({
+          where: {
+            id: requestId,
+          },
+        });
+      }
       return res.json({ message: 'Success' });
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError)
@@ -330,6 +346,10 @@ export class PlayerService {
 
   async BlockFriend(player: Player, friend: string, res: Response) {
     try {
+      if (player.nickname == friend) {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+
       const friendId = await this.prisma.player.findUnique({
         where: {
           nickname: friend,
@@ -374,10 +394,29 @@ export class PlayerService {
         },
       });
 
+      const oldRequestFrom = await this.prisma.request.findMany({
+        where: {
+          fromPlayerId: player.id,
+          toPlayerId: friendId.id,
+        },
+      });
+      const oldRequestTo = await this.prisma.request.findMany({
+        where: {
+          fromPlayerId: friendId.id,
+          toPlayerId: player.id,
+        },
+      });
+      const allCommonRequest = [...oldRequestFrom, ...oldRequestTo];
+      //delete those requests
+      await this.prisma.request.deleteMany({
+        where: {
+          id: { in: allCommonRequest.map((r) => r.id) },
+        },
+      });
       res.status(200).json({ message: 'Friend blocked successfully' });
     } catch (error) {
       console.error('Error blocking friend:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(400).json({ error: 'Internal server error' });
     }
   }
 
@@ -387,17 +426,56 @@ export class PlayerService {
         where: {
           nickname: nickname,
         },
-        include: {
-          block: true,
+        select: {
+          block: {
+            select: {
+              id: true,
+              nickname: true,
+              avatar: true,
+            },
+          },
         },
       });
-      res.status(200).json({ BlockedList });
+      res.status(200).json(BlockedList.block);
     } catch (error) {
       console.error('Error getting blocked :', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(400).json({ error: 'Internal server error' });
     }
   }
 
+  async Unblock(nickname: string, res: Response, player: Player) {
+    try {
+      const blockedId = await this.prisma.player.findUnique({
+        where: {
+          nickname: nickname,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!blockedId) {
+        return res.status(404).json({ error: 'nickname not found' });
+      }
+
+      await this.prisma.player.update({
+        where: {
+          id: player.id,
+        },
+        data: {
+          block: {
+            disconnect: {
+              id: blockedId.id,
+            },
+          },
+        },
+      });
+      res.status(200).json({ message: 'unblocked successfully' });
+    } catch (error) {
+      console.error('Error unblocking friend:', error);
+      res.status(400).json({ error: 'Internal server error' });
+    }
+  }
   //-----------------------{ Fetching and changing Data }----------------------
   async getDataID(id: number, res: Response) {
     try {
@@ -433,12 +511,13 @@ export class PlayerService {
 
       const xp = calculateXP(level, Number(playerStatus.status.XP));
 
-      const winRatio = (
+      let winRatio = (
         (playerStatus.wins.length /
           (playerStatus.wins.length + playerStatus.loss.length)) *
         100
       ).toFixed(2);
 
+      if (winRatio == 'NaN') winRatio = '00.00';
       //deleting status from player object;
       const { status, ...player } = playerStatus;
       return res.status(200).json({ player, rankId, winRatio, level, xp });
@@ -528,11 +607,13 @@ export class PlayerService {
       const level = playerStatus.status.level;
       const rankId = playerStatus.status.rank.rankId;
       const xp = calculateXP(level, Number(playerStatus.status.XP));
-      const winRatio = (
+      let winRatio = (
         (playerStatus.wins.length /
           (playerStatus.wins.length + playerStatus.loss.length)) *
         100
       ).toFixed(2);
+
+      if (winRatio == 'NaN') winRatio = '00.00';
       const { status, friends, block, wins, loss, ...player } = playerStatus;
       return res.status(200).json({
         player,
@@ -581,7 +662,6 @@ export class PlayerService {
   async changePassowrd(data: any, res: Response) {
     try {
       const hash = await argon2.hash(data.password);
-      console.log(hash);
       await this.prisma.player.update({
         where: {
           id: data.user.id,
@@ -861,7 +941,7 @@ export class PlayerService {
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(400).json({ message: 'Internal server error' });
     }
   }
 
@@ -943,7 +1023,7 @@ export class PlayerService {
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(400).json({ message: 'Internal server error' });
     }
   }
 
@@ -970,7 +1050,7 @@ export class PlayerService {
     } catch (error) {
       // Handle the error appropriately
       console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(400).json({ message: 'Internal server error' });
     }
   }
 }

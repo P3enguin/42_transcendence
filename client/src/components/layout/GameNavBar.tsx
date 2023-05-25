@@ -1,7 +1,7 @@
 import { AnimatePresence, LazyMotion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SideBarIcon, SearchBarIcon, NotificationIcon } from '../icons/Icons';
 import { NotiDrop } from './Notification';
@@ -16,6 +16,7 @@ interface FunctionProps {
 function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
   const [notif, setNotif] = useState(false);
   const router = useRouter();
+  const notificationRef = useRef<any>(null); // Add the useRef hook
 
   function handleSearch(event: React.FormEvent) {
     event.preventDefault();
@@ -25,6 +26,20 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
       router.push({ pathname: '/search', query: { search: data } }, '/search');
     }
   }
+
+  useEffect(() => {
+    const closeNoti = (e: any) => {
+      if (
+        notif &&
+        notificationRef.current &&
+        !notificationRef.current.contains(e.target)
+      ) {
+        setNotif(false);
+      }
+    };
+    document.body.addEventListener('click', closeNoti);
+    return () => document.body.removeEventListener('click', closeNoti);
+  }, [notif]);
 
   return (
     <div className="flex w-full flex-row ">
@@ -40,20 +55,26 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'Tween' }}
-              className="border-r-1 w-[64px] absolute  top-0 left-0 flex
-          h-[64px] items-center justify-center rounded-tr-3xl border 
+              className="border-r-1 absolute left-0  top-0 flex h-[64px]
+          w-[64px] items-center justify-center rounded-tr-3xl border 
               border-b-0  border-[#0097E2]  bg-[#2A3568] sm:hidden"
             ></motion.div>
           )}
         </AnimatePresence>
       </div>
       <div
-        className="absolute top-0 left-0  flex h-[64px] w-[64px]
-            items-center justify-center rounded-tr-3xl rounded-bl-3xl border 
+        className="absolute left-0 top-0  flex h-[64px] w-[64px]
+            items-center justify-center rounded-bl-3xl rounded-tr-3xl border 
               border-[#0097E2] bg-[#2A3568]"
       >
         <Link className="" href="/home">
-          <Image className="" src="/logo.svg" alt="logo" width={39} height={41} />
+          <Image
+            className=""
+            src="/logo.svg"
+            alt="logo"
+            width={39}
+            height={41}
+          />
         </Link>
       </div>
       <div
@@ -86,7 +107,10 @@ function GameNavBar({ toggleSideBar, handleLogOut, isVisible }: FunctionProps) {
             </button>
           </label>
         </form>
-        <div className="relative right-12 flex sm:absolute">
+        <div
+          className="relative right-12 flex sm:absolute"
+          ref={notificationRef}
+        >
           <button onClick={() => setNotif(!notif)}>
             <NotificationIcon />
           </button>

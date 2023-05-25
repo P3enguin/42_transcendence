@@ -2,6 +2,9 @@ import { EditIconProfile, EditIconWallpaper } from '../icons/Icons';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import AvatarProfileComp from './Avatar';
+import AddFriend from './Button/Buttons';
+import Image from 'next/image';
+import Router from 'next/router';
 import {
   AvatarLevelCounter,
   AddFriendIcon,
@@ -12,7 +15,7 @@ import TitlesComp from './Titles';
 import PlayerProgress from './States/Progress';
 import Success from '../tools/Reply/Success';
 import Error from '../tools/Reply/Error';
-import { request } from 'http';
+
 interface profileProps {
   wp: string;
   pfp: string;
@@ -64,66 +67,8 @@ function ProfileDisplay({
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [reply, setreply] = useState('');
-  console.log(requestFriend);
-  async function SendFriendRequest(event: React.MouseEvent) {
-    event.preventDefault();
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/addRequest',
-      {
-        method: 'POST',
-        body: JSON.stringify({ receiver: nickname }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      },
-    );
-    if (response.ok) {
-      const result = await response.json();
-      const updatedValue = { status: 'pending', id: result.requestId };
-      console.log(updatedValue);
-      setRequest?.(updatedValue);
-      setreply('Friend Request Sent !');
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-      return;
-    } else {
-      setreply('Failed to send Friend Request');
-      setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-    }
-  }
 
-  async function CancelFriendRequest(event: React.MouseEvent) {
-    event.preventDefault();
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/cancelRequest',
-      {
-        method: 'POST',
-        body: JSON.stringify({ requestId: requestFriend?.id }),
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-      },
-    );
-    if (response.ok) {
-      const updatedValue = { status: undefined, id: undefined };
-      setRequest?.(updatedValue);
-      setreply('Request has been cancelled!');
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-      return;
-    } else {
-      setreply('Failed to cancel  Friend Request');
-      setError(true);
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-    }
-  }
+  console.log(requestFriend);
 
   async function handleWpChange(event: React.ChangeEvent) {
     const wallpaper = (event.target as HTMLInputElement).files?.[0];
@@ -140,29 +85,28 @@ function ProfileDisplay({
       let formData = new FormData();
       formData.append('file', wallpaper);
       const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/wallpaper';
-
-      const resp = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      if (resp.ok) {
-        const pfp = document.getElementById(
-          'wallpaper-holder',
-        ) as HTMLImageElement;
-        if (wp) window.URL.revokeObjectURL(pfp.src);
-        pfp.src = window.URL.createObjectURL(wallpaper);
-        setreply('Wallpaper updated!');
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      } else {
-        setreply('Failed to upload!');
-        setError(true);
-        setTimeout(() => {
-          setError(false);
-        }, 3000);
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+        if (resp.ok) {
+          setreply('Wallpaper updated!');
+          setSuccess(true);
+          Router.reload();
+          setTimeout(() => {
+            setSuccess(false);
+          }, 3000);
+        } else {
+          setreply('Failed to upload!');
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
@@ -182,27 +126,28 @@ function ProfileDisplay({
       let formData = new FormData();
       formData.append('file', avatar);
       const url = process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/avatar';
-
-      const resp = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      if (resp.ok) {
-        const pfp = document.getElementById('pfp-holder') as HTMLImageElement;
-        if (wp) window.URL.revokeObjectURL(pfp.src);
-        pfp.src = window.URL.createObjectURL(avatar);
-        setSuccess(true);
-        setreply('Avatar updated !');
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      } else {
-        setreply('Failed to upload!');
-        setError(true);
-        setTimeout(() => {
-          setError(false);
-        }, 3000);
+      try {
+        const resp = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
+        if (resp.ok) {
+          setreply('Avatar updated !');
+          setSuccess(true);
+          Router.reload();
+          setTimeout(() => {
+            setSuccess(false);
+          }, 3000);
+        } else {
+          setreply('Failed to upload!');
+          setError(true);
+          setTimeout(() => {
+            setError(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
       }
     }
   }
@@ -226,11 +171,14 @@ function ProfileDisplay({
         rounded-3xl bg-[#2F3B78] md:max-xl:w-5/6  xl:w-[1100px]"
       >
         <div className="flex justify-end">
-          <img
+          <Image
+            width={700}
+            height={160}
             src={wp}
+            sizes="100vw"
             alt="wallpaper"
             id="wallpaper-holder"
-            className="h-[160px] min-h-[80px] w-full min-w-[200px] 
+            className="h-[160px] min-h-[80px] w-full min-w-[200px]
              rounded-t-3xl object-cover object-center sm:h-[220px] xl:h-[250px]"
           />
           {userProfile && (
@@ -326,59 +274,17 @@ function ProfileDisplay({
                       >
                         the title
                       </strong>
-                      {blockedByPlayer ? (
-                        <>
-                          <button
-                            // onClick={}
-                            type="button"
-                            className=" text-xs left-20  flex items-center rounded-lg
-                                  bg-red-700  px-2 py-1 font-medium text-white hover:bg-red-600 focus:outline-none"
-                          >
-                            unblock {nickname} <CancelIcon />
-                          </button>
-                        </>
-                      ) : blockedByFriend ? (
-                        <>
-                          <div
-                            className=" text-xs left-20  flex items-center rounded-lg
-                                bg-red-500  px-2 py-1 font-medium text-white "
-                          >
-                            you are blocked
-                          </div>
-                        </>
-                      ) : !requestFriend?.status && !isFriend ? (
-                        <button
-                          onClick={SendFriendRequest}
-                          type="button"
-                          className=" text-xs  left-20 flex gap-1 rounded-lg
-                          bg-[#102272]  px-2 py-1 
-                          font-medium text-white hover:bg-[#0e1949] focus:outline-none"
-                        >
-                          Add friend <AddFriendIcon />
-                        </button>
-                      ) : requestFriend?.status === 'pending' ? (
-                        <>
-                          <button
-                            onClick={CancelFriendRequest}
-                            type="button"
-                            className=" text-xs left-20  flex items-center rounded-lg
-                                      bg-red-700  px-2 py-1 font-medium text-white hover:bg-red-600 focus:outline-none"
-                          >
-                            Cancel Request <CancelIcon />
-                          </button>
-                        </>
-                      ) : isFriend ? (
-                        <>
-                          <div
-                            className=" text-xs left-20  flex items-center rounded-lg
-                                    bg-[#39ce77]  px-2 py-1 font-medium text-white "
-                          >
-                            Friend <IsFriendIcon />
-                          </div>
-                        </>
-                      ) : (
-                        <></>
-                      )}
+                      <AddFriend
+                        nickname={nickname}
+                        isFriend={isFriend}
+                        blockedByPlayer={blockedByPlayer}
+                        blockedByFriend={blockedByFriend}
+                        requestFriend={requestFriend}
+                        setRequest={setRequest}
+                        setreply={setreply}
+                        setSuccess={setSuccess}
+                        setError={setError}
+                      />
                     </div>
                   </div>
                 </>
@@ -392,7 +298,6 @@ function ProfileDisplay({
             winRatio={winRatio}
             exp={exp}
             maxExp={MaxExp}
-            
           />
         </div>
       </div>
