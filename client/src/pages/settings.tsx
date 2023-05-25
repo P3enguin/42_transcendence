@@ -373,7 +373,7 @@ function Settings({ firstname, lastname, nickname, Is2FAEnabled }: propsData) {
       </AnimatePresence>
       <div
         className="mt-[40px] flex h-[850px] w-11/12 flex-col gap-5
-           rounded-3xl bg-[#2F3B78] sm:h-[750px] md:max-xl:w-5/6 xl:w-[1000px] "
+           rounded-3xl bg-[#2F3B78] md:h-[750px] md:max-xl:w-5/6 xl:w-[1000px] "
       >
         <h1 className="mt-5 text-center text-[35px]">Settings</h1>
         <form onSubmit={handleDataSave}>

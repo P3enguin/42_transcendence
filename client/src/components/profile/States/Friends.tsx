@@ -2,43 +2,83 @@ import Image from 'next/image';
 import Player from '../Player';
 import { useEffect, useState } from 'react';
 import Router from 'next/router';
+import { Status } from '@/components/game/OnlineFriends';
 interface friendsInterface {
   nickname: string;
   avatar: string;
+  id?: number;
+  status?: string;
 }
 import Link from 'next/link';
+import { Socket } from 'socket.io-client';
 
 function FriendStats({
   nickname,
   userProfile,
+  ws,
 }: {
   nickname: string;
   userProfile: boolean;
+  ws: Socket;
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [friends, setFriends] = useState<friendsInterface[]>([]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resp = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_HOST +
-            '/players/friends?' +
-            new URLSearchParams({ nickname: nickname }),
-          {
-            credentials: 'include',
-          },
-        );
-        if (resp.ok) {
-          const friends = (await resp.json()) as friendsInterface[];
-          setFriends(friends);
-          setIsLoading(false);
+    if (!userProfile) {
+      const fetchData = async () => {
+        try {
+          const resp = await fetch(
+            process.env.NEXT_PUBLIC_BACKEND_HOST +
+              '/players/friends?' +
+              new URLSearchParams({ nickname: nickname }),
+            {
+              credentials: 'include',
+            },
+          );
+          if (resp.ok) {
+            const friends = (await resp.json()) as friendsInterface[];
+            setFriends(friends);
+            setIsLoading(false);
+          }
+        } catch (error) {
+          console.log('An error has occurred');
         }
-      } catch (error) {
-        console.log('An error has occurred');
+      };
+      fetchData();
+    } else {
+      if (ws) {
+        ws.emit('getOnlineFriends', (res: []) => {
+          setFriends(res);
+          setIsLoading(false);
+        });
+
+        // ws.on('statusChange', (data: friendsInterface) => {
+        //   if (data.status === 'OFFLINE') {
+        //     setFriends((prev) => {
+        //       return prev.filter((friend) => friend.id !== data.id);
+        //     });
+        //   } else {
+        //     setFriends((prev) => {
+        //       if (prev.find((friend) => friend.id === data.id)) {
+        //         return prev.map((friend) => {
+        //           if (friend.id === data.id) {
+        //             return data;
+        //           }
+        //           return friend;
+        //         });
+        //       } else return [...prev, data];
+        //     });
+        //   }
+        // });
       }
-    };
-    fetchData();
-  }, [nickname]);
+      return () => {
+        if (ws) {
+          ws.off('statusChange');
+        }
+      };
+    }
+  }, [nickname, ws]);
 
   async function openDMs(event: React.MouseEvent, nickname2: string) {
     event.preventDefault();
@@ -82,6 +122,7 @@ function FriendStats({
     }
   }
 
+  console.log(friends);
   if (isLoading) return <div className="text-center">Loading Data...</div>;
   else {
     if (friends.length === 0) {
@@ -97,12 +138,11 @@ function FriendStats({
           <div key={index} className="w-[190px]">
             <Player
               nickname={elem.nickname}
-              avatar={
-                process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + elem.avatar
-              }
+              avatar={elem.avatar}
               openDMs={openDMs}
               userProfile={userProfile}
               blockFriend={blockFriend}
+              status={elem.status}
             />
           </div>
         ))}
