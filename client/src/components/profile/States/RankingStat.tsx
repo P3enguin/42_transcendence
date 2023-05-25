@@ -80,7 +80,7 @@ function RankingStat({ nickname }: { nickname: string }) {
           <div className="relative mb-4 h-4 w-[980px] rounded-full bg-[#0D1743]  ">
             <div
               className="h-4 rounded-full bg-[#01FD91] "
-              style={{ width: rankStat.current_points - 100 }}
+              style={{ width: rankStat.current_points }}
             ></div>
             <div className="relative -left-[2.5px] -top-9 flex w-[1000px] flex-row justify-between ">
               <Rank

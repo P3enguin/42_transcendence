@@ -67,6 +67,8 @@ function ProfileDisplay({
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [reply, setreply] = useState('');
+  const [wallpaper, setWpChange] = useState(wp);
+  const [avatar, setAvatarChange] = useState(pfp);
 
   console.log(requestFriend);
 
@@ -92,9 +94,12 @@ function ProfileDisplay({
           credentials: 'include',
         });
         if (resp.ok) {
+          const data = (await resp.json()) as string;
           setreply('Wallpaper updated!');
           setSuccess(true);
-          Router.reload();
+          setWpChange(
+            process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/wallpapers/' + data,
+          );
           setTimeout(() => {
             setSuccess(false);
           }, 3000);
@@ -133,9 +138,12 @@ function ProfileDisplay({
           credentials: 'include',
         });
         if (resp.ok) {
+          const data = await resp.json();
           setreply('Avatar updated !');
           setSuccess(true);
-          Router.reload();
+          setAvatarChange(
+            process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/avatars/' + data,
+          );
           setTimeout(() => {
             setSuccess(false);
           }, 3000);
@@ -174,7 +182,7 @@ function ProfileDisplay({
           <Image
             width={700}
             height={160}
-            src={wp}
+            src={wallpaper}
             priority={true}
             alt="wallpaper"
             id="wallpaper-holder"
@@ -232,7 +240,7 @@ function ProfileDisplay({
                 </div>
               </div>
               <AvatarProfileComp
-                pfp={pfp}
+                pfp={avatar}
                 EditIcon={userProfile}
                 handlePfpChange={handlePfpChange}
                 id="GradientCounter"

@@ -201,9 +201,10 @@ export class PlayerController {
   )
   uploadProfile(
     @Req() req: Request,
+    @Res() res:Response,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.playerService.updatePFP(req, file.filename);
+    return this.playerService.updatePFP(req, file.filename,res);
   }
   @Post('wallpaper')
   @UseInterceptors(
@@ -222,9 +223,11 @@ export class PlayerController {
   )
   uploadBackGround(
     @Req() req: Request,
+    @Res() res : Response,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.playerService.updateWallpaper(req, file.filename);
+    this.playerService.updateWallpaper(req, file.filename,res);
+
   }
 
   @Get('avatar')

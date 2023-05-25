@@ -679,7 +679,7 @@ export class PlayerService {
       return res.status(400).json({ error: 'An error has occurred' });
     }
   }
-  async updatePFP(req: Request, fileName: string) {
+  async updatePFP(req: Request, fileName: string,res:Response) {
     const token = req.cookies['jwt_token'];
     /* not necessary , we already using auth guard
 			 but protection is good , Highly recommended hh*/
@@ -712,12 +712,14 @@ export class PlayerService {
           avatar: fileName,
         },
       });
+      return res.status(200).json(fileName);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
+      return res.status(401).json({message : "Can not update avatar"});
     }
   }
 
-  async updateWallpaper(req: Request, fileName: string) {
+  async updateWallpaper(req: Request, fileName: string,res:Response) {
     const token = req.cookies['jwt_token'];
     try {
       const secret = process.env.JWT_SECRET;
@@ -748,8 +750,10 @@ export class PlayerService {
           wallpaper: fileName,
         },
       });
+      return res.status(200).json(fileName);
     } catch (err) {
-      console.log(err);
+      return res.status(401).json({message : "Can not upload wallpaper"});
+      console.log(err.message);
     }
   }
   //----------------------------------{Titles}-----------------------------------
