@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as fs from 'fs';
 import {
   CreateChannelDto,
   JoinChannelDto,
@@ -14,6 +15,7 @@ import {
   invitedMember,
 } from './dto';
 import { generate } from 'shortid';
+import { Response } from 'express';
 
 @Injectable()
 export class ChatService {
@@ -1375,6 +1377,45 @@ export class ChatService {
       });
     } catch (err) {
       console.log('cant create message', err.message);
+    }
+  }
+  async updateChannelAvatar(
+    channelId: string,
+    fileName: string,
+    res: Response,
+  ) {
+    try {
+      const secret = process.env.JWT_SECRET;
+      const channel = await this.prisma.room.findUnique({
+        where: {
+          channelId,
+        },
+        select: {
+          avatar: true,
+        },
+      });
+      if (channel.avatar != 'eg.jpeg') {
+        fs.unlink(
+          process.cwd() + '/uploads/channels/' + channel.avatar,
+          (error) => {
+            if (error) {
+              console.log(error);
+            }
+          },
+        );
+      }
+      await this.prisma.room.update({
+        where: {
+          channelId,
+        },
+        data: {
+          avatar: fileName,
+        },
+      });
+      return res.status(200).json(fileName);
+    } catch (err) {
+      console.log(err.message);
+      return res.status(401).json({ message: 'Can not upload avatar' });
     }
   }
 }
