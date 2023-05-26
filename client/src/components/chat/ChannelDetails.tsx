@@ -55,7 +55,7 @@ export default function ChannelDetails({
     <div
       className={`absolute right-0 top-0 transition duration-500 ${
         !isVisible ? 'translate-x-[100%]' : ''
-      } h-full w-[456px] rounded-[20px] bg-[#283775d1] backdrop-blur-[10px]`}
+      } h-full w-full hl:w-[456px] rounded-[20px] bg-[#283775d1] backdrop-blur-[10px]`}
       onMouseDown={() => toggleMemberSettings('')}
     >
       <button
