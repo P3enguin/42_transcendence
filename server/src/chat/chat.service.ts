@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Player } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as fs from 'fs';
 import {
   CreateChannelDto,
   JoinChannelDto,
@@ -16,6 +15,7 @@ import {
 } from './dto';
 import { generate } from 'shortid';
 import { Response } from 'express';
+import * as fs from 'fs';
 
 @Injectable()
 export class ChatService {
@@ -285,6 +285,19 @@ export class ChatService {
               },
             },
             reason: true,
+          },
+        },
+        invited: {
+          select: {
+            player: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
           },
         },
         createdAt: true,
@@ -644,14 +657,26 @@ export class ChatService {
     await this.prisma.room.update({
       where: { channelId: channelId },
       data: {
+        admins: { disconnect: { id: player.id } },
         members: { disconnect: { id: player.id } },
       },
     });
+
+    if (room.ownerId === player.id) {
+      await this.prisma.room.update({
+        where: { channelId: channelId },
+        data: {
+          owner: { disconnect: true },
+        },
+      });
+    }
 
     await this.prisma.player.update({
       where: { id: player.id },
       data: {
         rooms: { disconnect: { channelId: channelId } },
+        ownedRooms: { disconnect: { channelId: channelId } },
+        admins: { disconnect: { channelId: channelId } },
       },
     });
 
@@ -732,6 +757,7 @@ export class ChatService {
     await this.prisma.room.update({
       where: { channelId: channelId },
       data: {
+        admins: { disconnect: { id: member.id } },
         members: { disconnect: { id: member.id } },
       },
     });
@@ -740,6 +766,8 @@ export class ChatService {
       where: { id: member.id },
       data: {
         rooms: { disconnect: { channelId: channelId } },
+        ownedRooms: { disconnect: { channelId: channelId } },
+        admins: { disconnect: { channelId: channelId } },
       },
     });
 
@@ -842,6 +870,7 @@ export class ChatService {
     await this.prisma.room.update({
       where: { channelId: channelId },
       data: {
+        admins: { disconnect: { id: member.id } },
         members: { disconnect: { id: member.id } },
       },
     });
@@ -850,6 +879,8 @@ export class ChatService {
       where: { id: member.id },
       data: {
         rooms: { disconnect: { channelId: channelId } },
+        ownedRooms: { disconnect: { channelId: channelId } },
+        admins: { disconnect: { channelId: channelId } },
       },
     });
 

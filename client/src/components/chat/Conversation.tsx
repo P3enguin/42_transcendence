@@ -20,7 +20,7 @@ interface Message {
   message: string;
 }
 
-function Conversation({ player, jwt_token, id, setNew, ws }: any) {
+function Conversation({ player, jwt_token, id, setNew, ws, wsConnected }: any) {
   const [channel, setChannel] = useState<Channel | null | undefined>(undefined);
 
   const [showDetails, setShowDetails] = useState(false);
@@ -278,6 +278,7 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
         <ChannelHeader
           channel={channel}
           ws={ws}
+          wsConnected={wsConnected}
           onClick={() => {
             setShowDetails(!showDetails);
             setMemberSettings('');

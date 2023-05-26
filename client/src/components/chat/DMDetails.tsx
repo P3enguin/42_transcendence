@@ -108,7 +108,7 @@ export default function DMDetails({
     <div
       className={`absolute right-0 top-0 transition duration-500 ${
         !isVisible ? 'translate-x-[100%]' : ''
-      } h-full w-[456px] rounded-[20px] bg-[#283775d1] backdrop-blur-[10px]`}
+      } h-full w-full hl:w-[456px] rounded-[20px] bg-[#283775d1] backdrop-blur-[10px]`}
     >
       <button
         className="absolute left-6 top-6 flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#8BD9FF4D] hover:bg-[#8BD9FF66]"
