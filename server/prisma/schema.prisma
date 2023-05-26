@@ -178,7 +178,7 @@ model Room {
   mutes     Mute[]
   invited   Invite[]
 
-  avatar String @default("eg.jpeg")
+  avatar String @default("default.jpeg")
 
   createdAt DateTime @default(now())
 }
