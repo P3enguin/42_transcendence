@@ -2,15 +2,12 @@
 import Layout from '@/components/layout/layout';
 import { verifyToken } from '@/components/VerifyToken';
 import { useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { useState } from 'react';
-import axios from 'axios';
-
 import Conversation from '@/components/chat/Conversation';
 import OnlineNow from '@/components/chat/OnlineNow';
-import RecentChat from '@/components/chat/recent_chat';
+import RecentChat from '@/components/chat/RecentChat';
 import Link from 'next/link';
-import { Console } from 'console';
 
 //use the chat :
 function Chat({
@@ -67,6 +64,7 @@ function Chat({
       window.removeEventListener('resize', MobilView);
     };
   }, [showMobile]);
+
   return (
     <>
       <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
@@ -86,10 +84,10 @@ function Chat({
             <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
               <div className="flex flex-row justify-between  pt-1">
                 <div
-                  className="cursor-pointer text-green-300"
+                  className="cursor-pointer font-semibold uppercase"
                   onClick={handleRecentChatClick}
                 >
-                  Recent Chat
+                  Recent Chat:
                 </div>
                 <div
                   className="cursor-pointer text-green-300 md:hidden"
@@ -100,11 +98,7 @@ function Chat({
               </div>
               <div className="mt-2 h-full flex-col overflow-hidden overflow-y-auto scrollbar-hide">
                 {showRecentChat && (
-                  <RecentChat
-                    avatar={data.avatar}
-                    player={data.nickname}
-                    newmsgs={newMessages}
-                  />
+                  <RecentChat player={data} newmsgs={newMessages} ws={ws} />
                 )}
               </div>
             </div>
@@ -112,16 +106,13 @@ function Chat({
         )}
         {showConversation && (
           <div className="flex w-full flex-col justify-between">
-            {/* <div className="flex h-[5%] w-full items-center border-b "></div> */}
-            {
-              <Conversation
-                player={data}
-                jwt_token={jwt_token}
-                id={id}
-                ws={ws}
-                setNew={changeToNewmessages}
-              />
-            }
+            <Conversation
+              player={data}
+              jwt_token={jwt_token}
+              id={id}
+              ws={ws}
+              setNew={changeToNewmessages}
+            />
           </div>
         )}
       </div>

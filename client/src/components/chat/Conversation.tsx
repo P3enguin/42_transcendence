@@ -44,7 +44,6 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
       );
       if (response.ok) {
         const result = await response.json();
-        console.log('blocked', result);
         setBlocked(result);
       }
     } catch (error) {
@@ -198,7 +197,6 @@ function Conversation({ player, jwt_token, id, setNew, ws }: any) {
       socket.disconnect();
     };
   }, [id]);
-
 
   if (channel === undefined) {
     return (

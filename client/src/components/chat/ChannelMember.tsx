@@ -257,77 +257,73 @@ export default function ChannelMember({
                 </li>
               )}
 
-              {(owner?.nickname === nickname ||
-                (member.nickname !== owner?.nickname &&
-                  !admins?.includes(member))) && (
-                <>
-                  <div className="my-0.5 h-0 w-full rounded-sm border-[0.01rem] bg-[#CFCFCF]"></div>
-
-                  {isMuted ? (
-                    <li
-                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                      onClick={() => muteMember(false)}
-                    >
-                      Unmute
-                    </li>
-                  ) : (
-                    <li
-                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                      onClick={() => muteMember(true)}
-                    >
-                      Mute
-                    </li>
-                  )}
-                  <li
-                    className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                    onClick={kickMember}
-                  >
-                    Kick
-                  </li>
-                  {isBanned ? (
-                    <li
-                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                      onClick={() => banMember(false)}
-                    >
-                      Unban
-                    </li>
-                  ) : (
-                    <li
-                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                      onClick={() => banMember(true)}
-                    >
-                      Ban
-                    </li>
-                  )}
-                </>
-              )}
-
-              {owner?.nickname === nickname &&
-                (!channel.admins ||
-                  (channel.admins &&
-                    !channel.admins.find(
-                      (admin) => admin.nickname === member.nickname,
-                    ))) && (
+              {member.nickname !== owner?.nickname &&
+                ((owner && owner.nickname === nickname) ||
+                  (admins &&
+                    admins.find((admin) => admin.nickname === nickname))) && (
                   <>
                     <div className="my-0.5 h-0 w-full rounded-sm border-[0.01rem] bg-[#CFCFCF]"></div>
 
-                    {isAdmin ? (
+                    {isMuted ? (
                       <li
                         className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                        onClick={() => promoteMember(false)}
+                        onClick={() => muteMember(false)}
                       >
-                        Demote
+                        Unmute
                       </li>
                     ) : (
                       <li
                         className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
-                        onClick={() => promoteMember(true)}
+                        onClick={() => muteMember(true)}
                       >
-                        Promote
+                        Mute
+                      </li>
+                    )}
+                    <li
+                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+                      onClick={kickMember}
+                    >
+                      Kick
+                    </li>
+                    {isBanned ? (
+                      <li
+                        className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+                        onClick={() => banMember(false)}
+                      >
+                        Unban
+                      </li>
+                    ) : (
+                      <li
+                        className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+                        onClick={() => banMember(true)}
+                      >
+                        Ban
                       </li>
                     )}
                   </>
                 )}
+
+              {owner?.nickname === nickname && (
+                <>
+                  <div className="my-0.5 h-0 w-full rounded-sm border-[0.01rem] bg-[#CFCFCF]"></div>
+
+                  {isAdmin ? (
+                    <li
+                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+                      onClick={() => promoteMember(false)}
+                    >
+                      Demote
+                    </li>
+                  ) : (
+                    <li
+                      className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
+                      onClick={() => promoteMember(true)}
+                    >
+                      Promote
+                    </li>
+                  )}
+                </>
+              )}
             </ul>
           )}
         </>

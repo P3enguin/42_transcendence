@@ -28,7 +28,8 @@ export default function ChannelDetails({
   admins = admins?.filter((admin) => admin.nickname !== owner?.nickname);
   members = members?.filter(
     (member) =>
-      member.nickname !== owner?.nickname && !admins?.includes(member),
+      member.nickname !== owner?.nickname &&
+      !admins?.find((admin) => admin.nickname === member.nickname),
   );
 
   async function leaveChannel(e: React.FormEvent) {

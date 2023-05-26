@@ -37,22 +37,6 @@ import { UploadedFile } from '@nestjs/common';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  @Get('allChat')
-  async GetChat(
-    @GetPlayer() player: Player,
-    @Res() res: Response,
-    @Query('page') page: number,
-  ) {
-    try {
-      // console.log("Get All Chat");
-      const allChat = await this.chatService.getAllChat(player, 0);
-      res.status(allChat.status).json(allChat);
-    } catch (error) {
-      console.log(error);
-      return res.status(404).json({ error: 'An error has occurred' });
-    }
-  }
-
   @Get('msg/:id')
   async getMessages(
     @GetPlayer() player: Player,
@@ -60,11 +44,11 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
-      const result = await this.chatService.getMessages(channelId, player);
-      console.log('messages: ', result.data);
+      const result = await this.chatService.getMessages(player, channelId);
       res.status(result.status).json(result.data);
-    } catch (err) {
-      return res.status(404).json({ error: 'can not get messages' });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
 
@@ -81,6 +65,7 @@ export class ChatController {
       );
       res.status(result.status).json(result.data);
     } catch (error) {
+      console.log(error);
       return res.status(400).json({ error: 'Unexpected error occurred' });
     }
   }
@@ -108,6 +93,21 @@ export class ChatController {
   ) {
     try {
       const result = await this.chatService.getChannel(player, channelId);
+      res.status(result.status).json(result.data);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({ error: 'Unexpected error occurred' });
+    }
+  }
+
+  @Get('recentChat')
+  async getRecentChat(
+    @GetPlayer() player: Player,
+    @Res() res: Response,
+    @Query('page') page: number,
+  ) {
+    try {
+      const result = await this.chatService.getRecentChat(player, page - 1);
       res.status(result.status).json(result.data);
     } catch (error) {
       console.log(error);
