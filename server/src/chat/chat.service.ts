@@ -1370,7 +1370,7 @@ export class ChatService {
       };
     }
 
-    if (channel.admins.find((admin) => admin.nickname !== nickname)) {
+    if (channel.admins.find((admin) => admin.nickname === nickname)) {
       return {
         status: 403,
         data: {
@@ -1425,7 +1425,7 @@ export class ChatService {
       };
     }
 
-    if (!channel.members.find((member) => member.nickname !== nickname)) {
+    if (!channel.members.find((member) => member.nickname === nickname)) {
       return {
         status: 404,
         data: {
@@ -1434,7 +1434,7 @@ export class ChatService {
       };
     }
 
-    if (!channel.admins.find((admin) => admin.nickname !== nickname)) {
+    if (!channel.admins.find((admin) => admin.nickname === nickname)) {
       return {
         status: 403,
         data: {
