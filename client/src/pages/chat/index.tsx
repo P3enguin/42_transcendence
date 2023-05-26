@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 import StartNew from '@/components/chat/startNew';
 import OnlineNow from '@/components/chat/OnlineNow';
-import RecentChat from '@/components/chat/recent_chat';
+import RecentChat from '@/components/chat/RecentChat';
 import { Console, log } from 'console';
 import axios from 'axios';
 

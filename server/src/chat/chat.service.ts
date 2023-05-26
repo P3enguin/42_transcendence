@@ -19,108 +19,130 @@ import { generate } from 'shortid';
 export class ChatService {
   constructor(private jwt: JwtService, private prisma: PrismaService) {}
 
-  async getMessages(channelId: string, player: Player) {
+  async getMessages(player: Player, channelId: string) {
     const messageInfo: MessageInfo[] = [];
-    try {
-      const result = await this.prisma.room.findUnique({
-        where: { channelId: channelId },
-        select: {
-          messages: {
-            select: {
-              sender: true,
-              sendAt: true,
-              message: true,
-            },
-            orderBy: {
-              sendAt: 'desc',
-            },
-          },
-        },
-      });
-      const blocked = await this.prisma.player.findUnique({
-        where: {
-          id: player.id,
-        },
-        select: {
-          block: true,
-        },
-      });
-      for (const element of result.messages) {
-        const sender = await this.prisma.player.findUnique({
-          where: {
-            id: element.sender,
-          },
-          select: {
-            nickname: true,
-            avatar: true,
-          },
-        });
-        let found = false;
-        for (const findSender of blocked.block) {
-          if (sender.nickname === findSender.nickname) found = true;
-        }
-        if (!found) {
-          const msg: MessageInfo = {
-            sender: sender.nickname,
-            senderAvatar: sender.avatar,
-            time: element.sendAt.getHours() + ':' + element.sendAt.getMinutes(),
-            message: element.message,
-          };
-          messageInfo.push(msg);
-        }
-      } // <----- empty
-      return {
-        status: 201,
-        data: messageInfo,
-      };
-    } catch (e) {
-      console.error(e);
-      throw new Error('Error retrieving messages');
-    }
-  }
 
-  async getAllChat(_player: Player, page: number) {
-    const player = await this.prisma.player.findUnique({
+    const channel = await this.prisma.room.findUnique({
+      where: { channelId: channelId },
+      select: {
+        messages: {
+          select: {
+            sender: {
+              select: {
+                nickname: true,
+                avatar: true,
+              },
+            },
+            message: true,
+            sentAt: true,
+          },
+          orderBy: {
+            sentAt: 'desc',
+          },
+        },
+      },
+    });
+
+    const user = await this.prisma.player.findUnique({
       where: {
-        id: _player.id,
+        id: player.id,
       },
       select: {
-        rooms: {
+        block: {
           select: {
-            channelId: true,
-            name: true,
-            privacy: true,
-            avatar: true,
-            messages: {
-              select: {
-                sender: true,
-                message: true,
-                sendAt: true,
-              },
-              orderBy: {
-                sendAt: 'desc',
-              },
-              take: 1,
-            },
+            nickname: true,
           },
-          skip: 12 * page,
-          take: 12,
         },
       },
     });
-    // console.log('Player Rooms Messages:');
-    player.rooms.forEach((room) => {
-      // console.log(room.messages);
-    });
-    if (!player)
-      return {
-        status: 404,
-        data: { error: 'Invalid' },
-      };
+
+    for (const message of channel.messages) {
+      if (
+        !user.block.find(
+          (blocedUser) => blocedUser.nickname == message.sender.nickname,
+        )
+      ) {
+        const msg: MessageInfo = {
+          sender: message.sender.nickname,
+          senderAvatar: message.sender.avatar,
+          time:
+            message.sentAt.getHours().toString().padStart(2, '0') +
+            ':' +
+            message.sentAt.getMinutes().toString().padStart(2, '0'),
+          message: message.message,
+        };
+        messageInfo.push(msg);
+      }
+    }
+
     return {
-      status: 201,
-      data: player,
+      status: 200,
+      data: messageInfo,
     };
+  }
+
+  async saveMessage(messageInfo: any, roomId: string) {
+    try {
+      const channel = await this.prisma.room.findUnique({
+        where: {
+          channelId: roomId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!channel) {
+        console.log("Couldn't save message: channel not found.");
+        return;
+      }
+
+      const sender = await this.prisma.player.findUnique({
+        where: {
+          nickname: messageInfo.sender,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!channel) {
+        console.log("Couldn't save message: sender not found.");
+        return;
+      }
+
+      const msg = await this.prisma.message.create({
+        data: {
+          channel: {
+            connect: { id: channel.id },
+          },
+          sender: {
+            connect: { id: sender.id },
+          },
+          message: messageInfo.message,
+        },
+      });
+
+      if (!msg) {
+        console.log("Couldn't save message.");
+        return;
+      }
+
+      await this.prisma.room.update({
+        where: {
+          channelId: roomId,
+        },
+        data: {
+          messages: {
+            connect: {
+              id: msg.id,
+            },
+          },
+        },
+      });
+    } catch (err) {
+      console.log('cant create message', err.message);
+    }
   }
 
   async createChannel(player: Player, createChannelDto: CreateChannelDto) {
@@ -323,6 +345,131 @@ export class ChatService {
     return {
       status: 200,
       data: channel,
+    };
+  }
+
+  async getRecentChat(player: Player, page: number) {
+    if (page < 0) {
+      return {
+        status: 400,
+        data: { error: 'Invalid page' },
+      };
+    }
+
+    const user = await this.prisma.player.findUnique({
+      where: {
+        id: player.id,
+      },
+      select: {
+        rooms: {
+          select: {
+            channelId: true,
+            name: true,
+            topic: true,
+            avatar: true,
+            memberLimit: true,
+            privacy: true,
+            isChannel: true,
+            key: true,
+            messages: {
+              select: {
+                sender: {
+                  select: {
+                    nickname: true,
+                    avatar: true,
+                    firstname: true,
+                    lastname: true,
+                    joinAt: true,
+                  },
+                },
+                message: true,
+                sentAt: true,
+              },
+              orderBy: {
+                sentAt: 'desc',
+              },
+              take: 1,
+            },
+            owner: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+            admins: {
+              select: {
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+            members: {
+              select: {
+                id: true,
+                nickname: true,
+                avatar: true,
+                firstname: true,
+                lastname: true,
+                joinAt: true,
+              },
+            },
+            mutes: {
+              select: {
+                player: {
+                  select: {
+                    nickname: true,
+                    avatar: true,
+                    firstname: true,
+                    lastname: true,
+                    joinAt: true,
+                  },
+                },
+              },
+            },
+            bans: {
+              select: {
+                player: {
+                  select: {
+                    nickname: true,
+                    avatar: true,
+                    firstname: true,
+                    lastname: true,
+                    joinAt: true,
+                  },
+                },
+                reason: true,
+              },
+            },
+            createdAt: true,
+          },
+          skip: 12 * page,
+          take: 12,
+        },
+      },
+    });
+
+    if (!user) {
+      return {
+        status: 404,
+        data: { error: 'User not found' },
+      };
+    }
+
+    if (!user.rooms) {
+      return {
+        status: 404,
+        data: { error: 'Channels not found' },
+      };
+    }
+
+    return {
+      status: 200,
+      data: user.rooms,
     };
   }
 
@@ -1340,41 +1487,5 @@ export class ChatService {
       status: 200,
       data: channels,
     };
-  }
-
-  async saveMessage(messageInfo: any, roomId: string) {
-    try {
-      const sender = await this.prisma.player.findUnique({
-        where: {
-          nickname: messageInfo.sender,
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      const msg = await this.prisma.message.create({
-        data: {
-          sender: sender.id,
-          message: messageInfo.message,
-          roomId: roomId,
-        },
-      });
-
-      const channel = await this.prisma.room.update({
-        where: {
-          channelId: roomId,
-        },
-        data: {
-          messages: {
-            connect: {
-              MsgId: msg.MsgId,
-            },
-          },
-        },
-      });
-    } catch (err) {
-      console.log('cant create message', err.message);
-    }
   }
 }

@@ -1,40 +1,81 @@
-import Image from 'next/image';
+import Router from 'next/router';
 import React, { useEffect, useState } from 'react';
+import StatusBubble from '../game/StatusBubble';
+import { Socket } from 'socket.io-client';
+import { Channel, Member } from '@/interfaces/Channel';
 
-function RecentConversation(room: any) {
-  let date;
-  let msg;
-  const picture =
-    process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/channels/' + room.room.avatar;
-  if (room.room.messages[0]) {
-    msg = room.room.messages[0].message;
-    date = new Date(room.room.messages[0].sendAt);
-  } else {
-    msg = '';
-    date = '';
+function RecentConversation({
+  player,
+  channel,
+  ws,
+}: {
+  player: Member;
+  channel: Channel;
+  ws: Socket;
+}) {
+  const [status, setStatus] = useState('');
+
+  if (!channel.isChannel && channel.members) {
+    const user = channel.members.filter(
+      (member: Member) => member.nickname != player.nickname,
+    )[0];
+    channel.name = user.firstname + ' ' + user.lastname;
+    channel.avatar = user.avatar;
   }
 
+  useEffect(() => {
+    if (channel.isChannel) {
+      setStatus('');
+      return;
+    }
+
+    if (ws) {
+      ws.emit('getUserStatus', { name: channel.topic }, (data: any) => {
+        console.log(data);
+        setStatus(data);
+      });
+    }
+    return () => {
+      if (ws) {
+        ws.off('statusChange');
+      }
+    };
+  }, [ws, channel]);
+
+  const date = channel.messages
+    ? new Date(channel.messages[0].sentAt)
+    : undefined;
+
   return (
-    <div className="flex flex-row p-1">
-      <Image
-        className="self-center rounded-full sm:h-12  sm:w-12"
-        src={picture}
-        alt="Avatar"
-        width={50}
-        height={50}
+    <li
+      className="item-start relative flex h-16 w-full cursor-pointer items-center gap-3 rounded-xl bg-[#8BD9FF4D] bg-opacity-20 px-2 shadow-xl tx:max-w-[350px]"
+      onClick={(e) => {
+        Router.push('/chat/' + channel.channelId);
+      }}
+    >
+      <StatusBubble
+        avatar={channel.avatar}
+        status={status}
+        imageClassName="h-[59px] w-[59px]"
+        isChannel={channel.isChannel}
       />
-      <div className="flex max-w-[250px] flex-col self-center p-1">
-        <h3>{room.room.name}</h3>
-        <p className="text-xs flex overflow-x-hidden whitespace-nowrap text-green-300 ">
-          {msg}{' '}
+      <div className="flex max-w-[250px] flex-col">
+        <p className="font-semibold">{channel.name}</p>
+        <p className="truncate text-sm font-light">
+          {channel.messages ? channel.messages[0].message : ''}
         </p>
       </div>
       {date && (
-        <p className=" text-xs absolute right-3 self-end">
-          {`${(date as Date).getHours()}:${(date as Date).getMinutes()}`}
+        <p className="mb-1 ml-auto mt-auto text-sm font-extralight">
+          {`${(date as Date).getHours().toString().padStart(2, '0')}:${(
+            date as Date
+          )
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`}
         </p>
       )}
-    </div>
+    </li>
   );
 }
 

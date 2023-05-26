@@ -25,4 +25,9 @@ export interface Channel {
   bans?: {
     player: Member;
   }[];
+  messages?: {
+    sender: Member;
+    message: string;
+    sentAt: string;
+  }[];
 }
