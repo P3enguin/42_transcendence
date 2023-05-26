@@ -41,6 +41,7 @@ const MessageWrapper = ({ player, socket, id, setNew }: any) => {
     };
 
     LoadOldMessages();
+    //eslint-disable-next-line
   },[id]);
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const MessageWrapper = ({ player, socket, id, setNew }: any) => {
         socket.off('message');
       }
     };
+    //eslint-disable-next-line
   }, [socket]);
 
   return (

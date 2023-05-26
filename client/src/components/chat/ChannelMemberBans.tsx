@@ -5,11 +5,11 @@ import { Channel, Member } from '@/interfaces/Channel';
 export default function ChannelMemberBans({
   channel,
   member,
-  toggleMemberSettings,
+  showSettings,
 }: {
   channel: Channel;
   member: Member;
-  toggleMemberSettings: (memberSettings: string) => void;
+  showSettings: (toggle: boolean) => void;
 }) {
   let interval: NodeJS.Timeout;
 
@@ -33,7 +33,7 @@ export default function ChannelMemberBans({
         },
       );
       if (response.ok) {
-        toggleMemberSettings('');
+        showSettings(false);
       }
     } catch (error) {
       console.error(error);

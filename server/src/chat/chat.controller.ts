@@ -245,6 +245,7 @@ export class ChatController {
     @Res() res: Response,
   ) {
     try {
+      console.log(invitedMember);
       const result = await this.chatService.inviteMember(player, invitedMember);
       res.status(result.status).json(result.data);
     } catch (err) {
@@ -360,15 +361,16 @@ export class ChatController {
   ) {
     return this.chatService.updateChannelAvatar(channelId, file.filename, res);
   }
-  // async saveMessage(
-  //   @GetPlayer('id') id: number,
-  //   messageInfo: any,
-  //   roomId: string,
-  // ) {
-  //   try {
-  //     const result = await this.chatService.saveMessage(messageInfo, roomId);
-  //   } catch (error) {
-  //     return 'An error has occurred';
-  //   }
-  // }
+
+  @Get('invitations')
+  async getInvitations(@GetPlayer() player: Player, @Res() res: Response) {
+    try {
+      const result = await this.chatService.getInvitations(player);
+      res.status(result.status).json(result.data);
+    } catch (err) {
+      return res
+        .status(400)
+        .json({ error: 'Unexpected error occurred while getting invitations' });
+    }
+  }
 }

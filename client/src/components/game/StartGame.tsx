@@ -27,7 +27,7 @@ export const RadioInput = ({
         id={id}
         name="type"
         onChange={onChange}
-        checked={isChecked}
+        // checked={isChecked}
       />
 
       <label

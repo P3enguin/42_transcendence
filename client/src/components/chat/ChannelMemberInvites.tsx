@@ -5,11 +5,11 @@ import { Channel, Member } from '@/interfaces/Channel';
 export default function ChannelMemberInvites({
   channel,
   member,
-  toggleMemberSettings,
+  showSettings,
 }: {
   channel: Channel;
   member: Member;
-  toggleMemberSettings: (memberSettings: string) => void;
+  showSettings: (toggle: boolean) => void;
 }) {
   let interval: NodeJS.Timeout;
 
@@ -21,19 +21,19 @@ export default function ChannelMemberInvites({
   async function removeInvite() {
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/ban',
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/cancelInvite',
         {
-          method: 'DELETE',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             channelId: channel.channelId,
-            memberNickname: member.nickname,
+            playerNickname: member.nickname,
           }),
           credentials: 'include',
         },
       );
       if (response.ok) {
-        toggleMemberSettings('');
+        showSettings(false);
       }
     } catch (error) {
       console.error(error);

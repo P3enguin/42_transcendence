@@ -10,4 +10,13 @@
 **/yarn-debug.log*
 **/yarn-error.log*
 **/lerna-debug.log*
-**/.env*
+**/.env.template
+
+**/uploads/avatars/*
+**/uploads/wallpapers/*
+**/uploads/channels/*
+
+!**/uploads/avatars/default.png
+!**/uploads/avatars/Ponginator-v2.png
+!**/uploads/wallpapers/wallpaper.png
+!**/uploads/channels/default.jpeg

@@ -28,7 +28,8 @@ function Contact({
           className="block h-[100%] w-[97.6%] opacity-20 transition-opacity duration-700  ease-in hover:opacity-100"
           href=""
         >
-          <Image
+          {/* eslint-disable-next-line */}
+          <img
             className="h-[100%] w-[100%]"
             src="https://badge.mediaplus.ma/darkblue/mbabela"
             alt="mbabela's 42 stats"
@@ -51,7 +52,8 @@ function Contact({
           className="block h-[100%] w-[97.6%] opacity-20 transition-opacity duration-700  ease-in hover:opacity-100"
           href=""
         >
-          <Image
+          {/* eslint-disable-next-line */}
+          <img
             className="h-[100%] w-[100%]"
             src="https://badge.mediaplus.ma/darkblue/hel-makh"
             alt="hel-makh's 42 stats"
@@ -74,7 +76,8 @@ function Contact({
           className="block h-[100%] w-[97.6%] opacity-20 transition-opacity duration-700  ease-in hover:opacity-100"
           href=""
         >
-          <Image
+          {/* eslint-disable-next-line */}
+          <img
             className="h-[100%] w-[100%]"
             src="https://badge.mediaplus.ma/darkblue/ybensell"
             alt="ael-hadd's 42 stats"
@@ -98,7 +101,8 @@ function Contact({
           className="block h-[100%] w-[97.6%] opacity-20 transition-opacity duration-700  ease-in hover:opacity-100"
           href=""
         >
-          <Image
+          {/* eslint-disable-next-line */}
+          <img
             className="h-[100%] w-[100%]"
             src="https://badge.mediaplus.ma/darkblue/ael-hadd"
             alt="ael-hadd's 42 stats"

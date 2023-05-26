@@ -413,12 +413,14 @@ export function InputBtn({
   id,
   defaultValue,
   description,
+  method,
   setName,
-  createPrivateChat,
+  onClick,
 }: {
   setName: Dispatch<SetStateAction<string>>;
-  createPrivateChat: () => {};
+  onClick: () => {};
   name: string;
+  method: string;
   id: string;
   description: string;
   defaultValue?: string;
@@ -443,14 +445,14 @@ export function InputBtn({
       <button
         onClick={(e) => {
           e.preventDefault();
-          createPrivateChat();
+          onClick();
         }}
         className=" hover:text-s absolute bottom-[13%] right-2 transform 
           rounded-full bg-[#0097E2] px-[12px] py-2 text-[10px] font-bold 
           uppercase text-white  shadow transition duration-300
           hover:scale-[115%] hover:bg-[#2C3B7C] tx:bottom-[10%]"
       >
-        start
+        {method}
       </button>
       <label
         htmlFor={name}

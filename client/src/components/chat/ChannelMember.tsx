@@ -78,9 +78,9 @@ export default function ChannelMember({
   async function blockUser(block: boolean) {
     try {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/' + block
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/players/' + (block
           ? ''
-          : 'un' + 'block',
+          : 'un') + 'block',
         {
           method: block ? 'PATCH' : 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -107,6 +107,7 @@ export default function ChannelMember({
           body: JSON.stringify({
             channelId: channel.channelId,
             memberNickname: member.nickname,
+            duration: 3600000,
           }),
           credentials: 'include',
         },
@@ -276,7 +277,7 @@ export default function ChannelMember({
                         className="cursor-pointer rounded-md p-0.5 text-center text-[12px] font-semibold text-red-500 hover:bg-red-500 hover:text-white"
                         onClick={() => muteMember(true)}
                       >
-                        Mute
+                        Mute for 1h
                       </li>
                     )}
                     <li

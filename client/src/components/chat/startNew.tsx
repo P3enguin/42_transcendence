@@ -233,10 +233,11 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
               </p>
               <InputBtn
                 name="nickname"
+                method='start'
                 id="nickname"
                 description="nickname"
                 setName={setPlayer1}
-                createPrivateChat={createPrivateChat}
+                onClick={createPrivateChat}
               />
             </div>
           </div>

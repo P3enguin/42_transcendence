@@ -45,7 +45,7 @@ export default function LiveGames({ jwt_token }: { jwt_token: string }) {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [jwt_token]);
 
   return (
     <div className="w-full max-h-[600px]  min-h-[250px] rounded-[20px] border border-white">

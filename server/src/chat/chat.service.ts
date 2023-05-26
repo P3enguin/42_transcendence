@@ -262,6 +262,7 @@ export class ChatService {
         },
         mutes: {
           select: {
+            id: true,
             player: {
               select: {
                 nickname: true,
@@ -271,6 +272,7 @@ export class ChatService {
                 joinAt: true,
               },
             },
+            expirationDate: true,
           },
         },
         bans: {
@@ -314,7 +316,12 @@ export class ChatService {
         )) ||
       !channel ||
       (channel.privacy === 'secret' &&
-        !channel.members.find((member) => member.nickname === player.nickname))
+        !channel.members.find(
+          (member) => member.nickname === player.nickname,
+        ) &&
+        !channel.invited.find(
+          (member) => member.player.nickname === player.nickname,
+        ))
     ) {
       return {
         status: 404,
@@ -351,6 +358,19 @@ export class ChatService {
       };
     }
 
+    channel.mutes.forEach(async (mute) => {
+      console.log(new Date(mute.expirationDate).getTime());
+      console.log(new Date().getTime());
+
+      if (new Date(mute.expirationDate).getTime() <= new Date().getTime()) {
+        channel.mutes = channel.mutes.filter((m) => m.id !== mute.id);
+        await this.prisma.mute.delete({
+          where: {
+            id: mute.id,
+          },
+        });
+      }
+    });
     if (!channel.admins.find((admin) => admin.nickname === player.nickname)) {
       delete channel.key;
       delete channel.mutes;
@@ -572,10 +592,16 @@ export class ChatService {
         bans: {
           where: { playerId: player.id },
         },
+        invited: true,
       },
     });
 
-    if (!channel) {
+    if (
+      !channel ||
+      (channel.privacy === 'secret' &&
+        !channel.members.find((member) => member.id === player.id) &&
+        !channel.invited.find((member) => member.playerId === player.id))
+    ) {
       return {
         status: 404,
         data: { error: 'Unknown Channel' },
@@ -618,6 +644,15 @@ export class ChatService {
       where: { channelId: channelId },
       data: {
         members: { connect: { id: player.id } },
+      },
+    });
+
+    await this.prisma.invite.deleteMany({
+      where: {
+        channel: {
+          channelId,
+        },
+        playerId: player.id,
       },
     });
 
@@ -1065,7 +1100,6 @@ export class ChatService {
         data: { error: 'An error occurred while muting the member' },
       };
     }
-
     return {
       status: 204,
       data: { message: 'Successfully muted member from the channel' },
@@ -1243,6 +1277,7 @@ export class ChatService {
 
   async cancelInvites(player, invited) {
     const { channelId, playerNickname } = invited;
+
     const channel = await this.prisma.room.findUnique({
       where: {
         channelId: channelId,
@@ -1259,15 +1294,10 @@ export class ChatService {
     if (!channel) {
       return {
         status: 403,
-        data: { error: 'Unkown Channel' },
+        data: { error: 'Unknown Channel' },
       };
     }
-    if (!channel.admins.find((channelAdmin) => channelAdmin.id === player.id)) {
-      return {
-        status: 403,
-        data: { error: "You don't have permissions to invite users" },
-      };
-    }
+
     const member = await this.prisma.player.findUnique({
       where: {
         nickname: playerNickname,
@@ -1277,26 +1307,11 @@ export class ChatService {
         invited: true,
       },
     });
+
     if (!member) {
       return {
         status: 404,
         data: { error: 'User not found' },
-      };
-    }
-    if (
-      channel.members.find((channelMember) => channelMember.id === member.id)
-    ) {
-      return {
-        status: 404,
-        data: { error: 'User is already a member of the channel' },
-      };
-    }
-    if (
-      !channel.invited.find((channelInvites) => channelInvites.id === member.id)
-    ) {
-      return {
-        status: 404,
-        data: { error: 'User is not invited' },
       };
     }
 
@@ -1306,6 +1321,11 @@ export class ChatService {
         playerId: member.id,
       },
     });
+
+    return {
+      status: 204,
+      data: { message: 'Successfully canceled invite' },
+    };
   }
 
   async updateChannel(
@@ -1560,5 +1580,27 @@ export class ChatService {
       console.log(err.message);
       return res.status(401).json({ message: 'Can not upload avatar' });
     }
+  }
+  async getInvitations(player: Player) {
+    const invitations = await this.prisma.invite.findMany({
+      where: {
+        playerId: player.id,
+      },
+      select: {
+        channel: {
+          select: {
+            channelId: true,
+            name: true,
+          },
+        },
+      },
+    });
+    return {
+      status: 200,
+      data: {
+        nickname: player.nickname,
+        invitations,
+      },
+    };
   }
 }

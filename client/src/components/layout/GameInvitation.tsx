@@ -11,6 +11,7 @@ export const InvitationPopup = ({ invitation, rmInvitation }: any) => {
       rmInvitation(invitation, 'deny');
     }, 10000);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invitation]);
 
   return (

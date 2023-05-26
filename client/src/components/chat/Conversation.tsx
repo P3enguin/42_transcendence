@@ -199,6 +199,7 @@ function Conversation({ player, jwt_token, id, setNew, ws, wsConnected }: any) {
     return () => {
       socket.disconnect();
     };
+    //eslint-disable-next-line
   }, [id]);
 
   if (channel === undefined) {

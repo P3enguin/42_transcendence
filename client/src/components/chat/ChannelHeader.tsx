@@ -28,6 +28,8 @@ const ChannelHeader = ({
       return;
     }
     if (ws && wsConnected) {
+      console.log('here',channel);
+      
       ws.emit('getUserStatus', { name: channel.topic.substring(1) }, (data: any) => {
         setStatus(data);
       });

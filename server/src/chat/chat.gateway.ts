@@ -20,6 +20,7 @@ import {
 import { Player } from '@prisma/client';
 import { JwtGuard } from 'src/auth/guard';
 import { GetPlayer } from 'src/game/decorator';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 export interface LogPlayer extends Player {
   socketId?: string;
@@ -34,7 +35,11 @@ export interface LogPlayer extends Player {
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private chatservice: ChatService, private jwt: JwtGuard) {}
+  constructor(
+    private chatservice: ChatService,
+    private jwt: JwtGuard,
+    private prisma: PrismaService,
+  ) {}
 
   @WebSocketServer() server: Server<
     ClientToServerEvents,
@@ -61,6 +66,7 @@ export class ChatGateway
     }
     player.socketId = client.id;
     client.handshake.query.user = JSON.stringify(player);
+    client.join(player.nickname);
     console.log('player connected:', player.nickname, player.socketId);
     this.server.to(client.id).emit('connected', 'Hello world!');
   }
@@ -80,7 +86,7 @@ export class ChatGateway
   }
 
   @SubscribeMessage('sendMessage')
-  handleSendMessage(
+  async handleSendMessage(
     @GetPlayer() player: LogPlayer,
     @ConnectedSocket() client: Socket,
     @MessageBody() data: any,
@@ -91,8 +97,55 @@ export class ChatGateway
     }
     var time = new Date();
     const receivedTime = time.getHours() + ':' + time.getMinutes();
-    // console.log(data.id);
-    // console.log(player);
+    let BlockedBY: string[] = [];
+
+    const room = await this.prisma.room.findUnique({
+      where: {
+        channelId: data.id,
+      },
+      include: {
+        mutes: true,
+        members: true,
+      },
+    });
+    if (room) {
+      if (room.isChannel) {
+        if (!room.members.find((m) => m.id === player.id)) return;
+
+        for (let i = 0; i < room.mutes.length; i++) {
+          if (room.mutes[i].playerId === player.id) {
+            client.emit('muted', 'You are muted');
+            return;
+          }
+        }
+      }
+    }
+
+    const blockerList = await this.prisma.player.findMany({
+      where: {
+        block: {
+          some: {
+            id: player.id,
+          },
+        },
+      },
+    });
+
+    const blockedList = await this.prisma.player.findUnique({
+      where: {
+        id: player.id,
+      },
+      include: {
+        block: true,
+      },
+    });
+
+    for (let i = 0; i < blockerList.length; i++) {
+      BlockedBY.push(blockerList[i].nickname);
+    }
+    for (let i = 0; i < blockedList.block.length; i++) {
+      BlockedBY.push(blockedList.block[i].nickname);
+    }
 
     const messageInfo = {
       sender: player.nickname,
@@ -101,7 +154,7 @@ export class ChatGateway
       message: data.message,
     };
 
-    this.server.to(data.id).emit('message', messageInfo);
+    this.server.to(data.id).except(BlockedBY).emit('message', messageInfo);
     this.chatservice.saveMessage(messageInfo, data.id);
   }
 }

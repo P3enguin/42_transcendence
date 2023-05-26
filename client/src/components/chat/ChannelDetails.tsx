@@ -3,6 +3,7 @@ import ChannelCategory from './ChannelCategory';
 import Router from 'next/router';
 import StatusBubble from '../game/StatusBubble';
 import { useState } from 'react';
+import { InputBtn } from '../Input/Inputs';
 
 export default function ChannelDetails({
   nickname,
@@ -24,6 +25,7 @@ export default function ChannelDetails({
   blocked: Member[];
 }) {
   let { owner, admins, members } = channel;
+  const [invitee, setInvitee] = useState('');
 
   admins = admins?.filter((admin) => admin.nickname !== owner?.nickname);
   members = members?.filter(
@@ -31,6 +33,24 @@ export default function ChannelDetails({
       member.nickname !== owner?.nickname &&
       !admins?.find((admin) => admin.nickname === member.nickname),
   );
+
+  const inviteChannel = async () => {
+    try {
+      fetch(process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/invite/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          channelId: channel.channelId,
+          playerNickname: invitee,
+        }),
+      });
+    } catch (e: any) {
+      console.log(e.message);
+    }
+  };
 
   async function leaveChannel(e: React.FormEvent) {
     e.preventDefault();
@@ -60,7 +80,7 @@ export default function ChannelDetails({
     <div
       className={`absolute right-0 top-0 transition duration-500 ${
         !isVisible ? 'translate-x-[100%]' : ''
-      } h-full w-full hl:w-[456px] rounded-[20px] bg-[#283775d1] backdrop-blur-[10px]`}
+      } h-full w-full rounded-[20px] bg-[#283775d1] backdrop-blur-[10px] hl:w-[456px]`}
       onMouseDown={() => toggleMemberSettings('')}
     >
       <button
@@ -92,7 +112,7 @@ export default function ChannelDetails({
           <p className="fond-bold text-[10px] uppercase">Leave Channel</p>
         </button>
       </div>
-      <div className="mt-10 flex w-full flex-col items-center justify-center gap-1">
+      <div className="mt-10 flex w-full flex-col items-center justify-center gap-1 ">
         <StatusBubble
           avatar={channel.avatar}
           className="mb-2"
@@ -108,7 +128,17 @@ export default function ChannelDetails({
           {channel.members && channel.members.length > 1 ? 's' : ''}
         </p>
       </div>
-      <ul className="scrollbar absolute bottom-0 right-[50%] mb-2 flex h-[calc(100%-230px)] w-[90%] translate-x-[50%] flex-col gap-2 overflow-y-auto px-6">
+      <div className="flex w-full justify-center">
+        <InputBtn
+          method="invite"
+          name="nickname"
+          id="nickname"
+          description="nickname"
+          setName={setInvitee}
+          onClick={inviteChannel}
+        />
+      </div>
+      <ul className="scrollbar absolute bottom-0 right-[50%] mb-2 flex h-[calc(100%-280px)] w-[90%] translate-x-[50%] flex-col gap-2 overflow-y-auto px-6">
         <li>
           <ChannelCategory
             channel={channel}

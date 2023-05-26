@@ -9,34 +9,11 @@ interface NotifInterface {
   requestId: string;
   requests: Array<object>;
   senderId?: number;
+  channelName?: string;
+  channelId?: string;
   handleUpdateRequestStatus?: (requestId: string) => void;
+  handleUpdateInvite?: (channelId: string) => void;
 }
-
-// interface requestFrom {
-//   fromPlayerId: number;
-//   id: string;
-//   receivedAt: string;
-//   status: string;
-//   toPlayer: {
-//     nickname: string;
-//     avatar: string;
-//   };
-//   toPlayerId: number;
-//   type: string;
-// }
-
-// interface requestTo {
-//   fromPlayer: {
-//     nickname: string;
-//     avatar: string;
-//   };
-//   fromPlayerId: 2;
-//   id: string;
-//   receivedAt: string;
-//   status: string;
-//   toPlayerId: 1;
-//   type: string;
-// }
 
 interface request {
   fromPlayer?: {
@@ -54,6 +31,64 @@ interface request {
     nickname: string;
     avatar: string;
   };
+}
+
+function NotiJoinChannel({
+  channelId,
+  channelName,
+  nickname,
+  handleUpdateInvite,
+}: any) {
+  
+  async function rejectRequest(e: React.MouseEvent) {
+    e.preventDefault();
+    const data = {
+      channelId: channelId,
+      playerNickname: nickname,
+    };
+    const updateURL: string =
+      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/cancelInvite';
+
+    try {
+      const response = await fetch(updateURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include',
+      });
+      if (response.ok) {
+        handleUpdateInvite?.(channelId!);
+        console.log('rejected!');
+      } else if (response.status == 400) {
+        const result = await response.json();
+        console.log('didnt reject');
+      }
+    } catch (error) {
+      console.log('An error has occurred');
+    }
+  }
+  return (
+    <div className="-mx-2 flex items-center border-b px-4 py-3">
+      <div className="w-4/5 text-sm ">
+        <span>You are invited you to join </span>
+        <span className="font-bold ">{channelName} </span>
+      </div>
+      <div className="font-bold">
+        <button
+          onClick={() => Router.push('/chat/' + channelId)}
+          className="mr-2 text-blue-600 hover:text-blue-300"
+        >
+          Accept
+        </button>
+        <button
+          onClick={rejectRequest}
+          className="text-red-500 hover:text-red-700"
+        >
+          Decline
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function NotiAddFriend({
@@ -121,21 +156,9 @@ function NotiAddFriend({
       if (response.ok) {
         handleUpdateRequestStatus?.(requestId);
         console.log('rejected!');
-
-        // setreply('Password Changed !');
-        // setSuccess(true);
-        // setTimeout(() => {
-        //   setSuccess(false);
-        // }, 3000);
       } else if (response.status == 400) {
         const result = await response.json();
         console.log('didnt reject');
-        // const err = await response.json();
-        // setreply('An Error has Occurred!');
-        // setError(true);
-        // setTimeout(() => {
-        //   setError(false);
-        // }, 3000);
       }
     } catch (error) {
       console.log('An error has occurred');
@@ -178,10 +201,7 @@ function NotiAddFriend({
   );
 }
 
-function NotiAccepted({
-  nickname,
-  image,
-}: NotifInterface) {
+function NotiAccepted({ nickname, image }: NotifInterface) {
   return (
     <div className="-mx-2 flex items-center border-b px-4 py-3">
       <Link href={'/users/' + nickname} className="w-1/5">
@@ -240,10 +260,16 @@ function NotiRejected({
 
 function NotiDrop() {
   const [requests, setRequests] = useState<request[]>([]);
-
+  const [invitation, setInvite] = useState([]);
+  const [Nick, setNickName] = useState('');
   function handleUpdateRequestsTo(requestId: string) {
     setRequests((current) =>
       current.filter((request: request) => request.id != requestId),
+    );
+  }
+  function handleUpdateInvite(channelId: string) {
+    setInvite((current) =>
+      current.filter((invite: any) => invite.channelId != channelId),
     );
   }
 
@@ -264,10 +290,30 @@ function NotiDrop() {
         console.log('An error has occurred');
       }
     };
+    const fetchInvite = async () => {
+      try {
+        const resp = await fetch(
+          process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/invitations',
+          {
+            credentials: 'include',
+          },
+        );
+        if (resp.ok) {
+          const result = await resp.json();
+          console.log('res', result);
+          setInvite(result.invitations);
+          setNickName(result.nickname);
+        }
+      } catch (error) {
+        console.log('An error has occurred');
+      }
+    };
+
     fetchRequests();
+    fetchInvite();
   }, []);
 
-  console.log(requests);
+  console.log('hi', invitation);
   return (
     <div
       x-show="dropdownOpen"
@@ -321,10 +367,21 @@ function NotiDrop() {
               <div key={i}></div>
             );
           })}
+          <>
+            {invitation.map((invite: any, i: number) => (
+              <NotiJoinChannel
+                key={invite.channel.channelId}
+                handleUpdateInvite={handleUpdateInvite}
+                channelId={invite.channel.channelId}
+                channelName={invite.channel.name}
+                nickname={Nick}
+              />
+            ))}
+          </>
         </div>
       )}
     </div>
   );
 }
 
-export { NotiAddFriend, NotiAccepted, NotiDrop };
+export { NotiAddFriend, NotiAccepted, NotiDrop, NotiJoinChannel };

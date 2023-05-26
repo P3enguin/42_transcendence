@@ -32,7 +32,7 @@ interface PongAiProps {
   isSimulation: boolean;
   isRotated: boolean;
   isContact: boolean;
-  gamePaused: boolean;
+  gamePaused?: boolean;
 }
 
 const PongAi = ({

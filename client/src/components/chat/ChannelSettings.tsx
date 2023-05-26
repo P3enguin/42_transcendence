@@ -96,12 +96,11 @@ export default function ChannelSettings({
   }
 
   return (
-    <form
+    <div
       className={`absolute right-0 top-0 transition duration-500 ${
         !isVisible ? 'translate-x-[100%]' : ''
       } h-full w-full rounded-[20px] bg-[#283775d1] backdrop-blur-[10px] hl:w-[456px]`}
       onMouseDown={() => toggleMemberSettings('')}
-      onClick={(e) => e.preventDefault()}
     >
       <button
         className="absolute left-6 top-6 flex h-[20px] w-[20px] items-center justify-center rounded-full bg-[#8BD9FF4D] hover:bg-[#8BD9FF66]"
@@ -209,15 +208,17 @@ export default function ChannelSettings({
           </div>
         </div>
         {privacy === 'private' && (
-          <InputDefault
-            className="group relative"
-            name="channelKey"
-            id="channelKey"
-            type="password"
-            description="Channel key"
-            defaultValue={key}
-            setName={setKey}
-          />
+          <form className="flex">
+            <InputDefault
+              className="group relative"
+              name="channelKey"
+              id="channelKey"
+              type="password"
+              description="Channel key"
+              defaultValue={key}
+              setName={setKey}
+            />
+          </form>
         )}
       </div>
       <div className="mt-6 flex items-center gap-4 px-16">
@@ -275,7 +276,7 @@ export default function ChannelSettings({
                   key={ban.player.nickname}
                   channel={channel}
                   member={ban.player}
-                  toggleMemberSettings={toggleMemberSettings}
+                  showSettings={showSettings}
                 />
               ))}
             {selectedTab === 2 &&
@@ -284,12 +285,12 @@ export default function ChannelSettings({
                   key={invite.player.nickname}
                   channel={channel}
                   member={invite.player}
-                  toggleMemberSettings={toggleMemberSettings}
+                  showSettings={showSettings}
                 />
               ))}
           </ul>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
