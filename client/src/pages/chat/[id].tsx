@@ -67,9 +67,9 @@ function Chat({
 
   return (
     <>
-      <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
+      <div className="m-5 flex h-[70%] min-h-[600px] w-[80%] max-w-[1500px] flex-row rounded-2xl border border-neutral-300 sm:m-20">
         {showRecentChat && (
-          <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px] ">
+          <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px]">
             <h1 className="flex h-14 w-[100%] items-center border-b pl-5 text-3xl font-light">
               <Link href={`/chat`}>Chat Room </Link>
             </h1>
@@ -119,6 +119,7 @@ function Chat({
     </>
   );
 }
+
 export async function getServerSideProps({ req, params }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
 

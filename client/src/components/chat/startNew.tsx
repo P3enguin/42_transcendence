@@ -179,8 +179,8 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
                 <div className="flex max-w-[400px] xl:justify-center">
                   <InputDefault
                     className="group relative z-0 mb-2 w-[86%] min-w-[170px] xl:w-3/4"
-                    name="name"
-                    id="name"
+                    name="key"
+                    id="key"
                     type="password"
                     description="Enter a key"
                     setName={setKey}
