@@ -64,14 +64,12 @@ function Chat({
 
   return (
     <>
-      <div className="m-5 flex h-[70%] min-h-[680px] w-[80%] max-w-[1500px] flex-row rounded-2xl border  border-neutral-300 sm:m-20 ">
+      <div className="m-5 flex h-[70%] min-h-[680px] w-[80%] max-w-[1500px] flex-row rounded-2xl border border-neutral-300 sm:m-20">
         {showRecentChat && (
           <div className="h-[100%] w-[100%] flex-col tx:border-r lg:max-w-[400px]">
-            <div className="flex h-[5%] w-[100%] items-center border-b pl-5 ">
-              <Link href={`/chat`} className="p-1 text-2xl ">
-                Chat Room{' '}
-              </Link>
-            </div>
+            <h1 className="flex h-14 w-[100%] items-center border-b pl-5 text-3xl font-light">
+              <Link href={`/chat`}>Chat Room </Link>
+            </h1>
             {showRecentChat && (
               <OnlineNow
                 nickname={data.nickname}
@@ -83,10 +81,10 @@ function Chat({
             <div className="flex h-[80%] flex-col p-1 sm:p-5 sm:pt-0">
               <div className="flex flex-row justify-between  pt-1">
                 <div
-                  className="cursor-pointer text-green-300"
+                  className="cursor-pointer font-semibold uppercase"
                   onClick={handleRecentChatClick}
                 >
-                  Recent Chat
+                  Recent Chat:
                 </div>
                 <div
                   className="cursor-pointer text-green-300 tx:hidden"
@@ -96,9 +94,7 @@ function Chat({
                 </div>
               </div>
               <div className="mt-2 h-full flex-col space-y-3 overflow-hidden overflow-y-auto scrollbar-hide">
-                {showRecentChat && (
-                  <RecentChat avatar={data.avatar} player={data.nickname} />
-                )}
+                {showRecentChat && <RecentChat player={data} ws={ws} />}
               </div>
             </div>
           </div>
@@ -115,7 +111,7 @@ function Chat({
                 </div>
               </div>
             )}
-            <div className="flex h-[5%] w-full items-center border-b "></div>
+            <div className="h-[58px] w-full rounded-tl-2xl rounded-tr-2xl border-b tx:rounded-tl-none"></div>
             {<StartNew nickname={data.nickname} token={jwt_token} />}
           </div>
         )}
@@ -123,6 +119,7 @@ function Chat({
     </>
   );
 }
+
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
 

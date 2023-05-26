@@ -24,7 +24,7 @@ export default function ChannelSettings({
   const [name, setName] = useState(channel.name);
   const [topic, setTopic] = useState(channel.topic);
   const [privacy, setPrivacy] = useState(channel.privacy);
-  const [key, setKey] = useState(channel.key);
+  const [key, setKey] = useState(channel.key ?? '');
   const [ChannelAvatar, setPicture] = useState(channel.avatar);
   const [memberLimit, setMemberLimit] = useState<string | number>(
     channel.memberLimit === 0 ? '∞' : channel.memberLimit,
@@ -201,15 +201,17 @@ export default function ChannelSettings({
           </div>
         </div>
         {privacy === 'private' && (
-          <InputDefault
-            className="group relative"
-            name="channelKey"
-            id="channelKey"
-            type="password"
-            description="Channel key"
-            defaultValue={key}
-            setName={setKey}
-          />
+          <form>
+            <InputDefault
+              className="group relative"
+              name="channelKey"
+              id="channelKey"
+              type="password"
+              description="Channel key"
+              defaultValue={key}
+              setName={setKey}
+            />
+          </form>
         )}
       </div>
       <div className="mt-4 flex items-center gap-4 px-16">

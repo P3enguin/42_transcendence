@@ -392,6 +392,7 @@ export function InputDefault({
           setName(e.target.value);
           console.log(e.target.value);
         }}
+        autoComplete="on"
       />
       <label
         htmlFor={name}

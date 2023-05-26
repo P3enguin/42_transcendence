@@ -42,9 +42,10 @@ function RecentConversation({
     };
   }, [ws, channel]);
 
-  const date = channel.messages
-    ? new Date(channel.messages[0].sentAt)
-    : undefined;
+  const date =
+    channel.messages && channel.messages[0]
+      ? new Date(channel.messages[0].sentAt)
+      : undefined;
 
   return (
     <li
@@ -62,7 +63,9 @@ function RecentConversation({
       <div className="flex max-w-[250px] flex-col">
         <p className="font-semibold">{channel.name}</p>
         <p className="truncate text-sm font-light">
-          {channel.messages ? channel.messages[0].message : ''}
+          {channel.messages && channel.messages[0]
+            ? channel.messages[0].message
+            : ''}
         </p>
       </div>
       {date && (
