@@ -34,36 +34,40 @@ function HomePlayer({
 export async function getServerSideProps({ req }: any) {
   const jwt_token: string = req.cookies['jwt_token'];
   if (jwt_token) {
-    const channelsRes = await fetch(
-      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/chat/discover',
-      {
-        headers: {
-          Cookie: req.headers.cookie,
+    try {
+      const channelsRes = await fetch(
+        process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/chat/discover',
+        {
+          headers: {
+            Cookie: req.headers.cookie,
+          },
         },
-      },
-    );
-    const channelsData = await channelsRes.json();
+      );
+      const channelsData = await channelsRes.json();
 
-    const rankLeaderBoardRes = await fetch(
-      process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/rank/leaderboard',
-      {
-        headers: {
-          Cookie: req.headers.cookie,
+      const rankLeaderBoardRes = await fetch(
+        process.env.NEXT_PUBLIC_BE_CONTAINER_HOST + '/rank/leaderboard',
+        {
+          headers: {
+            Cookie: req.headers.cookie,
+          },
         },
-      },
-    );
-    const rankLeaderBoardData = await rankLeaderBoardRes.json();
+      );
+      const rankLeaderBoardData = await rankLeaderBoardRes.json();
 
-    return {
-      // modify this to return anything you want before your page load
-      props: {
-        jwt_token,
-        channels: channelsData,
-        leaderBoard: {
-          rank: rankLeaderBoardData,
+      return {
+        // modify this to return anything you want before your page load
+        props: {
+          jwt_token,
+          channels: channelsData,
+          leaderBoard: {
+            rank: rankLeaderBoardData,
+          },
         },
-      },
-    };
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
   return {
     redirect: {

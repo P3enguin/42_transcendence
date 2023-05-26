@@ -85,16 +85,20 @@ export async function getServerSideProps({ req }: NextApiRequest) {
   const jwt_token = req.cookies['jwt_token'];
 
   if (jwt_token) {
-    const res = await verifyToken(req.headers.cookie);
-    if (res.ok) {
-      const player = await res.json();
-      console.log(player);
-      return {
-        props: {
-          player,
-          jwt_token: jwt_token,
-        },
-      };
+    try {
+      const res = await verifyToken(req.headers.cookie);
+      if (res.ok) {
+        const player = await res.json();
+        console.log(player);
+        return {
+          props: {
+            player,
+            jwt_token: jwt_token,
+          },
+        };
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
   return {
