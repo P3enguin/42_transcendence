@@ -95,21 +95,24 @@ function Conversation({ player, jwt_token, id, setNew, ws, wsConnected }: any) {
         document.getElementById('channelKey') as HTMLInputElement
       ).value;
     }
-
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/join',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/join',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(details),
+          credentials: 'include',
         },
-        body: JSON.stringify(details),
-        credentials: 'include',
-      },
-    );
+      );
 
-    if (response.ok) {
-      getChannel();
+      if (response.ok) {
+        getChannel();
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
 

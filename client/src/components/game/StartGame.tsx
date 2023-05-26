@@ -7,13 +7,13 @@ export const RadioInput = ({
   label,
   onChange,
   className,
-  checked = false,
+  isChecked,
 }: {
   id: string;
   label: string;
   onChange: (e: any) => void;
   className?: string;
-  checked?: boolean;
+  isChecked?: boolean;
 }) => {
   return (
     <div
@@ -22,11 +22,14 @@ export const RadioInput = ({
         className
       }
     >
-      {checked ? (
-        <input type="radio" id={id} name="type" onChange={onChange} checked />
-      ) : (
-        <input type="radio" id={id} name="type" onChange={onChange} />
-      )}
+      <input
+        type="radio"
+        id={id}
+        name="type"
+        onChange={onChange}
+        checked={isChecked}
+      />
+
       <label
         htmlFor={id}
         className="ml-2 cursor-pointer whitespace-nowrap text-left"

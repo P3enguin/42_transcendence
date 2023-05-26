@@ -134,29 +134,33 @@ export async function getServerSideProps({ req, params }: any) {
   const id = params.id;
 
   if (jwt_token) {
-    const res = await verifyToken(req.headers.cookie);
-    if (res.ok) {
-      try {
-        console.log('here');
-        const data = await res.json();
-        console.log('data  ', { data });
-        return {
-          props: {
-            data,
-            jwt_token: jwt_token,
-            id,
-          },
-        };
-      } catch (error: any) {
-        console.error(error.message);
-        return {
-          props: {
-            data: [],
-            jwt_token: jwt_token,
-            id,
-          },
-        };
+    try {
+      const res = await verifyToken(req.headers.cookie);
+      if (res.ok) {
+        try {
+          console.log('here');
+          const data = await res.json();
+          console.log('data  ', { data });
+          return {
+            props: {
+              data,
+              jwt_token: jwt_token,
+              id,
+            },
+          };
+        } catch (error: any) {
+          console.error(error.message);
+          return {
+            props: {
+              data: [],
+              jwt_token: jwt_token,
+              id,
+            },
+          };
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   }
   return {

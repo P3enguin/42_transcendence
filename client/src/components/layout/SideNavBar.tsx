@@ -2,14 +2,12 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import SideBar from './SideBar';
 import GameNavBar from './GameNavBar';
-import NavBar from '../home/NavBar';
+
 import React from 'react';
 import Router from 'next/router';
 import { LayoutProps } from './layout';
 import { Socket, io } from 'socket.io-client';
-import { verifyToken } from '../VerifyToken';
 
-import NextApiRequest from 'next';
 import GameInvitation from './GameInvitation';
 let socket: Socket;
 

@@ -270,33 +270,37 @@ export async function getServerSideProps({
   const jwt_token = req.cookies['jwt_token'];
 
   if (jwt_token) {
-    const res = await verifyToken(req.headers.cookie);
-    if (res.ok) {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/game/${params.id}`,
-          {
-            headers: {
-              Cookie: req.headers.cookie,
+    try {
+      const res = await verifyToken(req.headers.cookie);
+      if (res.ok) {
+        try {
+          const res = await axios.get(
+            `${process.env.NEXT_PUBLIC_BE_CONTAINER_HOST}/game/${params.id}`,
+            {
+              headers: {
+                Cookie: req.headers.cookie,
+              },
             },
-          },
-        );
-        return {
-          props: {
-            params,
-            res: res.data,
-            jwt_token,
-          },
-        };
-      } catch (e: any) {
-        return {
-          props: {
-            params,
-            res: e.response.data,
-            jwt_token,
-          },
-        };
+          );
+          return {
+            props: {
+              params,
+              res: res.data,
+              jwt_token,
+            },
+          };
+        } catch (e: any) {
+          return {
+            props: {
+              params,
+              res: e.response.data,
+              jwt_token,
+            },
+          };
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   }
   return {

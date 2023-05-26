@@ -24,16 +24,20 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
   const [NicknameEntered, setNicknameEntered] = useState(false);
 
   async function createPrivateChat() {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${player1}`,
-      {
-        credentials: 'include',
-      },
-    );
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + `/chat/dm?nickname=${player1}`,
+        {
+          credentials: 'include',
+        },
+      );
 
-    if (response.status == 200 || response.status == 201) {
-      const dmData = await response.json();
-      router.push(`/chat/${dmData.channelId}`);
+      if (response.status == 200 || response.status == 201) {
+        const dmData = await response.json();
+        router.push(`/chat/${dmData.channelId}`);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -47,22 +51,26 @@ function StartNew({ nickname, token }: { nickname: string; token: string }) {
       privacy: privacy.privacy,
     };
     console.log('creating Room', room);
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/create',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Authorization: `Bearer ${token}`
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/create',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(room),
+          credentials: 'include',
         },
-        body: JSON.stringify(room),
-        credentials: 'include',
-      },
-    );
-    if (res.status == 201) {
-      const room = await res.json();
-      console.log(room);
-      router.push(`/chat/${room.channelId}`);
+      );
+      if (res.status == 201) {
+        const room = await res.json();
+        console.log(room);
+        router.push(`/chat/${room.channelId}`);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

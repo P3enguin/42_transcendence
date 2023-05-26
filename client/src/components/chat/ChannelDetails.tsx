@@ -34,20 +34,25 @@ export default function ChannelDetails({
 
   async function leaveChannel(e: React.FormEvent) {
     e.preventDefault();
-
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_BACKEND_HOST + '/chat/leave/' + channel.channelId,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_HOST +
+          '/chat/leave/' +
+          channel.channelId,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
         },
-        credentials: 'include',
-      },
-    );
+      );
 
-    if (res.status == 204) {
-      Router.push(`/chat`);
+      if (res.status == 204) {
+        Router.push(`/chat`);
+      }
+    } catch (error) {
+      console.log('An error has occurred');
     }
   }
 

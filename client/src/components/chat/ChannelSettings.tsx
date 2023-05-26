@@ -186,7 +186,7 @@ export default function ChannelSettings({
                 setPrivacy('public');
               }}
               className="mr-0 min-w-0 text-sm font-light"
-              checked={privacy === 'public'}
+              isChecked={privacy === 'public'}
             />
             <RadioInput
               id="privacy-private"
@@ -195,7 +195,7 @@ export default function ChannelSettings({
                 setPrivacy('private');
               }}
               className="mr-0 min-w-0 text-sm font-light"
-              checked={privacy === 'private'}
+              isChecked={privacy === 'private'}
             />
             <RadioInput
               id="privacy-secret"
@@ -204,7 +204,7 @@ export default function ChannelSettings({
                 setPrivacy('secret');
               }}
               className="mr-0 min-w-0 text-sm font-light"
-              checked={privacy === 'secret'}
+              isChecked={privacy === 'secret'}
             />
           </div>
         </div>
