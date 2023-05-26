@@ -25,6 +25,9 @@ export interface Channel {
   bans?: {
     player: Member;
   }[];
+  invited?: {
+    player: Member;
+  }[];
   messages?: {
     sender: Member;
     message: string;

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Channel } from '@/interfaces/Channel';
 import RecentConversation from './RecentConversation';
 
-function RecentChat({ player, newmsgs, ws }: any) {
+function RecentChat({ player, newmsgs, ws, wsConnected }: any) {
   const [isLoading, setLoading] = useState(true);
   const [RecentChat, setRecentChat] = useState<Channel[]>([]);
 
@@ -49,14 +49,15 @@ function RecentChat({ player, newmsgs, ws }: any) {
         <p>Loading...</p>
       ) : (
         <ul className="flex flex-col gap-2">
-        {RecentChat.map((channel: Channel, index: number) => (
-          <RecentConversation
-            key={index}
-            player={player}
-            channel={channel}
-            ws={ws}
-          />
-        ))}
+          {RecentChat.map((channel: Channel, index: number) => (
+            <RecentConversation
+              key={index}
+              player={player}
+              channel={channel}
+              ws={ws}
+              wsConnected={wsConnected}
+            />
+          ))}
         </ul>
       )}
     </>

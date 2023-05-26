@@ -5,14 +5,21 @@ import { Channel } from '@/interfaces/Channel';
 import { Socket } from 'socket.io-client';
 import { ClimbingBoxLoader } from 'react-spinners';
 import StatusBubble from '../game/StatusBubble';
+import { Status } from './OnlineNow';
 
 export interface ChannelHeaderProps {
   channel: Channel;
   ws: Socket;
+  wsConnected: boolean;
   onClick: () => void;
 }
 
-const ChannelHeader = ({ channel, ws, onClick }: ChannelHeaderProps) => {
+const ChannelHeader = ({
+  channel,
+  ws,
+  onClick,
+  wsConnected,
+}: ChannelHeaderProps) => {
   const [status, setStatus] = useState('');
 
   useEffect(() => {
@@ -20,10 +27,15 @@ const ChannelHeader = ({ channel, ws, onClick }: ChannelHeaderProps) => {
       setStatus('');
       return;
     }
-    if (ws) {
-      ws.emit('getUserStatus', { name: channel.topic }, (data: any) => {
-        console.log(data);
+    if (ws && wsConnected) {
+      ws.emit('getUserStatus', { name: channel.topic.substring(1) }, (data: any) => {
         setStatus(data);
+      });
+
+      ws.on('statusChange', (data: Status) => {
+        if (data.nickname === channel.topic.substring(1)) {
+          setStatus(data.status);
+        }
       });
     }
     return () => {
@@ -31,7 +43,7 @@ const ChannelHeader = ({ channel, ws, onClick }: ChannelHeaderProps) => {
         ws.off('statusChange');
       }
     };
-  }, [ws, channel]);
+  }, [ws, channel, wsConnected]);
 
   if (!channel) {
     return <div className="self-center">Loading...</div>;

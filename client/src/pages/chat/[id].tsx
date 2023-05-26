@@ -98,7 +98,12 @@ function Chat({
               </div>
               <div className="mt-2 h-full flex-col overflow-hidden overflow-y-auto scrollbar-hide">
                 {showRecentChat && (
-                  <RecentChat player={data} newmsgs={newMessages} ws={ws} />
+                  <RecentChat
+                    player={data}
+                    newmsgs={newMessages}
+                    ws={ws}
+                    wsConnected={wsConnected}
+                  />
                 )}
               </div>
             </div>
@@ -111,6 +116,7 @@ function Chat({
               jwt_token={jwt_token}
               id={id}
               ws={ws}
+              wsConnected={wsConnected}
               setNew={changeToNewmessages}
             />
           </div>

@@ -4,14 +4,23 @@ import StatusBubble from '../game/StatusBubble';
 import { Socket } from 'socket.io-client';
 import { Channel, Member } from '@/interfaces/Channel';
 
+export interface Status {
+  nickname: string;
+  avatar: string;
+  id: number;
+  status: string;
+}
+
 function RecentConversation({
   player,
   channel,
   ws,
+  wsConnected,
 }: {
   player: Member;
   channel: Channel;
   ws: Socket;
+  wsConnected: boolean;
 }) {
   const [status, setStatus] = useState('');
 
@@ -19,6 +28,7 @@ function RecentConversation({
     const user = channel.members.filter(
       (member: Member) => member.nickname != player.nickname,
     )[0];
+    channel.topic = user.nickname;
     channel.name = user.firstname + ' ' + user.lastname;
     channel.avatar = user.avatar;
   }
@@ -29,10 +39,14 @@ function RecentConversation({
       return;
     }
 
-    if (ws) {
+    if (ws && wsConnected) {
       ws.emit('getUserStatus', { name: channel.topic }, (data: any) => {
-        console.log(data);
         setStatus(data);
+      });
+      ws.on('statusChange', (data: Status) => {
+        if (data.nickname === channel.topic) {
+          setStatus(data.status);
+        }
       });
     }
     return () => {
@@ -40,7 +54,7 @@ function RecentConversation({
         ws.off('statusChange');
       }
     };
-  }, [ws, channel]);
+  }, [ws, wsConnected, channel]);
 
   const date =
     channel.messages && channel.messages[0]
@@ -62,7 +76,7 @@ function RecentConversation({
       />
       <div className="flex max-w-[250px] flex-col">
         <p className="font-semibold">{channel.name}</p>
-        <p className="truncate text-sm font-light">
+        <p className="w-[100px] truncate text-sm font-light lg:w-[200px]">
           {channel.messages && channel.messages[0]
             ? channel.messages[0].message
             : ''}
