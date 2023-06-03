@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "name": "Let the Game begin",
+    "icon": "./start",
+    "description": "play your first ranked game",
+    "effect": "+10 rp"
+  },
+  {
+    "id": 2,
+    "name": "kenpachi",
+    "icon": "./kenpachi.npg",
+    "description": "Win 30 match",
+    "effect": "+300 exp"
+  },
+  {
+    "id": 3,
+    "name": "populare",
+    "icon": "./popular.png",
+    "description": "have 10 friends",
+    "effect": "+10 coins"
+  },
+  {
+    "id": 4,
+    "name": "Level 50",
+    "icon": "./lvl50.png",
+    "description": "Reach Level 50",
+    "effect": "+ 1000 exp"
+  },
+  {
+    "id": 5,
+    "name": "loyal",
+    "icon": "./loyal.png",
+    "description": "play the gmae for a week",
+    "effect": "+30 coins"
+  },
+  {
+    "id": 6,
+    "name": "Tireless",
+    "icon": "./tireless",
+    "description": "Arrange 5 friendly games during the day",
+    "effect": "+100 exp"
+  },
+  {
+    "id": 7,
+    "name": "Game Over",
+    "icon": "./g_o.png",
+    "description": "Break opponents winning streak of at least 10 matches",
+    "effect": "+1000 exp"
+  },
+  {
+    "id": 8,
+    "name": "Goal Machine (I,II,III,IV,V)",
+    "icon": "./gm.png",
+    "description": "score (20, 30, 50, 90, 150), Goal",
+    "effect": "+100 coins"
+  },
+  {
+    "id": 9,
+    "name": "Unstoppable (I, II, III)",
+    "icon": "./unstoppable.png",
+    "description": "win 5 ranked game streak",
+    "effect": "Title <unstoppable>"
+  },
+  {
+    "id": 10,
+    "name": "Loser (I, II, III)",
+    "icon": "./loser.png",
+    "description": "lose 5 ranked game streak",
+    "effect": "Title <Loser>"
+  },
+  {
+    "id": 11,
+    "name": "Coins Miner",
+    "icon": "./miner.png",
+    "description": "collect 300 coins",
+    "effect": "+100 coins"
+  },
+  {
+    "id": 12,
+    "name": "Rich Player",
+    "icon": "./rich_player.png",
+    "description": "buy an intem from the shop",
+    "effect": "+1000 exp"
+  },
+  {
+    "id": 13,
+    "name": "addicted",
+    "icon": "./addicted.png",
+    "description": "play more than 30 fgame in a single day",
+    "effect": "+ 1000 exp"
+  },
+  {
+    "id": 14,
+    "name": "Heartless",
+    "icon": "./heartless",
+    "description": "defeat the same enemie more than 30 time",
+    "effect": "+10000 exp"
+  },
+  {
+    "id": 15,
+    "name": "Clear and Clean (I,II,III)",
+    "icon": "./CC.png",
+    "description": "win 5 game (I,II,III) without receiving any goal",
+    "effect": "+1000 exp"
+  }
+]

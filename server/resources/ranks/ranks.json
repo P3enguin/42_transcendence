@@ -1,0 +1,67 @@
+[{
+        "id": 0,
+        "name": "UnRanked",
+        "points": 0,
+        "avatar": "none"
+    },
+    {
+        "id": 1,
+        "name": "Iron",
+        "points": 100,
+        "avatar": "server/uploads/ranks/Iron.png"
+    },
+    {
+        "id": 2,
+        "name": "Bronze",
+        "points": 200,
+        "avatar": "server/uploads/ranks/Bronze.png"
+    },
+    {
+        "id": 3,
+        "name": "Silver",
+        "points": 300,
+        "avatar": "server/uploads/ranks/Silver.png"
+    },
+    {
+        "id": 4,
+        "name": "Gold",
+        "points": 400,
+        "avatar": "server/uploads/ranks/Gold.png"
+    },
+    {
+        "id": 5,
+        "name": "Platinum",
+        "points": 500,
+        "avatar": "server/uploads/ranks/Platinum.png"
+    },
+    {
+        "id": 6,
+        "name": "Diamond",
+        "points": 600,
+        "avatar": "server/uploads/ranks/Diamond.png"
+    },
+    {
+        "id": 7,
+        "name": "Amethyst",
+        "points": 700,
+        "avatar": "server/uploads/ranks/Amethyst.png"
+    },
+    {
+        "id": 8,
+        "name": "RedStar",
+        "points": 800,
+        "avatar": "server/uploads/ranks/RedStar.png"
+    },
+    {
+        "id": 9,
+        "name": "Master",
+        "points": 900,
+        "avatar": "server/uploads/ranks/Master.png"
+    },
+    {
+        "id": 10,
+        "name": "King",
+        "points": 1000,
+        "avatar": "server/uploads/ranks/King.png"
+    }
+]

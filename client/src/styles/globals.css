@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html {
+    min-width: 300px;
+    background: rgb(44, 59, 124);
+    background: linear-gradient( 90deg, rgba(44, 59, 124, 1) 0%, rgba(13, 23, 67, 1) 100%);
+    font-family: 'Outfit';
+    color: white;
+}
+
+
+/* css properties that I couldn't do with tailwind :sad: */
+
+.sh {
+    text-shadow: 2px 2px 2px black;
+}
+
+.mg-top {
+    margin-top: 150px;
+}
+
+@media screen and (max-width: 1279px) {
+    .css {
+        margin-bottom: 0;
+    }
+}
+
+.pfp-container {
+    filter: url(#round);
+}
+
+.pfp {
+    background-color: #0d1743;
+    /*color of the main-background*/
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.level {
+    background-color: #2C3B7C;
+    /*color of the main-background*/
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background-color: #2c3b7c;
+    /*color of the main-background*/
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.error {
+    border-color: red;
+}
+
+.valid {
+    border-color: green;
+}
+
+
+/*===== The CSS =====*/
+
+.progress .track,
+.progress .fill {
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 50;
+    transform: translate(100px, 700px) rotate(-90deg);
+}
+
+.progress .track {
+    stroke: #2C3B7C;
+}
+
+.progress .fill {
+    stroke: rgb(255, 255, 255);
+    stroke-linecap: round;
+    stroke-dasharray: 2160;
+    stroke-dashoffset: 2160;
+    transition: stroke-dashoffset 1s;
+}
+
+.progress.blue .fill {
+    stroke: url(#GradientCounter)
+}
+
+.progress .track2,
+.progress .fill2 {
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 20;
+    transform: translate(100px, 700px) rotate(-90deg);
+}
+
+.progress .track2 {
+    stroke: rgb(54, 71, 83);
+}
+
+.progress .fill2 {
+    stroke: rgb(255, 255, 255);
+    stroke-linecap: round;
+    stroke-dasharray: 2160;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s;
+}
+
+.progress.blue .fill2 {
+    stroke: url(#GradientLevel)
+}
+
+@media only screen and (min-device-width: 640px) {
+    button:hover .friend-icon {
+        fill: #0097e2;
+        /* Change to the color you want */
+        transform: translate(-3.4rem, 0);
+    }
+}
+
+button:hover .friend-icon {
+    fill: #0097e2;
+    /* Change to the color you want */
+    transform: translate(-3.4rem, 0);
+}
+
+@media only screen and (max-width: 640px) {
+    button:hover .friend-icon {
+        fill: #0097e2;
+        /* Change to the color you want */
+        transform: translate(0, -1.7rem);
+    }
+}
+
+button:hover .friend-text {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0.3s;
+    color: #0097e2;
+}
+
+*::-webkit-scrollbar {
+    width:  6px;
+    height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: rgb(220, 220, 220);
+    border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: rgb(50, 55, 145);
+    border: 0.25px solid rgb(220, 220, 220);
+    border-radius: 5px;
+}
+
+/******************************* profile css **********************************/
