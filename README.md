@@ -1,4 +1,3 @@
-
 # ft_transcendence
 
 Soon, you will realize that you already know things
