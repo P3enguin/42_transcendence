@@ -6,7 +6,7 @@ ft_transcendence is an interactive, single page and fully responsive web applica
 the game also has a match-making system, normal and ranked modes, with a spectating option.<br/>
 
 
-https://github.com/P3enguin/42_transcendence/assets/94067494/16d95d2f-aa25-44df-bba2-d7c0ca6c6b22
+<img width="2560" alt="project image" src="https://github.com/P3enguin/42_transcendence/assets/94067494/b20e8155-ee37-4e0f-9d81-5ff602142596">
 
 
 ## Technologies :
@@ -23,7 +23,7 @@ https://github.com/P3enguin/42_transcendence/assets/94067494/16d95d2f-aa25-44df-
 - If you are using ```Windows```, I highly recommend running the website on a linux environmnet, use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) .
 ### Environment :
 You need to setup all the environment variables in the project, There is a `env.template`, copy Its content in a new `.env` file and fill the variables.
-### AUTHENTICATION:
+### Authentication:
 Authentication is based upon oauth2.<br />
 We implemented two methods, ```42``` and ```Google login```. if you are not a 42 student, use the google API to access the app. In both cases you need to create a new API application so you can get the ```PUBLIC``` and ```PRIVATE``` keys necessary for the environment.
 ### Running the app:
