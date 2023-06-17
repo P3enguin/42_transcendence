@@ -8,6 +8,10 @@ the game also has a match-making system, normal and ranked modes, with a spectat
 
 <img width="2560" alt="project image" src="https://github.com/P3enguin/42_transcendence/assets/94067494/b20e8155-ee37-4e0f-9d81-5ff602142596">
 
+<img width="1791" alt="Screen Shot 2023-06-17 at 4 52 26 PM" src="https://github.com/P3enguin/42_transcendence/assets/94067494/57fe3bf5-c3cb-4764-a69f-c0202a650f24">
+
+<img width="1791" alt="Screen Shot 2023-06-17 at 4 52 32 PM" src="https://github.com/P3enguin/42_transcendence/assets/94067494/a9700b11-616b-479d-adf3-86507e84dc61">
+
 
 ## Technologies :
 - Front-end : Next Js.
